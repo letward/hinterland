@@ -27,7 +27,7 @@ const UI_SECURITY = [
   "default-src 'none'",
   "script-src 'self'",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https: http:",
+  "img-src 'self' hinterland: data: blob: https: http:",
   "font-src 'self' data:",
   "connect-src 'self'",
   "media-src 'self' data: blob:",
