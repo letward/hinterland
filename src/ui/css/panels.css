@@ -17,53 +17,60 @@
   display: block;
   max-height: min(58vh, 520px);
   overflow-y: auto;
-  padding: 6px;
-  background: var(--surface);
-  border-top: 1px solid var(--borderSoft);
+  padding: 8px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(var(--blur));
+  border: 1px solid var(--borderHighlight, var(--borderSoft));
+  border-radius: var(--radius);
   box-shadow: var(--shadow);
-  animation: popupIn var(--anim) ease-out;
+  animation: popupIn var(--anim) var(--easeOut);
   pointer-events: auto;
 }
 
 .menuCard {
   width: max-content;
-  min-width: 252px;
+  min-width: 256px;
   max-width: 330px;
   margin-left: auto;
-  margin-right: 2px;
-  border: 1px solid var(--borderSoft);
+  margin-right: 4px;
+  padding: 6px;
+  border: 1px solid var(--borderHighlight, var(--borderSoft));
   border-radius: var(--radius);
-  animation: menuIn var(--anim) ease-out;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  backdrop-filter: blur(var(--blur));
+  box-shadow: var(--shadow);
+  animation: menuIn var(--anim) var(--easeOut);
 }
 
 .paletteCard {
-  width: min(580px, 92vw);
+  width: min(640px, 92vw);
   margin: 0 auto;
   padding: 0;
-  border: 1px solid var(--borderSoft);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
+  border: 1px solid var(--borderHighlight, var(--borderSoft));
+  border-radius: var(--radiusLarge);
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  backdrop-filter: blur(var(--blur));
+  box-shadow: 0 24px 60px rgb(0 0 0 / 48%), 0 8px 24px rgb(0 0 0 / 24%);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  max-height: min(60vh, 480px);
-  animation: menuIn var(--anim) ease-out;
+  max-height: min(62vh, 500px);
+  animation: menuIn var(--anim) var(--easeOut);
 }
 
 .paletteSearch {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
+  gap: 12px;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--borderSoft);
   background: var(--surface);
   flex: none;
 }
 
 .paletteSearch svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   color: var(--textDim);
   flex: none;
 }
@@ -74,23 +81,24 @@
   background: transparent;
   color: var(--text);
   font-family: inherit;
-  font-size: 0.95em;
+  font-size: 1.02em;
   outline: none;
 }
 
 .paletteList {
   flex: 1;
   overflow-y: auto;
-  padding: 4px;
+  padding: 6px;
 }
 
 .paletteBadge {
   font-size: 0.72em;
-  padding: 2px 6px;
-  border-radius: var(--radiusSmall);
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radiusPill);
   background: var(--surfaceAlt);
   color: var(--textDim);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   flex: none;
 }
@@ -98,29 +106,30 @@
 @keyframes popupIn {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translate3d(0, 6px, 0);
   }
   to {
     opacity: 1;
-    transform: none;
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes menuIn {
   from {
     opacity: 0;
-    transform: translateY(-4px) scale(0.99);
+    transform: scale(0.97) translate3d(0, -4px, 0);
   }
   to {
     opacity: 1;
-    transform: none;
+    transform: scale(1) translate3d(0, 0, 0);
   }
 }
 
 .popupSection {
-  padding: 6px 10px 4px;
-  font-size: 0.76em;
-  letter-spacing: 0.06em;
+  padding: 6px 12px 4px;
+  font-size: 0.74em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--textDim);
 }
@@ -137,26 +146,39 @@
   color: var(--text);
   text-align: left;
   cursor: pointer;
-  transition: background var(--anim);
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut), transform var(--anim) var(--easeOut);
 }
 
 .row:hover {
   background: var(--surfaceHover);
+  color: var(--text);
+}
+
+.row:active {
+  transform: scale(0.98);
 }
 
 .rowSelected {
-  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  background: var(--accentSubtle);
+  color: var(--text);
 }
 
 .rowIcon {
   display: grid;
   place-items: center;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: var(--radiusSmall);
   background: var(--surfaceAlt);
   color: var(--textDim);
   flex: none;
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut);
+}
+
+.row:hover .rowIcon,
+.rowSelected .rowIcon {
+  background: var(--surfaceHover);
+  color: var(--accent);
 }
 
 .rowIcon svg {
@@ -170,7 +192,8 @@
 }
 
 .rowTitle {
-  font-size: 0.95em;
+  font-size: 0.94em;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -182,17 +205,19 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-top: 1px;
 }
 
 .rowAside {
   font-size: 0.78em;
+  font-weight: 600;
   color: var(--textDim);
   flex: none;
 }
 
 .separator {
   height: 1px;
-  margin: 5px 8px;
+  margin: 6px 8px;
   background: var(--borderSoft);
 }
 
@@ -220,18 +245,19 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  max-width: 340px;
-  padding: 10px 14px;
+  max-width: 360px;
+  padding: 12px 16px;
   border-radius: var(--radius);
-  background: var(--surface);
-  border: 1px solid var(--borderSoft);
-  box-shadow: var(--shadow);
-  animation: toastIn 180ms ease-out;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(var(--blur));
+  border: 1px solid var(--borderHighlight, var(--borderSoft));
+  box-shadow: 0 12px 32px rgb(0 0 0 / 28%);
+  animation: toastIn var(--anim) var(--easeOut);
   pointer-events: auto;
 }
 
 .toast.leaving {
-  animation: toastOut 180ms ease-in forwards;
+  animation: toastOut var(--anim) ease-in forwards;
 }
 
 .toastDot {
@@ -240,41 +266,43 @@
   border-radius: 50%;
   background: var(--accent);
   flex: none;
+  box-shadow: 0 0 8px currentColor;
 }
 
 .toast.success .toastDot {
-  background: #46b980;
+  background: var(--success, #10b981);
 }
 
 .toast.warning .toastDot {
-  background: #e8a33d;
+  background: var(--warning, #f59e0b);
 }
 
 .toast.error .toastDot {
-  background: #e05c55;
+  background: var(--danger, #ef4444);
 }
 
 .toastText {
   flex: 1;
   min-width: 0;
   font-size: 0.92em;
+  font-weight: 500;
 }
 
 @keyframes toastIn {
   from {
     opacity: 0;
-    transform: translateX(16px);
+    transform: translate3d(16px, 0, 0);
   }
   to {
     opacity: 1;
-    transform: none;
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes toastOut {
   to {
     opacity: 0;
-    transform: translateX(16px);
+    transform: translate3d(16px, 0, 0);
   }
 }
 
@@ -306,17 +334,17 @@
   width: 100%;
   height: 100%;
   background: var(--bg);
-  animation: modalIn 160ms ease-out;
+  animation: modalIn var(--anim) var(--easeOut);
 }
 
 @keyframes modalIn {
   from {
     opacity: 0;
-    transform: scale(0.99);
+    transform: scale(0.985);
   }
   to {
     opacity: 1;
-    transform: none;
+    transform: scale(1);
   }
 }
 
@@ -324,7 +352,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 14px;
+  padding: 12px 18px;
   border-bottom: 1px solid var(--borderSoft);
   background: var(--surface);
   -webkit-app-region: drag;
@@ -332,8 +360,9 @@
 
 .modalTitle {
   flex: 1;
-  font-size: 1.05em;
-  font-weight: 600;
+  font-size: 1.1em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   -webkit-app-region: no-drag;
 }
 
@@ -348,9 +377,9 @@
 }
 
 .modalNav {
-  width: 208px;
-  min-width: 208px;
-  padding: 10px 8px;
+  width: 220px;
+  min-width: 220px;
+  padding: 12px 10px;
   overflow-y: auto;
   border-right: 1px solid var(--borderSoft);
   background: var(--surface);
@@ -361,14 +390,16 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 9px 10px;
+  padding: 9px 12px;
   border: 0;
   border-radius: var(--radiusSmall);
   background: transparent;
   color: var(--textDim);
+  font-size: 0.94em;
+  font-weight: 500;
   text-align: left;
   cursor: pointer;
-  transition: background var(--anim), color var(--anim);
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut), transform var(--anim) var(--easeOut);
 }
 
 .navItem:hover {
@@ -376,9 +407,14 @@
   color: var(--text);
 }
 
+.navItem:active {
+  transform: scale(0.97);
+}
+
 .navItem.active {
-  background: color-mix(in srgb, var(--accent) 20%, transparent);
-  color: var(--text);
+  background: var(--accentSubtle);
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .navItem svg {
@@ -390,7 +426,7 @@
   flex: 1;
   min-width: 0;
   overflow-y: auto;
-  padding: 18px 22px 40px;
+  padding: 24px 32px 48px;
 }
 
 .aboutLogo {
@@ -399,31 +435,33 @@
   border-radius: 50%;
   display: block;
   margin: 0 0 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 28%);
   user-select: none;
   -webkit-user-drag: none;
 }
 
 .pageHead {
-  margin: 0 0 4px;
-  font-size: 1.35em;
-  font-weight: 650;
+  margin: 0 0 6px;
+  font-size: 1.45em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .pageDesc {
-  margin: 0 0 20px;
+  margin: 0 0 24px;
   color: var(--textDim);
-  font-size: 0.92em;
+  font-size: 0.94em;
+  line-height: 1.5;
 }
 
 .group {
-  margin-bottom: 26px;
+  margin-bottom: 28px;
 }
 
 .groupTitle {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   font-size: 0.78em;
-  font-weight: 650;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--textDim);
@@ -433,15 +471,21 @@
   border: 1px solid var(--borderSoft);
   border-radius: var(--radius);
   background: var(--surface);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
   overflow: hidden;
 }
 
 .option {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 11px 14px;
+  gap: 16px;
+  padding: 13px 16px;
   border-bottom: 1px solid var(--borderSoft);
+  transition: background var(--anim) var(--easeOut);
+}
+
+.option:hover {
+  background: color-mix(in srgb, var(--surfaceHover) 40%, transparent);
 }
 
 .option:last-child {
@@ -461,6 +505,7 @@
 
 .optionLabel {
   font-size: 0.96em;
+  font-weight: 500;
 }
 
 .optionHint {
@@ -479,54 +524,57 @@
 
 .switch {
   position: relative;
-  width: 42px;
+  width: 44px;
   height: 24px;
-  border: 0;
+  border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--surfaceAlt);
   cursor: pointer;
-  transition: background var(--anim);
+  transition: background var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut);
   flex: none;
 }
 
 .switch::after {
   content: "";
   position: absolute;
-  top: 3px;
-  left: 3px;
+  top: 2px;
+  left: 2px;
   width: 18px;
   height: 18px;
   border-radius: 50%;
   background: var(--textDim);
-  transition: transform var(--anim), background var(--anim);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
+  transition: transform var(--anim) var(--easeOut), background var(--anim) var(--easeOut);
 }
 
 .switch[aria-checked="true"] {
   background: var(--accent);
+  border-color: var(--accent);
 }
 
 .switch[aria-checked="true"]::after {
-  transform: translateX(18px);
+  transform: translate3d(20px, 0, 0);
   background: var(--onAccent);
 }
 
 .textInput,
 .selectInput,
 .areaInput {
-  padding: 7px 10px;
+  padding: 8px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radiusSmall);
   background: var(--bg);
+  color: var(--text);
   outline: none;
   min-width: 0;
-  transition: border-color var(--anim), box-shadow var(--anim);
+  transition: border-color var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
 }
 
 .textInput:focus,
 .selectInput:focus,
 .areaInput:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+  box-shadow: var(--shadowFocus);
 }
 
 .textInput {
@@ -548,7 +596,7 @@
 }
 
 .selectInput {
-  padding-right: 26px;
+  padding-right: 28px;
   cursor: pointer;
   appearance: none;
   background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
@@ -566,12 +614,19 @@
 
 .numberInput {
   width: 92px;
-  padding: 7px 10px;
+  padding: 8px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radiusSmall);
   background: var(--bg);
+  color: var(--text);
   outline: none;
   user-select: text;
+  transition: border-color var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
+}
+
+.numberInput:focus {
+  border-color: var(--accent);
+  box-shadow: var(--shadowFocus);
 }
 
 .sliderInput {
@@ -581,7 +636,7 @@
 
 .colorInput {
   width: 44px;
-  height: 28px;
+  height: 30px;
   padding: 2px;
   border: 1px solid var(--border);
   border-radius: var(--radiusSmall);
@@ -591,7 +646,7 @@
 
 .colorHex {
   width: 92px;
-  padding: 6px 8px;
+  padding: 7px 10px;
   border: 1px solid var(--border);
   border-radius: var(--radiusSmall);
   background: var(--bg);
@@ -600,6 +655,12 @@
   font-size: 0.85em;
   user-select: text;
   text-transform: lowercase;
+  transition: border-color var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
+}
+
+.colorHex:focus {
+  border-color: var(--accent);
+  box-shadow: var(--shadowFocus);
 }
 
 .chips {
@@ -615,39 +676,45 @@
   border: 2px solid transparent;
   border-radius: 50%;
   cursor: pointer;
-  transition: transform var(--anim), border-color var(--anim);
+  transition: transform var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut);
 }
 
 .chip:hover {
-  transform: scale(1.12);
+  transform: scale(1.15);
 }
 
 .chip.active {
   border-color: var(--text);
+  box-shadow: 0 0 0 2px var(--surface);
 }
 
 .actionRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .button {
-  padding: 8px 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
   border: 1px solid var(--border);
   border-radius: var(--radiusSmall);
   background: var(--surfaceAlt);
   color: var(--text);
+  font-weight: 500;
   cursor: pointer;
-  transition: background var(--anim), border-color var(--anim), transform var(--anim);
+  transition: background var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut), transform var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
 }
 
 .button:hover:not(:disabled) {
   background: var(--surfaceHover);
+  border-color: var(--border);
 }
 
 .button:active:not(:disabled) {
-  transform: translateY(1px) scale(0.98);
+  transform: scale(0.96);
 }
 
 .button:disabled {
@@ -659,19 +726,25 @@
   background: var(--accent);
   border-color: var(--accent);
   color: var(--onAccent);
+  box-shadow: 0 2px 8px var(--accentSubtle);
 }
 
 .button.primary:hover {
-  filter: brightness(1.08);
+  background: var(--accentHover);
+  border-color: var(--accentHover);
+  box-shadow: 0 4px 14px var(--accentGlow);
 }
 
 .button.danger {
-  border-color: #6c2b2b;
-  color: #e8776f;
+  border-color: color-mix(in srgb, var(--danger, #ef4444) 40%, transparent);
+  background: var(--dangerBg, rgba(239, 68, 68, 0.12));
+  color: var(--danger, #ef4444);
 }
 
 .button.danger:hover {
-  background: #3a1c1c;
+  background: var(--danger, #ef4444);
+  color: #ffffff;
+  border-color: var(--danger, #ef4444);
 }
 
 .listEditor {
@@ -786,20 +859,22 @@
 
 .statusTag {
   padding: 2px 8px;
-  border-radius: 999px;
+  border-radius: var(--radiusPill);
   font-size: 0.76em;
+  font-weight: 600;
   background: var(--surfaceAlt);
   color: var(--textDim);
 }
 
-.statusTag.on {
-  background: color-mix(in srgb, #46b980 22%, transparent);
-  color: #6fd3a2;
+.statusTag.on,
+.statusTag.active {
+  background: var(--successBg, rgba(16, 185, 129, 0.16));
+  color: var(--success, #10b981);
 }
 
 .statusTag.off {
-  background: color-mix(in srgb, #e05c55 18%, transparent);
-  color: #eb8880;
+  background: var(--dangerBg, rgba(239, 68, 68, 0.16));
+  color: var(--danger, #ef4444);
 }
 
 .extensionOptionRow {
@@ -894,26 +969,29 @@
 /* Site Information Popover */
 
 .siteInfoCard {
-  width: 360px;
+  width: 380px;
   max-width: 92vw;
   margin-left: 56px;
   margin-right: auto;
-  padding: 14px;
-  border: 1px solid var(--borderSoft);
-  border-radius: var(--radius);
-  animation: menuIn var(--anim) ease-out;
+  padding: 18px;
+  border: 1px solid var(--borderHighlight, var(--borderSoft));
+  border-radius: var(--radiusLarge);
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  backdrop-filter: blur(var(--blur));
+  box-shadow: var(--shadow);
+  animation: menuIn var(--anim) var(--easeOut);
 }
 
 .siteInfoHeader {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
+  gap: 14px;
+  margin-bottom: 12px;
 }
 
 .siteInfoBadge {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius);
   display: grid;
   place-items: center;
@@ -921,23 +999,23 @@
 }
 
 .siteInfoBadge.secure {
-  background: color-mix(in srgb, #46b980 16%, transparent);
-  color: #46b980;
+  background: var(--successBg, rgba(16, 185, 129, 0.16));
+  color: var(--success, #10b981);
 }
 
 .siteInfoBadge.internal {
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  background: var(--accentSubtle);
   color: var(--accent);
 }
 
 .siteInfoBadge.insecure {
-  background: color-mix(in srgb, #ef5350 16%, transparent);
-  color: #ef5350;
+  background: var(--dangerBg, rgba(239, 68, 68, 0.16));
+  color: var(--danger, #ef4444);
 }
 
 .siteInfoBadge svg {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 }
 
 .siteInfoTitleGroup {
@@ -946,21 +1024,23 @@
 }
 
 .siteInfoHost {
-  font-weight: 600;
-  font-size: 0.95em;
+  font-weight: 700;
+  font-size: 1.05em;
   color: var(--text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  letter-spacing: -0.01em;
 }
 
 .siteInfoStatus {
   font-size: 0.82em;
-  font-weight: 500;
+  font-weight: 600;
+  margin-top: 2px;
 }
 
 .siteInfoStatus.secure {
-  color: #46b980;
+  color: var(--success, #10b981);
 }
 
 .siteInfoStatus.internal {
@@ -968,29 +1048,29 @@
 }
 
 .siteInfoStatus.insecure {
-  color: #ef5350;
+  color: var(--danger, #ef4444);
 }
 
 .siteInfoDesc {
-  font-size: 0.84em;
+  font-size: 0.85em;
   color: var(--textDim);
-  line-height: 1.45;
-  margin: 0 0 10px;
+  line-height: 1.5;
+  margin: 0 0 14px;
 }
 
 .siteInfoProtectionRow {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 6px 0;
-  font-size: 0.85em;
+  gap: 12px;
+  padding: 8px 0;
+  font-size: 0.88em;
   color: var(--text);
 }
 
 .siteInfoProtectionIcon svg {
-  width: 15px;
-  height: 15px;
-  color: #46b980;
+  width: 16px;
+  height: 16px;
+  color: var(--success, #10b981);
 }
 
 .siteInfoProtectionText {
@@ -998,9 +1078,9 @@
 }
 
 .siteInfoActions {
-  margin-top: 10px;
+  margin-top: 14px;
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
 /* Shortcuts cheatsheet */
@@ -1019,10 +1099,10 @@
 .taskManagerSummary {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
-  padding: 12px 14px;
-  margin-bottom: 14px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
   background: var(--surfaceAlt);
   border: 1px solid var(--borderSoft);
   border-radius: var(--radius);
@@ -1031,44 +1111,45 @@
 .taskStat {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.85em;
+  gap: 8px;
+  font-size: 0.88em;
   color: var(--textDim);
 }
 
 .taskStat strong {
   color: var(--text);
-  font-weight: 650;
+  font-weight: 700;
 }
 
 .taskBadge {
-  font-size: 0.75em;
-  padding: 2px 7px;
-  border-radius: var(--radiusSmall);
+  font-size: 0.74em;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radiusPill);
   background: var(--surfaceHover);
   color: var(--textDim);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   flex: none;
 }
 
 .taskBadge.browser {
-  background: color-mix(in srgb, #4f7cff 22%, transparent);
-  color: #8bb2ff;
+  background: var(--accentSubtle);
+  color: var(--accent);
 }
 
 .taskBadge.gpu {
-  background: color-mix(in srgb, #9b51e0 22%, transparent);
-  color: #c792ea;
+  background: rgba(168, 85, 247, 0.16);
+  color: #c084fc;
 }
 
 .taskBadge.tab {
-  background: color-mix(in srgb, #27ae60 22%, transparent);
-  color: #6fcf97;
+  background: var(--successBg, rgba(16, 185, 129, 0.16));
+  color: var(--success, #10b981);
 }
 
 .taskBadge.sleeping {
-  background: color-mix(in srgb, #f2994a 22%, transparent);
-  color: #f2994a;
+  background: var(--warningBg, rgba(245, 158, 11, 0.16));
+  color: var(--warning, #f59e0b);
 }
 
 /* ----------------------------------------------------------- Menu Zoom Row */
@@ -1076,12 +1157,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 10px;
-  gap: 6px;
+  padding: 8px 12px;
+  gap: 8px;
 }
 
 .menuZoomLabel {
   font-size: 0.9em;
+  font-weight: 500;
   color: var(--text);
   display: flex;
   align-items: center;
@@ -1098,24 +1180,29 @@
   display: grid;
   place-items: center;
   width: 28px;
-  height: 26px;
+  height: 28px;
   border: 1px solid var(--borderSoft);
   border-radius: var(--radiusSmall);
   background: var(--surfaceAlt);
   color: var(--text);
-  font-size: 0.85em;
+  font-size: 0.88em;
   cursor: pointer;
-  transition: background var(--anim);
+  transition: background var(--anim) var(--easeOut), transform var(--anim) var(--easeOut);
 }
 
 .menuZoomBtn:hover {
   background: var(--surfaceHover);
 }
 
+.menuZoomBtn:active {
+  transform: scale(0.92);
+}
+
 .menuZoomPct {
-  min-width: 44px;
+  min-width: 48px;
   text-align: center;
-  font-size: 0.8em;
+  font-size: 0.82em;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: var(--textDim);
 }
@@ -1565,8 +1652,8 @@
 .omniChipsRow {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 8px 8px;
+  gap: 8px;
+  padding: 8px 10px 10px;
   overflow-x: auto;
   border-bottom: 1px solid var(--borderSoft);
   scrollbar-width: none;
@@ -1579,37 +1666,43 @@
 .omniChip {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 10px;
+  gap: 6px;
+  padding: 5px 12px;
   font-size: 12px;
   font-weight: 500;
-  border-radius: var(--radiusSmall, 6px);
-  background: var(--surfaceHover, rgba(255, 255, 255, 0.06));
+  border-radius: var(--radiusPill);
+  background: var(--surfaceAlt);
   border: 1px solid var(--borderSoft);
   color: var(--text);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut), color var(--anim) var(--easeOut), transform var(--anim) var(--easeOut);
   white-space: nowrap;
 }
 
 .omniChip:hover {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
+  background: var(--surfaceHover);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.omniChip:active {
+  transform: scale(0.95);
 }
 
 .omniChip.isSelected {
   background: var(--accent);
-  color: #fff;
+  color: var(--onAccent);
   border-color: var(--accent);
+  box-shadow: 0 2px 8px var(--accentSubtle);
 }
 
 .omniChipShortcut {
   font-size: 10px;
-  opacity: 0.75;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 1px 4px;
-  border-radius: 3px;
+  font-weight: 700;
+  opacity: 0.8;
+  background: color-mix(in srgb, var(--text) 12%, transparent);
+  padding: 1px 5px;
+  border-radius: 4px;
 }
 
 /* ------------------------------------------------ group color picker */
@@ -1892,19 +1985,20 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 24px 16px 20px;
+  padding: 28px 16px 22px;
 }
 
 .accountHeroIcon {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radiusLarge, 14px);
-  background: color-mix(in srgb, var(--accent) 15%, var(--surfaceAlt));
+  width: 58px;
+  height: 58px;
+  border-radius: var(--radiusLarge);
+  background: var(--accentSubtle);
   color: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 16px var(--accentSubtle);
 }
 
 .accountHeroIcon svg {
@@ -1914,8 +2008,9 @@
 
 .accountHero h2 {
   margin: 0 0 6px 0;
-  font-size: 1.3em;
-  font-weight: 600;
+  font-size: 1.35em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--text);
 }
 
@@ -1923,32 +2018,34 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 16px 18px;
+  padding: 16px 20px;
   background: var(--surfaceAlt);
   border: 1px solid var(--borderSoft);
-  border-radius: var(--radius, 10px);
-  margin-bottom: 16px;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+  margin-bottom: 18px;
 }
 
 .accountAvatar {
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: var(--accent);
-  color: var(--accentContrast, #fff);
+  background: linear-gradient(135deg, var(--accent), #7a5cff);
+  color: var(--onAccent, #fff);
   font-size: 18px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px var(--accentSubtle);
 }
 
 .accountAvatarLogo {
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 30%);
   flex-shrink: 0;
   object-fit: cover;
 }
@@ -1956,13 +2053,13 @@
 .accountProfileMeta {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   flex: 1;
   min-width: 0;
 }
 
 .accountProfileEmail {
-  font-size: 14.5px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text);
   overflow: hidden;
@@ -1979,23 +2076,23 @@
 
 .accountBadge {
   font-size: 11px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radiusPill);
   background: var(--surfaceHover);
   color: var(--textDim);
 }
 
 .accountBadge.active {
-  background: color-mix(in srgb, #22c55e 18%, var(--surfaceAlt));
-  color: #16a34a;
+  background: var(--successBg, rgba(16, 185, 129, 0.16));
+  color: var(--success, #10b981);
 }
 
 .accountPulseDot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #22c55e;
+  background: var(--success, #10b981);
   display: inline-block;
   margin-right: 4px;
 }
@@ -2011,18 +2108,23 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
+  padding: 12px 16px;
   background: var(--surface);
   border: 1px solid var(--borderSoft);
-  border-radius: var(--radius, 8px);
+  border-radius: var(--radius);
+  transition: border-color var(--anim) var(--easeOut);
+}
+
+.accountSyncItem:hover {
+  border-color: var(--border);
 }
 
 .accountSyncItemTitle {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   color: var(--text);
 }
 
@@ -2036,42 +2138,46 @@
   display: flex;
   gap: 4px;
   background: var(--surfaceAlt);
-  padding: 3px;
-  border-radius: var(--radius, 8px);
-  margin-bottom: 16px;
+  padding: 4px;
+  border-radius: var(--radiusPill);
+  margin-bottom: 18px;
   width: 100%;
 }
 
 .accountModeBtn {
   flex: 1;
-  padding: 7px 12px;
+  padding: 8px 14px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   background: none;
   border: none;
-  border-radius: calc(var(--radius, 8px) - 2px);
+  border-radius: var(--radiusPill);
   color: var(--textDim);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
+}
+
+.accountModeBtn:hover {
+  color: var(--text);
 }
 
 .accountModeBtn.active {
   background: var(--surface);
   color: var(--text);
-  box-shadow: var(--shadow);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 12%);
 }
 
 /* ------------------------------------------------------------- Avatar Customizer */
 .accountAvatarGrid {
   display: flex;
-  gap: 10px;
-  margin: 12px 0 16px;
+  gap: 12px;
+  margin: 14px 0 18px;
   flex-wrap: wrap;
 }
 
 .accountAvatarOption {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 2px solid var(--borderSoft);
   background: var(--surfaceAlt);
@@ -2079,17 +2185,17 @@
   place-items: center;
   font-size: 16px;
   cursor: pointer;
-  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: transform var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
 }
 
 .accountAvatarOption:hover {
-  transform: scale(1.08);
+  transform: scale(1.1);
   border-color: var(--accent);
 }
 
 .accountAvatarOption.selected {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+  box-shadow: 0 0 0 3px var(--accentSubtle);
 }
 
 .accountAvatarOption img {
@@ -2104,27 +2210,29 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  padding: 14px 18px;
   background: var(--surface);
   border: 1px solid var(--borderSoft);
-  border-radius: var(--radius, 8px);
+  border-radius: var(--radius);
   margin-bottom: 10px;
-  transition: border-color 0.15s ease;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 6%);
+  transition: border-color var(--anim) var(--easeOut), transform var(--anim) var(--easeOut);
 }
 
 .accountDeviceCard:hover {
-  border-color: var(--borderHover, var(--border));
+  border-color: var(--border);
+  transform: translateY(-1px);
 }
 
 .accountDeviceCard.accountDeviceCurrent {
   border-color: color-mix(in srgb, var(--accent) 50%, var(--borderSoft));
-  background: color-mix(in srgb, var(--accent) 5%, var(--surface));
+  background: var(--accentSubtle);
 }
 
 .accountDeviceMeta {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .accountDeviceName {
@@ -2143,21 +2251,21 @@
 
 /* ------------------------------------------------------------- Fast Pairing Card */
 .accountPairingCard {
-  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
-  border: 1px dashed var(--accent);
-  border-radius: var(--radius, 8px);
-  padding: 16px;
+  background: var(--accentSubtle);
+  border: 1.5px dashed var(--accent);
+  border-radius: var(--radius);
+  padding: 18px;
   text-align: center;
-  margin: 16px 0;
+  margin: 18px 0;
 }
 
 .accountPairingCode {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 800;
-  letter-spacing: 4px;
-  font-family: monospace;
+  letter-spacing: 5px;
+  font-family: var(--fontMono);
   color: var(--accent);
-  margin: 10px 0;
+  margin: 12px 0;
   user-select: all;
 }
 
@@ -2165,27 +2273,29 @@
 .accountStatsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 10px;
-  margin-bottom: 16px;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .accountStatBox {
-  padding: 12px;
+  padding: 14px;
   background: var(--surfaceAlt);
   border: 1px solid var(--borderSoft);
-  border-radius: var(--radiusSmall, 6px);
+  border-radius: var(--radiusSmall);
   text-align: center;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 6%);
 }
 
 .accountStatVal {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 800;
   color: var(--accent);
   margin-bottom: 2px;
 }
 
 .accountStatLabel {
   font-size: 11px;
+  font-weight: 500;
   color: var(--textDim);
 }
 

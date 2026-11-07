@@ -1,3 +1,7 @@
+/* ==========================================================================
+   Hinterland New Tab Stylesheet — Modern, Minimalist & Blazing Fast
+   ========================================================================== */
+
 html,
 body.start {
   height: 100%;
@@ -6,6 +10,7 @@ body.start {
   color: var(--text);
   font-family: var(--font);
   overflow: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 .backdrop {
@@ -14,7 +19,8 @@ body.start {
   background-size: cover;
   background-position: center;
   opacity: 0;
-  transition: opacity 400ms ease;
+  transition: opacity 350ms ease;
+  z-index: 0;
 }
 
 .backdrop.active {
@@ -23,83 +29,112 @@ body.start {
 
 .stage {
   position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 34px;
+  gap: 32px;
   height: 100%;
   padding: 40px 24px;
   box-sizing: border-box;
+  contain: layout;
 }
+
+/* --------------------------------------------------------------------- hero */
 
 .hero {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
   max-width: 620px;
 }
 
 .heroLogo {
-  width: 72px;
-  height: 72px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   display: block;
-  margin: 0 auto 4px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  margin: 0 auto 2px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 28%), 0 0 0 1px var(--borderSoft);
   user-select: none;
   -webkit-user-drag: none;
-  transition: transform 240ms cubic-bezier(0.2, 0, 0, 1);
+  transition: transform var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
 }
 
 .heroLogo:hover {
   transform: scale(1.06);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 38%), 0 0 16px var(--accentGlow);
 }
 
 .greeting {
   font-size: 1.05em;
+  font-weight: 500;
   color: var(--textDim);
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
+  animation: hlFadeIn 280ms var(--easeOut);
+}
+
+@keyframes hlFadeIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 4px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 .clock {
-  font-size: 4.2em;
-  font-weight: 250;
-  letter-spacing: -0.03em;
+  font-size: 4.4em;
+  font-weight: 200;
+  letter-spacing: -0.04em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  color: var(--text);
+  text-shadow: 0 2px 12px rgb(0 0 0 / 18%);
 }
 
 .clock span {
   display: block;
   margin-top: 6px;
-  font-size: 0.24em;
-  font-weight: 400;
-  letter-spacing: 0.08em;
+  font-size: 0.22em;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--textDim);
   text-align: center;
 }
 
+/* ---------------------------------------------------------------- search box */
+
 .searchBox {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
-  padding: 0 8px 0 16px;
+  height: 54px;
+  padding: 0 10px 0 18px;
   border: 1px solid var(--borderSoft);
-  border-radius: var(--radiusLarge);
-  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  border-radius: var(--radiusPill);
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
   box-shadow: var(--shadowSmall);
   backdrop-filter: blur(var(--blur));
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition: border-color var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut), background var(--anim) var(--easeOut);
+}
+
+.searchBox:hover {
+  border-color: var(--border);
+  background: var(--surface);
 }
 
 .searchBox:focus-within {
+  background: var(--surface);
   border-color: color-mix(in srgb, var(--accent) 70%, transparent);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+  box-shadow: var(--shadowFocus);
 }
 
 .searchIcon {
@@ -116,13 +151,18 @@ body.start {
 .searchInput {
   flex: 1;
   min-width: 0;
-  height: 52px;
+  height: 100%;
   border: 0;
   outline: none;
   background: transparent;
-  color: inherit;
-  font-size: 1em;
+  color: var(--text);
+  font-size: 1.02em;
   user-select: text;
+}
+
+.searchInput::placeholder {
+  color: var(--textDim);
+  opacity: 0.75;
 }
 
 .searchGo {
@@ -135,15 +175,18 @@ body.start {
   background: var(--accent);
   color: var(--onAccent);
   cursor: pointer;
-  transition: transform 140ms ease, filter 140ms ease;
+  flex: none;
+  box-shadow: 0 2px 8px var(--accentSubtle);
+  transition: transform var(--anim) var(--easeOut), filter var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
 }
 
 .searchGo:hover {
-  filter: brightness(1.08);
+  filter: brightness(1.1);
+  box-shadow: 0 4px 12px var(--accentGlow);
 }
 
 .searchGo:active {
-  transform: scale(0.94);
+  transform: scale(0.92);
 }
 
 .searchGo svg {
@@ -151,72 +194,82 @@ body.start {
   height: 16px;
 }
 
+/* --------------------------------------------------------------------- links */
+
 .links {
   display: grid;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
-  max-width: 760px;
+  max-width: 780px;
 }
 
 .links[data-layout="grid"] {
-  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
 }
 
 .links[data-layout="list"] {
   grid-template-columns: 1fr;
-  gap: 4px;
-  max-width: 560px;
+  gap: 6px;
+  max-width: 580px;
 }
 
 .link {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   padding: 14px 8px;
   border: 1px solid transparent;
   border-radius: var(--radius);
-  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  background: color-mix(in srgb, var(--surface) 65%, transparent);
   color: var(--text);
   text-decoration: none;
   cursor: pointer;
-  transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+  transition: background var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut), transform var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
   backdrop-filter: blur(var(--blur));
   overflow: hidden;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 10%);
 }
 
 .link:hover {
   background: var(--surface);
   border-color: var(--borderSoft);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: var(--shadowSmall);
+}
+
+.link:active {
+  transform: translateY(-1px) scale(0.98);
 }
 
 .links[data-layout="list"] .link {
   flex-direction: row;
   align-items: center;
-  gap: 12px;
-  padding: 9px 12px;
+  gap: 14px;
+  padding: 10px 14px;
 }
 
 .link:hover .linkIcon {
   background: var(--accent);
   color: var(--onAccent);
+  box-shadow: 0 4px 12px var(--accentGlow);
 }
 
 .linkIcon {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radiusSmall);
+  width: 44px;
+  height: 44px;
+  border-radius: calc(var(--radius) * 0.8);
   background: var(--surfaceAlt);
   color: var(--textDim);
-  font-weight: 600;
-  font-size: 1.05em;
+  font-weight: 700;
+  font-size: 1.1em;
   text-transform: uppercase;
   overflow: hidden;
   flex: none;
-  transition: background 140ms ease, color 140ms ease;
+  border: 1px solid var(--borderSoft);
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
 }
 
 .linkIcon img {
@@ -228,9 +281,11 @@ body.start {
 .linkLabel {
   max-width: 100%;
   font-size: 0.88em;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
 
 .links[data-layout="list"] .linkLabel {
@@ -238,9 +293,11 @@ body.start {
   flex: 1;
 }
 
+/* ---------------------------------------------------------------------- foot */
+
 .foot {
   position: absolute;
-  bottom: 20px;
+  bottom: 24px;
   left: 0;
   right: 0;
   display: flex;
@@ -252,28 +309,33 @@ body.start {
 }
 
 .foot button {
-  border: 0;
+  border: 1px solid transparent;
   background: transparent;
   color: inherit;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: var(--radiusSmall);
+  padding: 6px 12px;
+  border-radius: var(--radiusPill);
+  font-weight: 500;
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut);
 }
 
 .foot button:hover {
   background: var(--surfaceAlt);
+  border-color: var(--borderSoft);
   color: var(--text);
 }
 
-/* ---------------------------------------------------------------- editor */
+/* -------------------------------------------------------------------- editor */
 
 .editSheet {
   position: fixed;
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgb(0 0 0 / 45%);
+  background: rgb(0 0 0 / 55%);
+  backdrop-filter: blur(8px);
   z-index: 10;
+  animation: hlFadeIn 180ms var(--easeOut);
 }
 
 .editSheet[hidden] {
@@ -284,20 +346,34 @@ body.start {
   width: min(620px, calc(100vw - 40px));
   max-height: 80vh;
   overflow-y: auto;
-  padding: 20px;
-  border-radius: var(--radius);
+  padding: 24px;
+  border-radius: var(--radiusLarge);
   background: var(--surface);
   border: 1px solid var(--borderSoft);
   box-shadow: var(--shadow);
+  animation: hlCardScale 200ms var(--easeOut);
+}
+
+@keyframes hlCardScale {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
+  }
 }
 
 .editCard h2 {
   margin: 0 0 6px;
-  font-size: 1.1em;
+  font-size: 1.2em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .editHint {
-  margin: 0 0 16px;
+  margin: 0 0 18px;
   color: var(--textDim);
   font-size: 0.9em;
 }
@@ -305,7 +381,7 @@ body.start {
 .listEditor {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .listItem {
@@ -317,45 +393,61 @@ body.start {
 .listItem input {
   flex: 1;
   min-width: 0;
-  padding: 8px 10px;
+  padding: 8px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radiusSmall);
   background: var(--bg);
+  color: var(--text);
   outline: none;
+  font-size: 0.92em;
   user-select: text;
+  transition: border-color var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
 }
 
 .listItem input:focus {
   border-color: var(--accent);
+  box-shadow: var(--shadowFocus);
 }
 
 .button {
-  padding: 8px 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
   border: 1px solid var(--border);
   border-radius: var(--radiusSmall);
   background: var(--surfaceAlt);
   color: var(--text);
+  font-weight: 500;
   cursor: pointer;
-  transition: transform 140ms ease, background 140ms ease;
+  transition: transform var(--anim) var(--easeOut), background var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut);
 }
 
 .button:hover {
   background: var(--surfaceHover);
+  border-color: var(--border);
 }
 
 .button:active {
-  transform: translateY(1px);
+  transform: scale(0.96);
 }
 
 .button.primary {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--onAccent);
+  box-shadow: 0 2px 8px var(--accentSubtle);
+}
+
+.button.primary:hover {
+  background: var(--accentHover);
+  border-color: var(--accentHover);
+  box-shadow: 0 4px 14px var(--accentGlow);
 }
 
 .actionRow {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -370,7 +462,7 @@ body.start {
   color: var(--textDim);
   cursor: pointer;
   flex: none;
-  transition: transform 140ms ease, background 140ms ease;
+  transition: transform var(--anim) var(--easeOut), background var(--anim) var(--easeOut), color var(--anim) var(--easeOut);
 }
 
 .iconButton:hover {

@@ -29,9 +29,9 @@ export function applyTheme() {
   root.dataset.theme = theme;
 
   const prefix = theme === 'light' ? 'light' : 'dark';
-  const background = safeColor(get(`appearance.${prefix}Background`), theme === 'light' ? '#f2f3f7' : '#12141a');
-  const surface = safeColor(get(`appearance.${prefix}Surface`), theme === 'light' ? '#ffffff' : '#1a1d26');
-  const text = safeColor(get(`appearance.${prefix}Text`), theme === 'light' ? '#161923' : '#e6e9f2');
+  const background = safeColor(get(`appearance.${prefix}Background`), theme === 'light' ? '#f8fafc' : '#0d1017');
+  const surface = safeColor(get(`appearance.${prefix}Surface`), theme === 'light' ? '#ffffff' : '#151922');
+  const text = safeColor(get(`appearance.${prefix}Text`), theme === 'light' ? '#0f172a' : '#f1f5f9');
 
   setVar('--accent', safeColor(get('appearance.accent'), '#4f7cff'));
   setVar('--onAccent', safeColor(get('appearance.accentContrast'), '#ffffff'));

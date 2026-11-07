@@ -1,0 +1,132 @@
+/* ==========================================================================
+   Hinterland Base Stylesheet — Core Resets, Typography & Performance Layer
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  font-family: var(--font);
+  font-size: var(--fontSize);
+  color: var(--text);
+  line-height: 1.5;
+  user-select: none;
+  cursor: default;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 32%, transparent);
+  color: inherit;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--textDim);
+  opacity: 0.75;
+}
+
+img,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--anim) var(--easeOut);
+}
+
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--fontMono);
+  font-size: 0.9em;
+}
+
+kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 20px;
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--textDim);
+  background: var(--surfaceAlt);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusSmall);
+  box-shadow: 0 1px 0 var(--borderSoft);
+}
+
+/* -------------------------------------------------------- Micro-interactions */
+
+button:active:not(:disabled),
+.button:active:not(:disabled),
+.iconButton:active:not(:disabled),
+[role="button"]:active:not([aria-disabled="true"]) {
+  transform: scale(0.95);
+  transition-duration: 60ms;
+}
+
+/* -------------------------------------------------------- Skeleton Loader */
+
+@keyframes hlSkeletonPulse {
+  0% { opacity: 0.45; }
+  50% { opacity: 0.85; }
+  100% { opacity: 0.45; }
+}
+
+.skeleton {
+  background: color-mix(in srgb, var(--text) 10%, transparent);
+  border-radius: var(--radiusSmall);
+  animation: hlSkeletonPulse 1.6s ease-in-out infinite;
+}
+
+/* -------------------------------------------------------- Hardware Layers */
+
+.gpu {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

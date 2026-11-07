@@ -56,12 +56,12 @@ function applyTheme() {
   const root = document.documentElement.style;
   root.setProperty('--accent', value('appearance.accent', '#4f7cff'));
   root.setProperty('--onAccent', value('appearance.accentContrast', '#ffffff'));
-  root.setProperty('--bg', value(`appearance.${prefix}Background`, '#12141a'));
-  root.setProperty('--surface', value(`appearance.${prefix}Surface`, '#1a1d26'));
-  root.setProperty('--text', value(`appearance.${prefix}Text`, '#e6e9f2'));
-  root.setProperty('--textDim', dark ? '#9aa2b5' : '#5d6577');
-  root.setProperty('--border', value(`appearance.${prefix}Surface`, '#1a1d26'));
-  root.setProperty('--borderSoft', value(`appearance.${prefix}Background`, '#12141a'));
+  root.setProperty('--bg', value(`appearance.${prefix}Background`, dark ? '#0d1017' : '#f8fafc'));
+  root.setProperty('--surface', value(`appearance.${prefix}Surface`, dark ? '#151922' : '#ffffff'));
+  root.setProperty('--text', value(`appearance.${prefix}Text`, dark ? '#f1f5f9' : '#0f172a'));
+  root.setProperty('--textDim', dark ? '#94a3b8' : '#64748b');
+  root.setProperty('--border', dark ? '#283044' : '#cbd5e1');
+  root.setProperty('--borderSoft', dark ? '#1c2232' : '#e2e8f0');
   root.setProperty('--radius', `${Number(value('appearance.radius', 10))}px`);
   root.setProperty('--fontSize', `${Number(value('appearance.fontSize', 14))}px`);
   root.setProperty('--blur', `${Number(value('appearance.blur', 18))}px`);

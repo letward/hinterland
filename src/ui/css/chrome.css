@@ -1,3 +1,9 @@
+/* ==========================================================================
+   Hinterland Chrome Stylesheet — Modern, High-Performance Browser Shell
+   ========================================================================== */
+
+/* ------------------------------------------------------------------- shell */
+
 .shell {
   position: relative;
   display: flex;
@@ -6,6 +12,7 @@
   overflow: hidden;
   background: var(--bg);
   border-bottom: 1px solid var(--borderSoft);
+  contain: layout style;
 }
 
 .titlebarGrip {
@@ -19,62 +26,72 @@ html[data-compact="true"] .windowButtons {
   display: none;
 }
 
+/* ---------------------------------------------------------- window buttons */
+
 .windowButtons {
   position: relative;
   display: flex;
-  gap: 2px;
-  padding-right: 4px;
-  z-index: 1;
+  align-items: center;
+  gap: 0;
+  padding-right: 2px;
+  z-index: 2;
   flex: none;
+  -webkit-app-region: no-drag;
 }
 
 .windowButton {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 26px;
+  width: 44px;
+  height: var(--titlebarHeight, 34px);
   padding: 0;
   border: 0;
-  border-radius: var(--radiusSmall);
+  border-radius: 0;
   background: transparent;
   color: var(--textDim);
   cursor: pointer;
-  transition: background var(--anim), color var(--anim), transform var(--anim);
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut);
   z-index: 2;
   position: relative;
   -webkit-app-region: no-drag;
 }
 
 .windowButton svg {
-  width: 12px;
-  height: 12px;
-  stroke-width: 1.3;
+  width: 10px;
+  height: 10px;
+  stroke-width: 1.2;
 }
 
 .windowButton:hover {
-  background: var(--surfaceHover);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
   color: var(--text);
 }
 
 .windowButton:active {
-  transform: scale(0.92);
+  background: color-mix(in srgb, var(--text) 14%, transparent);
 }
 
 .windowButtonDanger:hover {
-  background: #d8403a;
-  color: #fff;
+  background: #e81123 !important;
+  color: #ffffff !important;
 }
 
-/* ------------------------------------------------------------------ tab strip */
+.windowButtonDanger:active {
+  background: #c4101f !important;
+  color: #ffffff !important;
+}
+
+/* ------------------------------------------------------------------ tabstrip */
 
 .tabstrip {
   position: relative;
   display: flex;
   align-items: flex-end;
   gap: 4px;
-  padding: 4px 6px 0;
+  padding: 6px 8px 0;
   background: var(--bg);
-  min-height: calc(var(--tabHeight) + 4px);
+  min-height: calc(var(--tabHeight) + 6px);
+  contain: layout;
 }
 
 html[data-tabbar="hidden"] .tabstrip {
@@ -83,8 +100,8 @@ html[data-tabbar="hidden"] .tabstrip {
 
 html[data-tabbar="hidden"] .windowButtons {
   position: fixed;
-  top: 6px;
-  right: 6px;
+  top: 4px;
+  right: 4px;
 }
 
 html[data-tabbar="bottom"] .shell {
@@ -93,7 +110,7 @@ html[data-tabbar="bottom"] .shell {
 
 html[data-tabbar="bottom"] .tabstrip {
   align-items: flex-start;
-  padding: 0 6px 4px;
+  padding: 0 8px 6px;
   border-top: 1px solid var(--borderSoft);
 }
 
@@ -113,31 +130,35 @@ html[data-tabbar="bottom"] .tabstrip {
 
 .tabs::-webkit-scrollbar {
   height: 0;
+  display: none;
 }
+
+/* --------------------------------------------------------------------- tab */
 
 .tab {
   position: relative;
   z-index: 1;
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   flex: 1 1 var(--tabWidth, 210px);
-  min-width: var(--tabWidthMin, 62px);
-  max-width: var(--tabWidth, 210px);
+  min-width: var(--tabWidthMin, 68px);
+  max-width: var(--tabWidth, 220px);
   height: var(--tabHeight);
   padding: 0 8px 0 10px;
   border: 1px solid transparent;
   border-bottom: 0;
-  border-radius: var(--radius) var(--radius) 0 0;
+  border-radius: calc(var(--radius) * 0.9) calc(var(--radius) * 0.9) 0 0;
   color: var(--textDim);
   cursor: pointer;
   overflow: hidden;
-  transition: background var(--anim), color var(--anim), flex var(--anim);
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut);
   -webkit-app-region: no-drag;
+  contain: layout style;
 }
 
 .tab:hover {
-  background: var(--surfaceAlt);
+  background: color-mix(in srgb, var(--surfaceAlt) 75%, transparent);
   color: var(--text);
 }
 
@@ -145,6 +166,19 @@ html[data-tabbar="bottom"] .tabstrip {
   background: var(--surface);
   border-color: var(--borderSoft);
   color: var(--text);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 14%);
+  z-index: 2;
+}
+
+.tabActive::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px 2px 0 0;
 }
 
 .tabPrivate::after {
@@ -152,18 +186,23 @@ html[data-tabbar="bottom"] .tabstrip {
   position: absolute;
   inset: auto 0 0 0;
   height: 2px;
-  background: var(--accent);
-  opacity: 0.75;
+  background: linear-gradient(90deg, var(--accent), #9333ea);
+  opacity: 0.85;
 }
 
 .tabPinned {
   flex: 0 0 auto;
   max-width: 190px;
   min-width: 0;
+  padding: 0 10px;
 }
 
 .tabSleeping {
-  opacity: 0.72;
+  opacity: 0.68;
+}
+
+.tabSleeping:hover {
+  opacity: 0.9;
 }
 
 .tabSleeping .tabTitle {
@@ -175,8 +214,8 @@ html[data-tabbar="bottom"] .tabstrip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   flex: none;
   color: var(--textDim);
 }
@@ -187,18 +226,20 @@ html[data-tabbar="bottom"] .tabstrip {
 }
 
 .tabDragging {
-  opacity: 0.45;
+  opacity: 0.4;
+  transform: scale(0.98);
 }
 
 .tabDropBefore::before,
 .tabDropAfter::after {
   content: "";
   position: absolute;
-  top: 20%;
-  bottom: 12%;
-  width: 2px;
+  top: 15%;
+  bottom: 10%;
+  width: 2.5px;
   border-radius: 2px;
   background: var(--accent);
+  box-shadow: 0 0 8px var(--accentGlow);
 }
 
 .tabDropBefore::before {
@@ -227,17 +268,19 @@ html[data-tabbar="bottom"] .tabstrip {
 }
 
 .tabFaviconFallback svg {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
 }
 
 .tabTitle {
   flex: 1;
   min-width: 0;
-  font-size: 0.94em;
+  font-size: 0.92em;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
 
 .tabSound {
@@ -253,7 +296,7 @@ html[data-tabbar="bottom"] .tabstrip {
   border-radius: var(--radiusSmall);
   background: transparent;
   cursor: pointer;
-  transition: background var(--anim), color var(--anim);
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut);
   -webkit-app-region: no-drag;
 }
 
@@ -282,14 +325,14 @@ html[data-tabbar="bottom"] .tabstrip {
   cursor: pointer;
   opacity: 0;
   flex: none;
-  transition: background var(--anim), opacity var(--anim);
+  transition: background var(--anim) var(--easeOut), opacity var(--anim) var(--easeOut), transform var(--anim) var(--easeOut);
   -webkit-app-region: no-drag;
 }
 
 .tabClose svg {
-  width: 11px;
-  height: 11px;
-  stroke-width: 1.9;
+  width: 10px;
+  height: 10px;
+  stroke-width: 2;
 }
 
 .tab:hover .tabClose {
@@ -297,8 +340,9 @@ html[data-tabbar="bottom"] .tabstrip {
 }
 
 .tabClose:hover {
-  background: var(--surfaceHover);
+  background: color-mix(in srgb, var(--text) 14%, transparent);
   opacity: 1;
+  transform: scale(1.08);
 }
 
 .tabActive .tabClose,
@@ -322,16 +366,17 @@ html[data-closeButton="always"] .tabClose {
   position: absolute;
   inset: 0;
   width: 40%;
-  background: var(--accent);
-  animation: slide 1.1s linear infinite;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: hlTabSlide 1.1s linear infinite;
+  will-change: transform;
 }
 
-@keyframes slide {
+@keyframes hlTabSlide {
   from {
-    transform: translateX(-100%);
+    transform: translate3d(-100%, 0, 0);
   }
   to {
-    transform: translateX(350%);
+    transform: translate3d(350%, 0, 0);
   }
 }
 
@@ -340,9 +385,9 @@ html[data-closeButton="always"] .tabClose {
   z-index: 2;
   display: grid;
   place-items: center;
-  width: 30px;
-  height: var(--tabHeight);
-  margin-bottom: 0;
+  width: 32px;
+  height: 32px;
+  margin-bottom: 3px;
   padding: 0;
   border: 0;
   border-radius: var(--radiusSmall);
@@ -350,12 +395,12 @@ html[data-closeButton="always"] .tabClose {
   color: var(--textDim);
   cursor: pointer;
   flex: none;
-  transition: background var(--anim), color var(--anim), transform var(--anim);
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut), transform var(--anim) var(--easeOut);
   -webkit-app-region: no-drag;
 }
 
 .tabAction:hover {
-  background: var(--surfaceHover);
+  background: color-mix(in srgb, var(--surfaceHover) 80%, transparent);
   color: var(--text);
 }
 
@@ -363,7 +408,7 @@ html[data-closeButton="always"] .tabClose {
   transform: scale(0.92);
 }
 
-/* ------------------------------------------------------------------- tab groups */
+/* ----------------------------------------------------------------- tab groups */
 
 .groupHeader {
   position: relative;
@@ -371,10 +416,19 @@ html[data-closeButton="always"] .tabClose {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 2px 8px 0;
-  height: var(--tabHeight);
-  background: var(--bg);
+  padding: 0 10px;
+  height: calc(var(--tabHeight) - 6px);
+  margin-bottom: 3px;
+  background: color-mix(in srgb, var(--surfaceAlt) 60%, transparent);
+  border: 1px solid var(--borderSoft);
+  border-radius: var(--radiusPill);
   -webkit-app-region: no-drag;
+  transition: background var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut);
+}
+
+.groupHeader:hover {
+  background: var(--surfaceAlt);
+  border-color: var(--border);
 }
 
 .groupHeader.groupCollapsed {
@@ -386,6 +440,7 @@ html[data-closeButton="always"] .tabClose {
   height: 8px;
   border-radius: 50%;
   flex: none;
+  box-shadow: 0 0 6px currentColor;
 }
 
 .groupHeader .groupToggle {
@@ -413,7 +468,7 @@ html[data-closeButton="always"] .tabClose {
 }
 
 .groupTitle {
-  font-size: 0.86em;
+  font-size: 0.82em;
   font-weight: 600;
   color: var(--textDim);
   flex: 1;
@@ -421,10 +476,15 @@ html[data-closeButton="always"] .tabClose {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: 0.02em;
 }
 
 .groupCount {
   font-size: 0.72em;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--radiusPill);
+  background: color-mix(in srgb, var(--text) 10%, transparent);
   color: var(--textDim);
   flex: none;
 }
@@ -432,8 +492,8 @@ html[data-closeButton="always"] .tabClose {
 .groupClose {
   display: grid;
   place-items: center;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -442,25 +502,26 @@ html[data-closeButton="always"] .tabClose {
   cursor: pointer;
   flex: none;
   opacity: 0;
+  transition: opacity var(--anim) var(--easeOut), background var(--anim) var(--easeOut);
 }
 
 .groupHeader:hover .groupClose {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .groupClose:hover {
-  background: var(--surfaceHover);
+  background: color-mix(in srgb, var(--text) 14%, transparent);
   color: var(--text);
+  opacity: 1;
 }
 
 .groupClose svg {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
 }
 
 .tab.groupTab {
   border-left: 3px solid transparent;
-  margin-left: -3px;
 }
 
 .tab.groupTab:hover {
@@ -477,16 +538,17 @@ html[data-closeButton="always"] .tabClose {
 }
 
 .groupTitleInput {
-  font-size: 0.86em;
+  font-size: 0.84em;
   font-weight: 600;
   color: var(--text);
   background: var(--surface);
   border: 1px solid var(--accent, #4f7cff);
   border-radius: var(--radiusSmall);
-  padding: 0 4px;
-  height: 20px;
+  padding: 0 6px;
+  height: 22px;
   flex: 1;
   min-width: 0;
+  outline: none;
 }
 
 /* --------------------------------------------------------------------- toolbar */
@@ -497,8 +559,10 @@ html[data-closeButton="always"] .tabClose {
   gap: var(--gap);
   height: var(--toolbarHeight);
   min-height: var(--toolbarHeight);
-  padding: 0 8px;
+  padding: 0 10px;
   background: var(--surface);
+  border-bottom: 1px solid var(--borderSoft);
+  contain: layout;
 }
 
 .navGroup,
@@ -512,15 +576,15 @@ html[data-closeButton="always"] .tabClose {
 .iconButton {
   display: grid;
   place-items: center;
-  width: var(--row);
-  height: var(--row);
+  width: calc(var(--row) - 2px);
+  height: calc(var(--row) - 2px);
   padding: 0;
   border: 0;
   border-radius: var(--radiusSmall);
   background: transparent;
   color: var(--textDim);
   cursor: pointer;
-  transition: background var(--anim), color var(--anim), opacity var(--anim), transform var(--anim);
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut), opacity var(--anim) var(--easeOut), transform var(--anim) var(--easeOut);
 }
 
 .iconButton:hover:not(:disabled) {
@@ -529,7 +593,7 @@ html[data-closeButton="always"] .tabClose {
 }
 
 .iconButton:active:not(:disabled) {
-  transform: scale(0.93);
+  transform: scale(0.92);
 }
 
 .iconButton:disabled {
@@ -538,50 +602,59 @@ html[data-closeButton="always"] .tabClose {
 }
 
 .iconButton.active {
-  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  background: var(--accentSubtle);
   color: var(--accent);
 }
 
 .iconButton.small {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
 }
 
-/* Account toolbar profile button & sync indicator */
+.iconButton.small svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ------------------------------------------------------------- account profile */
+
 .accountButton {
   position: relative;
 }
 
 .accountButton .accountToolbarAvatar {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   object-fit: cover;
   display: block;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 24%);
 }
 
 .accountButton .accountToolbarInitials {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent), #7a5cff);
   color: var(--onAccent, #fff);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   display: grid;
   place-items: center;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
 }
 
 .accountButton .accountSyncDot {
   position: absolute;
   bottom: 2px;
   right: 2px;
-  width: 7px;
-  height: 7px;
+  width: 7.5px;
+  height: 7.5px;
   border-radius: 50%;
   background: #10b981;
-  border: 1.5px solid var(--surface, #12141a);
+  border: 1.5px solid var(--surface, #151922);
   transition: background-color 0.2s ease, transform 0.2s ease;
   pointer-events: none;
 }
@@ -596,16 +669,17 @@ html[data-closeButton="always"] .tabClose {
 }
 
 @keyframes accountSyncPulse {
-  from { transform: scale(0.8); opacity: 0.5; }
-  to { transform: scale(1.3); opacity: 1; }
+  from {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(1.25);
+    opacity: 1;
+  }
 }
 
-.iconButton.small svg {
-  width: 15px;
-  height: 15px;
-}
-
-/* ------------------------------------------------------------------- extension toolbar */
+/* ----------------------------------------------------------- extension toolbar */
 
 .extensionToolbar {
   display: flex;
@@ -618,8 +692,8 @@ html[data-closeButton="always"] .tabClose {
 .extensionButton {
   display: grid;
   place-items: center;
-  width: var(--row);
-  height: var(--row);
+  width: calc(var(--row) - 2px);
+  height: calc(var(--row) - 2px);
   padding: 0;
   border: 0;
   border-radius: var(--radiusSmall);
@@ -628,7 +702,7 @@ html[data-closeButton="always"] .tabClose {
   cursor: pointer;
   position: relative;
   z-index: 2;
-  transition: background var(--anim), color var(--anim);
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut), transform var(--anim) var(--easeOut);
 }
 
 .extensionButton:hover {
@@ -643,8 +717,8 @@ html[data-closeButton="always"] .tabClose {
 }
 
 .extensionButton svg {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
 }
 
 .extensionButton:disabled {
@@ -654,20 +728,21 @@ html[data-closeButton="always"] .tabClose {
 
 .extensionBadge {
   position: absolute;
-  top: 2px;
-  right: 2px;
+  top: 1px;
+  right: 1px;
   min-width: 14px;
   height: 14px;
   padding: 0 4px;
-  border-radius: 7px;
+  border-radius: var(--radiusPill);
   background: var(--accent);
   color: #fff;
   font-size: 0.65em;
-  font-weight: 600;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
 }
 
 /* ---------------------------------------------------------------------- omnibox */
@@ -679,22 +754,23 @@ html[data-closeButton="always"] .tabClose {
   gap: 7px;
   flex: 1;
   min-width: 0;
-  height: calc(var(--toolbarHeight) - 14px);
-  padding: 0 6px 0 10px;
-  border: 1px solid transparent;
-  border-radius: var(--radiusLarge);
+  height: calc(var(--toolbarHeight) - 12px);
+  padding: 0 8px 0 10px;
+  border: 1px solid var(--borderSoft);
+  border-radius: var(--radiusPill);
   background: var(--surfaceAlt);
-  transition: background var(--anim), border-color var(--anim), box-shadow var(--anim);
+  transition: background var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
 }
 
 .omni:hover {
   background: var(--surfaceHover);
+  border-color: var(--border);
 }
 
 .omni:focus-within {
   background: var(--bg);
-  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+  box-shadow: var(--shadowFocus);
 }
 
 .omniIcon,
@@ -709,11 +785,12 @@ html[data-closeButton="always"] .tabClose {
   cursor: pointer;
   padding: 3px 5px;
   border-radius: var(--radiusSmall);
-  transition: background var(--anim);
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut);
 }
 
 .omniIcon:hover {
-  background: var(--surfaceHover);
+  background: color-mix(in srgb, var(--text) 10%, transparent);
+  color: var(--text);
 }
 
 .omniIcon svg,
@@ -723,7 +800,7 @@ html[data-closeButton="always"] .tabClose {
 }
 
 .omniIcon.secure {
-  color: #46b980;
+  color: #10b981;
 }
 
 .omniInput {
@@ -733,34 +810,37 @@ html[data-closeButton="always"] .tabClose {
   border: 0;
   outline: none;
   background: transparent;
+  color: var(--text);
+  font-size: 0.94em;
   user-select: text;
   text-overflow: ellipsis;
 }
 
 .omniInput::placeholder {
   color: var(--textDim);
+  opacity: 0.75;
 }
 
 .omniZoom {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 20px;
-  padding: 0 6px;
+  height: 22px;
+  padding: 0 7px;
   border: 0;
-  border-radius: var(--radiusSmall);
-  background: var(--surfaceHover);
+  border-radius: var(--radiusPill);
+  background: color-mix(in srgb, var(--text) 10%, transparent);
   color: var(--text);
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1;
   cursor: pointer;
   flex: none;
-  transition: background var(--anim), color var(--anim);
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut);
 }
 
 .omniZoom:hover {
-  background: var(--surfaceAlt);
+  background: var(--surfaceHover);
   color: var(--accent);
 }
 
@@ -774,8 +854,8 @@ html[data-closeButton="always"] .tabClose {
 .omniStar {
   display: grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -783,28 +863,32 @@ html[data-closeButton="always"] .tabClose {
   color: var(--textDim);
   cursor: pointer;
   flex: none;
-  transition: background var(--anim), color var(--anim);
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut), transform var(--anim) var(--easeOut);
 }
 
 .omniReader svg,
 .omniQr svg,
 .omniClear svg,
 .omniStar svg {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
 }
 
 .omniReader:hover,
 .omniQr:hover,
 .omniClear:hover,
 .omniStar:hover {
-  background: var(--surfaceHover);
+  background: color-mix(in srgb, var(--text) 10%, transparent);
   color: var(--text);
 }
 
 .omniReader.active,
 .omniStar.on {
   color: var(--accent);
+}
+
+.omniStar.on svg {
+  fill: currentColor;
 }
 
 .omniReader[hidden],
@@ -816,15 +900,16 @@ html[data-closeButton="always"] .tabClose {
 
 .omniProgress {
   position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 3px;
+  left: 14px;
+  right: 14px;
+  bottom: 2px;
   height: 2px;
   border-radius: 2px;
   overflow: hidden;
   background: color-mix(in srgb, var(--text) 10%, transparent);
   opacity: 0;
-  transition: opacity var(--anim);
+  transition: opacity var(--anim) var(--easeOut);
+  pointer-events: none;
 }
 
 .omniProgress.active {
@@ -836,8 +921,18 @@ html[data-closeButton="always"] .tabClose {
   position: absolute;
   inset: 0;
   width: 35%;
-  background: var(--accent);
-  animation: slide 1.1s linear infinite;
+  background: linear-gradient(90deg, transparent, var(--accent), #7a5cff);
+  animation: hlOmniSlide 1.1s linear infinite;
+  will-change: transform;
+}
+
+@keyframes hlOmniSlide {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    transform: translate3d(350%, 0, 0);
+  }
 }
 
 /* --------------------------------------------------------------------- find bar */
@@ -845,35 +940,52 @@ html[data-closeButton="always"] .tabClose {
 .findBar {
   display: flex;
   align-items: center;
-  gap: 6px;
-  height: 40px;
-  padding: 0 8px 0 12px;
+  gap: 8px;
+  height: 42px;
+  padding: 0 12px;
   background: var(--surface);
   border-top: 1px solid var(--borderSoft);
+  animation: hlBarIn var(--anim) var(--easeOut);
 }
 
 .findBar[hidden] {
   display: none;
 }
 
+@keyframes hlBarIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 .findInput {
   flex: 1;
   min-width: 0;
-  height: 28px;
+  height: 30px;
   padding: 0 10px;
   border: 1px solid var(--border);
   border-radius: var(--radiusSmall);
   background: var(--bg);
+  color: var(--text);
   outline: none;
+  font-size: 0.92em;
   user-select: text;
+  transition: border-color var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
 }
 
 .findInput:focus {
   border-color: var(--accent);
+  box-shadow: var(--shadowFocus);
 }
 
 .findCount {
   font-size: 0.86em;
+  font-weight: 500;
   color: var(--textDim);
   font-variant-numeric: tabular-nums;
   min-width: 48px;
@@ -917,10 +1029,12 @@ html[data-closeButton="always"] .tabClose {
 .downloadShelf {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
+  gap: 12px;
+  padding: 8px 14px;
   background: var(--surface);
   border-top: 1px solid var(--borderSoft);
+  box-shadow: 0 -4px 16px rgb(0 0 0 / 12%);
+  animation: hlBarIn var(--anim) var(--easeOut);
 }
 
 .downloadShelf[hidden] {
@@ -930,10 +1044,10 @@ html[data-closeButton="always"] .tabClose {
 .downloadIcon {
   display: grid;
   place-items: center;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: var(--radiusSmall);
-  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  background: var(--accentSubtle);
   color: var(--accent);
   flex: none;
 }
@@ -945,6 +1059,7 @@ html[data-closeButton="always"] .tabClose {
 
 .downloadName {
   font-size: 0.92em;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -956,16 +1071,17 @@ html[data-closeButton="always"] .tabClose {
 }
 
 .downloadBar {
-  height: 3px;
-  margin-top: 5px;
-  border-radius: 3px;
+  height: 4px;
+  margin-top: 6px;
+  border-radius: 4px;
   background: var(--surfaceAlt);
   overflow: hidden;
 }
 
 .downloadBarFill {
   height: 100%;
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--accent), #7a5cff);
+  border-radius: 4px;
   transition: width 160ms linear;
 }
 
@@ -975,10 +1091,10 @@ html[data-closeButton="always"] .tabClose {
   display: flex;
   align-items: center;
   gap: 3px;
-  padding: 2px 8px;
+  padding: 3px 10px;
   background: var(--bg);
   border-bottom: 1px solid var(--borderSoft);
-  min-height: 28px;
+  min-height: 30px;
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
@@ -990,31 +1106,34 @@ html[data-closeButton="always"] .tabClose {
 
 .bookmarksBar::-webkit-scrollbar {
   height: 0;
+  display: none;
 }
 
 .bookmarkBarItem {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 22px;
-  padding: 0 7px;
+  height: 24px;
+  padding: 0 8px;
   border: 1px solid transparent;
   border-radius: var(--radiusSmall);
   background: transparent;
   color: var(--textDim);
   font-size: 11.5px;
+  font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
-  max-width: 170px;
+  max-width: 175px;
   overflow: hidden;
   text-overflow: ellipsis;
   flex: none;
-  transition: background var(--anim), color var(--anim);
+  transition: background var(--anim) var(--easeOut), color var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut);
 }
 
 .bookmarkBarItem:hover {
   background: var(--surfaceHover);
   color: var(--text);
+  border-color: var(--borderSoft);
 }
 
 .bookmarkBarItem svg {
@@ -1033,18 +1152,19 @@ html[data-closeButton="always"] .tabClose {
 .bookmarkBarEmpty {
   font-size: 11px;
   color: var(--textDim);
-  padding: 2px 6px;
+  padding: 2px 8px;
   font-style: italic;
   opacity: 0.75;
 }
 
 /* ----------------------------------------------------------------- Media & Sound */
+
 #mediaButton.hasAudible {
   color: var(--accent);
 }
 
 .tabSound.isMuted {
-  color: var(--danger, #ff4f4f);
+  color: var(--danger, #ef4444);
   opacity: 0.85;
 }
 
@@ -1052,12 +1172,21 @@ html[data-closeButton="always"] .tabClose {
   color: var(--accent);
 }
 
-@keyframes tabAudioPulse {
-  0% { transform: scale(1); opacity: 0.85; }
-  50% { transform: scale(1.18); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.85; }
+@keyframes hlTabAudioPulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.85;
+  }
 }
 
 .tabSound.isPlaying svg {
-  animation: tabAudioPulse 1.8s ease-in-out infinite;
+  animation: hlTabAudioPulse 1.8s ease-in-out infinite;
 }
