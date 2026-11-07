@@ -40,9 +40,51 @@
     "asarUnpack": [
       "src/extensions/**/*"
     ],
+    "protocols": [
+      {
+        "name": "Hinterland Web URL",
+        "schemes": [
+          "http",
+          "https",
+          "hinterland"
+        ]
+      }
+    ],
+    "fileAssociations": [
+      {
+        "ext": "html",
+        "name": "HTML Document",
+        "description": "HTML Document",
+        "icon": "build/icons/icon.ico",
+        "role": "Viewer"
+      },
+      {
+        "ext": "htm",
+        "name": "HTML Document",
+        "description": "HTML Document",
+        "icon": "build/icons/icon.ico",
+        "role": "Viewer"
+      }
+    ],
     "win": {
       "target": "nsis",
       "icon": "build/icons/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "Hinterland",
+      "uninstallDisplayName": "Hinterland Browser",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true,
+      "installerIcon": "build/icons/icon.ico",
+      "uninstallerIcon": "build/icons/icon.ico",
+      "installerHeaderIcon": "build/icons/icon.ico",
+      "include": "build/installer.nsh"
     }
   }
 }

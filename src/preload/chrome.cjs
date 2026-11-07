@@ -43,6 +43,8 @@ const api = {
     copyImage: (dataUrl) => ipcRenderer.invoke('app:copyImage', dataUrl),
     metrics: () => ipcRenderer.invoke('app:metrics'),
     killProcess: (pid) => ipcRenderer.invoke('app:killProcess', pid),
+    isDefaultBrowser: () => ipcRenderer.invoke('app:isDefaultBrowser'),
+    setDefaultBrowser: () => ipcRenderer.invoke('app:setDefaultBrowser'),
   },
 
   settings: {

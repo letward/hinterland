@@ -450,7 +450,22 @@
     "recentlyClosedCleared": "Kürzlich geschlossene Tabs geleert",
     "notesExportedAll": "Alle Notizen erfolgreich exportiert",
     "notesImported": "Notizen erfolgreich importiert",
-    "noteCreatedFromTab": "Notiz aus aktivem Tab erstellt"
+    "noteCreatedFromTab": "Notiz aus aktivem Tab erstellt",
+    "defaultBrowserSet": "Hinterland als Standardbrowser registriert"
+  },
+  "welcome": {
+    "title": "Willkommen bei Hinterland",
+    "subtitle": "Dein schneller, privater und frei anpassbarer Browser ist startklar.",
+    "featPrivacyTitle": "Privatsphäre standardmäßig",
+    "featPrivacyDesc": "Tracker-Blocker & HTTPS-First sind sofort standardmäßig aktiv.",
+    "featSpeedTitle": "Schnell & fokussiert",
+    "featSpeedDesc": "Ablenkungsfreier Lesemodus, Tab-Stashes und integrierter Notizen-Tresor.",
+    "featCustomTitle": "Dein Browser, deine Regeln",
+    "featCustomDesc": "Eigene Tastenkürzel, Hinter Store Themes und volle Kontrolle über dein Surfen.",
+    "btnDefault": "Als Standardbrowser festlegen",
+    "btnGuide": "Benutzerhandbuch",
+    "btnDismiss": "Loslegen",
+    "isDefault": "Als Standard festgelegt"
   },
   "greeting": {
     "morning": "Guten Morgen",
@@ -657,7 +672,9 @@
       "showHomeButton": "Starttaste anzeigen",
       "showHomeButtonDesc": "Fügt eine Starttaste neben den Navigationstasten hinzu.",
       "showBookmarksBar": "Lesezeichenleiste anzeigen",
-      "showBookmarksBarDesc": "Zeigt eine Schnellzugriffsleiste mit deinen Lesezeichen unter der Adressleiste an."
+      "showBookmarksBarDesc": "Zeigt eine Schnellzugriffsleiste mit deinen Lesezeichen unter der Adressleiste an.",
+      "setDefaultBrowser": "Als Standardbrowser festlegen",
+      "setDefaultBrowserDesc": "Hinterland als Standard-App zum Öffnen von Weblinks verwenden."
     },
     "search": {
       "engines": "Suchmaschinen",

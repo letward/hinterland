@@ -424,6 +424,17 @@ function sectionFooter(definition) {
       location.reload();
     } }, [t('action.resetSection')]),
   );
+  if (definition.id === 'general') {
+    wrapper.append(
+      el('button', { class: 'button primary', type: 'button', onclick: async () => {
+        await api().app.setDefaultBrowser();
+      } }, [t('settings.general.setDefaultBrowser')]),
+      el('button', { class: 'button', type: 'button', onclick: () => {
+        closeModal();
+        api().tabs.create({ url: 'https://github.com/letward/Hinterland/blob/main/website/docs/user-guide.html' });
+      } }, [t('menu.userGuide')]),
+    );
+  }
   if (definition.id === 'data') {
     wrapper.append(
       el('button', { class: 'button primary', type: 'button', onclick: () => {

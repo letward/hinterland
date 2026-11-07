@@ -450,7 +450,22 @@
     "recentlyClosedCleared": "Recently closed tabs cleared",
     "notesExportedAll": "All notes exported successfully",
     "notesImported": "Notes imported successfully",
-    "noteCreatedFromTab": "Note created from active tab"
+    "noteCreatedFromTab": "Note created from active tab",
+    "defaultBrowserSet": "Hinterland registered as default browser"
+  },
+  "welcome": {
+    "title": "Welcome to Hinterland",
+    "subtitle": "Your fast, private, and freely customizable browser is ready.",
+    "featPrivacyTitle": "Privacy by Default",
+    "featPrivacyDesc": "Tracker blocking & HTTPS-first are always active out of the box.",
+    "featSpeedTitle": "Speed & Focus",
+    "featSpeedDesc": "Distraction-free Reader Mode, Tab Stashes, and built-in Notes vault.",
+    "featCustomTitle": "Your Browser, Your Way",
+    "featCustomDesc": "Custom shortcuts, Hinter Store themes, and total control over your browsing.",
+    "btnDefault": "Set as Default Browser",
+    "btnGuide": "User Guide",
+    "btnDismiss": "Get Started",
+    "isDefault": "Default Browser Set"
   },
   "greeting": {
     "morning": "Good morning",
@@ -657,7 +672,9 @@
       "showHomeButton": "Show the home button",
       "showHomeButtonDesc": "Adds a home button next to the navigation buttons.",
       "showBookmarksBar": "Show bookmarks bar",
-      "showBookmarksBarDesc": "Displays a quick-access bar with your saved bookmarks below the address bar."
+      "showBookmarksBarDesc": "Displays a quick-access bar with your saved bookmarks below the address bar.",
+      "setDefaultBrowser": "Set as default browser",
+      "setDefaultBrowserDesc": "Make Hinterland the default application for opening web links."
     },
     "search": {
       "engines": "Search engines",

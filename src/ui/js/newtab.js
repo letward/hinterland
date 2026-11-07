@@ -252,6 +252,46 @@ async function loadStrings() {
   }
 }
 
+function paintWelcomeCard() {
+  const card = document.getElementById('welcomeCard');
+  if (!card) return;
+  const hasRun = Boolean(value('general.hasRunBefore', false));
+  if (hasRun) {
+    card.hidden = true;
+    return;
+  }
+
+  card.hidden = false;
+  document.getElementById('welcomeTitle').textContent = t('welcome.title');
+  document.getElementById('welcomeSubtitle').textContent = t('welcome.subtitle');
+  document.getElementById('pillarPrivacyTitle').textContent = t('welcome.featPrivacyTitle');
+  document.getElementById('pillarPrivacyDesc').textContent = t('welcome.featPrivacyDesc');
+  document.getElementById('pillarSpeedTitle').textContent = t('welcome.featSpeedTitle');
+  document.getElementById('pillarSpeedDesc').textContent = t('welcome.featSpeedDesc');
+  document.getElementById('pillarCustomTitle').textContent = t('welcome.featCustomTitle');
+  document.getElementById('pillarCustomDesc').textContent = t('welcome.featCustomDesc');
+  document.getElementById('welcomeSetDefault').textContent = t('welcome.btnDefault');
+  document.getElementById('welcomeOpenGuide').textContent = t('welcome.btnGuide');
+  document.getElementById('welcomeDismiss').textContent = t('welcome.btnDismiss');
+
+  const dismiss = async () => {
+    card.hidden = true;
+    settings['general.hasRunBefore'] = true;
+    await page?.settings?.set?.({ 'general.hasRunBefore': true });
+  };
+
+  document.getElementById('welcomeClose').onclick = dismiss;
+  document.getElementById('welcomeDismiss').onclick = dismiss;
+  document.getElementById('welcomeOpenGuide').onclick = () => {
+    page?.open?.('https://github.com/letward/Hinterland/blob/main/website/docs/user-guide.html');
+  };
+  document.getElementById('welcomeSetDefault').onclick = async () => {
+    await page?.app?.setDefaultBrowser?.();
+    document.getElementById('welcomeSetDefault').textContent = '✓ ' + t('welcome.isDefault');
+    document.getElementById('welcomeSetDefault').disabled = true;
+  };
+}
+
 async function boot() {
   strings = await loadStrings();
   await loadSettings();
@@ -260,6 +300,7 @@ async function boot() {
 
   applyTheme();
   paintBackdrop();
+  paintWelcomeCard();
   paintGreeting();
   paintClock();
   paintSearch();

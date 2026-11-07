@@ -10,6 +10,41 @@
   <body class="start">
     <div class="backdrop" id="backdrop"></div>
     <main class="stage" id="stage">
+      <section class="welcomeCard" id="welcomeCard" hidden>
+        <button class="welcomeClose" id="welcomeClose" type="button" aria-label="Close">&times;</button>
+        <div class="welcomeBadge">Hinterland Setup</div>
+        <h2 class="welcomeTitle" id="welcomeTitle"></h2>
+        <p class="welcomeSubtitle" id="welcomeSubtitle"></p>
+        <div class="welcomePillars">
+          <div class="welcomePillar">
+            <span class="pillarIcon">🛡️</span>
+            <div>
+              <strong id="pillarPrivacyTitle"></strong>
+              <span id="pillarPrivacyDesc"></span>
+            </div>
+          </div>
+          <div class="welcomePillar">
+            <span class="pillarIcon">⚡</span>
+            <div>
+              <strong id="pillarSpeedTitle"></strong>
+              <span id="pillarSpeedDesc"></span>
+            </div>
+          </div>
+          <div class="welcomePillar">
+            <span class="pillarIcon">🎨</span>
+            <div>
+              <strong id="pillarCustomTitle"></strong>
+              <span id="pillarCustomDesc"></span>
+            </div>
+          </div>
+        </div>
+        <div class="welcomeActions">
+          <button class="button primary" id="welcomeSetDefault" type="button"></button>
+          <button class="button" id="welcomeOpenGuide" type="button"></button>
+          <button class="button" id="welcomeDismiss" type="button"></button>
+        </div>
+      </section>
+
       <section class="hero">
         <img class="heroLogo" id="heroLogo" src="hinterland://assets/icon.png" alt="Hinterland" />
         <div class="greeting" id="greeting"></div>

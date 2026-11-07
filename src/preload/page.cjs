@@ -21,6 +21,10 @@ if (internal) {
     history: {
       recent: () => ipcRenderer.invoke('history:search', ''),
     },
+    app: {
+      isDefaultBrowser: () => ipcRenderer.invoke('app:isDefaultBrowser'),
+      setDefaultBrowser: () => ipcRenderer.invoke('app:setDefaultBrowser'),
+    },
     open: (url) => ipcRenderer.invoke('shell:open', url),
   });
 } else {

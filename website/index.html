@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8" />
@@ -141,6 +141,28 @@
     }
     .btn-ghost:hover { background: var(--surface); border-color: var(--borderSoft); transform: translateY(-2px); }
     .hero-meta { font-size: 13px; color: var(--textDim); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .install-banner {
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+      margin-top: 14px; padding: 12px 20px;
+      background: color-mix(in srgb, var(--surface) 75%, transparent);
+      border: 1px solid var(--borderSoft); border-radius: var(--radiusLarge);
+      backdrop-filter: blur(10px); max-width: 760px; width: 100%;
+    }
+    .install-step { display: flex; align-items: center; gap: 10px; text-align: left; }
+    .step-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: color-mix(in srgb, var(--accent) 18%, var(--surfaceAlt));
+      color: var(--accent); font-weight: 700; font-size: 13px;
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+    .step-body { display: flex; flex-direction: column; }
+    .step-body strong { font-size: 13px; color: var(--text); font-weight: 600; }
+    .step-body span { font-size: 11.5px; color: var(--textDim); }
+    .step-arrow { color: var(--borderSoft); font-size: 16px; font-weight: bold; }
+    @media (max-width: 680px) {
+      .install-banner { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .step-arrow { display: none; }
+    }
 
     /* ---------- Sections ---------- */
     section { padding: 96px 24px; }
@@ -262,6 +284,31 @@
         <span>~110 MB installer</span>
         <span>·</span>
         <span>Automatic updates</span>
+      </div>
+      <div class="install-banner reveal reveal-delay-3">
+        <div class="install-step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>1-Click Download</strong>
+            <span>Zero UAC admin prompts needed</span>
+          </div>
+        </div>
+        <div class="step-arrow" aria-hidden="true">→</div>
+        <div class="install-step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Instant Setup</strong>
+            <span>Installed to your user profile in seconds</span>
+          </div>
+        </div>
+        <div class="step-arrow" aria-hidden="true">→</div>
+        <div class="install-step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Ready to Browse</strong>
+            <span>Launches automatically with native browser integration</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>

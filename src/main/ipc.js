@@ -155,6 +155,29 @@ export function installIpc() {
     }
   });
 
+  handle('app:isDefaultBrowser', () => {
+    try {
+      return app.isDefaultProtocolClient('http');
+    } catch {
+      return false;
+    }
+  });
+
+  handle('app:setDefaultBrowser', () => {
+    try {
+      const okHttp = app.setAsDefaultProtocolClient('http');
+      const okHttps = app.setAsDefaultProtocolClient('https');
+      const okHinterland = app.setAsDefaultProtocolClient('hinterland');
+      try {
+        shell.openExternal('ms-settings:defaultapps');
+      } catch {}
+      surface.send('toast', { message: 'toast.defaultBrowserSet', kind: 'success' });
+      return Boolean(okHttp || okHttps || okHinterland);
+    } catch {
+      return false;
+    }
+  });
+
   /* ------------------------------------------------------------- settings */
   handle('settings:get', (key) => (key ? settings.value(key) : settings.all()));
   handle('settings:set', (key, value) => {
