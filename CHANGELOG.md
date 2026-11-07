@@ -4,6 +4,27 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.26.0] - 2026-11-07
+
+### Added
+- **Streamlined 1-Click Tailored Windows Installer (`package.json`, `build/installer.nsh`)**:
+  - Re-architected Windows installation with NSIS `oneClick: true`, `perMachine: false`, and `allowElevation: false` for zero-prompt, user-level installation into `%LOCALAPPDATA%\Programs\hinterland` without requiring administrative elevation or UAC prompts.
+  - Automatically provisions Desktop and Start Menu shortcuts and launches Hinterland immediately upon finish (`runAfterFinish: true`).
+  - Added custom NSIS integration script (`build/installer.nsh`) with `customInstall` and `customUnInstall` macros registering Hinterland under `HKCU\Software\Clients\StartMenuInternet\Hinterland`, `Capabilities` (`URLAssociations` for `http`, `https`, `hinterland`, `FileAssociations` for `.html`, `.htm`), and `HKCU\Software\RegisteredApplications`.
+- **Operating System Default Browser Integration & Controls (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/preload/page.cjs`, `src/ui/js/settingspanel.js`)**:
+  - Implemented `app:isDefaultBrowser` and `app:setDefaultBrowser` IPC handlers to check protocol associations and prompt Windows Default Apps (`ms-settings:defaultapps`) after registering `http`, `https`, and `hinterland` protocols.
+  - Exposed default browser methods in preload bridges (`chrome.cjs` and `page.cjs`).
+  - Added 1-click "Set as default browser" action button under Settings → General.
+- **First-Run Onboarding Welcome Card (`src/ui/newtab.html`, `src/ui/css/newtab.css`, `src/ui/js/newtab.js`, `src/ui/locales/en.json`, `src/ui/locales/de.json`)**:
+  - Introduced an interactive welcome card on the New Tab page displayed during initial browser launch (`general.hasRunBefore === false`).
+  - Showcases Hinterland's core pillars: Privacy by Default, Speed & Focus, and Customization.
+  - Features quick-action buttons to set Hinterland as the default browser in 1 click, launch the User Guide, or dismiss and get started.
+- **Official User Guide & Website Installer Documentation (`website/docs/user-guide.html`, `website/index.html`)**:
+  - Added an interactive 3-step installation strip on the website homepage highlighting 1-click download, instant setup, and native Windows integration.
+  - Updated the official User Guide "Get started" section to document zero-prompt installation and first-run default browser setup.
+- **Automated Regression & Installer Test Suite (`sdk/test/installerAndWelcome.test.mjs`)**:
+  - Added 17 automated tests covering package NSIS configuration, NSIS script macros and registry declarations, IPC handlers, preload bridge methods, Welcome Card DOM and controller logic, Settings actions, and locale key parity.
+
 ## [1.25.0] - 2026-11-07
 
 ### Added

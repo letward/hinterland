@@ -1,5 +1,6 @@
 import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import {
   mergeBookmarks,
   normalizeBookmarkUrl,
@@ -151,7 +152,8 @@ describe('Hinterland Account & Cloud Sync Engine', () => {
       assert.equal(res.statusCode, 200);
       assert.equal(res.data.ok, true);
       assert.equal(res.data.service, 'hinterland-sync');
-      assert.equal(res.data.version, '1.25.0');
+      const pkg = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8'));
+      assert.equal(res.data.version, pkg.version);
     });
 
     it('handles OPTIONS request with CORS headers', async () => {
