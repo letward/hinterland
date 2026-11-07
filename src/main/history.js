@@ -64,6 +64,45 @@ export class HistoryStore {
       .map(({ entry }) => ({ ...entry, kind: 'history' }));
   }
 
+  getAll() {
+    return [...this.entries];
+  }
+
+  importEntries(rawEntries) {
+    const list = Array.isArray(rawEntries) ? rawEntries : (rawEntries?.entries || []);
+    let added = 0;
+    let updated = 0;
+
+    for (const item of list) {
+      if (!item || typeof item.url !== 'string') continue;
+      const url = item.url.trim();
+      if (url.length < 4 || url.startsWith('about:') || !(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('hinterland://'))) {
+        continue;
+      }
+      const title = String(item.title || url).slice(0, 300);
+      const time = Number(item.time) || Date.now();
+      const visits = Math.max(1, Math.floor(Number(item.visits) || 1));
+
+      const existing = this.entries.find((e) => e.url === url);
+      if (existing) {
+        existing.visits = (Number(existing.visits) || 1) + visits;
+        if (time > (existing.time || 0)) {
+          existing.time = time;
+          if (title && title !== url) existing.title = title;
+        }
+        updated++;
+      } else {
+        this.entries.push({ url, title, time, visits });
+        added++;
+      }
+    }
+
+    this.entries.sort((a, b) => (b.time || 0) - (a.time || 0));
+    if (this.entries.length > LIMIT) this.entries.length = LIMIT;
+    this.saveNow();
+    return { count: this.entries.length, added, updated };
+  }
+
   recent(limit = 50) {
     return this.entries.slice(0, limit);
   }

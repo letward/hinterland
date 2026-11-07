@@ -172,6 +172,9 @@ const api = {
 
   history: {
     search: (query) => ipcRenderer.invoke('history:search', query),
+    getAll: () => ipcRenderer.invoke('history:getAll'),
+    exportJson: () => ipcRenderer.invoke('history:exportJson'),
+    importJson: () => ipcRenderer.invoke('history:importJson'),
     clear: () => ipcRenderer.invoke('history:clear'),
     remove: (url) => ipcRenderer.invoke('history:remove', url),
   },
@@ -183,6 +186,9 @@ const api = {
   bookmarks: {
     exportHtml: (items) => ipcRenderer.invoke('bookmarks:exportHtml', items),
     importHtml: () => ipcRenderer.invoke('bookmarks:importHtml'),
+    exportJson: (items) => ipcRenderer.invoke('bookmarks:exportJson', items),
+    importJson: () => ipcRenderer.invoke('bookmarks:importJson'),
+    deduplicate: () => ipcRenderer.invoke('bookmarks:deduplicate'),
   },
 
   readingList: {
@@ -234,6 +240,7 @@ const api = {
   downloads: {
     history: () => ipcRenderer.invoke('downloads:history'),
     clearHistory: () => ipcRenderer.invoke('downloads:clearHistory'),
+    clearCompleted: () => ipcRenderer.invoke('downloads:clearCompleted'),
     removeItem: (id) => ipcRenderer.invoke('downloads:removeItem', id),
     openFile: (path) => ipcRenderer.invoke('downloads:openFile', path),
   },

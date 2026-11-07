@@ -19,7 +19,7 @@ import { openExternal, blockedSummary, handOffToSystem, stripTracking, toggleSit
 import updater from 'electron-updater';
 const { autoUpdater } = updater;
 import { applySettings, clearBrowsingData, downloadDirectory, clearSiteData, getSiteCookies, deleteSiteCookie, clearSiteCookies, getSiteStorageStats } from './sessions.js';
-import { getDownloadHistory, clearDownloadHistory, removeDownloadHistoryItem, openDownloadedFile } from './downloads.js';
+import { getDownloadHistory, clearDownloadHistory, clearCompletedDownloads, removeDownloadHistoryItem, openDownloadedFile } from './downloads.js';
 import { applyContentSettings } from './content.js';
 
 const registered = new Set();
@@ -827,6 +827,7 @@ export function installIpc() {
 
   /* --------------------------------------------------------------- history */
   handle('history:search', (query) => history.search(query, 60));
+  handle('history:getAll', () => history.getAll());
   handle('history:clear', () => {
     history.clear();
     return true;
@@ -834,6 +835,36 @@ export function installIpc() {
   handle('history:remove', (url) => {
     history.remove(url);
     return true;
+  });
+  handle('history:exportJson', async () => {
+    const list = history.getAll();
+    const json = JSON.stringify(list, null, 2);
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-history-${Date.now()}.json`,
+      filters: [{ name: 'JSON Document', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, json, 'utf8');
+    surface.send('toast', { message: 'toast.historyExported', kind: 'success' });
+    return { ok: true, filePath: result.filePath, count: list.length };
+  });
+  handle('history:importJson', async () => {
+    const result = await dialog.showOpenDialog(chromeWindow(), {
+      title: 'Hinterland',
+      properties: ['openFile'],
+      filters: [{ name: 'JSON Document', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePaths?.[0]) return { ok: false };
+    const content = await readFile(result.filePaths[0], 'utf8');
+    try {
+      const parsed = JSON.parse(content);
+      const res = history.importEntries(parsed);
+      surface.send('toast', { message: 'toast.historyImported', kind: 'success' });
+      return { ok: true, ...res };
+    } catch {
+      return { ok: false, error: 'invalidJson' };
+    }
   });
 
   /* ----------------------------------------------------------------- data */
@@ -861,6 +892,7 @@ export function installIpc() {
 
   handle('downloads:history', () => getDownloadHistory());
   handle('downloads:clearHistory', () => clearDownloadHistory());
+  handle('downloads:clearCompleted', () => clearCompletedDownloads());
   handle('downloads:removeItem', (id) => removeDownloadHistoryItem(id));
   handle('downloads:openFile', (filePath) => openDownloadedFile(filePath));
 
@@ -980,6 +1012,88 @@ export function installIpc() {
       return { ok: true, count: imported.length, bookmarks: merged };
     }
     return { ok: true, count: 0, bookmarks: existing };
+  });
+
+  handle('bookmarks:exportJson', async (items) => {
+    const list = Array.isArray(items) ? items : (settings.value('data.bookmarks') ?? []);
+    const json = JSON.stringify(list, null, 2);
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-bookmarks-${Date.now()}.json`,
+      filters: [{ name: 'JSON Document', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, json, 'utf8');
+    surface.send('toast', { message: 'toast.bookmarksExported', kind: 'success' });
+    return { ok: true, filePath: result.filePath, count: list.length };
+  });
+
+  handle('bookmarks:importJson', async () => {
+    const result = await dialog.showOpenDialog(chromeWindow(), {
+      title: 'Hinterland',
+      properties: ['openFile'],
+      filters: [{ name: 'JSON Document', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePaths?.[0]) return { ok: false };
+    const content = await readFile(result.filePaths[0], 'utf8');
+    try {
+      const parsed = JSON.parse(content);
+      const list = Array.isArray(parsed) ? parsed : (parsed.bookmarks || []);
+      const existing = [...(settings.value('data.bookmarks') ?? [])];
+      const seen = new Set(existing.map((b) => (b.url || '').trim().replace(/\/+$/, '').toLowerCase()));
+      const imported = [];
+
+      for (const item of list) {
+        if (!item || typeof item.url !== 'string') continue;
+        const rawUrl = item.url.trim();
+        if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) continue;
+        const normalized = rawUrl.replace(/\/+$/, '').toLowerCase();
+        if (!seen.has(normalized)) {
+          seen.add(normalized);
+          imported.push({
+            title: String(item.title || rawUrl).slice(0, 300),
+            url: rawUrl,
+          });
+        }
+      }
+
+      if (imported.length > 0) {
+        const merged = [...existing, ...imported];
+        settings.set('data.bookmarks', merged);
+        surface.send('toast', { message: 'toast.bookmarksImported', kind: 'success' });
+        return { ok: true, count: imported.length, bookmarks: merged };
+      }
+      surface.send('toast', { message: 'toast.bookmarksNoNew', kind: 'info' });
+      return { ok: true, count: 0, bookmarks: existing };
+    } catch {
+      return { ok: false, error: 'invalidJson' };
+    }
+  });
+
+  handle('bookmarks:deduplicate', () => {
+    const existing = [...(settings.value('data.bookmarks') ?? [])];
+    const seen = new Set();
+    const deduplicated = [];
+    let removed = 0;
+
+    for (const item of existing) {
+      if (!item || !item.url) continue;
+      const normalized = String(item.url).trim().replace(/\/+$/, '').toLowerCase();
+      if (seen.has(normalized)) {
+        removed++;
+      } else {
+        seen.add(normalized);
+        deduplicated.push(item);
+      }
+    }
+
+    if (removed > 0) {
+      settings.set('data.bookmarks', deduplicated);
+      surface.send('toast', { message: 'toast.bookmarksDeduplicated', kind: 'success' });
+    } else {
+      surface.send('toast', { message: 'toast.bookmarksNoDuplicates', kind: 'info' });
+    }
+    return { ok: true, count: deduplicated.length, removed };
   });
 
   /* ------------------------------------------------------------- reading list */

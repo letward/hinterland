@@ -4,6 +4,30 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.25.0] - 2026-11-07
+
+### Added
+- **Browsing History JSON Portability & Timeline Filters (`src/main/history.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `history:exportJson`, `history:importJson`, and `history:getAll` IPC handlers for full browsing history backup and restoration.
+  - Added intelligent history import merging that validates URLs against web protocols, sanitizes titles, accumulates visit counts, updates latest visit timestamps, and caps records at the 5,000 entry limit.
+  - Added Export History and Import History action buttons in the History panel with toast notifications.
+  - Added Timeline Filter controls to the History panel allowing users to filter visited pages across "All", "Today" (since midnight), "Yesterday", and "Older" ranges alongside live search query matching and entry count badges.
+  - Added Command Palette quick launchers (`historyExport` and `historyImport`).
+- **Bookmarks JSON Backup & Intelligent Deduplication (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `bookmarks:exportJson` and `bookmarks:importJson` handlers providing structured JSON backup and restore alongside standard HTML export/import.
+  - Implemented `bookmarks:deduplicate` handler to automatically scan, normalize (trailing slashes & case-insensitivity), and remove duplicate bookmarks while preserving order.
+  - Added Export JSON, Import JSON, and Remove Duplicates action buttons in the Bookmarks panel.
+  - Added Command Palette shortcuts (`bookmarksExportJson`, `bookmarksImportJson`, and `bookmarksDeduplicate`).
+- **Downloads Manager QoL - Clear Completed Downloads (`src/main/downloads.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `downloads:clearCompleted` to purge finished file downloads with a single click while preserving active in-progress and interrupted transfers.
+  - Added "Clear completed" action button in the Downloads toolbar and registered `downloadsClearCompleted` in the Command Palette.
+- **Tab & Session Management QoL (`src/ui/js/commandPalette.js`, `src/ui/js/panels.js`)**:
+  - Added `clearRecentlyClosed` command in the Command Palette and enhanced the Recently Closed Tabs panel with instant clearing feedback.
+- **Official User Guide Updates (`website/docs/user-guide.html`)**:
+  - Documented Bookmarks JSON portability & duplicate cleaning, History timeline filtering & JSON backups, and Downloads completion management in the official guide.
+- **Automated Regression & Feature Test Suite (`sdk/test/v125Features.test.mjs`)**:
+  - Added 18 automated unit and integration tests covering History import merging, Bookmarks deduplication, Downloads clearCompleted logic, History timeline partitioning, Preload bridge completeness, and locale parity.
+
 ## [1.24.0] - 2026-11-07
 
 ### Added

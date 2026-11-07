@@ -184,14 +184,44 @@ function historyPage() {
 
       const list = el('div', { class: 'card' });
       const language = currentLanguage();
+      let allEntries = [];
+      let currentFilter = 'all';
+      let searchQuery = '';
 
-      const paint = (entries) => {
+      const countBadge = el('span', { class: 'rowAside', style: { marginLeft: 'auto', fontWeight: '500' } });
+
+      const getFilteredEntries = () => {
+        const now = new Date();
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        const startOfYesterday = startOfToday - 24 * 60 * 60 * 1000;
+        const q = searchQuery.toLowerCase().trim();
+
+        return allEntries.filter((entry) => {
+          const time = entry.time || 0;
+          if (currentFilter === 'today' && time < startOfToday) return false;
+          if (currentFilter === 'yesterday' && (time < startOfYesterday || time >= startOfToday)) return false;
+          if (currentFilter === 'older' && time >= startOfYesterday) return false;
+
+          if (q) {
+            const u = (entry.url || '').toLowerCase();
+            const title = (entry.title || '').toLowerCase();
+            if (!u.includes(q) && !title.includes(q)) return false;
+          }
+          return true;
+        });
+      };
+
+      const paint = () => {
         clear(list);
-        if (!entries.length) {
+        const filtered = getFilteredEntries();
+        countBadge.textContent = t('history.entriesCount', { count: filtered.length });
+
+        if (!filtered.length) {
           list.append(el('div', { class: 'empty', text: t('history.empty') }));
           return;
         }
-        for (const entry of entries) {
+
+        for (const entry of filtered) {
           list.append(
             el('div', { class: 'option' }, [
               el('div', { class: 'optionText' }, [
@@ -203,7 +233,8 @@ function historyPage() {
                 el('button', { class: 'iconButton small', type: 'button', html: icon('external'), title: t('action.open'), onclick: () => api().tabs.create({ url: entry.url }) }),
                 el('button', { class: 'iconButton small', type: 'button', html: icon('trash'), title: t('action.remove'), onclick: async () => {
                   await api().history.remove(entry.url);
-                  paint(await api().history.search(''));
+                  allEntries = allEntries.filter((e) => e.url !== entry.url);
+                  paint();
                 } }),
               ]),
             ]),
@@ -211,24 +242,68 @@ function historyPage() {
         }
       };
 
-      const { field, input } = searchBox(async (value) => paint(await api().history.search(value)));
+      const reload = async () => {
+        try {
+          allEntries = (await api().history.getAll()) || [];
+        } catch {
+          allEntries = (await api().history.search('')) || [];
+        }
+        paint();
+      };
 
-      container.append(
-        el('div', { class: 'actionRow', style: { marginBottom: '14px', gap: '8px' } }, [
-          el('button', { class: 'button', type: 'button', onclick: async () => {
-            await api().history.clear();
-            paint([]);
-          } }, [t('history.clear')]),
-          el('button', { class: 'button', type: 'button', onclick: () => openClearData() }, [
-            el('span', { html: icon('trash') }),
-            ` ${t('clearData.title')}`,
-          ]),
+      const actionRow = el('div', { class: 'actionRow', style: { marginBottom: '12px', flexWrap: 'wrap', gap: '8px' } }, [
+        el('button', { class: 'button', type: 'button', onclick: async () => {
+          await api().history.clear();
+          allEntries = [];
+          paint();
+        } }, [t('history.clear')]),
+        el('button', { class: 'button', type: 'button', onclick: () => openClearData() }, [
+          el('span', { html: icon('trash') }),
+          ` ${t('clearData.title')}`,
         ]),
-        field,
-        list,
-      );
+        el('button', { class: 'button', type: 'button', onclick: async () => {
+          await api().history.exportJson();
+        } }, [el('span', { html: icon('download') }), ` ${t('history.exportJson')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
+          const res = await api().history.importJson();
+          if (res?.ok) await reload();
+        } }, [el('span', { html: icon('upload') }), ` ${t('history.importJson')}`]),
+      ]);
 
-      api().history.search('').then(paint);
+      const filterDefs = [
+        { id: 'all', labelKey: 'history.filterAll' },
+        { id: 'today', labelKey: 'history.filterToday' },
+        { id: 'yesterday', labelKey: 'history.filterYesterday' },
+        { id: 'older', labelKey: 'history.filterOlder' },
+      ];
+
+      const filterBar = el('div', { class: 'historyFilters', style: { display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px', flexWrap: 'wrap' } });
+      const filterButtons = [];
+
+      filterDefs.forEach((def) => {
+        const btn = el('button', {
+          class: `button small ${def.id === 'all' ? 'active' : ''}`,
+          type: 'button',
+          text: t(def.labelKey),
+          onclick: () => {
+            currentFilter = def.id;
+            for (const b of filterButtons) b.classList.remove('active');
+            btn.classList.add('active');
+            paint();
+          },
+        });
+        filterButtons.push(btn);
+        filterBar.append(btn);
+      });
+      filterBar.append(countBadge);
+
+      const { field } = searchBox((value) => {
+        searchQuery = value;
+        paint();
+      });
+
+      container.append(actionRow, filterBar, field, list);
+      reload();
       return container;
     },
   };
@@ -294,6 +369,7 @@ function recentlyClosedPage() {
             type: 'button',
             onclick: async () => {
               await api().tabs.clearRecentlyClosed();
+              toast(t('toast.recentlyClosedCleared'), 'info');
               paint();
             },
           }, [t('history.clearRecentlyClosed')]),
@@ -403,11 +479,27 @@ function bookmarksPage() {
           await api().bookmarks.exportHtml(items);
         } }, [el('span', { html: icon('download') }), ` ${t('bookmarks.exportHtml')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
+          const items = get('data.bookmarks', []) ?? [];
+          await api().bookmarks.exportJson(items);
+        } }, [el('span', { html: icon('download') }), ` ${t('bookmarks.exportJson')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
           const result = await api().bookmarks.importHtml();
           if (result?.ok && typeof result.count === 'number') {
             paint(currentFilter);
           }
         } }, [el('span', { html: icon('upload') }), ` ${t('bookmarks.importHtml')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
+          const result = await api().bookmarks.importJson();
+          if (result?.ok && typeof result.count === 'number') {
+            paint(currentFilter);
+          }
+        } }, [el('span', { html: icon('upload') }), ` ${t('bookmarks.importJson')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
+          const result = await api().bookmarks.deduplicate();
+          if (result?.ok) {
+            paint(currentFilter);
+          }
+        } }, [el('span', { html: icon('check') }), ` ${t('bookmarks.deduplicate')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
           const items = [...(get('data.bookmarks', []) ?? [])];
           items.sort((a, b) => (a.title || a.url || '').localeCompare(b.title || b.url || ''));
@@ -500,6 +592,19 @@ function downloadsPage() {
         html: `${icon('external')} <span>${t('downloads.openFolder')}</span>`,
         onclick: () => api().app.openFolder('downloads'),
       });
+      const clearCompletedBtn = el('button', {
+        class: 'button small',
+        type: 'button',
+        html: `${icon('check')} <span>${t('downloads.clearCompleted')}</span>`,
+        onclick: async () => {
+          await api().downloads.clearCompleted();
+          for (const [id, val] of [...downloads.entries()]) {
+            if (val.state === 'completed' || val.ok === true) downloads.delete(id);
+          }
+          toast(t('toast.downloadsCompletedCleared'), 'info');
+          paint();
+        },
+      });
       const clearHistoryBtn = el('button', {
         class: 'button small',
         type: 'button',
@@ -511,7 +616,7 @@ function downloadsPage() {
           paint();
         },
       });
-      actionsGroup.append(openFolderBtn, clearHistoryBtn);
+      actionsGroup.append(openFolderBtn, clearCompletedBtn, clearHistoryBtn);
 
       toolbar.append(searchInput, filtersGroup, actionsGroup);
       container.append(toolbar);

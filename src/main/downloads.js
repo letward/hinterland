@@ -153,6 +153,14 @@ export function clearDownloadHistory() {
   return true;
 }
 
+export function clearCompletedDownloads() {
+  const stored = settings.value('data.downloadHistory') || [];
+  const kept = stored.filter((item) => item.state !== 'completed');
+  const clearedCount = stored.length - kept.length;
+  settings.set('data.downloadHistory', kept);
+  return { ok: true, clearedCount };
+}
+
 export function removeDownloadHistoryItem(id) {
   const stored = (settings.value('data.downloadHistory') || []).filter((item) => item.id !== id);
   settings.set('data.downloadHistory', stored);
