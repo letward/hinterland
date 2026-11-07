@@ -145,7 +145,8 @@
     "pictureInPicture": "Bild-in-Bild",
     "qrCode": "QR-Code für Seite",
     "qrCodeDesc": "Erzeuge einen scannbaren QR-Code, um diesen Tab auf dem Smartphone zu öffnen",
-    "sleepAllInactive": "Alle inaktiven Tabs schlafenlegen"
+    "sleepAllInactive": "Alle inaktiven Tabs schlafenlegen",
+    "saveTabAsNote": "Tab als Notiz erfassen"
   },
   "find": {
     "placeholder": "In Seite suchen"
@@ -184,7 +185,12 @@
     "inspectCookies": "Website-Cookies & Daten prüfen",
     "toggleShield": "Schutzschild für Website umschalten",
     "account": "Konto & Cloud-Synchronisierung öffnen",
-    "syncNow": "Lesezeichen und Einstellungen jetzt synchronisieren"
+    "syncNow": "Lesezeichen und Einstellungen jetzt synchronisieren",
+    "readingListExport": "Leseliste exportieren (JSON)",
+    "readingListImport": "Leseliste importieren (JSON)",
+    "notesExportAll": "Alle Notizen exportieren (JSON)",
+    "notesImportAll": "Notizen importieren (JSON)",
+    "noteCurrentTab": "Aktiven Tab als Notiz erfassen"
   },
   "confirm": {
     "closeTitle": "Tab schließen",
@@ -414,7 +420,12 @@
     "signedOut": "Abgemeldet",
     "syncSuccess": "Lesezeichen und Einstellungen synchronisiert",
     "syncFailed": "Cloud-Synchronisierung fehlgeschlagen",
-    "settingsSaved": "Einstellungen gespeichert"
+    "settingsSaved": "Einstellungen gespeichert",
+    "readingListExported": "Leseliste erfolgreich exportiert",
+    "readingListImported": "Leseliste erfolgreich importiert",
+    "notesExportedAll": "Alle Notizen erfolgreich exportiert",
+    "notesImported": "Notizen erfolgreich importiert",
+    "noteCreatedFromTab": "Notiz aus aktivem Tab erstellt"
   },
   "greeting": {
     "morning": "Guten Morgen",
@@ -955,7 +966,10 @@
     "clearRead": "Gelesene Einträge löschen",
     "tab_unread": "Ungelesen",
     "tab_read": "Gelesen",
-    "tab_all": "Alle Einträge"
+    "tab_all": "Alle Einträge",
+    "exportJson": "Exportieren (JSON)",
+    "importJson": "Importieren",
+    "importInvalid": "Keine gültigen Leselisten-Einträge in der Datei gefunden."
   },
   "taskManager": {
     "title": "Task-Manager",
@@ -978,7 +992,11 @@
     "inactive": "Inaktiv",
     "memorySaver": "Speicherschoner",
     "memorySaverTooltip": "Automatisches und manuelles Schlafenlegen inaktiver Tabs spart Arbeitsspeicher",
-    "sleepingTabs": "schlafende(r) Tab(s)"
+    "sleepingTabs": "schlafende(r) Tab(s)",
+    "sortLabel": "Sortieren nach:",
+    "sortByMemory": "Arbeitsspeicher",
+    "sortByCpu": "CPU",
+    "sortByName": "Name"
   },
   "store": {
     "title": "Hinter Store",
@@ -1099,6 +1117,10 @@
     "editMode": "Bearbeiten",
     "previewMode": "Vorschau",
     "emptyPreview": "Kein Inhalt für die Vorschau vorhanden.",
+    "exportAll": "Alle exportieren (JSON)",
+    "importNotes": "Notizen importieren",
+    "clipCurrentTab": "Tab als Notiz erfassen",
+    "importInvalid": "Keine gültigen Notizen in der Datei gefunden.",
     "welcomeTitle": "Willkommen bei Hinterland Notizen",
     "welcomeContent": "# Willkommen bei Hinterland Notizen\n\nEin schneller, ablenkungsfreier Notizzettel direkt in Ihrem Browser.\n\n### Funktionen:\n- **Markdown-Formatierung**: Unterstützt Überschriften, **fett**, *kursiv*, `Code` und Checklisten.\n- **1-Klick Web-Clipping**: Nutzen Sie die Schaltfläche 'Tab-Link einfügen', um Links aktiver Tabs einzufügen.\n- **Checklisten**:\n  - [x] Erste Notiz ansehen\n  - [ ] Nächstes Projekt recherchieren\n- **Export**: Exportieren Sie jede Notiz als `.md` für Obsidian, Notion oder GitHub."
   },

@@ -1017,6 +1017,7 @@ function taskManagerPage() {
       const summaryCard = el('div', { class: 'taskManagerSummary' });
       const list = el('div', { class: 'card' });
       let currentFilter = '';
+      let sortBy = 'memory';
       let timer = null;
 
       const refresh = async () => {
@@ -1078,6 +1079,14 @@ function taskManagerPage() {
             );
             return typeStr.includes(currentFilter) || pidStr.includes(currentFilter) || tabMatches;
           });
+        }
+
+        if (sortBy === 'cpu') {
+          items.sort((a, b) => (Number(b.cpu) || 0) - (Number(a.cpu) || 0));
+        } else if (sortBy === 'name') {
+          items.sort((a, b) => String(a.type || '').localeCompare(String(b.type || '')));
+        } else {
+          items.sort((a, b) => (b.memoryKB || 0) - (a.memoryKB || 0));
         }
 
         if (!items.length) {
@@ -1186,7 +1195,31 @@ function taskManagerPage() {
         refresh();
       });
 
-      container.append(summaryCard, field, list);
+      const sortRow = el('div', { class: 'actionRow small', style: { display: 'flex', alignItems: 'center', gap: '8px', margin: '8px 0 12px' } });
+      const updateSortRow = () => {
+        clear(sortRow);
+        sortRow.append(
+          el('span', { style: { fontSize: '0.85em', color: 'var(--textDim)' }, text: t('taskManager.sortLabel') }),
+          el('button', {
+            class: `button small ${sortBy === 'memory' ? 'primary' : ''}`,
+            type: 'button',
+            onclick: () => { sortBy = 'memory'; updateSortRow(); refresh(); },
+          }, [t('taskManager.sortByMemory')]),
+          el('button', {
+            class: `button small ${sortBy === 'cpu' ? 'primary' : ''}`,
+            type: 'button',
+            onclick: () => { sortBy = 'cpu'; updateSortRow(); refresh(); },
+          }, [t('taskManager.sortByCpu')]),
+          el('button', {
+            class: `button small ${sortBy === 'name' ? 'primary' : ''}`,
+            type: 'button',
+            onclick: () => { sortBy = 'name'; updateSortRow(); refresh(); },
+          }, [t('taskManager.sortByName')])
+        );
+      };
+      updateSortRow();
+
+      container.append(summaryCard, field, sortRow, list);
 
       refresh();
       timer = setInterval(refresh, 2500);
@@ -1355,6 +1388,24 @@ function readingListPage(mode = 'unread') {
           }, [el('span', { html: icon('trash') }), ` ${t('readingList.clearRead')}`])
         );
       }
+
+      actionRow.append(
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            await api().readingList.exportJson();
+          },
+        }, [el('span', { html: icon('download') }), ` ${t('readingList.exportJson')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            const res = await api().readingList.importJson();
+            if (res?.ok) refresh();
+          },
+        }, [el('span', { html: icon('folder') }), ` ${t('readingList.importJson')}`])
+      );
 
       container.append(actionRow, field, list);
       refresh();
@@ -1576,6 +1627,39 @@ function notesPage() {
         },
       }, [el('span', { html: icon('plus') }), ` ${t('notes.newNote')}`]);
 
+      const clipTabBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        onclick: async () => {
+          const res = await api().notes.createFromTab();
+          if (res?.ok && res.note) {
+            await loadNotes(res.note.id);
+          }
+        },
+      }, [el('span', { html: icon('link') }), ` ${t('notes.clipCurrentTab')}`]);
+
+      const backupRow = el('div', { class: 'actionRow small', style: { display: 'flex', gap: '6px', marginBottom: '8px' } }, [
+        el('button', {
+          class: 'button small',
+          type: 'button',
+          style: { flex: 1 },
+          title: t('notes.exportAll'),
+          onclick: async () => {
+            await api().notes.exportAll();
+          },
+        }, [el('span', { html: icon('download') }), ` ${t('notes.exportAll')}`]),
+        el('button', {
+          class: 'button small',
+          type: 'button',
+          style: { flex: 1 },
+          title: t('notes.importNotes'),
+          onclick: async () => {
+            const res = await api().notes.importAll();
+            if (res?.ok) await loadNotes();
+          },
+        }, [el('span', { html: icon('folder') }), ` ${t('notes.importNotes')}`]),
+      ]);
+
       const searchInput = el('input', {
         class: 'textInput',
         type: 'search',
@@ -1587,7 +1671,7 @@ function notesPage() {
       });
 
       const listCard = el('div', { class: 'notesList card' });
-      sidebar.append(newBtn, searchInput, listCard);
+      sidebar.append(newBtn, clipTabBtn, backupRow, searchInput, listCard);
 
       const scheduleSave = () => {
         if (!activeNote) return;

@@ -145,7 +145,8 @@
     "pictureInPicture": "Picture-in-Picture",
     "qrCode": "Page QR code",
     "qrCodeDesc": "Generate a scannable QR code to open this tab on your phone",
-    "sleepAllInactive": "Sleep all inactive tabs"
+    "sleepAllInactive": "Sleep all inactive tabs",
+    "saveTabAsNote": "Save tab as note"
   },
   "find": {
     "placeholder": "Find on page"
@@ -184,7 +185,12 @@
     "inspectCookies": "Inspect site cookies & storage",
     "toggleShield": "Toggle privacy shield for site",
     "account": "Open Account & Cloud Sync",
-    "syncNow": "Sync Bookmarks and Settings now"
+    "syncNow": "Sync Bookmarks and Settings now",
+    "readingListExport": "Export Reading List (JSON)",
+    "readingListImport": "Import Reading List (JSON)",
+    "notesExportAll": "Export all notes (JSON)",
+    "notesImportAll": "Import notes (JSON)",
+    "noteCurrentTab": "Save active tab as note"
   },
   "confirm": {
     "closeTitle": "Close tab",
@@ -414,7 +420,12 @@
     "signedOut": "Signed out",
     "syncSuccess": "Bookmarks and settings synced",
     "syncFailed": "Cloud sync failed",
-    "settingsSaved": "Settings saved"
+    "settingsSaved": "Settings saved",
+    "readingListExported": "Reading list exported successfully",
+    "readingListImported": "Reading list imported successfully",
+    "notesExportedAll": "All notes exported successfully",
+    "notesImported": "Notes imported successfully",
+    "noteCreatedFromTab": "Note created from active tab"
   },
   "greeting": {
     "morning": "Good morning",
@@ -955,7 +966,10 @@
     "clearRead": "Clear read items",
     "tab_unread": "Unread",
     "tab_read": "Read",
-    "tab_all": "All items"
+    "tab_all": "All items",
+    "exportJson": "Export (JSON)",
+    "importJson": "Import",
+    "importInvalid": "No valid reading list items found in file."
   },
   "taskManager": {
     "title": "Task Manager",
@@ -978,7 +992,11 @@
     "inactive": "Inactive",
     "memorySaver": "Memory Saver",
     "memorySaverTooltip": "Automatic and manual sleeping of background tabs saves system RAM",
-    "sleepingTabs": "sleeping tab(s)"
+    "sleepingTabs": "sleeping tab(s)",
+    "sortLabel": "Sort by:",
+    "sortByMemory": "Memory",
+    "sortByCpu": "CPU",
+    "sortByName": "Name"
   },
   "store": {
     "title": "Hinter Store",
@@ -1099,6 +1117,10 @@
     "editMode": "Edit",
     "previewMode": "Preview",
     "emptyPreview": "No content to preview.",
+    "exportAll": "Export All (JSON)",
+    "importNotes": "Import Notes",
+    "clipCurrentTab": "Save Tab as Note",
+    "importInvalid": "No valid notes found in file.",
     "welcomeTitle": "Welcome to Hinterland Notes",
     "welcomeContent": "# Welcome to Hinterland Notes\n\nA fast, distraction-free scratchpad built directly into your browser.\n\n### Features:\n- **Markdown formatting**: Supports headings, **bold**, *italics*, `code`, and checklists.\n- **1-Click Web Clipping**: Use the 'Clip Tab Link' button to instantly insert links from active tabs.\n- **Checklists**:\n  - [x] Create first note\n  - [ ] Research next project\n- **Export**: Export any note to `.md` for Obsidian, Notion, or GitHub."
   },

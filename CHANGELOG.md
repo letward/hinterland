@@ -4,6 +4,27 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.24.0] - 2026-11-07
+
+### Added
+- **Reading List JSON Import & Export Portability (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `readingList:exportJson` and `readingList:importJson` IPC handlers allowing full reading list backup and restore with URL validation, protocol sanitization, and deduplication against existing saved articles.
+  - Added dedicated Export and Import action buttons directly to the Reading List panel header with localized strings in English and German.
+  - Added Command Palette quick launchers (`readingListExport` and `readingListImport`).
+- **Notes Bulk Backup & Portability (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `notes:exportAll` and `notes:importAll` handlers to backup the complete local notes vault into a structured JSON archive with timestamps, pinned states, and markdown formatting.
+  - Added Export All and Import Notes action buttons directly in the Notes sidebar.
+  - Added Command Palette shortcuts (`notesExportAll` and `notesImportAll`).
+- **1-Click Web Clipping & Tab Quick-Note Capture (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/menu.js`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `notes:createFromTab` handler to instantly clip the active tab's title and URL into a new Markdown scratchpad note.
+  - Integrated "Save tab as note" into tab context menus, page action menus, Notes sidebar (`notes.clipCurrentTab`), and the Command Palette (`noteCurrentTab`).
+- **Task Manager Process Sorting & Resource Controls (`src/ui/js/panels.js`)**:
+  - Added interactive process sorting controls in the Task Manager allowing users to sort processes by Memory usage, CPU load, or Process Name.
+- **Official User Guide Updates (`website/docs/user-guide.html`)**:
+  - Documented Reading List JSON portability, Notes bulk backup & web clipping, and Task Manager process sorting in the official documentation.
+- **Automated Regression & Feature Test Suite (`sdk/test/v124Features.test.mjs`)**:
+  - Added 15 automated unit and integration tests covering Reading List portability, Notes bulk archive handling, web clipping Markdown generation, Preload IPC bridge validation, and locale parity.
+
 ## [1.23.0] - 2026-10-28
 
 ### Added

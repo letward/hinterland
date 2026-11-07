@@ -281,6 +281,11 @@ export function openTabMenu(tab, x, y) {
           onSelect: () => api().readingList.add({ url: tab.url, title: tab.title, favicon: tab.favicon }),
         }),
         row({
+          iconName: 'notes',
+          title: t('menu.saveTabAsNote'),
+          onSelect: () => api().notes.createFromTab(tab.id),
+        }),
+        row({
           iconName: tab.privateMode ? 'shield' : 'globe',
           title: t('menu.openExternal'),
           onSelect: () => api().tab.openExternal(tab.id),
@@ -478,6 +483,11 @@ export function openOmniMenu() {
           iconName: 'bookmark',
           title: t('menu.addToReadingList'),
           onSelect: () => api().readingList.add({ url: tab?.url, title: tab?.title, favicon: tab?.favicon }),
+        }),
+        row({
+          iconName: 'notes',
+          title: t('menu.saveTabAsNote'),
+          onSelect: () => api().notes.createFromTab(tab?.id),
         }),
         row({
           iconName: 'camera',

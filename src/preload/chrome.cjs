@@ -192,6 +192,8 @@ const api = {
     toggleRead: (id) => ipcRenderer.invoke('readingList:toggleRead', id),
     clearRead: () => ipcRenderer.invoke('readingList:clearRead'),
     openAllUnread: () => ipcRenderer.invoke('readingList:openAllUnread'),
+    exportJson: () => ipcRenderer.invoke('readingList:exportJson'),
+    importJson: () => ipcRenderer.invoke('readingList:importJson'),
   },
 
   notes: {
@@ -199,6 +201,9 @@ const api = {
     save: (note) => ipcRenderer.invoke('notes:save', note),
     delete: (id) => ipcRenderer.invoke('notes:delete', id),
     export: (note) => ipcRenderer.invoke('notes:export', note),
+    exportAll: () => ipcRenderer.invoke('notes:exportAll'),
+    importAll: () => ipcRenderer.invoke('notes:importAll'),
+    createFromTab: (tabId) => ipcRenderer.invoke('notes:createFromTab', tabId),
   },
 
   stashes: {

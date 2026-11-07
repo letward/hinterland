@@ -1050,6 +1050,65 @@ export function installIpc() {
     return { ok: true, count: unread.length };
   });
 
+  handle('readingList:exportJson', async () => {
+    const list = settings.value('data.readingList') || [];
+    const json = JSON.stringify(list, null, 2);
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-reading-list-${Date.now()}.json`,
+      filters: [{ name: 'JSON Document', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, json, 'utf8');
+    surface.send('toast', { message: 'toast.readingListExported', kind: 'success' });
+    return { ok: true, filePath: result.filePath };
+  });
+
+  handle('readingList:importJson', async () => {
+    const result = await dialog.showOpenDialog(chromeWindow(), {
+      title: 'Hinterland',
+      properties: ['openFile'],
+      filters: [{ name: 'JSON Document', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePaths.length) return { ok: false };
+    try {
+      const raw = await readFile(result.filePaths[0], 'utf8');
+      const imported = JSON.parse(raw);
+      const list = Array.isArray(imported) ? imported : [imported];
+      const valid = list
+        .filter((item) => item && typeof item.url === 'string' && (item.url.startsWith('http://') || item.url.startsWith('https://') || item.url.startsWith('hinterland://')))
+        .map((item) => ({
+          id: typeof item.id === 'string' && item.id ? item.id : `rl_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+          url: item.url,
+          title: String(item.title || item.url).slice(0, 300),
+          favicon: typeof item.favicon === 'string' ? item.favicon : '',
+          addedAt: Number(item.addedAt) || Date.now(),
+          read: Boolean(item.read),
+        }));
+
+      if (!valid.length) {
+        surface.send('toast', { message: 'readingList.importInvalid', kind: 'warning' });
+        return { ok: false, error: 'noValidItems' };
+      }
+
+      const existing = [...(settings.value('data.readingList') || [])];
+      let importedCount = 0;
+      for (const item of valid) {
+        const idx = existing.findIndex((e) => e.url === item.url);
+        if (idx === -1) {
+          existing.push(item);
+          importedCount++;
+        }
+      }
+      settings.set('data.readingList', existing);
+      surface.send('toast', { message: 'toast.readingListImported', kind: 'success' });
+      return { ok: true, count: importedCount, list: existing };
+    } catch (err) {
+      console.warn('[Hinterland] readingList import failed', err?.message);
+      return { ok: false, error: err?.message };
+    }
+  });
+
   /* ---------------------------------------------------------------- notes */
   handle('notes:get', () => {
     return settings.value('data.notes') || [];
@@ -1093,6 +1152,89 @@ export function installIpc() {
     await writeFile(result.filePath, note.content || '', 'utf8');
     surface.send('toast', { message: 'toast.noteExported', kind: 'success' });
     return { ok: true, path: result.filePath };
+  });
+
+  handle('notes:exportAll', async () => {
+    const notes = settings.value('data.notes') || [];
+    const json = JSON.stringify(notes, null, 2);
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-notes-${Date.now()}.json`,
+      filters: [{ name: 'JSON Document', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, json, 'utf8');
+    surface.send('toast', { message: 'toast.notesExportedAll', kind: 'success' });
+    return { ok: true, filePath: result.filePath };
+  });
+
+  handle('notes:importAll', async () => {
+    const result = await dialog.showOpenDialog(chromeWindow(), {
+      title: 'Hinterland',
+      properties: ['openFile'],
+      filters: [{ name: 'JSON Document', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePaths.length) return { ok: false };
+    try {
+      const raw = await readFile(result.filePaths[0], 'utf8');
+      const imported = JSON.parse(raw);
+      const list = Array.isArray(imported) ? imported : [imported];
+      const valid = list
+        .filter((n) => n && typeof n === 'object' && (typeof n.title === 'string' || typeof n.content === 'string'))
+        .map((n) => ({
+          id: typeof n.id === 'string' && n.id ? n.id : `n${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+          title: String(n.title || '').trim().slice(0, 200),
+          content: String(n.content || ''),
+          pinned: Boolean(n.pinned),
+          updatedAt: Number(n.updatedAt) || Date.now(),
+        }));
+
+      if (!valid.length) {
+        surface.send('toast', { message: 'notes.importInvalid', kind: 'warning' });
+        return { ok: false, error: 'noValidNotes' };
+      }
+
+      const existing = [...(settings.value('data.notes') || [])];
+      let importedCount = 0;
+      for (const note of valid) {
+        const idx = existing.findIndex((e) => e.id === note.id);
+        if (idx >= 0) {
+          existing[idx] = note;
+        } else {
+          existing.unshift(note);
+          importedCount++;
+        }
+      }
+      settings.set('data.notes', existing);
+      surface.send('toast', { message: 'toast.notesImported', kind: 'success' });
+      return { ok: true, count: importedCount, notes: existing };
+    } catch (err) {
+      console.warn('[Hinterland] notes import failed', err?.message);
+      return { ok: false, error: err?.message };
+    }
+  });
+
+  handle('notes:createFromTab', (tabId) => {
+    const tab = activeTab(tabId);
+    if (!tab || !tab.url || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) {
+      surface.send('toast', { message: 'toast.noTabsToBookmark', kind: 'warning' });
+      return { ok: false, error: 'invalidTab' };
+    }
+    const tabTitle = (tab.title || tab.url).slice(0, 150);
+    const dateStr = new Date().toISOString().split('T')[0];
+    const noteContent = `# [${tabTitle}](${tab.url})\n\n> Captured from Hinterland Browser on ${dateStr}\n\n- URL: ${tab.url}\n`;
+    const fresh = {
+      id: `n${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+      title: tabTitle,
+      content: noteContent,
+      pinned: false,
+      updatedAt: Date.now(),
+    };
+    const notes = [...(settings.value('data.notes') || [])];
+    notes.unshift(fresh);
+    settings.set('data.notes', notes);
+    surface.send('toast', { message: 'toast.noteCreatedFromTab', kind: 'success' });
+    return { ok: true, note: fresh };
   });
 
   /* ------------------------------------------------------------- tab stashes */
