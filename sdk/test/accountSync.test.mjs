@@ -4,6 +4,8 @@ import { readFileSync } from 'node:fs';
 import {
   mergeBookmarks,
   normalizeBookmarkUrl,
+  mergeHistory,
+  normalizeHistoryUrl,
   extractSyncableSettings,
   mergeSettings,
   encryptSyncPayload,
@@ -49,6 +51,30 @@ describe('Hinterland Account & Cloud Sync Engine', () => {
       assert.deepEqual(mergeBookmarks([], []), []);
       assert.deepEqual(mergeBookmarks(null, null), []);
       assert.equal(mergeBookmarks([{ title: 'A', url: 'https://a.com' }], null).length, 1);
+    });
+  });
+
+  describe('Search History Normalization & Merge', () => {
+    it('normalizes history URLs consistently', () => {
+      assert.equal(normalizeHistoryUrl('https://example.com/search/'), 'https://example.com/search');
+      assert.equal(normalizeHistoryUrl('https://hinterland.de/'), 'https://hinterland.de');
+    });
+
+    it('merges local and remote search history without duplicates and keeps latest metadata', () => {
+      const local = [
+        { url: 'https://example.com/search?q=freedom', title: 'Freedom Search', time: 1000, visits: 2 },
+        { url: 'https://hinterland.de', title: 'Hinterland', time: 500, visits: 1 },
+      ];
+      const remote = [
+        { url: 'https://example.com/search?q=freedom/', title: 'Freedom Search Updated', time: 2000, visits: 4 },
+        { url: 'https://privacy.org', title: 'Privacy Project', time: 1500, visits: 1 },
+      ];
+
+      const merged = mergeHistory(local, remote);
+      assert.equal(merged.length, 3);
+      assert.equal(merged[0].url, 'https://example.com/search?q=freedom');
+      assert.equal(merged[0].time, 2000);
+      assert.equal(merged[0].visits, 4);
     });
   });
 

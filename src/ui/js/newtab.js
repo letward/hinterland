@@ -54,15 +54,15 @@ function applyTheme() {
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
 
   const root = document.documentElement.style;
-  root.setProperty('--accent', value('appearance.accent', '#4f7cff'));
+  root.setProperty('--accent', value('appearance.accent', '#388bfd'));
   root.setProperty('--onAccent', value('appearance.accentContrast', '#ffffff'));
-  root.setProperty('--bg', value(`appearance.${prefix}Background`, dark ? '#0d1017' : '#f8fafc'));
-  root.setProperty('--surface', value(`appearance.${prefix}Surface`, dark ? '#151922' : '#ffffff'));
-  root.setProperty('--text', value(`appearance.${prefix}Text`, dark ? '#f1f5f9' : '#0f172a'));
-  root.setProperty('--textDim', dark ? '#94a3b8' : '#64748b');
-  root.setProperty('--border', dark ? '#283044' : '#cbd5e1');
-  root.setProperty('--borderSoft', dark ? '#1c2232' : '#e2e8f0');
-  root.setProperty('--radius', `${Number(value('appearance.radius', 10))}px`);
+  root.setProperty('--bg', value(`appearance.${prefix}Background`, dark ? '#090b0e' : '#f4f5f7'));
+  root.setProperty('--surface', value(`appearance.${prefix}Surface`, dark ? '#101319' : '#ffffff'));
+  root.setProperty('--text', value(`appearance.${prefix}Text`, dark ? '#f0f3f6' : '#0e1117'));
+  root.setProperty('--textDim', dark ? '#8b949e' : '#57606a');
+  root.setProperty('--border', dark ? '#22293a' : '#cfd4e0');
+  root.setProperty('--borderSoft', dark ? '#151a26' : '#e2e5ee');
+  root.setProperty('--radius', `${Number(value('appearance.radius', 0))}px`);
   root.setProperty('--fontSize', `${Number(value('appearance.fontSize', 14))}px`);
   root.setProperty('--blur', `${Number(value('appearance.blur', 18))}px`);
   root.setProperty('--font', String(value('appearance.customFont', '')).trim() || 'system, sans-serif');

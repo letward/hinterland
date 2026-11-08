@@ -186,7 +186,7 @@ async function resolveSupabaseUser(token) {
     const res = await supabaseAuthFetch('/auth/v1/user', { token });
     if (!res.ok) return null;
     const data = await res.json();
-    return data.user || null;
+    return data.id ? data : (data.user || null);
   } catch {
     return null;
   }

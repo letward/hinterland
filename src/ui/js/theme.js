@@ -29,11 +29,11 @@ export function applyTheme() {
   root.dataset.theme = theme;
 
   const prefix = theme === 'light' ? 'light' : 'dark';
-  const background = safeColor(get(`appearance.${prefix}Background`), theme === 'light' ? '#f8fafc' : '#0d1017');
-  const surface = safeColor(get(`appearance.${prefix}Surface`), theme === 'light' ? '#ffffff' : '#151922');
-  const text = safeColor(get(`appearance.${prefix}Text`), theme === 'light' ? '#0f172a' : '#f1f5f9');
+  const background = safeColor(get(`appearance.${prefix}Background`), theme === 'light' ? '#f4f5f7' : '#090b0e');
+  const surface = safeColor(get(`appearance.${prefix}Surface`), theme === 'light' ? '#ffffff' : '#101319');
+  const text = safeColor(get(`appearance.${prefix}Text`), theme === 'light' ? '#0e1117' : '#f0f3f6');
 
-  setVar('--accent', safeColor(get('appearance.accent'), '#4f7cff'));
+  setVar('--accent', safeColor(get('appearance.accent'), '#388bfd'));
   setVar('--onAccent', safeColor(get('appearance.accentContrast'), '#ffffff'));
   setVar('--bg', background);
   setVar('--surface', surface);
@@ -42,7 +42,7 @@ export function applyTheme() {
   const luminance = relativeLuminance(get('appearance.accent'));
   setVar('--onAccent', luminance > 0.55 ? '#111318' : safeColor(get('appearance.accentContrast'), '#ffffff'));
 
-  const radius = Math.max(0, Math.min(24, Number(get('appearance.radius', 10))));
+  const radius = Math.max(0, Math.min(24, Number(get('appearance.radius', 0))));
   setVar('--radius', `${radius}px`);
 
   const fontSize = Math.max(10, Math.min(20, Number(get('appearance.fontSize', 14))));

@@ -148,7 +148,7 @@ html[data-tabbar="bottom"] .tabstrip {
   padding: 0 8px 0 10px;
   border: 1px solid transparent;
   border-bottom: 0;
-  border-radius: calc(var(--radius) * 0.9) calc(var(--radius) * 0.9) 0 0;
+  border-radius: 0;
   color: var(--textDim);
   cursor: pointer;
   overflow: hidden;
@@ -158,15 +158,15 @@ html[data-tabbar="bottom"] .tabstrip {
 }
 
 .tab:hover {
-  background: color-mix(in srgb, var(--surfaceAlt) 75%, transparent);
+  background: var(--surfaceHover);
   color: var(--text);
 }
 
 .tabActive {
   background: var(--surface);
-  border-color: var(--borderSoft);
+  border-color: var(--border);
   color: var(--text);
-  box-shadow: 0 2px 8px rgb(0 0 0 / 14%);
+  box-shadow: 0 2px 0 0 var(--border);
   z-index: 2;
 }
 
@@ -178,7 +178,7 @@ html[data-tabbar="bottom"] .tabstrip {
   right: 0;
   height: 2px;
   background: var(--accent);
-  border-radius: 2px 2px 0 0;
+  border-radius: 0;
 }
 
 .tabPrivate::after {
@@ -319,7 +319,7 @@ html[data-tabbar="bottom"] .tabstrip {
   height: 18px;
   padding: 0;
   border: 0;
-  border-radius: 50%;
+  border-radius: 0;
   background: transparent;
   color: inherit;
   cursor: pointer;
@@ -756,21 +756,20 @@ html[data-closeButton="always"] .tabClose {
   min-width: 0;
   height: calc(var(--toolbarHeight) - 12px);
   padding: 0 8px 0 10px;
-  border: 1px solid var(--borderSoft);
-  border-radius: var(--radiusPill);
-  background: var(--surfaceAlt);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  background: var(--bg);
   transition: background var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
 }
 
 .omni:hover {
-  background: var(--surfaceHover);
-  border-color: var(--border);
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
 }
 
 .omni:focus-within {
   background: var(--bg);
-  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
-  box-shadow: var(--shadowFocus);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
 }
 
 .omniIcon,
@@ -900,11 +899,11 @@ html[data-closeButton="always"] .tabClose {
 
 .omniProgress {
   position: absolute;
-  left: 14px;
-  right: 14px;
-  bottom: 2px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   height: 2px;
-  border-radius: 2px;
+  border-radius: 0;
   overflow: hidden;
   background: color-mix(in srgb, var(--text) 10%, transparent);
   opacity: 0;

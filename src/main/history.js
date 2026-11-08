@@ -126,6 +126,33 @@ export class HistoryStore {
     this.saveNow();
   }
 
+  mergeEntries(remoteEntries = []) {
+    if (!Array.isArray(remoteEntries) || remoteEntries.length === 0) return this.entries;
+    const map = new Map();
+    for (const item of this.entries) {
+      if (item && item.url) map.set(item.url, { ...item });
+    }
+    for (const item of remoteEntries) {
+      if (!item || !item.url) continue;
+      const existing = map.get(item.url);
+      if (!existing) {
+        map.set(item.url, { ...item });
+      } else {
+        map.set(item.url, {
+          url: existing.url,
+          title: item.title || existing.title || '',
+          time: Math.max(Number(item.time) || 0, Number(existing.time) || 0),
+          visits: Math.max(Number(item.visits) || 1, Number(existing.visits) || 1),
+        });
+      }
+    }
+    this.entries = Array.from(map.values())
+      .sort((a, b) => (b.time || 0) - (a.time || 0))
+      .slice(0, LIMIT);
+    this.saveNow();
+    return this.entries;
+  }
+
   schedule() {
     if (this.timer) clearTimeout(this.timer);
     this.timer = setTimeout(() => this.saveNow(), 900);

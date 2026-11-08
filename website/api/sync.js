@@ -85,6 +85,33 @@ function mergeBookmarks(local = [], remote = []) {
   return Array.from(map.values());
 }
 
+function mergeHistory(local = [], remote = []) {
+  const map = new Map();
+  for (const item of (Array.isArray(local) ? local : [])) {
+    if (!item || !item.url) continue;
+    const key = normalizeUrl(item.url);
+    map.set(key, { ...item });
+  }
+  for (const item of (Array.isArray(remote) ? remote : [])) {
+    if (!item || !item.url) continue;
+    const key = normalizeUrl(item.url);
+    const existing = map.get(key);
+    if (!existing) {
+      map.set(key, { ...item });
+    } else {
+      map.set(key, {
+        url: existing.url,
+        title: item.title || existing.title || '',
+        time: Math.max(Number(item.time) || 0, Number(existing.time) || 0),
+        visits: Math.max(Number(item.visits) || 1, Number(existing.visits) || 1),
+      });
+    }
+  }
+  return Array.from(map.values())
+    .sort((a, b) => (b.time || 0) - (a.time || 0))
+    .slice(0, 1000);
+}
+
 async function resolveUser(token) {
   if (!token) return null;
   if (HAS_SUPABASE) {
@@ -243,7 +270,7 @@ module.exports = async function handler(req, res) {
   const userId = user.id;
 
   if (action === 'pull') {
-    const stored = syncDataByUser.get(userId) || { bookmarks: [], settings: {}, updatedAt: null };
+    const stored = syncDataByUser.get(userId) || { bookmarks: [], history: [], settings: {}, updatedAt: null };
     return json(res, 200, { ok: true, data: stored, syncedAt: stored.updatedAt });
   }
 
@@ -270,8 +297,9 @@ module.exports = async function handler(req, res) {
   }
 
   const mergedBookmarks = mergeBookmarks(incoming.bookmarks ?? [], current.bookmarks ?? []);
+  const mergedHistory = mergeHistory(incoming.history ?? [], current.history ?? []);
   const mergedSettings = { ...(current.settings ?? {}), ...(incoming.settings ?? {}) };
-  const merged = { bookmarks: mergedBookmarks, settings: mergedSettings, updatedAt: new Date().toISOString() };
+  const merged = { bookmarks: mergedBookmarks, history: mergedHistory, settings: mergedSettings, updatedAt: new Date().toISOString() };
   syncDataByUser.set(userId, merged);
   return json(res, 200, { ok: true, data: merged, syncedAt: merged.updatedAt });
 };

@@ -55,18 +55,18 @@ body.start {
 .heroLogo {
   width: 68px;
   height: 68px;
-  border-radius: 50%;
+  border-radius: 0;
   display: block;
   margin: 0 auto 2px;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 28%), 0 0 0 1px var(--borderSoft);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border);
   user-select: none;
   -webkit-user-drag: none;
   transition: transform var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
 }
 
 .heroLogo:hover {
-  transform: scale(1.06);
-  box-shadow: 0 12px 32px rgb(0 0 0 / 38%), 0 0 16px var(--accentGlow);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--accent);
 }
 
 .greeting {
@@ -116,25 +116,24 @@ body.start {
   align-items: center;
   gap: 12px;
   width: 100%;
-  height: 54px;
+  height: 52px;
   padding: 0 10px 0 18px;
-  border: 1px solid var(--borderSoft);
-  border-radius: var(--radiusPill);
-  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  background: var(--surface);
   box-shadow: var(--shadowSmall);
   backdrop-filter: blur(var(--blur));
   transition: border-color var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut), background var(--anim) var(--easeOut);
 }
 
 .searchBox:hover {
-  border-color: var(--border);
-  background: var(--surface);
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
 }
 
 .searchBox:focus-within {
   background: var(--surface);
-  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
-  box-shadow: var(--shadowFocus);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
 }
 
 .searchIcon {
@@ -171,7 +170,7 @@ body.start {
   width: 36px;
   height: 36px;
   border: 0;
-  border-radius: 50%;
+  border-radius: 0;
   background: var(--accent);
   color: var(--onAccent);
   cursor: pointer;
@@ -260,7 +259,7 @@ body.start {
   place-items: center;
   width: 44px;
   height: 44px;
-  border-radius: calc(var(--radius) * 0.8);
+  border-radius: 0;
   background: var(--surfaceAlt);
   color: var(--textDim);
   font-weight: 700;

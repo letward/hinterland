@@ -862,6 +862,11 @@ export const SCHEMA = [
     descKey: 'settings.account.syncBookmarksDesc',
     section: 'account',
   }),
+  option('account.syncHistory', 'bool', true, {
+    labelKey: 'settings.account.syncHistory',
+    descKey: 'settings.account.syncHistoryDesc',
+    section: 'account',
+  }),
   option('account.syncSettings', 'bool', true, {
     labelKey: 'settings.account.syncSettings',
     descKey: 'settings.account.syncSettingsDesc',

@@ -1,36 +1,36 @@
 :root {
-  --ht-bg: #0d1017;
-  --ht-surface: #151922;
-  --ht-surface-hover: #262c3e;
-  --ht-border: #283044;
-  --ht-text: #f1f5f9;
-  --ht-text-dim: #94a3b8;
-  --ht-accent: #4f7cff;
-  --ht-accent-hover: #6c92ff;
-  --ht-danger: #ef4444;
-  --ht-success: #10b981;
-  --ht-success-bright: #34d399;
-  --ht-warning: #f59e0b;
-  --ht-radius: 8px;
-  --ht-radius-sm: 6px;
+  --ht-bg: #090b0e;
+  --ht-surface: #101319;
+  --ht-surface-hover: #1c2230;
+  --ht-border: #22293a;
+  --ht-text: #f0f3f6;
+  --ht-text-dim: #8b949e;
+  --ht-accent: #388bfd;
+  --ht-accent-hover: #58a6ff;
+  --ht-danger: #f85149;
+  --ht-success: #2ea043;
+  --ht-success-bright: #3fb950;
+  --ht-warning: #d29922;
+  --ht-radius: 0px;
+  --ht-radius-sm: 0px;
   --ht-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --ht-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    --ht-bg: #f8fafc;
+    --ht-bg: #f4f5f7;
     --ht-surface: #ffffff;
-    --ht-surface-hover: #e2e8f0;
-    --ht-border: #cbd5e1;
-    --ht-text: #0f172a;
-    --ht-text-dim: #64748b;
-    --ht-accent: #3b66e0;
-    --ht-accent-hover: #4f7cff;
-    --ht-danger: #dc2626;
-    --ht-success: #059669;
-    --ht-success-bright: #10b981;
-    --ht-warning: #d97706;
+    --ht-surface-hover: #e1e4ec;
+    --ht-border: #cfd4e0;
+    --ht-text: #0e1117;
+    --ht-text-dim: #57606a;
+    --ht-accent: #0969da;
+    --ht-accent-hover: #218bff;
+    --ht-danger: #cf222e;
+    --ht-success: #1a7f37;
+    --ht-success-bright: #2da44e;
+    --ht-warning: #9a6700;
   }
 }
 

@@ -10,6 +10,7 @@
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { settings } from './settings.js';
+import { history } from './history.js';
 
 export const DEFAULT_SERVER_URL = 'https://hinterland-browser.vercel.app/api/sync';
 
@@ -109,6 +110,46 @@ export function mergeBookmarks(local = [], remote = []) {
   }
 
   return Array.from(map.values());
+}
+
+export function normalizeHistoryUrl(url) {
+  if (!url || typeof url !== 'string') return '';
+  try {
+    const parsed = new URL(url);
+    return parsed.href.replace(/\/$/, '');
+  } catch {
+    return url.trim().toLowerCase();
+  }
+}
+
+export function mergeHistory(local = [], remote = []) {
+  const map = new Map();
+
+  for (const item of (Array.isArray(local) ? local : [])) {
+    if (!item || !item.url) continue;
+    const key = normalizeHistoryUrl(item.url);
+    map.set(key, { ...item });
+  }
+
+  for (const item of (Array.isArray(remote) ? remote : [])) {
+    if (!item || !item.url) continue;
+    const key = normalizeHistoryUrl(item.url);
+    const existing = map.get(key);
+    if (!existing) {
+      map.set(key, { ...item });
+    } else {
+      map.set(key, {
+        url: existing.url,
+        title: item.title || existing.title || '',
+        time: Math.max(Number(item.time) || 0, Number(existing.time) || 0),
+        visits: Math.max(Number(item.visits) || 1, Number(existing.visits) || 1),
+      });
+    }
+  }
+
+  return Array.from(map.values())
+    .sort((a, b) => (b.time || 0) - (a.time || 0))
+    .slice(0, 1000);
 }
 
 export function extractSyncableSettings(allSettings) {
@@ -308,6 +349,7 @@ export class SyncService extends EventEmitter {
       hasSupabaseCredentials: Boolean(supabaseUrl && supabaseKey),
       autoSync: settings.value('account.autoSync') ?? true,
       syncBookmarks: settings.value('account.syncBookmarks') ?? true,
+      syncHistory: settings.value('account.syncHistory') ?? true,
       syncSettings: settings.value('account.syncSettings') ?? true,
       lastSyncedAt: settings.value('account.lastSyncTime') || this.lastSyncedAt || null,
       status: this.status,
@@ -335,6 +377,7 @@ export class SyncService extends EventEmitter {
     if (patch.supabaseUrl !== undefined) settings.set('account.supabaseUrl', String(patch.supabaseUrl));
     if (patch.supabaseAnonKey !== undefined) settings.set('account.supabaseAnonKey', String(patch.supabaseAnonKey));
     if (patch.syncBookmarks !== undefined) settings.set('account.syncBookmarks', Boolean(patch.syncBookmarks));
+    if (patch.syncHistory !== undefined) settings.set('account.syncHistory', Boolean(patch.syncHistory));
     if (patch.syncSettings !== undefined) settings.set('account.syncSettings', Boolean(patch.syncSettings));
     if (patch.syncPassphrase !== undefined) this.setSyncPassphrase(patch.syncPassphrase);
 
@@ -449,21 +492,25 @@ export class SyncService extends EventEmitter {
 
     try {
       const syncBookmarksEnabled = settings.value('account.syncBookmarks') ?? true;
+      const syncHistoryEnabled = settings.value('account.syncHistory') ?? true;
       const syncSettingsEnabled = settings.value('account.syncSettings') ?? true;
 
       const localBookmarks = syncBookmarksEnabled ? (settings.value('data.bookmarks') ?? []) : [];
+      const localHistory = syncHistoryEnabled ? history.recent(500) : [];
       const localSettings = syncSettingsEnabled ? extractSyncableSettings(settings.all()) : {};
 
       let cloudData = null;
       if (session.provider === 'supabase') {
         cloudData = await this._supabaseSync(session, {
           bookmarks: localBookmarks,
+          history: localHistory,
           settings: localSettings,
           direction,
         });
       } else {
         cloudData = await this._hinterlandSync(session, {
           bookmarks: localBookmarks,
+          history: localHistory,
           settings: localSettings,
           direction,
         });
@@ -475,6 +522,12 @@ export class SyncService extends EventEmitter {
         mergedBookmarks = mergeBookmarks(localBookmarks, cloudData.bookmarks);
         settings.set('data.bookmarks', mergedBookmarks, { silent: true });
         this.emit('bookmarksUpdated', mergedBookmarks);
+      }
+
+      let mergedHistory = localHistory;
+      if (syncHistoryEnabled && Array.isArray(cloudData?.history)) {
+        mergedHistory = history.mergeEntries(cloudData.history);
+        this.emit('historyUpdated', history.entries);
       }
 
       if (syncSettingsEnabled && cloudData?.settings && typeof cloudData.settings === 'object') {
@@ -568,13 +621,13 @@ export class SyncService extends EventEmitter {
     };
   }
 
-  async _supabaseSync(session, { bookmarks, settings: currentSettings }) {
+  async _supabaseSync(session, { bookmarks, history: localHistory = [], settings: currentSettings }) {
     const url = (settings.value('account.supabaseUrl') || '').replace(/\/$/, '');
     const key = settings.value('account.supabaseAnonKey');
     if (!url || !key) throw new Error('missingSupabaseConfig');
 
     // Prepare payload (encrypt if passphrase is provided)
-    let payload = { bookmarks, settings: currentSettings, updatedAt: new Date().toISOString() };
+    let payload = { bookmarks, history: localHistory, settings: currentSettings, updatedAt: new Date().toISOString() };
     if (this.syncPassphrase) {
       payload = encryptSyncPayload(payload, this.syncPassphrase);
     }
@@ -595,12 +648,14 @@ export class SyncService extends EventEmitter {
       }
     }
 
-    // Merge remote bookmarks and settings with local
+    // Merge remote bookmarks, history and settings with local
     const mergedBookmarks = mergeBookmarks(bookmarks, remoteData?.bookmarks ?? []);
+    const mergedHistory = mergeHistory(localHistory, remoteData?.history ?? []);
     const mergedSettings = { ...(remoteData?.settings ?? {}), ...currentSettings };
 
     let toSave = {
       bookmarks: mergedBookmarks,
+      history: mergedHistory,
       settings: mergedSettings,
       updatedAt: new Date().toISOString(),
     };
@@ -624,6 +679,7 @@ export class SyncService extends EventEmitter {
 
     return {
       bookmarks: mergedBookmarks,
+      history: mergedHistory,
       settings: mergedSettings,
       updatedAt: toSave.updatedAt,
     };
@@ -667,10 +723,10 @@ export class SyncService extends EventEmitter {
     };
   }
 
-  async _hinterlandSync(session, { bookmarks, settings: currentSettings }) {
+  async _hinterlandSync(session, { bookmarks, history: localHistory = [], settings: currentSettings }) {
     const endpoint = settings.value('account.serverUrl') || DEFAULT_SERVER_URL;
 
-    let payloadData = { bookmarks, settings: currentSettings, updatedAt: new Date().toISOString() };
+    let payloadData = { bookmarks, history: localHistory, settings: currentSettings, updatedAt: new Date().toISOString() };
     if (this.syncPassphrase) {
       payloadData = encryptSyncPayload(payloadData, this.syncPassphrase);
     }

@@ -3192,6 +3192,10 @@ function renderAccountConnected(container, status, refresh) {
       el('div', { class: 'accountStatLabel', text: t('account.bookmarksSynced') }),
     ]),
     el('div', { class: 'accountStatBox' }, [
+      el('div', { class: 'accountStatVal', text: '✓' }),
+      el('div', { class: 'accountStatLabel', text: t('account.historySynced') }),
+    ]),
+    el('div', { class: 'accountStatBox' }, [
       el('div', { class: 'accountStatVal', text: '17' }),
       el('div', { class: 'accountStatLabel', text: t('account.settingsSynced') }),
     ]),
@@ -3414,6 +3418,28 @@ function accountSyncSettingsPage() {
               el('div', { class: 'optionHint', text: t('account.syncBookmarksDesc') }),
             ]),
             el('div', { class: 'optionControl' }, [bookmarksSwitch]),
+          ]),
+        );
+
+        // Sync Search History Toggle
+        const historySwitch = el('button', {
+          class: 'switch',
+          type: 'button',
+          role: 'switch',
+          'aria-checked': String(Boolean(status.syncHistory)),
+        });
+        historySwitch.addEventListener('click', async () => {
+          const next = historySwitch.getAttribute('aria-checked') !== 'true';
+          historySwitch.setAttribute('aria-checked', String(next));
+          await api().account.updateConfig({ syncHistory: next });
+        });
+        list.append(
+          el('div', { class: 'option' }, [
+            el('div', { class: 'optionText' }, [
+              el('div', { class: 'optionLabel', text: t('account.syncHistory') }),
+              el('div', { class: 'optionHint', text: t('account.syncHistoryDesc') }),
+            ]),
+            el('div', { class: 'optionControl' }, [historySwitch]),
           ]),
         );
 

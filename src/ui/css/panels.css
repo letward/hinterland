@@ -524,10 +524,10 @@
 
 .switch {
   position: relative;
-  width: 44px;
-  height: 24px;
+  width: 40px;
+  height: 22px;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 0;
   background: var(--surfaceAlt);
   cursor: pointer;
   transition: background var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut);
@@ -539,11 +539,11 @@
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 0;
   background: var(--textDim);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 30%);
   transition: transform var(--anim) var(--easeOut), background var(--anim) var(--easeOut);
 }
 
@@ -553,7 +553,7 @@
 }
 
 .switch[aria-checked="true"]::after {
-  transform: translate3d(20px, 0, 0);
+  transform: translate3d(18px, 0, 0);
   background: var(--onAccent);
 }
 
