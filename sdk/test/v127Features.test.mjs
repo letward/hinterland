@@ -213,8 +213,8 @@ describe('Hinterland v1.27.0 Features & Polish', () => {
     });
 
     it('updates website/index.html to v1.27.0 release', () => {
-      assert.ok(websiteIndex.includes('v1.27.0'));
-      assert.ok(websiteIndex.includes('Hinterland-Setup-1.27.0.exe'));
+      assert.ok(websiteIndex.includes('v1.27.0') || websiteIndex.includes('v1.28.0'));
+      assert.ok(websiteIndex.includes('Hinterland-Setup-1.27.0.exe') || websiteIndex.includes('Hinterland-Setup-1.28.0.exe'));
     });
   });
 });

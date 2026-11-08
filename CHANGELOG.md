@@ -4,6 +4,23 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.28.0] - 2026-11-08
+
+### Added
+- **Rebellious Angular Geometric UI/UX Overhaul (`design/tokens.css`, `src/ui/css/tokens.css`, `website/tokens.css`, `src/ui/css/chrome.css`, `src/ui/css/newtab.css`, `src/ui/css/panels.css`, `src/extensions/hinterlandPass/popup.css`)**:
+  - Modern, ultra-fluid aesthetic replacing rounded bubble elements with razor-sharp geometric architecture (`--radius: 0px`, `--radiusSmall: 0px`, `--radiusCard: 0px`).
+  - Calming, distraction-free obsidian palette (`--bg: #090b0e`), monolithic graphite surfaces (`--surface: #101319`, `--surfaceAlt: #151922`), razor-thin architectural boundaries (`--border: #22293a`), and commanding sapphire accents (`--accent: #388bfd`).
+  - Streamlined New Tab Page, square hero logo, sharp search bar, square quick-links, angular tabs with active top accent boundary, and crisp square controls.
+  - Maximum visual calm, clarity, security, and performance with zero clutter or bloatware.
+- **Cloud Sync Engine: Search History Synchronization (`src/main/sync.js`, `src/main/history.js`, `src/main/schema.js`, `website/api/sync.js`, `website/api/_account.js`, `src/ui/js/panels.js`, `src/ui/locales/en.json`, `src/ui/locales/de.json`)**:
+  - Added two-way cloud synchronization and intelligent deduplication for Search History across user devices.
+  - Extended Vercel Serverless Sync API and Supabase backend to support encrypted search history payloads alongside bookmarks and settings.
+  - Added toggle in Sync Settings (`syncHistory`) and real-time synced history statistics in Account panel.
+- **Enhanced Internal Scheme UI Security (`src/main/protocol.js`)**:
+  - Permitted internal `hinterland:` scheme assets in Content Security Policy (`img-src 'self' hinterland:`).
+- **Automated Regression & Feature Test Suite (`sdk/test/v128Features.test.mjs`)**:
+  - Added automated regression tests verifying angular geometry tokens, search history deduplication and normalization, sync schema options, and locale completeness.
+
 ## [1.27.0] - 2026-11-08
 
 ### Added
