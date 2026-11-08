@@ -136,6 +136,7 @@
     "unmuteAllTabs": "Stummschaltung aller Tabs aufheben",
     "bookmarkAllTabs": "Alle Tabs als Lesezeichen speichern…",
     "clearBrowsingData": "Browserdaten löschen…",
+    "sitePermissions": "Website-Berechtigungen & Shields",
     "mediaControls": "Mediensteuerung",
     "notes": "Notizen & Entwürfe",
     "tabStash": "Tab-Stash & Arbeitsbereiche",
@@ -149,7 +150,9 @@
     "saveTabAsNote": "Tab als Notiz erfassen"
   },
   "find": {
-    "placeholder": "In Seite suchen"
+    "placeholder": "In Seite suchen",
+    "matchCase": "Groß-/Kleinschreibung (Alt+C)",
+    "wholeWord": "Ganzes Wort (Alt+W)"
   },
   "bookmarksBar": {
     "empty": "Noch keine Lesezeichen. Klicke auf den Stern, um eines hinzuzufügen."
@@ -197,7 +200,10 @@
     "clearRecentlyClosed": "Kürzlich geschlossene Tabs leeren",
     "notesExportAll": "Alle Notizen exportieren (JSON)",
     "notesImportAll": "Notizen importieren (JSON)",
-    "noteCurrentTab": "Aktiven Tab als Notiz erfassen"
+    "noteCurrentTab": "Aktiven Tab als Notiz erfassen",
+    "sitePermissions": "Website-Berechtigungen & Shields",
+    "searchSetDefault": "Standardsuchmaschine ändern",
+    "searchSetDefaultPrompt": "Name oder ID der Suchmaschine eingeben, die als Standard gesetzt werden soll:"
   },
   "confirm": {
     "closeTitle": "Tab schließen",
@@ -451,7 +457,16 @@
     "notesExportedAll": "Alle Notizen erfolgreich exportiert",
     "notesImported": "Notizen erfolgreich importiert",
     "noteCreatedFromTab": "Notiz aus aktivem Tab erstellt",
-    "defaultBrowserSet": "Hinterland als Standardbrowser registriert"
+    "defaultBrowserSet": "Hinterland als Standardbrowser registriert",
+    "allPermissionsReset": "Alle Website-Berechtigungen wurden zurückgesetzt",
+    "originPermissionsCleared": "Berechtigungen für Website widerrufen",
+    "shieldExceptionRemoved": "Shield-Schutz für Website wieder aktiviert",
+    "allShieldsReset": "Alle Shield-Ausnahmen wurden geleert",
+    "searchEngineAdded": "Benutzerdefinierte Suchmaschine hinzugefügt",
+    "searchEngineDefaultSet": "Standardsuchmaschine aktualisiert",
+    "searchEnginesReset": "Suchmaschinen auf Standard zurückgesetzt",
+    "tabsMuted": "Alle Tabs stummgeschaltet ({count})",
+    "tabsUnmuted": "Stummschaltung aller Tabs aufgehoben ({count})"
   },
   "welcome": {
     "title": "Willkommen bei Hinterland",
@@ -752,6 +767,7 @@
       "groupItem": "Gruppe"
     },
     "privacy": {
+      "managePermissions": "Website-Berechtigungen & Shields verwalten",
       "blockTrackers": "Tracker blockieren",
       "blockTrackersDesc": "Stoppt häufige Tracking und Messanfragen.",
       "blockThirdPartyCookies": "Cookies von Drittanbietern blockieren",
@@ -995,6 +1011,20 @@
     "cookieHttpOnly": "HttpOnly",
     "deleteCookie": "Cookie löschen",
     "copyValue": "Wert kopieren"
+  },
+  "sitePermissions": {
+    "title": "Website-Berechtigungen & Shields",
+    "description": "Verwalten Sie Website-Berechtigungen, Hardwarezugriffe und Ausnahmen des Hinterland-Shields.",
+    "tabPermissions": "Berechtigungen",
+    "tabShields": "Shield-Ausnahmen",
+    "searchPlaceholder": "Domain oder Origin durchsuchen...",
+    "noPermissions": "Keine benutzerdefinierten Berechtigungen konfiguriert. Standard-Sicherheitsrichtlinien gelten.",
+    "noShields": "Alle Websites werden derzeit durch Hinterland Shield geschützt.",
+    "resetAllPerms": "Alle Berechtigungen zurücksetzen",
+    "resetAllShields": "Alle Ausnahmen zurücksetzen",
+    "revokeOrigin": "Widerrufen",
+    "enableShield": "Shield aktivieren",
+    "shieldPaused": "Tracking-Schutz pausiert"
   },
   "readingList": {
     "title": "Leseliste",

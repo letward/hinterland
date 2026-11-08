@@ -132,6 +132,11 @@ export function openMainMenu() {
           onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'clearData' } })),
         }),
         row({
+          iconName: 'shield',
+          title: t('menu.sitePermissions'),
+          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'sitePermissions' } })),
+        }),
+        row({
           iconName: 'volume',
           title: t('menu.mediaControls'),
           subtitle: 'Ctrl+Alt+M',

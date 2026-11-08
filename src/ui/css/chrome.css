@@ -880,6 +880,38 @@ html[data-closeButton="always"] .tabClose {
   text-align: center;
 }
 
+.findToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  min-width: 26px;
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  border-radius: var(--radiusSmall);
+  border: 1px solid var(--borderSoft);
+  background: var(--bg);
+  color: var(--textDim);
+  cursor: pointer;
+  transition: background var(--anim), color var(--anim), border-color var(--anim);
+  user-select: none;
+  -webkit-app-region: no-drag;
+}
+
+.findToggle:hover {
+  background: var(--surfaceHover);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.findToggle.active {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* ---------------------------------------------------------------- download shelf */
 
 .downloadShelf {

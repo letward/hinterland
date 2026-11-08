@@ -3534,4 +3534,206 @@ function accountProvidersPage() {
   };
 }
 
+/* --------------------------------------------------- site permissions & shields */
+
+export function openSitePermissions() {
+  openModal({
+    title: t('sitePermissions.title'),
+    iconName: 'shield',
+    nav: [sitePermissionsPage()],
+  });
+}
+
+function sitePermissionsPage() {
+  return {
+    id: 'sitePermissions',
+    icon: 'shield',
+    labelKey: 'sitePermissions.title',
+    render: () => {
+      const container = el('div', { class: 'sitePermissionsContainer' });
+      container.append(head(t('sitePermissions.title'), t('sitePermissions.description')));
+
+      let activeSubTab = 'permissions';
+      let searchQuery = '';
+
+      const toolbar = el('div', {
+        class: 'sitePermissionsToolbar',
+        style: { display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center', marginBottom: '16px' }
+      });
+
+      const searchInput = el('input', {
+        class: 'input sitePermissionsSearch',
+        type: 'text',
+        placeholder: t('sitePermissions.searchPlaceholder'),
+        style: { flex: '1', minWidth: '180px' },
+      });
+      searchInput.addEventListener('input', () => {
+        searchQuery = searchInput.value.trim().toLowerCase();
+        paint();
+      });
+
+      const tabGroup = el('div', { style: { display: 'flex', gap: '4px' } });
+      const btnPerms = el('button', {
+        class: 'button small active',
+        type: 'button',
+        text: t('sitePermissions.tabPermissions'),
+        onclick: () => {
+          activeSubTab = 'permissions';
+          btnPerms.classList.add('active');
+          btnShields.classList.remove('active');
+          paint();
+        },
+      });
+      const btnShields = el('button', {
+        class: 'button small',
+        type: 'button',
+        text: t('sitePermissions.tabShields'),
+        onclick: () => {
+          activeSubTab = 'shields';
+          btnShields.classList.add('active');
+          btnPerms.classList.remove('active');
+          paint();
+        },
+      });
+      tabGroup.append(btnPerms, btnShields);
+
+      const actionsGroup = el('div', { style: { display: 'flex', gap: '6px' } });
+      const resetBtn = el('button', {
+        class: 'button small danger',
+        type: 'button',
+        html: `${icon('trash')} <span>${t('sitePermissions.resetAllPerms')}</span>`,
+        onclick: async () => {
+          if (activeSubTab === 'permissions') {
+            await api().site.resetAllPermissions();
+          } else {
+            await api().site.resetAllShieldExceptions();
+          }
+          paint();
+        },
+      });
+      actionsGroup.append(resetBtn);
+
+      toolbar.append(searchInput, tabGroup, actionsGroup);
+      container.append(toolbar);
+
+      const contentBox = el('div', { class: 'sitePermissionsContent' });
+      container.append(contentBox);
+
+      const paint = async () => {
+        clear(contentBox);
+        const resetLabel = resetBtn.querySelector('span');
+        if (resetLabel) {
+          resetLabel.textContent = activeSubTab === 'permissions'
+            ? t('sitePermissions.resetAllPerms')
+            : t('sitePermissions.resetAllShields');
+        }
+
+        if (activeSubTab === 'permissions') {
+          const allSites = (await api().site.allPermissions()) || {};
+          let origins = Object.keys(allSites);
+          if (searchQuery) {
+            origins = origins.filter((o) => o.toLowerCase().includes(searchQuery));
+          }
+
+          if (origins.length === 0) {
+            contentBox.append(
+              el('div', { class: 'emptyState', style: { padding: '36px 16px', textAlign: 'center', color: 'var(--textDim)' } }, [
+                el('span', { html: icon('shield'), style: { display: 'block', fontSize: '32px', marginBottom: '8px' } }),
+                el('p', { text: t('sitePermissions.noPermissions') }),
+              ])
+            );
+            return;
+          }
+
+          const card = el('div', { class: 'card' });
+          for (const origin of origins) {
+            const perms = allSites[origin] || {};
+            const permKeys = Object.keys(perms);
+            if (!permKeys.length) continue;
+
+            const permBadges = permKeys.map((p) => {
+              const val = perms[p];
+              const isAllow = val === 'allow' || val === true;
+              return el('span', {
+                class: `statusTag ${isAllow ? 'active' : ''}`,
+                style: { marginRight: '6px', fontSize: '11px' },
+                text: `${p}: ${val}`,
+              });
+            });
+
+            const row = el('div', {
+              class: 'option',
+              style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px' }
+            }, [
+              el('div', { style: { flex: '1', minWidth: '0' } }, [
+                el('div', { style: { fontWeight: '600', fontSize: '13px', wordBreak: 'break-all' }, text: origin }),
+                el('div', { style: { marginTop: '4px' } }, permBadges),
+              ]),
+              el('button', {
+                class: 'button small',
+                type: 'button',
+                title: t('sitePermissions.revokeOrigin'),
+                html: `${icon('close')} <span>${t('sitePermissions.revokeOrigin')}</span>`,
+                onclick: async () => {
+                  await api().site.clearOriginPermissions(origin);
+                  paint();
+                },
+              }),
+            ]);
+            card.append(row);
+          }
+          contentBox.append(card);
+        } else {
+          const allowed = (await api().site.allShieldExceptions()) || {};
+          let domains = Object.keys(allowed);
+          if (searchQuery) {
+            domains = domains.filter((d) => d.toLowerCase().includes(searchQuery));
+          }
+
+          if (domains.length === 0) {
+            contentBox.append(
+              el('div', { class: 'emptyState', style: { padding: '36px 16px', textAlign: 'center', color: 'var(--textDim)' } }, [
+                el('span', { html: icon('shield'), style: { display: 'block', fontSize: '32px', marginBottom: '8px' } }),
+                el('p', { text: t('sitePermissions.noShields') }),
+              ])
+            );
+            return;
+          }
+
+          const card = el('div', { class: 'card' });
+          for (const domain of domains) {
+            const row = el('div', {
+              class: 'option',
+              style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px' }
+            }, [
+              el('div', { style: { flex: '1', minWidth: '0' } }, [
+                el('div', { style: { fontWeight: '600', fontSize: '13px' }, text: domain }),
+                el('span', {
+                  class: 'statusTag',
+                  style: { marginTop: '4px', display: 'inline-block', fontSize: '11px', color: 'var(--danger, #ff4f4f)' },
+                  text: t('sitePermissions.shieldPaused'),
+                }),
+              ]),
+              el('button', {
+                class: 'button small primary',
+                type: 'button',
+                html: `${icon('shield')} <span>${t('sitePermissions.enableShield')}</span>`,
+                onclick: async () => {
+                  await api().site.removeShieldException(domain);
+                  paint();
+                },
+              }),
+            ]);
+            card.append(row);
+          }
+          contentBox.append(card);
+        }
+      };
+
+      paint();
+      return container;
+    },
+  };
+}
+
 export { openQrCode } from './qrcode.js';

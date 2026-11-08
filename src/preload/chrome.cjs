@@ -145,6 +145,11 @@ const api = {
     suggest: (query) => ipcRenderer.invoke('search:suggest', query),
     resolve: (input) => ipcRenderer.invoke('search:resolve', input),
     engines: () => ipcRenderer.invoke('search:engines'),
+    allEngines: () => ipcRenderer.invoke('search:allEngines'),
+    addEngine: (engine) => ipcRenderer.invoke('search:addEngine', engine),
+    removeEngine: (id) => ipcRenderer.invoke('search:removeEngine', id),
+    setDefault: (id) => ipcRenderer.invoke('search:setDefault', id),
+    resetEngines: () => ipcRenderer.invoke('search:resetEngines'),
   },
 
   extensions: {
@@ -237,6 +242,11 @@ const api = {
     deleteCookie: (opts) => ipcRenderer.invoke('site:deleteCookie', opts),
     clearCookies: (url) => ipcRenderer.invoke('site:clearCookies', url),
     getStorageStats: (url) => ipcRenderer.invoke('site:getStorageStats', url),
+    resetAllPermissions: () => ipcRenderer.invoke('site:resetAllPermissions'),
+    clearOriginPermissions: (origin) => ipcRenderer.invoke('site:clearOriginPermissions', origin),
+    allShieldExceptions: () => ipcRenderer.invoke('site:allShieldExceptions'),
+    removeShieldException: (domain) => ipcRenderer.invoke('site:removeShieldException', domain),
+    resetAllShieldExceptions: () => ipcRenderer.invoke('site:resetAllShieldExceptions'),
   },
 
   downloads: {

@@ -4,6 +4,33 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.27.0] - 2026-11-08
+
+### Added
+- **Find in Page Power Search with Case-Sensitive & Whole Word Controls (`src/ui/index.html`, `src/ui/css/chrome.css`, `src/ui/js/find.js`, `src/ui/js/app.js`, `src/ui/locales/en.json`, `src/ui/locales/de.json`)**:
+  - Enhanced Find in Page toolbar with interactive toggle controls for Match Case (`#findMatchCase`, `Aa`) and Match Whole Word (`#findWholeWord`, `\bW\b`).
+  - Added live toggle hotkeys directly within the search input: <kbd>Alt</kbd>+<kbd>C</kbd> for case-sensitivity and <kbd>Alt</kbd>+<kbd>W</kbd> for whole-word boundaries.
+  - Implemented `.findToggle` button styling with tactile hover and active accent highlights.
+  - Exposed `getFindOptions()`, `toggleMatchCase()`, and `toggleWholeWord()` for programmatic control and regression verification.
+- **Dedicated Site Permissions & Shields Dashboard (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/app.js`, `src/ui/js/menu.js`, `src/ui/js/settingspanel.js`, `src/ui/js/commandPalette.js`)**:
+  - Introduced a centralized modal panel (`openSitePermissions`) allowing users to review and manage all per-origin permission grants (Camera, Microphone, Geolocation, Notifications) and Site Shield protection exceptions.
+  - Implemented `site:resetAllPermissions`, `site:clearOriginPermissions`, `site:allShieldExceptions`, `site:removeShieldException`, and `site:resetAllShieldExceptions` IPC handlers and Preload bridge methods.
+  - Features real-time search filtering across domains/origins, status badges, 1-click permission revocation, 1-click shield re-enablement, and global reset controls with toast feedback.
+  - Integrated into Main Menu, Command Palette (`sitePermissions`), and Settings → Privacy section ("Manage Site Permissions & Shields").
+- **Custom Search Engines Management & Quick Default Switching (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/commandPalette.js`)**:
+  - Added `search:allEngines`, `search:addEngine`, `search:removeEngine`, `search:setDefault`, and `search:resetEngines` IPC handlers and bridge methods.
+  - Implemented automatic validation of custom search engine URLs, protocol checks, and dynamic `{q}` placeholder formatting.
+  - Added Command Palette quick launcher (`searchSetDefault`) enabling 1-click switching of default search engine with interactive prompt and feedback toast.
+- **Tab Sound & Audio Management QoL (`src/ui/css/chrome.css`, `src/ui/js/commandPalette.js`, `src/ui/locales/en.json`, `src/ui/locales/de.json`)**:
+  - Added animated pulse effect for active audio-playing tabs (`.tabSound.isPlaying svg`).
+  - Enhanced Command Palette `muteAll` and `unmuteAll` actions with localized count notifications.
+- **Official In-App & Website User Guide Documentation (`website/docs/user-guide.html`, `website/index.html`)**:
+  - Documented Find in Page Power Search (Match Case, Whole Word, Alt+C, Alt+W shortcuts) and Tab Sound & Audio Management under "Browse comfortably".
+  - Documented the centralized Site Permissions & Shields Dashboard under "Privacy and permissions".
+  - Updated website hero badge and direct download link to v1.27.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v127Features.test.mjs`)**:
+  - Added 44 automated unit and integration tests covering Find in Page toggles and keyboard shortcuts, Site Permissions and Shield exception IPC handlers and UI rendering, search engine addition/removal/default setting logic, preload bridge completeness, and 100% key parity across English and German locales.
+
 ## [1.26.0] - 2026-11-07
 
 ### Added

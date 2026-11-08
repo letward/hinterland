@@ -780,6 +780,75 @@ export function installIpc() {
   handle('search:resolve', (input) => resolveTarget(input));
   handle('search:engines', () => activeEngines());
 
+  handle('search:allEngines', () => ({
+    engines: settings.value('search.engines') ?? [],
+    defaultEngine: settings.value('search.defaultEngine') ?? 'duckduckgo',
+  }));
+
+  handle('search:addEngine', ({ name, url, shortcut } = {}) => {
+    const cleanName = (name || '').trim();
+    let cleanUrl = (url || '').trim();
+    if (!cleanName || !cleanUrl) return { ok: false, error: 'name_and_url_required' };
+    if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+      return { ok: false, error: 'invalid_protocol' };
+    }
+    if (!cleanUrl.includes('{q}')) {
+      cleanUrl = cleanUrl.includes('?') ? `${cleanUrl}&q={q}` : `${cleanUrl}?q={q}`;
+    }
+    const cleanShortcut = (shortcut || '').trim();
+    const id = `eng_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+    const newEngine = {
+      id,
+      name: cleanName,
+      url: cleanUrl,
+      shortcut: cleanShortcut ? (cleanShortcut.startsWith('@') ? cleanShortcut : `@${cleanShortcut}`) : '',
+      enabled: true,
+    };
+    const list = [...(settings.value('search.engines') ?? [])];
+    list.push(newEngine);
+    settings.set('search.engines', list);
+    surface.send('toast', { message: 'toast.searchEngineAdded', kind: 'success' });
+    return { ok: true, engine: newEngine };
+  });
+
+  handle('search:removeEngine', (id) => {
+    const list = [...(settings.value('search.engines') ?? [])];
+    if (list.length <= 1) return { ok: false, error: 'cannot_remove_last' };
+    const currentDefault = settings.value('search.defaultEngine');
+    const filtered = list.filter((e) => e.id !== id);
+    if (filtered.length === list.length) return { ok: false, error: 'not_found' };
+    settings.set('search.engines', filtered);
+    if (currentDefault === id && filtered.length > 0) {
+      settings.set('search.defaultEngine', filtered[0].id);
+    }
+    return { ok: true };
+  });
+
+  handle('search:setDefault', (id) => {
+    const list = settings.value('search.engines') ?? [];
+    const found = list.find((e) => e.id === id);
+    if (!found) return { ok: false, error: 'not_found' };
+    settings.set('search.defaultEngine', id);
+    surface.send('toast', { message: 'toast.searchEngineDefaultSet', kind: 'info' });
+    return { ok: true };
+  });
+
+  handle('search:resetEngines', () => {
+    const defaultEngines = [
+      { id: 'duckduckgo', name: 'DuckDuckGo', url: 'https://duckduckgo.com/?q={q}', shortcut: '@ddg', enabled: true },
+      { id: 'google', name: 'Google', url: 'https://www.google.com/search?q={q}', shortcut: '@g', enabled: true },
+      { id: 'mojeek', name: 'Mojeek', url: 'https://www.mojeek.com/search?q={q}', shortcut: '@m', enabled: true },
+      { id: 'github', name: 'GitHub', url: 'https://github.com/search?q={q}', shortcut: '@gh', enabled: true },
+      { id: 'wikipedia', name: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Special:Search?search={q}', shortcut: '@w', enabled: true },
+      { id: 'youtube', name: 'YouTube', url: 'https://www.youtube.com/results?search_query={q}', shortcut: '@yt', enabled: true },
+      { id: 'npm', name: 'npm', url: 'https://www.npmjs.com/search?q={q}', shortcut: '@npm', enabled: true },
+    ];
+    settings.set('search.engines', defaultEngines);
+    settings.set('search.defaultEngine', 'duckduckgo');
+    surface.send('toast', { message: 'toast.searchEnginesReset', kind: 'success' });
+    return { ok: true };
+  });
+
   /* ------------------------------------------------------------ extensions */
   handle('extensions:list', () => extensions.list());
   handle('extensions:install', async () => {
@@ -956,6 +1025,40 @@ export function installIpc() {
 
   handle('site:allPermissions', () => {
     return settings.value('privacy.sitePermissions') ?? {};
+  });
+
+  handle('site:resetAllPermissions', () => {
+    settings.set('privacy.sitePermissions', {});
+    surface.send('toast', { message: 'toast.allPermissionsReset', kind: 'success' });
+    return { ok: true };
+  });
+
+  handle('site:clearOriginPermissions', (origin) => {
+    if (!origin || typeof origin !== 'string') return { ok: false };
+    const sites = { ...(settings.value('privacy.sitePermissions') ?? {}) };
+    delete sites[origin];
+    settings.set('privacy.sitePermissions', sites);
+    surface.send('toast', { message: 'toast.originPermissionsCleared', kind: 'info' });
+    return { ok: true };
+  });
+
+  handle('site:allShieldExceptions', () => {
+    return settings.value('privacy.allowedSites') ?? {};
+  });
+
+  handle('site:removeShieldException', (domain) => {
+    if (!domain || typeof domain !== 'string') return { ok: false };
+    const allowed = { ...(settings.value('privacy.allowedSites') ?? {}) };
+    delete allowed[domain];
+    settings.set('privacy.allowedSites', allowed);
+    surface.send('toast', { message: 'toast.shieldExceptionRemoved', kind: 'info' });
+    return { ok: true };
+  });
+
+  handle('site:resetAllShieldExceptions', () => {
+    settings.set('privacy.allowedSites', {});
+    surface.send('toast', { message: 'toast.allShieldsReset', kind: 'success' });
+    return { ok: true };
   });
 
   handle('bookmarks:exportHtml', async (items) => {

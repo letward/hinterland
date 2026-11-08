@@ -5,7 +5,7 @@ import { openPopup, closePopup, isOpen } from './popup.js';
 import { activeTab, allTabs } from './tabs.js';
 import { openMediaControls } from './menu.js';
 import { toast } from './toast.js';
-import { openQrCode, openCookieInspector } from './panels.js';
+import { openQrCode, openCookieInspector, openSitePermissions } from './panels.js';
 
 const api = () => window.hinterland;
 
@@ -202,6 +202,29 @@ export function openCommandPalette() {
             run: () => {
               if (current && current.url && !current.url.startsWith('hinterland://')) {
                 openCookieInspector(current.url);
+              }
+            },
+          },
+          {
+            id: 'sitePermissions',
+            title: t('commandPalette.sitePermissions'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'shield',
+            run: () => openSitePermissions(),
+          },
+          {
+            id: 'searchSetDefault',
+            title: t('commandPalette.searchSetDefault'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'search',
+            run: async () => {
+              const data = await api().search.allEngines();
+              const list = data?.engines || [];
+              const names = list.map((e) => `${e.name} (${e.id})`).join('\n');
+              const choice = prompt(`${t('commandPalette.searchSetDefaultPrompt')}\n\n${names}`, data?.defaultEngine || 'duckduckgo');
+              if (choice) {
+                const target = list.find((e) => e.id === choice.trim() || e.name.toLowerCase() === choice.trim().toLowerCase());
+                if (target) await api().search.setDefault(target.id);
               }
             },
           },
@@ -681,14 +704,20 @@ export function openCommandPalette() {
             title: t('commandPalette.muteAll'),
             category: t('commandPalette.categoryCommand'),
             icon: 'volumeOff',
-            run: () => api().tabs.muteAll(true),
+            run: async () => {
+              const count = await api().tabs.muteAll(true);
+              toast(t('toast.tabsMuted', { count }), 'info');
+            },
           },
           {
             id: 'unmuteAll',
             title: t('commandPalette.unmuteAll'),
             category: t('commandPalette.categoryCommand'),
             icon: 'volume',
-            run: () => api().tabs.muteAll(false),
+            run: async () => {
+              const count = await api().tabs.muteAll(false);
+              toast(t('toast.tabsUnmuted', { count }), 'info');
+            },
           },
           {
             id: 'settings',

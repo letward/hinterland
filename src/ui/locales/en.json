@@ -136,6 +136,7 @@
     "zoom": "Zoom",
     "bookmarkAllTabs": "Bookmark all tabs…",
     "clearBrowsingData": "Clear browsing data…",
+    "sitePermissions": "Site Permissions & Shields",
     "mediaControls": "Media controller",
     "notes": "Notes & Scratchpad",
     "tabStash": "Tab Stash & Workspaces",
@@ -149,7 +150,9 @@
     "saveTabAsNote": "Save tab as note"
   },
   "find": {
-    "placeholder": "Find on page"
+    "placeholder": "Find on page",
+    "matchCase": "Match case (Alt+C)",
+    "wholeWord": "Match whole word (Alt+W)"
   },
   "bookmarksBar": {
     "empty": "No bookmarks yet. Click the star icon to add one."
@@ -197,7 +200,10 @@
     "clearRecentlyClosed": "Clear recently closed tabs",
     "notesExportAll": "Export all notes (JSON)",
     "notesImportAll": "Import notes (JSON)",
-    "noteCurrentTab": "Save active tab as note"
+    "noteCurrentTab": "Save active tab as note",
+    "sitePermissions": "Site Permissions & Shields",
+    "searchSetDefault": "Change default search engine",
+    "searchSetDefaultPrompt": "Enter engine name or ID to set as default:"
   },
   "confirm": {
     "closeTitle": "Close tab",
@@ -451,7 +457,16 @@
     "notesExportedAll": "All notes exported successfully",
     "notesImported": "Notes imported successfully",
     "noteCreatedFromTab": "Note created from active tab",
-    "defaultBrowserSet": "Hinterland registered as default browser"
+    "defaultBrowserSet": "Hinterland registered as default browser",
+    "allPermissionsReset": "All site permissions have been reset",
+    "originPermissionsCleared": "Permissions revoked for site",
+    "shieldExceptionRemoved": "Shield protection re-enabled for site",
+    "allShieldsReset": "All Shield exceptions have been cleared",
+    "searchEngineAdded": "Custom search engine added",
+    "searchEngineDefaultSet": "Default search engine updated",
+    "searchEnginesReset": "Search engines restored to defaults",
+    "tabsMuted": "All tabs muted ({count})",
+    "tabsUnmuted": "All tabs unmuted ({count})"
   },
   "welcome": {
     "title": "Welcome to Hinterland",
@@ -752,6 +767,7 @@
       "groupItem": "Group"
     },
     "privacy": {
+      "managePermissions": "Manage Site Permissions & Shields",
       "blockTrackers": "Block trackers",
       "blockTrackersDesc": "Stops common tracking and measurement requests.",
       "blockThirdPartyCookies": "Block third party cookies",
@@ -995,6 +1011,20 @@
     "cookieHttpOnly": "HttpOnly",
     "deleteCookie": "Delete cookie",
     "copyValue": "Copy value"
+  },
+  "sitePermissions": {
+    "title": "Site Permissions & Shields",
+    "description": "Manage per-site permission grants, hardware access, and Site Shield protection exceptions.",
+    "tabPermissions": "Permissions",
+    "tabShields": "Shield Exceptions",
+    "searchPlaceholder": "Search domain or origin...",
+    "noPermissions": "No custom site permissions configured. Standard security policies apply.",
+    "noShields": "All sites are currently protected by Hinterland Shield.",
+    "resetAllPerms": "Reset All Permissions",
+    "resetAllShields": "Reset All Exceptions",
+    "revokeOrigin": "Revoke",
+    "enableShield": "Enable Shield",
+    "shieldPaused": "Tracking Protection Paused"
   },
   "readingList": {
     "title": "Reading List",

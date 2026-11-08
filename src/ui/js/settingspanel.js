@@ -435,6 +435,14 @@ function sectionFooter(definition) {
       } }, [t('menu.userGuide')]),
     );
   }
+  if (definition.id === 'privacy') {
+    wrapper.append(
+      el('button', { class: 'button primary', type: 'button', onclick: () => {
+        closeModal();
+        window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'sitePermissions' } }));
+      } }, [t('settings.privacy.managePermissions')]),
+    );
+  }
   if (definition.id === 'data') {
     wrapper.append(
       el('button', { class: 'button primary', type: 'button', onclick: () => {

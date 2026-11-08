@@ -8,8 +8,41 @@ const api = () => window.hinterland;
 let bar = null;
 let input = null;
 let counter = null;
+let matchCaseBtn = null;
+let wholeWordBtn = null;
 let previous = '';
 let options = { caseSensitive: false, wholeWord: false, regex: false };
+
+export function getFindOptions() {
+  return { ...options };
+}
+
+function updateToggleUi() {
+  if (matchCaseBtn) {
+    matchCaseBtn.classList.toggle('active', options.caseSensitive);
+    matchCaseBtn.setAttribute('aria-pressed', String(options.caseSensitive));
+    matchCaseBtn.title = t('find.matchCase');
+    matchCaseBtn.setAttribute('aria-label', t('find.matchCase'));
+  }
+  if (wholeWordBtn) {
+    wholeWordBtn.classList.toggle('active', options.wholeWord);
+    wholeWordBtn.setAttribute('aria-pressed', String(options.wholeWord));
+    wholeWordBtn.title = t('find.wholeWord');
+    wholeWordBtn.setAttribute('aria-label', t('find.wholeWord'));
+  }
+}
+
+export function toggleMatchCase() {
+  options.caseSensitive = !options.caseSensitive;
+  updateToggleUi();
+  run();
+}
+
+export function toggleWholeWord() {
+  options.wholeWord = !options.wholeWord;
+  updateToggleUi();
+  run();
+}
 
 const run = debounce(() => {
   const tab = currentTab();
@@ -27,9 +60,31 @@ export function bindFind(nodes) {
   bar = nodes.bar;
   input = nodes.input;
   counter = nodes.count;
+  matchCaseBtn = nodes.matchCase ?? null;
+  wholeWordBtn = nodes.wholeWord ?? null;
+
+  if (matchCaseBtn) {
+    matchCaseBtn.addEventListener('click', () => toggleMatchCase());
+  }
+
+  if (wholeWordBtn) {
+    wholeWordBtn.addEventListener('click', () => toggleWholeWord());
+  }
+
+  updateToggleUi();
 
   input.addEventListener('input', run);
   input.addEventListener('keydown', (event) => {
+    if (event.altKey && (event.key === 'c' || event.key === 'C')) {
+      event.preventDefault();
+      toggleMatchCase();
+      return;
+    }
+    if (event.altKey && (event.key === 'w' || event.key === 'W')) {
+      event.preventDefault();
+      toggleWholeWord();
+      return;
+    }
     if (event.key === 'Enter') {
       event.preventDefault();
       const tab = currentTab();

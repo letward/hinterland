@@ -9,7 +9,7 @@ import { bindTabs, renderTabs, updateTab, setActive, activeTab, allTabs } from '
 import { bindOmnibox, syncOmni, focusOmnibox } from './omnibox.js';
 import { openMainMenu, openTabMenu, openOmniMenu, openTabstripMenu, openExtensionsButton, closeMenus, openMediaControls } from './menu.js';
 import { setSchema, openSettings, setShortcutDefaults } from './settingspanel.js';
-import { openStore, openExtensions, openHistory, openBookmarks, openDownloads, openAbout, openShortcuts, openTaskManager, openReadingList, openClearData, openNotes, openTabStash, openPasswords, openAccount } from './panels.js';
+import { openStore, openExtensions, openHistory, openBookmarks, openDownloads, openAbout, openShortcuts, openTaskManager, openReadingList, openClearData, openNotes, openTabStash, openPasswords, openAccount, openSitePermissions } from './panels.js';
 import { openExtensionPopup, closeExtensionPopup } from './extensionPopup.js';
 import { openCommandPalette } from './commandPalette.js';
 import { toast } from './toast.js';
@@ -36,6 +36,7 @@ const PANELS = {
   stash: openTabStash,
   passwords: openPasswords,
   account: openAccount,
+  sitePermissions: openSitePermissions,
 };
 
 let activeTabSnapshot = null;
@@ -89,6 +90,8 @@ function bind() {
     next: $('#findNext'),
     prev: $('#findPrev'),
     close: $('#findClose'),
+    matchCase: $('#findMatchCase'),
+    wholeWord: $('#findWholeWord'),
   });
   bindShelf($('#downloadShelf'));
 
