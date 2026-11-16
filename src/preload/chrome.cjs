@@ -114,6 +114,7 @@ const api = {
     groupMoveTab: (tabId, groupId, index) => ipcRenderer.invoke('tabs:groupMoveTab', tabId, groupId, index),
     groupStash: (groupId) => ipcRenderer.invoke('tabs:groupStash', groupId),
     groupCloseTabs: (groupId) => ipcRenderer.invoke('tabs:groupCloseTabs', groupId),
+    groupByDomain: () => ipcRenderer.invoke('tabs:groupByDomain'),
   },
 
   tab: {
@@ -224,6 +225,8 @@ const api = {
     delete: (id) => ipcRenderer.invoke('notes:delete', id),
     export: (note) => ipcRenderer.invoke('notes:export', note),
     exportAll: () => ipcRenderer.invoke('notes:exportAll'),
+    exportMarkdown: () => ipcRenderer.invoke('notes:exportMarkdown'),
+    exportHtml: () => ipcRenderer.invoke('notes:exportHtml'),
     importAll: () => ipcRenderer.invoke('notes:importAll'),
     createFromTab: (tabId) => ipcRenderer.invoke('notes:createFromTab', tabId),
   },
@@ -231,6 +234,8 @@ const api = {
   stashes: {
     get: () => ipcRenderer.invoke('stashes:get'),
     stashCurrent: (options) => ipcRenderer.invoke('stashes:stashCurrent', options),
+    stashTab: (tabId) => ipcRenderer.invoke('stashes:stashTab', tabId),
+    duplicate: (stashId) => ipcRenderer.invoke('stashes:duplicate', stashId),
     restore: (stashId, options) => ipcRenderer.invoke('stashes:restore', stashId, options),
     delete: (stashId) => ipcRenderer.invoke('stashes:delete', stashId),
     rename: (stashId, newTitle) => ipcRenderer.invoke('stashes:rename', stashId, newTitle),

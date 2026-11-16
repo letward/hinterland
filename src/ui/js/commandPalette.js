@@ -134,6 +134,20 @@ export function openCommandPalette() {
             run: () => { if (current) api().tabs.pin(current.id, !current.pinned); },
           },
           {
+            id: 'openInPrivate',
+            title: t('commandPalette.openInPrivate'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'shield',
+            run: () => { if (current && current.url) api().tabs.create({ url: current.url, privateMode: true }); },
+          },
+          {
+            id: 'stashCurrentTab',
+            title: t('commandPalette.stashCurrentTab'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'archive',
+            run: () => { if (current) api().stashes.stashTab(current.id); },
+          },
+          {
             id: 'sleepTab',
             title: current?.sleeping ? t('menu.wakeTab') : t('menu.sleepTab'),
             category: t('commandPalette.categoryCommand'),
@@ -490,6 +504,13 @@ export function openCommandPalette() {
             run: () => openTabGroups(),
           },
           {
+            id: 'groupByDomain',
+            title: t('commandPalette.groupByDomain'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'layers',
+            run: () => api().tabs.groupByDomain(),
+          },
+          {
             id: 'stashAllTabs',
             title: t('commandPalette.stashAllTabs'),
             category: t('commandPalette.categoryCommand'),
@@ -742,6 +763,20 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'download',
             run: () => api().notes.exportAll(),
+          },
+          {
+            id: 'notesExportMarkdown',
+            title: t('commandPalette.notesExportMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().notes.exportMarkdown(),
+          },
+          {
+            id: 'notesExportHtml',
+            title: t('commandPalette.notesExportHtml'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'globe',
+            run: () => api().notes.exportHtml(),
           },
           {
             id: 'notesImportAll',

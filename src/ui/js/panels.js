@@ -1779,6 +1779,27 @@ function notesPage() {
         }, [el('span', { html: icon('folder') }), ` ${t('notes.importNotes')}`]),
       ]);
 
+      const exportRow = el('div', { class: 'actionRow small', style: { display: 'flex', gap: '6px', marginBottom: '8px' } }, [
+        el('button', {
+          class: 'button small',
+          type: 'button',
+          style: { flex: 1 },
+          title: t('notes.exportMarkdown'),
+          onclick: async () => {
+            await api().notes.exportMarkdown();
+          },
+        }, [el('span', { html: icon('copy') }), ` ${t('notes.exportMarkdown')}`]),
+        el('button', {
+          class: 'button small',
+          type: 'button',
+          style: { flex: 1 },
+          title: t('notes.exportHtml'),
+          onclick: async () => {
+            await api().notes.exportHtml();
+          },
+        }, [el('span', { html: icon('globe') }), ` ${t('notes.exportHtml')}`]),
+      ]);
+
       const searchInput = el('input', {
         class: 'textInput',
         type: 'search',
@@ -1790,7 +1811,7 @@ function notesPage() {
       });
 
       const listCard = el('div', { class: 'notesList card' });
-      sidebar.append(newBtn, clipTabBtn, backupRow, searchInput, listCard);
+      sidebar.append(newBtn, clipTabBtn, backupRow, exportRow, searchInput, listCard);
 
       const scheduleSave = () => {
         if (!activeNote) return;
@@ -2203,6 +2224,15 @@ function tabStashPage() {
               },
             }, [el('span', { html: icon('copy') })]),
             el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('stash.duplicate'),
+              onclick: async () => {
+                const res = await api().stashes.duplicate(stash.id);
+                if (res?.ok) await loadStashes();
+              },
+            }, [el('span', { html: icon('layers') })]),
+            el('button', {
               class: 'button small danger',
               type: 'button',
               title: t('stash.delete'),
@@ -2357,6 +2387,18 @@ function tabGroupsPage() {
         },
       }, [el('span', { html: icon('plus') }), ` ${t('tabGroups.create')}`]);
 
+      const autoGroupBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.groupByDomainDesc'),
+        onclick: async () => {
+          const res = await api().tabs.groupByDomain();
+          if (res?.ok) {
+            await refresh();
+          }
+        },
+      }, [el('span', { html: icon('layers') }), ` ${t('tabGroups.groupByDomain')}`]);
+
       nameInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') createBtn.click();
       });
@@ -2366,6 +2408,7 @@ function tabGroupsPage() {
           nameInput,
           colorPalette,
           createBtn,
+          autoGroupBtn,
         ])
       );
       container.append(creatorCard);

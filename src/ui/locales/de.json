@@ -150,7 +150,10 @@
     "tabGroups": "Tab-Gruppen",
     "manageGroups": "Tab-Gruppen verwalten...",
     "memorySaverExempt": "Diese Seite nie pausieren",
-    "memorySaverUnexempt": "Pausieren für diese Seite erlauben"
+    "memorySaverUnexempt": "Pausieren für diese Seite erlauben",
+    "stashTab": "Tab in Stash ablegen",
+    "unmuteAllTabs": "Alle Tabs entstummen",
+    "openInPrivate": "In privatem Tab öffnen"
   },
   "find": {
     "placeholder": "In Seite suchen",
@@ -213,7 +216,12 @@
     "readingListExportMarkdown": "Leseliste als Markdown exportieren",
     "readingListExportHtml": "Leseliste als Offline-HTML exportieren",
     "stashExportMarkdown": "Tab-Sammlungen als Markdown exportieren",
-    "memorySaverExemptSite": "Arbeitsspeicher-Sparmodus: Ausnahme für aktive Seite umschalten"
+    "memorySaverExemptSite": "Arbeitsspeicher-Sparmodus: Ausnahme für aktive Seite umschalten",
+    "groupByDomain": "Tabs nach Domain gruppieren",
+    "stashCurrentTab": "Aktuellen Tab in Stash ablegen",
+    "notesExportMarkdown": "Alle Notizen als Markdown exportieren",
+    "notesExportHtml": "Alle Notizen als Offline-HTML exportieren",
+    "openInPrivate": "Aktuellen Tab im privaten Modus öffnen"
   },
   "confirm": {
     "closeTitle": "Tab schließen",
@@ -486,7 +494,13 @@
     "searchEnginesImportInvalid": "Keine gültigen Suchmaschinen-Definitionen in der Datei gefunden",
     "memorySaverExempted": "{domain} wird nicht mehr automatisch pausiert",
     "memorySaverUnexempted": "{domain} wird bei Inaktivität wieder pausiert",
-    "cannotExemptSpecialPage": "Interne Browser-Seiten können nicht ausgenommen werden"
+    "cannotExemptSpecialPage": "Interne Browser-Seiten können nicht ausgenommen werden",
+    "tabsGroupedByDomain": "{count} Tabs in {groups} Domain-Gruppen organisiert",
+    "noTabsToGroup": "Keine Tabs zum Gruppieren nach Domain vorhanden",
+    "tabStashed": "\"{title}\" in Stash abgelegt",
+    "stashDuplicated": "Stash erfolgreich dupliziert",
+    "notesExportedMarkdown": "Notizen als Markdown exportiert",
+    "notesExportedHtml": "Notizen als eigenständiges HTML exportiert"
   },
   "welcome": {
     "title": "Willkommen bei Hinterland",
@@ -1222,6 +1236,8 @@
     "previewMode": "Vorschau",
     "emptyPreview": "Kein Inhalt für die Vorschau vorhanden.",
     "exportAll": "Alle exportieren (JSON)",
+    "exportMarkdown": "Markdown exportieren",
+    "exportHtml": "HTML exportieren",
     "importNotes": "Notizen importieren",
     "clipCurrentTab": "Tab als Notiz erfassen",
     "importInvalid": "Keine gültigen Notizen in der Datei gefunden.",
@@ -1238,6 +1254,7 @@
     "import": "JSON importieren",
     "exportAll": "Alle als JSON exportieren",
     "exportMarkdown": "Markdown exportieren",
+    "duplicate": "Stash duplizieren",
     "defaultTitle": "Tab-Stash",
     "renameHint": "Klicken, um diesen Stash umzubenennen",
     "tab": "Tab",
@@ -1252,6 +1269,8 @@
     "description": "Aktive Tab-Gruppen organisieren, farblich kennzeichnen und verwalten oder ganze Gruppen mit 1 Klick sichern.",
     "newGroupPlaceholder": "Name der neuen Gruppe...",
     "create": "Gruppe erstellen",
+    "groupByDomain": "Tabs nach Domain gruppieren",
+    "groupByDomainDesc": "Geöffnete Tabs automatisch nach Website-Domain in Gruppen organisieren",
     "defaultName": "Tab-Gruppe",
     "noMatch": "Keine Tab-Gruppen entsprechen Ihrer Suche.",
     "empty": "Noch keine aktiven Tab-Gruppen. Erstellen Sie oben eine Gruppe oder rechtsklicken Sie auf einen Tab, um ihn zuzuordnen.",

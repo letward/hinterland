@@ -150,7 +150,10 @@
     "tabGroups": "Tab Groups",
     "manageGroups": "Manage Tab Groups...",
     "memorySaverExempt": "Never sleep this site",
-    "memorySaverUnexempt": "Allow sleeping for this site"
+    "memorySaverUnexempt": "Allow sleeping for this site",
+    "stashTab": "Stash Tab",
+    "unmuteAllTabs": "Unmute All Tabs",
+    "openInPrivate": "Open in Private Tab"
   },
   "find": {
     "placeholder": "Find on page",
@@ -213,7 +216,12 @@
     "readingListExportMarkdown": "Export Reading List as Markdown",
     "readingListExportHtml": "Export Reading List as Offline HTML",
     "stashExportMarkdown": "Export Tab Stashes as Markdown",
-    "memorySaverExemptSite": "Memory Saver: Toggle exemption for active site"
+    "memorySaverExemptSite": "Memory Saver: Toggle exemption for active site",
+    "groupByDomain": "Auto-Group tabs by domain",
+    "stashCurrentTab": "Stash current tab",
+    "notesExportMarkdown": "Export all notes as Markdown",
+    "notesExportHtml": "Export all notes as standalone HTML",
+    "openInPrivate": "Open current tab in private mode"
   },
   "confirm": {
     "closeTitle": "Close tab",
@@ -486,7 +494,13 @@
     "searchEnginesImportInvalid": "No valid search engine definitions found in file",
     "memorySaverExempted": "Never putting {domain} to sleep",
     "memorySaverUnexempted": "Memory Saver will sleep {domain} when inactive",
-    "cannotExemptSpecialPage": "Cannot exempt internal browser pages"
+    "cannotExemptSpecialPage": "Cannot exempt internal browser pages",
+    "tabsGroupedByDomain": "Grouped {count} tabs into {groups} domain groups",
+    "noTabsToGroup": "No tabs available to group by domain",
+    "tabStashed": "Stashed \"{title}\"",
+    "stashDuplicated": "Stash duplicated successfully",
+    "notesExportedMarkdown": "Exported Quick Notes as Markdown",
+    "notesExportedHtml": "Exported Quick Notes as standalone HTML"
   },
   "welcome": {
     "title": "Welcome to Hinterland",
@@ -1222,6 +1236,8 @@
     "previewMode": "Preview",
     "emptyPreview": "No content to preview.",
     "exportAll": "Export All (JSON)",
+    "exportMarkdown": "Export Markdown",
+    "exportHtml": "Export HTML",
     "importNotes": "Import Notes",
     "clipCurrentTab": "Save Tab as Note",
     "importInvalid": "No valid notes found in file.",
@@ -1238,6 +1254,7 @@
     "import": "Import JSON",
     "exportAll": "Export all JSON",
     "exportMarkdown": "Export Markdown",
+    "duplicate": "Duplicate Stash",
     "defaultTitle": "Tab Stash",
     "renameHint": "Click to rename this stash",
     "tab": "tab",
@@ -1252,6 +1269,8 @@
     "description": "Organize, color-code, and manage active tab groups, or stash entire groups with 1 click.",
     "newGroupPlaceholder": "New group name...",
     "create": "Create Group",
+    "groupByDomain": "Auto-Group by Domain",
+    "groupByDomainDesc": "Automatically organize open tabs into groups by website domain",
     "defaultName": "Tab Group",
     "noMatch": "No tab groups match your search.",
     "empty": "No active tab groups yet. Create a new group above or right-click any tab to add it to a group.",

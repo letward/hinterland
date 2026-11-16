@@ -519,6 +519,76 @@ export function installIpc() {
     return { ok: true, count: tabsInGroup.length };
   });
 
+  handle('tabs:groupByDomain', async () => {
+    const allTabs = tabs.list;
+    const groups = sortedGroups();
+    const colors = [
+      '#388bfd', // sapphire
+      '#2ea043', // emerald
+      '#d29922', // amber
+      '#f85149', // ruby
+      '#a371f7', // purple
+      '#39c5bb', // cyan
+      '#8b949e', // slate
+    ];
+
+    const domainMap = new Map();
+    for (const tab of allTabs) {
+      if (!tab.url || tab.url === NEW_TAB_URL || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) continue;
+      const domain = normalizeDomain(tab.url);
+      if (!domain) continue;
+      if (!domainMap.has(domain)) domainMap.set(domain, []);
+      domainMap.get(domain).push(tab);
+    }
+
+    if (domainMap.size === 0) {
+      surface.send('toast', { message: 'toast.noTabsToGroup', kind: 'info' });
+      return { ok: false, count: 0, groupsCreated: 0 };
+    }
+
+    let groupsCreated = 0;
+    let tabsGrouped = 0;
+
+    for (const [domain, tabList] of domainMap.entries()) {
+      const cleanName = domain.replace(/^www\./i, '');
+      let group = groups.find((g) => g.name.toLowerCase() === cleanName.toLowerCase() || g.name.toLowerCase() === domain.toLowerCase());
+      if (!group) {
+        const color = colors[groups.length % colors.length];
+        const id = `g${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+        group = {
+          id,
+          name: cleanName.charAt(0).toUpperCase() + cleanName.slice(1),
+          color,
+          collapsed: false,
+          order: groups.length,
+        };
+        groups.push(group);
+        groupsCreated++;
+      }
+
+      for (const tab of tabList) {
+        if (tab.groupId !== group.id) {
+          tab.groupId = group.id;
+          tabsGrouped++;
+          surface.send('tab:update', tab.snapshot());
+        }
+      }
+    }
+
+    if (groupsCreated > 0) {
+      persistGroups(groups);
+    }
+    tabs.scheduleSave();
+    surface.send('tabs:sync', tabs.snapshot());
+    surface.send('toast', {
+      message: 'toast.tabsGroupedByDomain',
+      kind: 'success',
+      data: { count: tabsGrouped, groups: groupsCreated },
+    });
+
+    return { ok: true, count: tabsGrouped, groupsCreated };
+  });
+
   handle('app:checkForUpdates', () => {
     try {
       if (!app.isPackaged) return { ok: false, error: 'notPackaged' };
@@ -1677,6 +1747,260 @@ ${renderItemsHtml(read)}
     return { ok: true, filePath: result.filePath };
   });
 
+  handle('notes:exportMarkdown', async () => {
+    const notes = settings.value('data.notes') || [];
+    const dateStr = new Date().toISOString().split('T')[0];
+    const pinned = notes.filter((n) => n.pinned);
+    const regular = notes.filter((n) => !n.pinned);
+
+    const lines = [
+      '# Hinterland Quick Notes',
+      '',
+      `Exported on ${dateStr}. Total notes: ${notes.length} (${pinned.length} pinned, ${regular.length} unpinned).`,
+      '',
+    ];
+
+    if (notes.length === 0) {
+      lines.push('*No saved notes.*', '');
+    } else {
+      lines.push('## Table of Contents', '');
+      for (const [idx, note] of notes.entries()) {
+        const title = (note.title || 'Untitled Note').trim();
+        const pinIcon = note.pinned ? '📌 ' : '';
+        const anchor = `note-${idx + 1}`;
+        lines.push(`- [${pinIcon}${title}](#${anchor})`);
+      }
+      lines.push('', '---', '');
+
+      for (const [idx, note] of notes.entries()) {
+        const title = (note.title || 'Untitled Note').trim();
+        const pinBadge = note.pinned ? ' `📌 Pinned`' : '';
+        const updatedDate = note.updatedAt ? new Date(note.updatedAt).toISOString().replace('T', ' ').slice(0, 16) : '';
+        const anchor = `note-${idx + 1}`;
+
+        lines.push(`<a id="${anchor}"></a>`);
+        lines.push(`## ${title}${pinBadge}`);
+        lines.push('');
+        if (updatedDate) {
+          lines.push(`*Last modified: ${updatedDate}*`, '');
+        }
+        lines.push(note.content || '*Empty note.*');
+        lines.push('', '---', '');
+      }
+    }
+
+    const markdown = lines.join('\n');
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-notes-${Date.now()}.md`,
+      filters: [{ name: 'Markdown Document', extensions: ['md', 'markdown', 'txt'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, markdown, 'utf8');
+    surface.send('toast', { message: 'toast.notesExportedMarkdown', kind: 'success' });
+    return { ok: true, filePath: result.filePath };
+  });
+
+  handle('notes:exportHtml', async () => {
+    const notes = settings.value('data.notes') || [];
+    const dateStr = new Date().toISOString().split('T')[0];
+    const pinned = notes.filter((n) => n.pinned);
+
+    const escapeHtml = (str) =>
+      String(str || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;');
+
+    const renderNotesHtml = (items) => {
+      if (!items.length) return '<p style="color:var(--textDim);font-style:italic;">No notes found.</p>';
+      return items.map((note, idx) => {
+        const title = escapeHtml(note.title || 'Untitled Note');
+        const content = escapeHtml(note.content || '');
+        const updated = note.updatedAt ? new Date(note.updatedAt).toISOString().replace('T', ' ').slice(0, 16) : '';
+        const pinnedBadge = note.pinned ? '<span class="badge pinned">📌 Pinned</span>' : '';
+        return `    <article class="noteCard" data-pinned="${note.pinned ? 'true' : 'false'}" data-index="${idx}">
+      <div class="noteHeader">
+        <h2 class="noteTitle">${title}</h2>
+        <div class="noteMeta">
+          ${pinnedBadge}
+          ${updated ? `<span class="time">${updated}</span>` : ''}
+        </div>
+      </div>
+      <div class="noteBody">${content}</div>
+    </article>`;
+      }).join('\n');
+    };
+
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hinterland Quick Notes</title>
+  <style>
+    :root {
+      --bg: #090b0e;
+      --surface: #101319;
+      --surfaceAlt: #151922;
+      --border: #22293a;
+      --text: #e6e9f2;
+      --textDim: #8b949e;
+      --accent: #388bfd;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      padding: 32px 16px;
+      line-height: 1.6;
+    }
+    .wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    header {
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .meta-lead {
+      color: var(--textDim);
+      font-size: 0.9rem;
+      margin-top: 6px;
+    }
+    .toolbar {
+      margin: 16px 0 24px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .search-box {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .search-box:focus {
+      border-color: var(--accent);
+    }
+    .noteCard {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 18px 20px;
+      margin-bottom: 16px;
+      transition: border-color 0.15s ease;
+    }
+    .noteCard:hover {
+      border-color: #30363d;
+    }
+    .noteHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .noteTitle {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .noteMeta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--textDim);
+      white-space: nowrap;
+    }
+    .badge {
+      font-size: 0.72rem;
+      padding: 2px 7px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge.pinned {
+      background: rgba(56, 139, 253, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 139, 253, 0.35);
+    }
+    .noteBody {
+      font-size: 0.92rem;
+      color: #c9d1d9;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    }
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: var(--textDim);
+      font-size: 0.82rem;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <header>
+      <h1>Hinterland Quick Notes</h1>
+      <p class="meta-lead">Exported on ${dateStr} • ${notes.length} total note(s) (${pinned.length} pinned)</p>
+    </header>
+    <div class="toolbar">
+      <input type="text" id="searchInput" class="search-box" placeholder="Filter notes in real time..." autofocus>
+    </div>
+    <div id="notesContainer">
+${renderNotesHtml(notes)}
+    </div>
+    <footer>
+      Generated by Hinterland Browser — A fast, secure, and freely customizable browser.
+    </footer>
+  </div>
+  <script>
+    const input = document.getElementById('searchInput');
+    const cards = document.querySelectorAll('.noteCard');
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(q) ? 'block' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>`;
+
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-notes-${Date.now()}.html`,
+      filters: [{ name: 'HTML Document', extensions: ['html', 'htm'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, html, 'utf8');
+    surface.send('toast', { message: 'toast.notesExportedHtml', kind: 'success' });
+    return { ok: true, filePath: result.filePath };
+  });
+
   handle('notes:importAll', async () => {
     const result = await dialog.showOpenDialog(chromeWindow(), {
       title: 'Hinterland',
@@ -1957,6 +2281,47 @@ ${renderItemsHtml(read)}
     } catch (err) {
       return { ok: false, error: err.message };
     }
+  });
+
+  handle('stashes:stashTab', async (tabId) => {
+    const tab = tabs.byId(tabId) || tabs.active;
+    if (!tab || !tab.url || tab.url === NEW_TAB_URL || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) {
+      surface.send('toast', { message: 'toast.noTabsToStash', kind: 'warning' });
+      return { ok: false, error: 'no_tabs' };
+    }
+    const tabTitle = (tab.title || tab.url).slice(0, 100);
+    const stash = {
+      id: `stash_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      title: tabTitle,
+      createdAt: Date.now(),
+      tabs: [{
+        url: tab.url,
+        title: tab.title || tab.url,
+        favicon: tab.favicon || '',
+      }],
+    };
+    const stashes = [...(settings.value('data.tabStashes') || [])];
+    stashes.unshift(stash);
+    settings.set('data.tabStashes', stashes);
+    tabs.close(tab.id);
+    surface.send('toast', { message: 'toast.tabStashed', kind: 'success', data: { title: tabTitle } });
+    return { ok: true, stash };
+  });
+
+  handle('stashes:duplicate', async (stashId) => {
+    const stashes = [...(settings.value('data.tabStashes') || [])];
+    const source = stashes.find((s) => s.id === stashId);
+    if (!source) return { ok: false, error: 'not_found' };
+    const clone = {
+      id: `stash_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      title: `${source.title || 'Tab Stash'} (Copy)`,
+      createdAt: Date.now(),
+      tabs: (source.tabs || []).map((t) => ({ ...t })),
+    };
+    stashes.unshift(clone);
+    settings.set('data.tabStashes', stashes);
+    surface.send('toast', { message: 'toast.stashDuplicated', kind: 'success' });
+    return { ok: true, stash: clone };
   });
 
   handle('shell:open', (url) => {

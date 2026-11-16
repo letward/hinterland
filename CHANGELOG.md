@@ -4,6 +4,30 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.31.0] - 2026-11-16
+
+### Added
+- **Auto-Group Tabs by Domain (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `tabs:groupByDomain` IPC handler that automatically analyzes open web tabs, identifies domain origins, and organizes them into cohesive, color-coded Tab Groups using curated palette swatches.
+  - Added 1-click **Auto-Group by Domain** action button to Tab Groups Studio toolbar (`openTabGroups`).
+  - Added Auto-Group by Domain action to the Tabstrip context menu (`openTabstripMenu`) and Main Menu.
+  - Added Command Palette quick launcher `commandPalette.groupByDomain`.
+- **Quick Notes Full-Vault Markdown & Offline HTML Export (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `notes:exportMarkdown` generating a comprehensive Markdown archive containing Table of Contents with jump links, Pinned Notes sections, and full note bodies with metadata badges and timestamps, perfect for Obsidian, Notion, and Logseq.
+  - Implemented `notes:exportHtml` creating a standalone, responsive, dark obsidian HTML notebook with real-time live search filtering across all notes and zero external dependencies for completely offline knowledge access.
+  - Added Export Markdown and Export HTML action buttons in Quick Notes modal and Command Palette quick launchers (`notesExportMarkdown` and `notesExportHtml`).
+- **Tab Stash: Single-Tab Stashing & Stash Duplication (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `stashes:stashTab` allowing users to stash an individual tab directly into a new Tab Stash from the Tab context menu (`menu.stashTab`) or Command Palette (`stashCurrentTab`) and close the tab without affecting the rest of the workspace.
+  - Implemented `stashes:duplicate` with a 1-click Duplicate button on stash cards in the Tab Stashes manager (`openTabStash`), making it effortless to clone stashes before modifying or restoring them.
+- **Tab Audio & Private Browsing Ergonomics (`src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Added 1-click **Unmute All Tabs** action to the Tabstrip context menu (`openTabstripMenu`).
+  - Added **Open in Private Tab** action to the Tab context menu (`menu.openInPrivate`) and Command Palette (`openInPrivate`), allowing instant switching of any page to isolated incognito sessions.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`)**:
+  - Documented Auto-Group by Domain, Quick Notes Full-Vault Markdown & Offline HTML Notebooks, Single-Tab Stashing, and Stash Duplication in the official User Guide.
+  - Updated website hero badge and standalone Windows download link to v1.31.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v131Features.test.mjs`)**:
+  - Added 38 automated unit and integration tests covering Auto-Group by Domain, Quick Notes exports, Single-Tab Stash, Stash Duplication, Tab audio controls, private mode opening, and 100% key parity across English and German locales.
+
 ## [1.30.0] - 2026-11-16
 
 ### Added

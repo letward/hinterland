@@ -132,6 +132,14 @@ export function openMainMenu() {
           onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:opentabgroups')),
         }),
         row({
+          iconName: 'layers',
+          title: t('tabGroups.groupByDomain'),
+          onSelect: async () => {
+            const res = await api().tabs.groupByDomain();
+            if (res?.ok) toast(t('toast.tabsGroupedByDomain', { count: res.count, groups: res.groupsCreated }), 'success');
+          },
+        }),
+        row({
           iconName: 'key',
           title: t('menu.passwords'),
           subtitle: 'Ctrl+Alt+P',
@@ -326,6 +334,18 @@ export function openTabMenu(tab, x, y) {
           iconName: 'copy',
           title: t('menu.duplicate'),
           onSelect: () => api().tabs.duplicate(tab.id),
+        }),
+        row({
+          iconName: 'shield',
+          title: t('menu.openInPrivate'),
+          onSelect: () => api().tabs.create({ url: tab.url, privateMode: true }),
+        }),
+        row({
+          iconName: 'archive',
+          title: t('menu.stashTab'),
+          onSelect: async () => {
+            await api().stashes.stashTab(tab.id);
+          },
         }),
         row({
           iconName: 'pin',
@@ -680,6 +700,14 @@ export function openTabstripMenu() {
           onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:opentabgroups')),
         }),
         row({
+          iconName: 'layers',
+          title: t('tabGroups.groupByDomain'),
+          onSelect: async () => {
+            const res = await api().tabs.groupByDomain();
+            if (res?.ok) toast(t('toast.tabsGroupedByDomain', { count: res.count, groups: res.groupsCreated }), 'success');
+          },
+        }),
+        row({
           iconName: 'key',
           title: t('menu.passwords'),
           subtitle: 'Ctrl+Alt+P',
@@ -731,6 +759,11 @@ export function openTabstripMenu() {
           iconName: 'volumeOff',
           title: t('menu.muteAllTabs'),
           onSelect: () => api().tabs.muteAll(true),
+        }),
+        row({
+          iconName: 'volume',
+          title: t('menu.unmuteAllTabs'),
+          onSelect: () => api().tabs.muteAll(false),
         }),
         row({
           iconName: 'close',
