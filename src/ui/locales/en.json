@@ -119,7 +119,6 @@
     "groupCollapse": "Collapse group",
     "groupDelete": "Delete group",
     "copyMarkdown": "Copy as Markdown",
-    "copyCleanLink": "Copy clean link",
     "saveAsPdf": "Save as PDF…",
     "sleepTab": "Sleep tab",
     "wakeTab": "Wake tab",
@@ -149,7 +148,9 @@
     "sleepAllInactive": "Sleep all inactive tabs",
     "saveTabAsNote": "Save tab as note",
     "tabGroups": "Tab Groups",
-    "manageGroups": "Manage Tab Groups..."
+    "manageGroups": "Manage Tab Groups...",
+    "memorySaverExempt": "Never sleep this site",
+    "memorySaverUnexempt": "Allow sleeping for this site"
   },
   "find": {
     "placeholder": "Find on page",
@@ -208,7 +209,11 @@
     "searchSetDefaultPrompt": "Enter engine name or ID to set as default:",
     "tabGroups": "Manage Tab Groups Studio",
     "searchExportJson": "Export Search Engines (JSON)",
-    "searchImportJson": "Import Search Engines (JSON)"
+    "searchImportJson": "Import Search Engines (JSON)",
+    "readingListExportMarkdown": "Export Reading List as Markdown",
+    "readingListExportHtml": "Export Reading List as Offline HTML",
+    "stashExportMarkdown": "Export Tab Stashes as Markdown",
+    "memorySaverExemptSite": "Memory Saver: Toggle exemption for active site"
   },
   "confirm": {
     "closeTitle": "Close tab",
@@ -423,7 +428,6 @@
     "zoomReset": "Zoom level reset to 100%",
     "permissionUpdated": "Site permission updated",
     "copiedUrl": "Link copied to clipboard",
-    "copiedCleanUrl": "Clean link copied to clipboard",
     "failed": "Action could not be executed",
     "qrCopied": "QR code copied to clipboard",
     "qrDownloaded": "QR code saved as PNG",
@@ -479,7 +483,10 @@
     "groupDeleted": "Tab group deleted",
     "searchEnginesExported": "Search engines exported successfully",
     "searchEnginesImported": "Search engines imported successfully",
-    "searchEnginesImportInvalid": "No valid search engine definitions found in file"
+    "searchEnginesImportInvalid": "No valid search engine definitions found in file",
+    "memorySaverExempted": "Never putting {domain} to sleep",
+    "memorySaverUnexempted": "Memory Saver will sleep {domain} when inactive",
+    "cannotExemptSpecialPage": "Cannot exempt internal browser pages"
   },
   "welcome": {
     "title": "Welcome to Hinterland",
@@ -902,6 +909,8 @@
       "memorySaverDesc": "Slows down tabs that have been hidden for a while.",
       "memorySaverDelay": "Memory saver delay",
       "memorySaverDelayDesc": "How long a tab must be hidden before it slows down.",
+      "memorySaverExemptions": "Memory Saver exemptions",
+      "memorySaverExemptionsDesc": "Domains that should never be put to sleep automatically by Memory Saver.",
       "blockWebViewTag": "Block embedded browsing elements",
       "blockWebViewTagDesc": "Stops pages from loading other pages inside a frame.",
       "disableProtocolHandlers": "Keep external protocols inside",
@@ -1059,6 +1068,8 @@
     "tab_read": "Read",
     "tab_all": "All items",
     "exportJson": "Export (JSON)",
+    "exportMarkdown": "Export (Markdown)",
+    "exportHtml": "Export (HTML)",
     "importJson": "Import",
     "importInvalid": "No valid reading list items found in file."
   },
@@ -1189,7 +1200,9 @@
     "title": "Media controller",
     "noActiveMedia": "No tabs currently playing media.",
     "playPause": "Play / Pause",
-    "pip": "Picture-in-Picture"
+    "pip": "Picture-in-Picture",
+    "playingCount": "{count} playing",
+    "live": "LIVE"
   },
   "notes": {
     "title": "Notes & Scratchpad",
@@ -1224,6 +1237,7 @@
     "stashInactive": "Stash inactive tabs",
     "import": "Import JSON",
     "exportAll": "Export all JSON",
+    "exportMarkdown": "Export Markdown",
     "defaultTitle": "Tab Stash",
     "renameHint": "Click to rename this stash",
     "tab": "tab",

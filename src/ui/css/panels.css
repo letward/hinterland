@@ -1214,12 +1214,52 @@
 }
 
 /* -------------------------------------------------------- Media Controls */
+.mediaHeaderBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 12px 10px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+
+.mediaHeaderStats {
+  font-size: 0.78em;
+  color: var(--accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mediaHeaderButtons {
+  display: flex;
+  gap: 6px;
+}
+
 .mediaItem {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 8px 12px;
   border-bottom: 1px solid var(--borderSoft);
+}
+
+.mediaItem.isPlaying {
+  background: rgba(56, 139, 253, 0.04);
+}
+
+.mediaWaveIndicator {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.85em;
+  letter-spacing: 0.06em;
+  animation: pulseLive 1.5s infinite;
+}
+
+@keyframes pulseLive {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
 .mediaItem:last-child {

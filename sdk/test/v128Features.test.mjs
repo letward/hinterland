@@ -121,8 +121,8 @@ describe('Hinterland v1.28.0 Features & Polish', () => {
   describe('Official Website & Release Artefacts Completeness', () => {
     it('updates website/index.html to v1.28.0 release badge and download link', () => {
       const indexHtml = readFileSync(join(ROOT, 'website', 'index.html'), 'utf8');
-      assert.ok(indexHtml.includes('v1.28.0 · Latest Release') || indexHtml.includes('v1.29.0 · Latest Release'));
-      assert.ok(indexHtml.includes('releases/download/v1.28.0/Hinterland-Setup-1.28.0.exe') || indexHtml.includes('releases/download/v1.29.0/Hinterland-Setup-1.29.0.exe'));
+      assert.ok(indexHtml.includes('v1.28.0 · Latest Release') || indexHtml.includes('v1.29.0 · Latest Release') || indexHtml.includes('v1.30.0 · Latest Release'));
+      assert.ok(indexHtml.includes('releases/download/v1.28.0/Hinterland-Setup-1.28.0.exe') || indexHtml.includes('releases/download/v1.29.0/Hinterland-Setup-1.29.0.exe') || indexHtml.includes('releases/download/v1.30.0/Hinterland-Setup-1.30.0.exe'));
     });
   });
 });

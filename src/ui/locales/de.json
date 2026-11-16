@@ -119,7 +119,6 @@
     "groupCollapse": "Gruppe einklappen",
     "groupDelete": "Gruppe löschen",
     "copyMarkdown": "Als Markdown kopieren",
-    "copyCleanLink": "Bereinigten Link kopieren",
     "saveAsPdf": "Als PDF speichern…",
     "sleepTab": "Tab schlafen legen",
     "wakeTab": "Tab aufwecken",
@@ -149,7 +148,9 @@
     "sleepAllInactive": "Alle inaktiven Tabs schlafenlegen",
     "saveTabAsNote": "Tab als Notiz erfassen",
     "tabGroups": "Tab-Gruppen",
-    "manageGroups": "Tab-Gruppen verwalten..."
+    "manageGroups": "Tab-Gruppen verwalten...",
+    "memorySaverExempt": "Diese Seite nie pausieren",
+    "memorySaverUnexempt": "Pausieren für diese Seite erlauben"
   },
   "find": {
     "placeholder": "In Seite suchen",
@@ -208,7 +209,11 @@
     "searchSetDefaultPrompt": "Name oder ID der Suchmaschine eingeben, die als Standard gesetzt werden soll:",
     "tabGroups": "Tab-Gruppen Studio verwalten",
     "searchExportJson": "Suchmaschinen exportieren (JSON)",
-    "searchImportJson": "Suchmaschinen importieren (JSON)"
+    "searchImportJson": "Suchmaschinen importieren (JSON)",
+    "readingListExportMarkdown": "Leseliste als Markdown exportieren",
+    "readingListExportHtml": "Leseliste als Offline-HTML exportieren",
+    "stashExportMarkdown": "Tab-Sammlungen als Markdown exportieren",
+    "memorySaverExemptSite": "Arbeitsspeicher-Sparmodus: Ausnahme für aktive Seite umschalten"
   },
   "confirm": {
     "closeTitle": "Tab schließen",
@@ -423,7 +428,6 @@
     "zoomReset": "Zoomstufe auf 100% zurückgesetzt",
     "permissionUpdated": "Website-Berechtigung aktualisiert",
     "copiedUrl": "Link in die Zwischenablage kopiert",
-    "copiedCleanUrl": "Bereinigter Link in die Zwischenablage kopiert",
     "failed": "Aktion konnte nicht ausgeführt werden",
     "qrCopied": "QR-Code in die Zwischenablage kopiert",
     "qrDownloaded": "QR-Code als PNG gespeichert",
@@ -479,7 +483,10 @@
     "groupDeleted": "Tab-Gruppe gelöscht",
     "searchEnginesExported": "Suchmaschinen erfolgreich exportiert",
     "searchEnginesImported": "Suchmaschinen erfolgreich importiert",
-    "searchEnginesImportInvalid": "Keine gültigen Suchmaschinen-Definitionen in der Datei gefunden"
+    "searchEnginesImportInvalid": "Keine gültigen Suchmaschinen-Definitionen in der Datei gefunden",
+    "memorySaverExempted": "{domain} wird nicht mehr automatisch pausiert",
+    "memorySaverUnexempted": "{domain} wird bei Inaktivität wieder pausiert",
+    "cannotExemptSpecialPage": "Interne Browser-Seiten können nicht ausgenommen werden"
   },
   "welcome": {
     "title": "Willkommen bei Hinterland",
@@ -902,6 +909,8 @@
       "memorySaverDesc": "Verlangsamt Tabs, die längere Zeit nicht sichtbar waren.",
       "memorySaverDelay": "Verzögerung für den Speichersparmodus",
       "memorySaverDelayDesc": "Wie lange ein Tab unsichtbar sein muss, bevor er langsamer wird.",
+      "memorySaverExemptions": "Ausnahmen für den Speichersparmodus",
+      "memorySaverExemptionsDesc": "Domains, die vom Speichersparmodus niemals automatisch pausiert werden sollen.",
       "blockWebViewTag": "Eingebettete Browsing Elemente blockieren",
       "blockWebViewTagDesc": "Verhindert, dass Seiten weitere Seiten in einem Rahmen laden.",
       "disableProtocolHandlers": "Externe Protokolle im Browser behalten",
@@ -1059,6 +1068,8 @@
     "tab_read": "Gelesen",
     "tab_all": "Alle Einträge",
     "exportJson": "Exportieren (JSON)",
+    "exportMarkdown": "Exportieren (Markdown)",
+    "exportHtml": "Exportieren (HTML)",
     "importJson": "Importieren",
     "importInvalid": "Keine gültigen Leselisten-Einträge in der Datei gefunden."
   },
@@ -1189,7 +1200,9 @@
     "title": "Mediensteuerung",
     "noActiveMedia": "Derzeit spielt kein Tab Medien ab.",
     "playPause": "Wiedergabe / Pause",
-    "pip": "Bild-in-Bild"
+    "pip": "Bild-in-Bild",
+    "playingCount": "{count} aktiv",
+    "live": "LIVE"
   },
   "notes": {
     "title": "Notizen & Entwürfe",
@@ -1224,6 +1237,7 @@
     "stashInactive": "Inaktive Tabs sichern",
     "import": "JSON importieren",
     "exportAll": "Alle als JSON exportieren",
+    "exportMarkdown": "Markdown exportieren",
     "defaultTitle": "Tab-Stash",
     "renameHint": "Klicken, um diesen Stash umzubenennen",
     "tab": "Tab",

@@ -1506,6 +1506,20 @@ function readingListPage(mode = 'unread') {
           class: 'button',
           type: 'button',
           onclick: async () => {
+            await api().readingList.exportMarkdown();
+          },
+        }, [el('span', { html: icon('copy') }), ` ${t('readingList.exportMarkdown')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            await api().readingList.exportHtml();
+          },
+        }, [el('span', { html: icon('globe') }), ` ${t('readingList.exportHtml')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
             const res = await api().readingList.importJson();
             if (res?.ok) refresh();
           },
@@ -2086,6 +2100,13 @@ function tabStashPage() {
             await api().stashes.exportJson();
           },
         }, [el('span', { html: icon('download') }), ` ${t('stash.exportAll')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            await api().stashes.exportMarkdown();
+          },
+        }, [el('span', { html: icon('copy') }), ` ${t('stash.exportMarkdown')}`]),
       ]);
 
       const listContainer = el('div', { class: 'stashList' });
@@ -2173,6 +2194,14 @@ function tabStashPage() {
                 await api().stashes.exportJson(stash.id);
               },
             }, [el('span', { html: icon('download') })]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('stash.exportMarkdown'),
+              onclick: async () => {
+                await api().stashes.exportMarkdown(stash.id);
+              },
+            }, [el('span', { html: icon('copy') })]),
             el('button', {
               class: 'button small danger',
               type: 'button',

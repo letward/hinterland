@@ -137,6 +137,52 @@ export class TabManager extends EventEmitter {
     return this.sleepInactive(delayMinutes);
   }
 
+  isDomainExempt(rawUrl) {
+    if (!rawUrl) return false;
+    try {
+      const u = new URL(rawUrl);
+      const host = u.hostname.toLowerCase();
+      const exemptions = this.getExemptDomains();
+      return exemptions.some((pattern) => {
+        const p = String(pattern || '').toLowerCase().trim();
+        if (!p) return false;
+        return host === p || host.endsWith(`.${p}`);
+      });
+    } catch {
+      return false;
+    }
+  }
+
+  getExemptDomains() {
+    const raw = settings.value('advanced.memorySaverExemptions');
+    if (!Array.isArray(raw)) return [];
+    return raw.map((item) => (typeof item === 'object' && item ? item.domain : String(item))).filter(Boolean);
+  }
+
+  exemptDomain(domain) {
+    const d = String(domain || '').toLowerCase().trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+    if (!d) return false;
+    const existing = this.getExemptDomains();
+    if (!existing.some((x) => x.toLowerCase() === d)) {
+      const raw = settings.value('advanced.memorySaverExemptions') || [];
+      const updated = [...raw, { domain: d }];
+      settings.set('advanced.memorySaverExemptions', updated);
+    }
+    return true;
+  }
+
+  unexemptDomain(domain) {
+    const d = String(domain || '').toLowerCase().trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+    if (!d) return false;
+    const raw = settings.value('advanced.memorySaverExemptions') || [];
+    const updated = raw.filter((item) => {
+      const val = typeof item === 'object' && item ? item.domain : String(item);
+      return String(val || '').toLowerCase().trim() !== d;
+    });
+    settings.set('advanced.memorySaverExemptions', updated);
+    return true;
+  }
+
   sleepInactive(delayMinutes = 20) {
     const thresholdMs = Math.max(1, Number(delayMinutes) || 20) * 60 * 1000;
     const now = Date.now();
@@ -146,6 +192,7 @@ export class TabManager extends EventEmitter {
       if (tab.id === this.activeId) continue;
       if (tab.pinned || tab.audible || tab.privateMode || tab.sleeping) continue;
       if (!tab.url || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) continue;
+      if (this.isDomainExempt(tab.url)) continue;
       const lastActive = tab.lastActiveAt || tab.createdAt;
       if (now - lastActive >= thresholdMs) {
         if (tab.sleep()) count++;
@@ -163,12 +210,15 @@ export class TabManager extends EventEmitter {
     const sleeping = this.tabs.filter((t) => t.sleeping).length;
     const enabled = Boolean(settings.value('advanced.memorySaver'));
     const delayMinutes = Number(settings.value('advanced.memorySaverDelay')) || 20;
+    const exemptions = this.getExemptDomains();
     const estimatedSavedMB = sleeping * 70;
     return {
       enabled,
       delayMinutes,
       sleepingCount: sleeping,
       totalTabs: total,
+      exemptionsCount: exemptions.length,
+      exemptions,
       estimatedSavedMB,
     };
   }
@@ -232,6 +282,8 @@ export class TabManager extends EventEmitter {
     let count = 0;
     for (const tab of this.tabs) {
       if (tab.id === keep?.id || tab.pinned || tab.audible) continue;
+      if (!tab.url || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) continue;
+      if (this.isDomainExempt(tab.url)) continue;
       if (tab.sleep()) count++;
     }
     if (count > 0) {

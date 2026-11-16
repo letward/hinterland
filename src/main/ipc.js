@@ -331,6 +331,9 @@ export function installIpc() {
   });
   handle('tabs:sleepOthers', (id) => tabs.sleepOthers(id));
   handle('tabs:memorySaverStats', () => tabs.getMemorySaverStats());
+  handle('tabs:exemptDomain', (domain) => tabs.exemptDomain(domain));
+  handle('tabs:unexemptDomain', (domain) => tabs.unexemptDomain(domain));
+  handle('tabs:getExemptDomains', () => tabs.getExemptDomains());
   handle('tabs:sleepInactive', (delay) => tabs.sleepInactive(delay));
   handle('tabs:reloadAll', () => {
     for (const tab of tabs.list) {
@@ -1421,6 +1424,155 @@ export function installIpc() {
     return { ok: true, filePath: result.filePath };
   });
 
+  handle('readingList:exportMarkdown', async () => {
+    const list = settings.value('data.readingList') || [];
+    const dateStr = new Date().toISOString().split('T')[0];
+    const unread = list.filter((i) => !i.read);
+    const read = list.filter((i) => i.read);
+
+    const lines = [
+      '# Hinterland Reading List',
+      '',
+      `Exported on ${dateStr}. Total articles: ${list.length} (${unread.length} unread, ${read.length} read).`,
+      '',
+      '## Unread Articles',
+      '',
+    ];
+    if (unread.length === 0) {
+      lines.push('*No unread articles.*', '');
+    } else {
+      for (const item of unread) {
+        const title = String(item.title || item.url).replaceAll('[', '\\[').replaceAll(']', '\\]');
+        const host = normalizeDomain(item.url) || item.url;
+        const date = item.addedAt ? new Date(item.addedAt).toISOString().split('T')[0] : '';
+        lines.push(`- [${title}](${item.url}) — *${host}*${date ? ` (Saved: ${date})` : ''}`);
+      }
+      lines.push('');
+    }
+
+    lines.push('## Read Articles', '');
+    if (read.length === 0) {
+      lines.push('*No read articles.*', '');
+    } else {
+      for (const item of read) {
+        const title = String(item.title || item.url).replaceAll('[', '\\[').replaceAll(']', '\\]');
+        const host = normalizeDomain(item.url) || item.url;
+        const date = item.addedAt ? new Date(item.addedAt).toISOString().split('T')[0] : '';
+        lines.push(`- [${title}](${item.url}) — *${host}*${date ? ` (Saved: ${date})` : ''}`);
+      }
+      lines.push('');
+    }
+
+    const md = lines.join('\n');
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-reading-list-${Date.now()}.md`,
+      filters: [{ name: 'Markdown Document', extensions: ['md', 'markdown'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, md, 'utf8');
+    surface.send('toast', { message: 'toast.readingListExported', kind: 'success' });
+    return { ok: true, filePath: result.filePath };
+  });
+
+  handle('readingList:exportHtml', async () => {
+    const list = settings.value('data.readingList') || [];
+    const dateStr = new Date().toISOString().split('T')[0];
+    const unread = list.filter((i) => !i.read);
+    const read = list.filter((i) => i.read);
+
+    const escapeHtml = (str) =>
+      String(str || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;');
+
+    const renderItemsHtml = (items) => {
+      if (!items.length) return '<p style="color:var(--textDim);font-style:italic;">No articles.</p>';
+      return items.map((item) => {
+        const title = escapeHtml(item.title || item.url);
+        const url = escapeHtml(item.url);
+        const host = escapeHtml(normalizeDomain(item.url) || item.url);
+        const date = item.addedAt ? new Date(item.addedAt).toISOString().split('T')[0] : '';
+        const badgeClass = item.read ? 'read' : 'unread';
+        const badgeText = item.read ? 'Read' : 'Unread';
+        return `    <div class="card">
+      <div class="title"><a href="${url}" target="_blank" rel="noopener noreferrer">${title}</a></div>
+      <div class="meta">
+        <span class="badge ${badgeClass}">${badgeText}</span>
+        <span>${host}</span>
+        ${date ? `<span>Saved: ${date}</span>` : ''}
+      </div>
+    </div>`;
+      }).join('\n');
+    };
+
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hinterland Reading List</title>
+<style>
+  :root {
+    --bg: #090b0e;
+    --surface: #101319;
+    --surfaceAlt: #151922;
+    --border: #22293a;
+    --text: #e6edf3;
+    --textDim: #8b949e;
+    --accent: #388bfd;
+    --success: #3fb950;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 32px 16px;
+    display: flex;
+    justify-content: center;
+  }
+  .container { max-width: 800px; width: 100%; }
+  h1 { font-size: 24px; font-weight: 600; margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+  .summary { color: var(--textDim); font-size: 14px; margin-bottom: 24px; }
+  h2 { font-size: 18px; margin-top: 28px; margin-bottom: 12px; color: var(--accent); }
+  .card { background: var(--surface); border: 1px solid var(--border); margin-bottom: 10px; padding: 12px 16px; }
+  .title { font-size: 15px; font-weight: 500; }
+  .title a { color: var(--text); text-decoration: none; }
+  .title a:hover { color: var(--accent); text-decoration: underline; }
+  .meta { font-size: 13px; color: var(--textDim); margin-top: 6px; display: flex; gap: 12px; align-items: center; }
+  .badge { display: inline-block; padding: 2px 6px; font-size: 11px; text-transform: uppercase; background: var(--surfaceAlt); border: 1px solid var(--border); }
+  .badge.read { color: var(--success); }
+  .badge.unread { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Hinterland Reading List</h1>
+  <div class="summary">Exported on ${dateStr} • ${list.length} articles (${unread.length} unread, ${read.length} read)</div>
+
+  <h2>Unread Articles (${unread.length})</h2>
+${renderItemsHtml(unread)}
+
+  <h2>Read Articles (${read.length})</h2>
+${renderItemsHtml(read)}
+</div>
+</body>
+</html>`;
+
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-reading-list-${Date.now()}.html`,
+      filters: [{ name: 'HTML Document', extensions: ['html', 'htm'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, html, 'utf8');
+    surface.send('toast', { message: 'toast.readingListExported', kind: 'success' });
+    return { ok: true, filePath: result.filePath };
+  });
+
   handle('readingList:importJson', async () => {
     const result = await dialog.showOpenDialog(chromeWindow(), {
       title: 'Hinterland',
@@ -1722,6 +1874,51 @@ export function installIpc() {
     });
     if (result.canceled || !result.filePath) return { ok: false };
     await writeFile(result.filePath, json, 'utf8');
+    surface.send('toast', { message: 'toast.stashExported', kind: 'success' });
+    return { ok: true, filePath: result.filePath };
+  });
+
+  handle('stashes:exportMarkdown', async (stashId = null) => {
+    const stashes = settings.value('data.tabStashes') || [];
+    const exportData = stashId ? stashes.filter((s) => s.id === stashId) : stashes;
+    const dateStr = new Date().toISOString().split('T')[0];
+
+    const lines = [
+      '# Hinterland Tab Stashes',
+      '',
+      `Exported on ${dateStr}. Total stashes: ${exportData.length}.`,
+      '',
+    ];
+
+    if (exportData.length === 0) {
+      lines.push('*No saved tab stashes.*', '');
+    } else {
+      for (const stash of exportData) {
+        const title = stash.title || 'Untitled Stash';
+        const date = stash.createdAt ? new Date(stash.createdAt).toISOString().split('T')[0] : '';
+        const count = Array.isArray(stash.tabs) ? stash.tabs.length : 0;
+        lines.push(`## ${title} (${count} tabs)${date ? ` — Saved: ${date}` : ''}`, '');
+        if (Array.isArray(stash.tabs) && stash.tabs.length > 0) {
+          for (const tab of stash.tabs) {
+            const tabTitle = String(tab.title || tab.url || 'Tab').replaceAll('[', '\\[').replaceAll(']', '\\]');
+            const host = normalizeDomain(tab.url) || tab.url;
+            lines.push(`- [${tabTitle}](${tab.url}) — *${host}*`);
+          }
+        } else {
+          lines.push('*Empty stash.*');
+        }
+        lines.push('');
+      }
+    }
+
+    const md = lines.join('\n');
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-stashes-${Date.now()}.md`,
+      filters: [{ name: 'Markdown Document', extensions: ['md', 'markdown'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, md, 'utf8');
     surface.send('toast', { message: 'toast.stashExported', kind: 'success' });
     return { ok: true, filePath: result.filePath };
   });

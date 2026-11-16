@@ -95,6 +95,9 @@ const api = {
     muteOthers: (id) => ipcRenderer.invoke('tabs:muteOthers', id),
     sleepOthers: (id) => ipcRenderer.invoke('tabs:sleepOthers', id),
     memorySaverStats: () => ipcRenderer.invoke('tabs:memorySaverStats'),
+    exemptDomain: (domain) => ipcRenderer.invoke('tabs:exemptDomain', domain),
+    unexemptDomain: (domain) => ipcRenderer.invoke('tabs:unexemptDomain', domain),
+    getExemptDomains: () => ipcRenderer.invoke('tabs:getExemptDomains'),
     sleepInactive: (delay) => ipcRenderer.invoke('tabs:sleepInactive', delay),
     reloadAll: () => ipcRenderer.invoke('tabs:reloadAll'),
     closeDuplicates: () => ipcRenderer.invoke('tabs:closeDuplicates'),
@@ -210,6 +213,8 @@ const api = {
     clearRead: () => ipcRenderer.invoke('readingList:clearRead'),
     openAllUnread: () => ipcRenderer.invoke('readingList:openAllUnread'),
     exportJson: () => ipcRenderer.invoke('readingList:exportJson'),
+    exportMarkdown: () => ipcRenderer.invoke('readingList:exportMarkdown'),
+    exportHtml: () => ipcRenderer.invoke('readingList:exportHtml'),
     importJson: () => ipcRenderer.invoke('readingList:importJson'),
   },
 
@@ -231,6 +236,7 @@ const api = {
     rename: (stashId, newTitle) => ipcRenderer.invoke('stashes:rename', stashId, newTitle),
     removeTab: (stashId, tabIndex) => ipcRenderer.invoke('stashes:removeTab', stashId, tabIndex),
     exportJson: (stashId) => ipcRenderer.invoke('stashes:exportJson', stashId),
+    exportMarkdown: (stashId) => ipcRenderer.invoke('stashes:exportMarkdown', stashId),
     importJson: () => ipcRenderer.invoke('stashes:importJson'),
   },
 

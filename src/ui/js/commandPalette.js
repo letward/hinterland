@@ -1,4 +1,4 @@
-import { el, clear, prettyUrl } from './util.js';
+import { el, clear, prettyUrl, hostOf } from './util.js';
 import { icon } from './icons.js';
 import { t } from './i18n.js';
 import { openPopup, closePopup, isOpen } from './popup.js';
@@ -156,6 +156,29 @@ export function openCommandPalette() {
             run: async () => {
               const count = await api().tabs.sleepOthers();
               if (count > 0) toast(t('toast.sleptOthers', { count }), 'info');
+            },
+          },
+          {
+            id: 'memorySaverExemptSite',
+            title: t('commandPalette.memorySaverExemptSite'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'shield',
+            run: async () => {
+              if (!current || !current.url || current.url.startsWith('hinterland://')) {
+                toast(t('toast.cannotExemptSpecialPage'), 'warning');
+                return;
+              }
+              const host = hostOf(current.url);
+              if (!host) return;
+              const exemptions = await api().tabs.getExemptDomains();
+              const isExempt = exemptions.some((d) => d.toLowerCase() === host.toLowerCase());
+              if (isExempt) {
+                await api().tabs.unexemptDomain(host);
+                toast(t('toast.memorySaverUnexempted', { domain: host }), 'info');
+              } else {
+                await api().tabs.exemptDomain(host);
+                toast(t('toast.memorySaverExempted', { domain: host }), 'success');
+              }
             },
           },
           {
@@ -489,6 +512,13 @@ export function openCommandPalette() {
             },
           },
           {
+            id: 'stashExportMarkdown',
+            title: t('commandPalette.stashExportMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().stashes.exportMarkdown(),
+          },
+          {
             id: 'storeThemes',
             title: t('commandPalette.browseThemes'),
             category: t('commandPalette.categoryCommand'),
@@ -635,6 +665,20 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'download',
             run: () => api().readingList.exportJson(),
+          },
+          {
+            id: 'readingListExportMarkdown',
+            title: t('commandPalette.readingListExportMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().readingList.exportMarkdown(),
+          },
+          {
+            id: 'readingListExportHtml',
+            title: t('commandPalette.readingListExportHtml'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'globe',
+            run: () => api().readingList.exportHtml(),
           },
           {
             id: 'readingListImport',

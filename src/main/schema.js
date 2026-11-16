@@ -798,6 +798,12 @@ export const SCHEMA = [
     step: 5,
     unit: ' min',
   }),
+  option('advanced.memorySaverExemptions', 'list', [], {
+    labelKey: 'settings.advanced.memorySaverExemptions',
+    descKey: 'settings.advanced.memorySaverExemptionsDesc',
+    section: 'advanced',
+    itemSchema: { domain: 'text' },
+  }),
   option('advanced.blockWebViewTag', 'bool', true, {
     labelKey: 'settings.advanced.blockWebViewTag',
     descKey: 'settings.advanced.blockWebViewTagDesc',

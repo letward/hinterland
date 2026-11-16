@@ -4,6 +4,32 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.30.0] - 2026-11-16
+
+### Added
+- **Global Media Hub & Audio Center Overhaul (`src/ui/js/menu.js`, `src/ui/css/panels.css`, `src/ui/js/commandPalette.js`)**:
+  - Enhanced Global Media Controller popup (`openMediaControls`, <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>M</kbd>) with quick header controls for **Mute All Tabs** (`tabs:muteAll(true)`) and **Unmute All Tabs** (`tabs:muteAll(false)`).
+  - Dynamic status badge displaying active playing tab counts and live pulsating equalizer indicators (`.mediaWaveIndicator`) on playing tabs.
+  - 1-click Play/Pause (`tab:toggleMediaPlay`), Mute/Unmute (`tab:mute`), Picture-in-Picture (`tab:togglePiP`), and jump to tab (`tabs:activate`).
+  - Added Command Palette quick launcher `commandPalette.mediaControls`.
+- **Reading List Markdown & Standalone Offline HTML Export (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `readingList:exportMarkdown` generating structured Markdown lists categorized into Unread and Read sections with source domains and timestamps, ideal for Obsidian, Notion, and notes archives.
+  - Implemented `readingList:exportHtml` generating standalone, responsive HTML reading digests with modern dark obsidian styling, unread/read badges, and zero external dependencies for offline article access.
+  - Added Export Markdown and Export HTML action buttons in the Reading List modal and Command Palette quick launchers (`readingListExportMarkdown` and `readingListExportHtml`).
+- **Tab Stashes Markdown Export (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `stashes:exportMarkdown` exporting all saved tab stashes or a single stash as a formatted Markdown archive with title, date, tab counts, and domain tags.
+  - Added Export Markdown buttons in Tab Stash top action row and individual stash card actions, plus Command Palette launcher `stashExportMarkdown`.
+- **Memory Saver Site Exemptions (Never-Sleep Whitelist) (`src/main/schema.js`, `src/main/sync.js`, `src/main/tabs.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `advanced.memorySaverExemptions` list setting in schema with automatic Settings list editor, allowing users to exempt critical domains (e.g. dashboards, localhost dev servers, webmail) from automatic sleeping.
+  - Integrated `advanced.memorySaverExemptions` into `SYNCABLE_SETTINGS` for seamless cross-device cloud sync.
+  - Added 1-click "Never sleep this site" / "Allow sleeping for this site" toggle in Tab context menu and Command Palette (`memorySaverExemptSite`).
+  - Implemented `tabs:exemptDomain`, `tabs:unexemptDomain`, and `tabs:getExemptDomains` IPC handlers and preload bridge methods.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`)**:
+  - Documented Global Media Hub, Memory Saver site exemptions, Reading List Markdown & Offline HTML Digest, and Tab Stash Markdown export in the User Guide.
+  - Updated website hero badge and standalone Windows download link to v1.30.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v130Features.test.mjs`)**:
+  - Added automated unit and integration tests covering Reading List Markdown & HTML exports, Tab Stashes Markdown export, Memory Saver exemption methods and sleeping prevention, Global Media Hub UI and styling, and 100% key parity across English and German locales.
+
 ## [1.29.0] - 2026-11-16
 
 ### Added

@@ -34,6 +34,7 @@ export const SYNCABLE_SETTINGS = [
   'search.engines',
   'search.defaultEngine',
   'shortcuts',
+  'advanced.memorySaverExemptions',
 ];
 
 /* ----------------------------------------------------------------- crypto */

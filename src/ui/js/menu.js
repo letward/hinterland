@@ -60,6 +60,19 @@ function zoomRow() {
   return container;
 }
 
+function isDomainExempted(rawUrl) {
+  if (!rawUrl) return false;
+  const host = hostOf(rawUrl);
+  if (!host) return false;
+  const conf = currentSettings();
+  const raw = conf?.advanced?.memorySaverExemptions;
+  if (!Array.isArray(raw)) return false;
+  return raw.some((item) => {
+    const d = String(typeof item === 'object' && item ? item.domain : item || '').toLowerCase().trim();
+    return host === d || host.endsWith(`.${d}`);
+  });
+}
+
 export function openMainMenu() {
   const tab = window.hinterlandTab;
   openPopup({
@@ -364,6 +377,21 @@ export function openTabMenu(tab, x, y) {
           iconName: 'moon',
           title: t('menu.sleepOtherTabs'),
           onSelect: () => api().tabs.sleepOthers(tab.id),
+        }),
+        row({
+          iconName: 'shield',
+          title: isDomainExempted(tab.url) ? t('menu.memorySaverUnexempt') : t('menu.memorySaverExempt'),
+          onSelect: async () => {
+            const host = hostOf(tab.url);
+            if (!host) return;
+            if (isDomainExempted(tab.url)) {
+              await api().tabs.unexemptDomain(host);
+              toast(t('toast.memorySaverUnexempted', { domain: host }), 'info');
+            } else {
+              await api().tabs.exemptDomain(host);
+              toast(t('toast.memorySaverExempted', { domain: host }), 'success');
+            }
+          },
         }),
         row({
           iconName: tab.muted ? 'volumeOff' : 'volume',
@@ -729,11 +757,43 @@ export function openMediaControls() {
         card.append(empty(t('media.noActiveMedia')));
         return;
       }
+
+      const activePlayingCount = tabsList.filter((t) => t.audible).length;
+      const mediaBar = el('div', { class: 'mediaHeaderBar' }, [
+        el('div', { class: 'mediaHeaderStats' }, [
+          el('span', { class: 'mediaBadge active', text: t('media.playingCount', { count: activePlayingCount }) }),
+        ]),
+        el('div', { class: 'mediaHeaderButtons' }, [
+          el('button', {
+            class: 'button small',
+            type: 'button',
+            onclick: async (e) => {
+              e.stopPropagation();
+              await api().tabs.muteAll(true);
+              closePopup();
+            },
+          }, [el('span', { html: icon('volumeOff') }), ` ${t('menu.muteAllTabs')}`]),
+          el('button', {
+            class: 'button small',
+            type: 'button',
+            onclick: async (e) => {
+              e.stopPropagation();
+              await api().tabs.muteAll(false);
+              closePopup();
+            },
+          }, [el('span', { html: icon('volume') }), ` ${t('menu.unmuteAllTabs')}`]),
+        ]),
+      ]);
+      card.append(mediaBar);
+
       for (const tab of tabsList) {
-        const item = el('div', { class: 'mediaItem' });
+        const item = el('div', { class: `mediaItem ${tab.audible ? 'isPlaying' : ''}` });
         const info = el('div', { class: 'mediaInfo' }, [
           el('div', { class: 'mediaTitle', text: tab.title || tab.url }),
-          el('div', { class: 'mediaHost', text: hostOf(tab.url) }),
+          el('div', { class: 'mediaHost' }, [
+            el('span', { text: hostOf(tab.url) }),
+            tab.audible ? el('span', { class: 'mediaWaveIndicator', text: ` • ${t('media.live')}` }) : null,
+          ]),
         ]);
 
         const playBtn = el('button', {
