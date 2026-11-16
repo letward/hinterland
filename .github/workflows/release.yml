@@ -77,6 +77,20 @@ jobs:
         run: |
           Get-ChildItem dist/*.exe, dist/*.blockmap, dist/latest.yml
 
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $TAG = "${{ github.ref_name }}"
+          if (-not $TAG -or $TAG -notlike "v*") {
+            $TAG = "${{ github.event.inputs.tag }}"
+          }
+          if (-not $TAG) {
+            $TAG = ($env:GITHUB_REF -replace '^refs/tags/', '')
+          }
+          Write-Host "Ensuring release is published for tag: $TAG"
+          gh release edit "$TAG" --draft=false
+
       - name: Upload build artefacts
         uses: actions/upload-artifact@v4
         with:

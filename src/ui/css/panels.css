@@ -2299,6 +2299,56 @@
   color: var(--textDim);
 }
 
+/* ------------------------------------------------------------- tab groups studio */
+.tabGroupsPage {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tabGroupCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tabGroupCard:hover {
+  border-color: var(--borderHover, var(--border));
+}
+
+.groupColorIndicator {
+  border-radius: var(--radiusSmall);
+  flex-shrink: 0;
+}
+
+.tabGroupTitle {
+  color: var(--text);
+  border-bottom: 1px dashed transparent;
+  transition: border-color 0.15s ease;
+}
+
+.tabGroupTitle:hover {
+  border-bottom-color: var(--accent);
+}
+
+.tabGroupRow {
+  transition: background 0.12s ease;
+}
+
+.tabGroupRow:hover {
+  background: var(--surfaceHover, var(--surfaceAlt));
+}
+
+.groupColorDotBtn {
+  transition: transform 0.12s ease;
+}
+
+.groupColorDotBtn:hover {
+  transform: scale(1.15);
+}
+
+
 
 
 

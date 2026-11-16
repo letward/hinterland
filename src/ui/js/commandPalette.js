@@ -5,7 +5,7 @@ import { openPopup, closePopup, isOpen } from './popup.js';
 import { activeTab, allTabs } from './tabs.js';
 import { openMediaControls } from './menu.js';
 import { toast } from './toast.js';
-import { openQrCode, openCookieInspector, openSitePermissions } from './panels.js';
+import { openQrCode, openCookieInspector, openSitePermissions, openTabGroups } from './panels.js';
 
 const api = () => window.hinterland;
 
@@ -229,6 +229,20 @@ export function openCommandPalette() {
             },
           },
           {
+            id: 'searchExportJson',
+            title: t('commandPalette.searchExportJson'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'download',
+            run: () => api().search.exportJson(),
+          },
+          {
+            id: 'searchImportJson',
+            title: t('commandPalette.searchImportJson'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'upload',
+            run: () => api().search.importJson(),
+          },
+          {
             id: 'reload',
             title: t('action.reload'),
             category: t('commandPalette.categoryCommand'),
@@ -444,6 +458,13 @@ export function openCommandPalette() {
             shortcut: 'Ctrl+Shift+U',
             icon: 'archive',
             run: () => window.dispatchEvent(new CustomEvent('hinterland:openstash')),
+          },
+          {
+            id: 'tabGroups',
+            title: t('commandPalette.tabGroups'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'tabs',
+            run: () => openTabGroups(),
           },
           {
             id: 'stashAllTabs',

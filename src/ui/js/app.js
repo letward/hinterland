@@ -9,7 +9,7 @@ import { bindTabs, renderTabs, updateTab, setActive, activeTab, allTabs } from '
 import { bindOmnibox, syncOmni, focusOmnibox } from './omnibox.js';
 import { openMainMenu, openTabMenu, openOmniMenu, openTabstripMenu, openExtensionsButton, closeMenus, openMediaControls } from './menu.js';
 import { setSchema, openSettings, setShortcutDefaults } from './settingspanel.js';
-import { openStore, openExtensions, openHistory, openBookmarks, openDownloads, openAbout, openShortcuts, openTaskManager, openReadingList, openClearData, openNotes, openTabStash, openPasswords, openAccount, openSitePermissions } from './panels.js';
+import { openStore, openExtensions, openHistory, openBookmarks, openDownloads, openAbout, openShortcuts, openTaskManager, openReadingList, openClearData, openNotes, openTabStash, openTabGroups, openPasswords, openAccount, openSitePermissions } from './panels.js';
 import { openExtensionPopup, closeExtensionPopup } from './extensionPopup.js';
 import { openCommandPalette } from './commandPalette.js';
 import { toast } from './toast.js';
@@ -34,6 +34,7 @@ const PANELS = {
   clearData: openClearData,
   notes: openNotes,
   stash: openTabStash,
+  tabGroups: openTabGroups,
   passwords: openPasswords,
   account: openAccount,
   sitePermissions: openSitePermissions,
@@ -186,6 +187,7 @@ function bind() {
   window.addEventListener('hinterland:togglebookmarksbar', () => toggleBookmarksBar());
   window.addEventListener('hinterland:siteinfo', () => openSiteInfo());
   window.addEventListener('hinterland:openstash', () => openTabStash());
+  window.addEventListener('hinterland:opentabgroups', () => openTabGroups());
   window.addEventListener('hinterland:openaccount', () => openAccount());
 
   $('#extensionToolbar').addEventListener('click', async (event) => {
@@ -374,6 +376,7 @@ function handleShortcut(action) {
   if (action === 'clearData') return openClearData();
   if (action === 'notes') return openNotes();
   if (action === 'tabStash') return openTabStash();
+  if (action === 'tabGroups') return openTabGroups();
   if (action === 'passwords') return openPasswords();
   if (action === 'togglePiP') return toggleActivePiP();
   if (action === 'mediaControls') return openMediaControls();

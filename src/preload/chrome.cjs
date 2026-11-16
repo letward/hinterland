@@ -109,6 +109,8 @@ const api = {
     groupDelete: (id) => ipcRenderer.invoke('tabs:groupDelete', id),
     setGroup: (tabId, groupId) => ipcRenderer.invoke('tabs:setGroup', tabId, groupId),
     groupMoveTab: (tabId, groupId, index) => ipcRenderer.invoke('tabs:groupMoveTab', tabId, groupId, index),
+    groupStash: (groupId) => ipcRenderer.invoke('tabs:groupStash', groupId),
+    groupCloseTabs: (groupId) => ipcRenderer.invoke('tabs:groupCloseTabs', groupId),
   },
 
   tab: {
@@ -150,6 +152,8 @@ const api = {
     removeEngine: (id) => ipcRenderer.invoke('search:removeEngine', id),
     setDefault: (id) => ipcRenderer.invoke('search:setDefault', id),
     resetEngines: () => ipcRenderer.invoke('search:resetEngines'),
+    exportJson: () => ipcRenderer.invoke('search:exportJson'),
+    importJson: () => ipcRenderer.invoke('search:importJson'),
   },
 
   extensions: {

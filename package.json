@@ -1,7 +1,7 @@
 {
   "name": "hinterland",
   "productName": "Hinterland",
-  "version": "1.28.0",
+  "version": "1.29.0",
   "description": "Ein schneller, sicherer und frei anpassbarer Browser. A fast, secure and freely customisable browser.",
   "main": "src/main/main.js",
   "type": "module",
@@ -35,7 +35,8 @@
     "publish": {
       "provider": "github",
       "owner": "letward",
-      "repo": "Hinterland"
+      "repo": "Hinterland",
+      "releaseType": "release"
     },
     "asarUnpack": [
       "src/extensions/**/*"

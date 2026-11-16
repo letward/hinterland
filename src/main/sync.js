@@ -31,6 +31,8 @@ export const SYNCABLE_SETTINGS = [
   'content.popups',
   'data.readingList',
   'data.notes',
+  'search.engines',
+  'search.defaultEngine',
   'shortcuts',
 ];
 
@@ -152,6 +154,78 @@ export function mergeHistory(local = [], remote = []) {
     .slice(0, 1000);
 }
 
+export function normalizeReadingListUrl(url) {
+  if (!url || typeof url !== 'string') return '';
+  try {
+    const parsed = new URL(url);
+    return parsed.href.replace(/\/$/, '');
+  } catch {
+    return url.trim().toLowerCase();
+  }
+}
+
+export function mergeReadingList(local = [], remote = []) {
+  const map = new Map();
+
+  for (const item of (Array.isArray(local) ? local : [])) {
+    if (!item || !item.url) continue;
+    const key = normalizeReadingListUrl(item.url);
+    map.set(key, { ...item });
+  }
+
+  for (const item of (Array.isArray(remote) ? remote : [])) {
+    if (!item || !item.url) continue;
+    const key = normalizeReadingListUrl(item.url);
+    const existing = map.get(key);
+    if (!existing) {
+      map.set(key, { ...item });
+    } else {
+      const merged = { ...existing };
+      if (!merged.title && item.title) merged.title = item.title;
+      if (item.favicon && !merged.favicon) merged.favicon = item.favicon;
+      if (item.read !== undefined && item.read) merged.read = true;
+      if (item.addedAt && (!merged.addedAt || item.addedAt > merged.addedAt)) {
+        merged.addedAt = item.addedAt;
+      }
+      map.set(key, merged);
+    }
+  }
+
+  return Array.from(map.values())
+    .sort((a, b) => (Number(b.addedAt) || 0) - (Number(a.addedAt) || 0));
+}
+
+export function mergeNotes(local = [], remote = []) {
+  const map = new Map();
+
+  for (const item of (Array.isArray(local) ? local : [])) {
+    if (!item || !item.id) continue;
+    map.set(item.id, { ...item });
+  }
+
+  for (const item of (Array.isArray(remote) ? remote : [])) {
+    if (!item || !item.id) continue;
+    const existing = map.get(item.id);
+    if (!existing) {
+      map.set(item.id, { ...item });
+    } else {
+      const remoteUpdated = Number(item.updatedAt) || 0;
+      const localUpdated = Number(existing.updatedAt) || 0;
+      if (remoteUpdated >= localUpdated) {
+        map.set(item.id, { ...existing, ...item });
+      } else {
+        map.set(item.id, { ...item, ...existing });
+      }
+    }
+  }
+
+  return Array.from(map.values())
+    .sort((a, b) => {
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+      return (Number(b.updatedAt) || 0) - (Number(a.updatedAt) || 0);
+    });
+}
+
 export function extractSyncableSettings(allSettings) {
   const result = {};
   if (!allSettings || typeof allSettings !== 'object') return result;
@@ -242,7 +316,7 @@ export class SyncService extends EventEmitter {
       name: settings.value('account.deviceName') || defaultName,
       platform: process.platform,
       os: process.platform,
-      browserVersion: '1.28.0',
+      browserVersion: '1.29.0',
       lastActive: this.lastSyncedAt || new Date().toISOString(),
       current: true,
       isCurrent: true,
@@ -254,11 +328,15 @@ export class SyncService extends EventEmitter {
 
   getSyncStats() {
     const bookmarks = settings.value('data.bookmarks') || [];
+    const readingList = settings.value('data.readingList') || [];
+    const notes = settings.value('data.notes') || [];
     const syncable = extractSyncableSettings(settings.all());
     const known = settings.value('account.knownDevices') || [];
     return {
       bookmarkCount: bookmarks.length,
       bookmarksCount: bookmarks.length,
+      readingListCount: readingList.length,
+      notesCount: notes.length,
       settingsCount: Object.keys(syncable).length,
       syncableSettingsCount: Object.keys(syncable).length,
       deviceCount: known.length + 1,
@@ -283,7 +361,7 @@ export class SyncService extends EventEmitter {
         name: codeOrOpts.name || 'Paired Device',
         platform: 'unknown',
         os: 'unknown',
-        browserVersion: '1.28.0',
+        browserVersion: '1.29.0',
         lastActive: new Date().toISOString(),
         pairedCode: code,
         current: false,
@@ -350,6 +428,8 @@ export class SyncService extends EventEmitter {
       autoSync: settings.value('account.autoSync') ?? true,
       syncBookmarks: settings.value('account.syncBookmarks') ?? true,
       syncHistory: settings.value('account.syncHistory') ?? true,
+      syncReadingList: settings.value('account.syncReadingList') ?? true,
+      syncNotes: settings.value('account.syncNotes') ?? true,
       syncSettings: settings.value('account.syncSettings') ?? true,
       lastSyncedAt: settings.value('account.lastSyncTime') || this.lastSyncedAt || null,
       status: this.status,
@@ -378,6 +458,8 @@ export class SyncService extends EventEmitter {
     if (patch.supabaseAnonKey !== undefined) settings.set('account.supabaseAnonKey', String(patch.supabaseAnonKey));
     if (patch.syncBookmarks !== undefined) settings.set('account.syncBookmarks', Boolean(patch.syncBookmarks));
     if (patch.syncHistory !== undefined) settings.set('account.syncHistory', Boolean(patch.syncHistory));
+    if (patch.syncReadingList !== undefined) settings.set('account.syncReadingList', Boolean(patch.syncReadingList));
+    if (patch.syncNotes !== undefined) settings.set('account.syncNotes', Boolean(patch.syncNotes));
     if (patch.syncSettings !== undefined) settings.set('account.syncSettings', Boolean(patch.syncSettings));
     if (patch.syncPassphrase !== undefined) this.setSyncPassphrase(patch.syncPassphrase);
 
@@ -493,10 +575,14 @@ export class SyncService extends EventEmitter {
     try {
       const syncBookmarksEnabled = settings.value('account.syncBookmarks') ?? true;
       const syncHistoryEnabled = settings.value('account.syncHistory') ?? true;
+      const syncReadingListEnabled = settings.value('account.syncReadingList') ?? true;
+      const syncNotesEnabled = settings.value('account.syncNotes') ?? true;
       const syncSettingsEnabled = settings.value('account.syncSettings') ?? true;
 
       const localBookmarks = syncBookmarksEnabled ? (settings.value('data.bookmarks') ?? []) : [];
       const localHistory = syncHistoryEnabled ? history.recent(500) : [];
+      const localReadingList = syncReadingListEnabled ? (settings.value('data.readingList') ?? []) : [];
+      const localNotes = syncNotesEnabled ? (settings.value('data.notes') ?? []) : [];
       const localSettings = syncSettingsEnabled ? extractSyncableSettings(settings.all()) : {};
 
       let cloudData = null;
@@ -504,6 +590,8 @@ export class SyncService extends EventEmitter {
         cloudData = await this._supabaseSync(session, {
           bookmarks: localBookmarks,
           history: localHistory,
+          readingList: localReadingList,
+          notes: localNotes,
           settings: localSettings,
           direction,
         });
@@ -511,6 +599,8 @@ export class SyncService extends EventEmitter {
         cloudData = await this._hinterlandSync(session, {
           bookmarks: localBookmarks,
           history: localHistory,
+          readingList: localReadingList,
+          notes: localNotes,
           settings: localSettings,
           direction,
         });
@@ -528,6 +618,20 @@ export class SyncService extends EventEmitter {
       if (syncHistoryEnabled && Array.isArray(cloudData?.history)) {
         mergedHistory = history.mergeEntries(cloudData.history);
         this.emit('historyUpdated', history.entries);
+      }
+
+      let mergedReadingList = localReadingList;
+      if (syncReadingListEnabled && Array.isArray(cloudData?.readingList)) {
+        mergedReadingList = mergeReadingList(localReadingList, cloudData.readingList);
+        settings.set('data.readingList', mergedReadingList, { silent: true });
+        this.emit('readingListUpdated', mergedReadingList);
+      }
+
+      let mergedNotes = localNotes;
+      if (syncNotesEnabled && Array.isArray(cloudData?.notes)) {
+        mergedNotes = mergeNotes(localNotes, cloudData.notes);
+        settings.set('data.notes', mergedNotes, { silent: true });
+        this.emit('notesUpdated', mergedNotes);
       }
 
       if (syncSettingsEnabled && cloudData?.settings && typeof cloudData.settings === 'object') {
@@ -621,13 +725,20 @@ export class SyncService extends EventEmitter {
     };
   }
 
-  async _supabaseSync(session, { bookmarks, history: localHistory = [], settings: currentSettings }) {
+  async _supabaseSync(session, { bookmarks, history: localHistory = [], readingList: localReadingList = [], notes: localNotes = [], settings: currentSettings }) {
     const url = (settings.value('account.supabaseUrl') || '').replace(/\/$/, '');
     const key = settings.value('account.supabaseAnonKey');
     if (!url || !key) throw new Error('missingSupabaseConfig');
 
     // Prepare payload (encrypt if passphrase is provided)
-    let payload = { bookmarks, history: localHistory, settings: currentSettings, updatedAt: new Date().toISOString() };
+    let payload = {
+      bookmarks,
+      history: localHistory,
+      readingList: localReadingList,
+      notes: localNotes,
+      settings: currentSettings,
+      updatedAt: new Date().toISOString(),
+    };
     if (this.syncPassphrase) {
       payload = encryptSyncPayload(payload, this.syncPassphrase);
     }
@@ -648,14 +759,18 @@ export class SyncService extends EventEmitter {
       }
     }
 
-    // Merge remote bookmarks, history and settings with local
+    // Merge remote bookmarks, history, readingList, notes and settings with local
     const mergedBookmarks = mergeBookmarks(bookmarks, remoteData?.bookmarks ?? []);
     const mergedHistory = mergeHistory(localHistory, remoteData?.history ?? []);
+    const mergedReadingList = mergeReadingList(localReadingList, remoteData?.readingList ?? []);
+    const mergedNotes = mergeNotes(localNotes, remoteData?.notes ?? []);
     const mergedSettings = { ...(remoteData?.settings ?? {}), ...currentSettings };
 
     let toSave = {
       bookmarks: mergedBookmarks,
       history: mergedHistory,
+      readingList: mergedReadingList,
+      notes: mergedNotes,
       settings: mergedSettings,
       updatedAt: new Date().toISOString(),
     };
@@ -680,6 +795,8 @@ export class SyncService extends EventEmitter {
     return {
       bookmarks: mergedBookmarks,
       history: mergedHistory,
+      readingList: mergedReadingList,
+      notes: mergedNotes,
       settings: mergedSettings,
       updatedAt: toSave.updatedAt,
     };
@@ -723,10 +840,17 @@ export class SyncService extends EventEmitter {
     };
   }
 
-  async _hinterlandSync(session, { bookmarks, history: localHistory = [], settings: currentSettings }) {
+  async _hinterlandSync(session, { bookmarks, history: localHistory = [], readingList: localReadingList = [], notes: localNotes = [], settings: currentSettings }) {
     const endpoint = settings.value('account.serverUrl') || DEFAULT_SERVER_URL;
 
-    let payloadData = { bookmarks, history: localHistory, settings: currentSettings, updatedAt: new Date().toISOString() };
+    let payloadData = {
+      bookmarks,
+      history: localHistory,
+      readingList: localReadingList,
+      notes: localNotes,
+      settings: currentSettings,
+      updatedAt: new Date().toISOString(),
+    };
     if (this.syncPassphrase) {
       payloadData = encryptSyncPayload(payloadData, this.syncPassphrase);
     }

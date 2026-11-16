@@ -2249,6 +2249,258 @@ function tabStashPage() {
   };
 }
 
+/* ------------------------------------------------------------- tab groups */
+
+export function openTabGroups() {
+  openModal({
+    title: t('tabGroups.title'),
+    iconName: 'tabs',
+    nav: [tabGroupsPage()],
+  });
+}
+
+function tabGroupsPage() {
+  return {
+    id: 'tabGroups',
+    icon: 'tabs',
+    labelKey: 'tabGroups.title',
+    render: () => {
+      const container = el('div', { class: 'tabGroupsPage' });
+      container.append(head(t('tabGroups.title'), t('tabGroups.description')));
+
+      const presetColors = [
+        '#388bfd', // sapphire
+        '#2ea043', // emerald
+        '#d29922', // amber
+        '#f85149', // ruby
+        '#a371f7', // purple
+        '#39c5bb', // cyan
+        '#8b949e', // slate
+      ];
+
+      let selectedColor = presetColors[0];
+      let groups = [];
+      let tabs = [];
+      let filterText = '';
+
+      // Creator toolbar
+      const creatorCard = el('div', { class: 'card tabGroupCreatorCard', style: { marginBottom: '14px', padding: '14px' } });
+      const nameInput = el('input', {
+        class: 'textInput',
+        type: 'text',
+        placeholder: t('tabGroups.newGroupPlaceholder'),
+        style: { flex: '1', minWidth: '180px' },
+      });
+
+      const colorPalette = el('div', { class: 'groupColorPalette', style: { display: 'flex', gap: '6px', alignItems: 'center' } });
+      const colorDots = [];
+      presetColors.forEach((hex) => {
+        const dot = el('button', {
+          class: `groupColorDotBtn ${hex === selectedColor ? 'selected' : ''}`,
+          type: 'button',
+          style: {
+            width: '20px',
+            height: '20px',
+            background: hex,
+            border: hex === selectedColor ? '2px solid #fff' : '2px solid transparent',
+            cursor: 'pointer',
+            padding: '0',
+          },
+          onclick: () => {
+            selectedColor = hex;
+            colorDots.forEach((d) => (d.style.borderColor = 'transparent'));
+            dot.style.borderColor = '#fff';
+          },
+        });
+        colorDots.push(dot);
+        colorPalette.append(dot);
+      });
+
+      const createBtn = el('button', {
+        class: 'button primary',
+        type: 'button',
+        onclick: async () => {
+          const name = nameInput.value.trim() || t('tabGroups.defaultName');
+          await api().tabs.groupCreate({ name, color: selectedColor });
+          nameInput.value = '';
+          toast(t('toast.groupCreated'), 'success');
+          await refresh();
+        },
+      }, [el('span', { html: icon('plus') }), ` ${t('tabGroups.create')}`]);
+
+      nameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') createBtn.click();
+      });
+
+      creatorCard.append(
+        el('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' } }, [
+          nameInput,
+          colorPalette,
+          createBtn,
+        ])
+      );
+      container.append(creatorCard);
+
+      const search = searchBox((value) => {
+        filterText = value.toLowerCase();
+        paint();
+      });
+      container.append(search.field);
+
+      const listContainer = el('div', { class: 'tabGroupsList', style: { display: 'flex', flexDirection: 'column', gap: '12px' } });
+      container.append(listContainer);
+
+      const refresh = async () => {
+        groups = (await api().tabs.groups()) || [];
+        tabs = (await api().tabs.list()) || [];
+        paint();
+      };
+
+      const paint = () => {
+        clear(listContainer);
+        let items = [...groups];
+        if (filterText) {
+          items = items.filter((g) => {
+            const matchName = (g.name || '').toLowerCase().includes(filterText);
+            const matchTab = tabs.some((t) => t.groupId === g.id && ((t.title || '').toLowerCase().includes(filterText) || (t.url || '').toLowerCase().includes(filterText)));
+            return matchName || matchTab;
+          });
+        }
+
+        if (!items.length) {
+          listContainer.append(el('div', { class: 'empty', text: filterText ? t('tabGroups.noMatch') : t('tabGroups.empty') }));
+          return;
+        }
+
+        for (const group of items) {
+          const memberTabs = tabs.filter((t) => t.groupId === group.id);
+          const card = el('div', { class: 'card tabGroupCard', style: { padding: '14px' } });
+
+          // Header
+          const header = el('div', { class: 'tabGroupHeader', style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: memberTabs.length ? '10px' : '0' } });
+          const left = el('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } });
+
+          const colorPill = el('span', {
+            class: 'groupColorIndicator',
+            style: { width: '12px', height: '12px', background: group.color || '#4f7cff', display: 'inline-block' },
+          });
+
+          const titleEl = el('span', {
+            class: 'tabGroupTitle',
+            text: group.name || t('tabGroups.defaultName'),
+            style: { fontWeight: '600', fontSize: '15px', cursor: 'pointer' },
+            title: t('tabGroups.renameHint'),
+          });
+
+          titleEl.addEventListener('click', () => {
+            const input = el('input', {
+              class: 'textInput',
+              type: 'text',
+              value: group.name || '',
+              style: { padding: '2px 6px', fontSize: '14px', width: '160px' },
+            });
+            input.addEventListener('blur', async () => {
+              if (input.value.trim() && input.value !== group.name) {
+                group.name = input.value.trim();
+                await api().tabs.groupRename(group.id, group.name);
+              }
+              paint();
+            });
+            input.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter') input.blur();
+              if (e.key === 'Escape') paint();
+            });
+            titleEl.replaceWith(input);
+            input.focus();
+            input.select();
+          });
+
+          const countBadge = el('span', {
+            class: 'statusTag active',
+            text: `${memberTabs.length} ${t(memberTabs.length === 1 ? 'tabGroups.tab' : 'tabGroups.tabs')}`,
+          });
+
+          left.append(colorPill, titleEl, countBadge);
+
+          // Group actions
+          const actions = el('div', { style: { display: 'flex', gap: '6px', alignItems: 'center' } }, [
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('tabGroups.stashGroup'),
+              onclick: async () => {
+                const res = await api().tabs.groupStash(group.id);
+                if (res?.ok) {
+                  toast(t('toast.groupStashed'), 'success');
+                  await refresh();
+                }
+              },
+            }, [el('span', { html: icon('archive') }), ` ${t('tabGroups.stash')}`]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('tabGroups.closeTabs'),
+              onclick: async () => {
+                await api().tabs.groupCloseTabs(group.id);
+                toast(t('toast.groupTabsClosed'), 'info');
+                await refresh();
+              },
+            }, [el('span', { html: icon('close') }), ` ${t('tabGroups.close')}`]),
+            el('button', {
+              class: 'button small danger',
+              type: 'button',
+              title: t('tabGroups.deleteGroup'),
+              onclick: async () => {
+                await api().tabs.groupDelete(group.id);
+                toast(t('toast.groupDeleted'), 'info');
+                await refresh();
+              },
+            }, [el('span', { html: icon('trash') })]),
+          ]);
+
+          header.append(left, actions);
+          card.append(header);
+
+          // Tab rows
+          if (memberTabs.length) {
+            const tabsList = el('div', { class: 'tabGroupTabsList', style: { display: 'flex', flexDirection: 'column', gap: '4px' } });
+            memberTabs.forEach((tab) => {
+              const row = el('div', { class: 'tabGroupRow', style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 8px', background: 'var(--surfaceAlt)', border: '1px solid var(--borderSoft)' } });
+              const tabMeta = el('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden', cursor: 'pointer', flex: '1' } }, [
+                el('span', { html: tab.favicon ? `<img src="${tab.favicon}" width="14" height="14" style="vertical-align:middle;" />` : icon('globe') }),
+                el('span', { text: tab.title || tab.url, style: { fontWeight: '500', fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }),
+              ]);
+              tabMeta.addEventListener('click', async () => {
+                await api().tab.focus(tab.id);
+                closeModal();
+              });
+
+              const ungroupBtn = el('button', {
+                class: 'button small',
+                type: 'button',
+                title: t('tabGroups.ungroupTab'),
+                onclick: async () => {
+                  await api().tabs.setGroup(tab.id, null);
+                  await refresh();
+                },
+              }, [t('tabGroups.ungroup')]);
+
+              row.append(tabMeta, ungroupBtn);
+              tabsList.append(row);
+            });
+            card.append(tabsList);
+          }
+
+          listContainer.append(card);
+        }
+      };
+
+      refresh();
+      return container;
+    },
+  };
+}
+
 /* ------------------------------------------------------------- passwords */
 
 export function openPasswords(initialTab = 'passwords-current') {
@@ -3184,6 +3436,8 @@ function renderAccountConnected(container, status, refresh) {
     : t('account.neverSynced');
 
   const bookmarksCount = (get('data.bookmarks', []) ?? []).length;
+  const readingListCount = (get('data.readingList', []) ?? []).length;
+  const notesCount = (get('data.notes', []) ?? []).length;
 
   // Stats Grid
   const statsGrid = el('div', { class: 'accountStatsGrid' }, [
@@ -3196,7 +3450,15 @@ function renderAccountConnected(container, status, refresh) {
       el('div', { class: 'accountStatLabel', text: t('account.historySynced') }),
     ]),
     el('div', { class: 'accountStatBox' }, [
-      el('div', { class: 'accountStatVal', text: '17' }),
+      el('div', { class: 'accountStatVal', text: String(readingListCount) }),
+      el('div', { class: 'accountStatLabel', text: t('account.readingListSynced') }),
+    ]),
+    el('div', { class: 'accountStatBox' }, [
+      el('div', { class: 'accountStatVal', text: String(notesCount) }),
+      el('div', { class: 'accountStatLabel', text: t('account.notesSynced') }),
+    ]),
+    el('div', { class: 'accountStatBox' }, [
+      el('div', { class: 'accountStatVal', text: '19' }),
       el('div', { class: 'accountStatLabel', text: t('account.settingsSynced') }),
     ]),
     el('div', { class: 'accountStatBox' }, [
@@ -3440,6 +3702,50 @@ function accountSyncSettingsPage() {
               el('div', { class: 'optionHint', text: t('account.syncHistoryDesc') }),
             ]),
             el('div', { class: 'optionControl' }, [historySwitch]),
+          ]),
+        );
+
+        // Sync Reading List Toggle
+        const readingListSwitch = el('button', {
+          class: 'switch',
+          type: 'button',
+          role: 'switch',
+          'aria-checked': String(Boolean(status.syncReadingList)),
+        });
+        readingListSwitch.addEventListener('click', async () => {
+          const next = readingListSwitch.getAttribute('aria-checked') !== 'true';
+          readingListSwitch.setAttribute('aria-checked', String(next));
+          await api().account.updateConfig({ syncReadingList: next });
+        });
+        list.append(
+          el('div', { class: 'option' }, [
+            el('div', { class: 'optionText' }, [
+              el('div', { class: 'optionLabel', text: t('account.syncReadingList') }),
+              el('div', { class: 'optionHint', text: t('account.syncReadingListDesc') }),
+            ]),
+            el('div', { class: 'optionControl' }, [readingListSwitch]),
+          ]),
+        );
+
+        // Sync Notes Toggle
+        const notesSwitch = el('button', {
+          class: 'switch',
+          type: 'button',
+          role: 'switch',
+          'aria-checked': String(Boolean(status.syncNotes)),
+        });
+        notesSwitch.addEventListener('click', async () => {
+          const next = notesSwitch.getAttribute('aria-checked') !== 'true';
+          notesSwitch.setAttribute('aria-checked', String(next));
+          await api().account.updateConfig({ syncNotes: next });
+        });
+        list.append(
+          el('div', { class: 'option' }, [
+            el('div', { class: 'optionText' }, [
+              el('div', { class: 'optionLabel', text: t('account.syncNotes') }),
+              el('div', { class: 'optionHint', text: t('account.syncNotesDesc') }),
+            ]),
+            el('div', { class: 'optionControl' }, [notesSwitch]),
           ]),
         );
 

@@ -5,7 +5,7 @@ import { icon } from './icons.js';
 import { currentTab, currentSettings } from './state.js';
 import { allTabs } from './tabs.js';
 import { toast } from './toast.js';
-import { openQrCode } from './panels.js';
+import { openQrCode, openTabGroups } from './panels.js';
 
 const api = () => window.hinterland;
 
@@ -112,6 +112,11 @@ export function openMainMenu() {
           title: t('menu.tabStash'),
           subtitle: 'Ctrl+Shift+U',
           onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openstash')),
+        }),
+        row({
+          iconName: 'tabs',
+          title: t('menu.tabGroups'),
+          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:opentabgroups')),
         }),
         row({
           iconName: 'key',
@@ -344,6 +349,11 @@ export function openTabMenu(tab, x, y) {
           onSelect: async () => {
             await api().tabs.setGroup(tab.id, null);
           },
+        }),
+        row({
+          iconName: 'tabs',
+          title: t('menu.manageGroups'),
+          onSelect: () => openTabGroups(),
         }),
         row({
           iconName: 'moon',
@@ -635,6 +645,11 @@ export function openTabstripMenu() {
           title: t('menu.tabStash'),
           subtitle: 'Ctrl+Shift+U',
           onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openstash')),
+        }),
+        row({
+          iconName: 'tabs',
+          title: t('menu.tabGroups'),
+          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:opentabgroups')),
         }),
         row({
           iconName: 'key',

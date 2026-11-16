@@ -4,6 +4,37 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.29.0] - 2026-11-16
+
+### Added
+- **Tab Groups Studio & Management (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/app.js`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`, `src/ui/css/panels.css`)**:
+  - Dedicated visual Tab Groups Studio modal (`openTabGroups`) for organizing, color-coding, and managing active tab groups.
+  - Interactive group creation with curated color palette swatches (Sapphire, Emerald, Amber, Ruby, Purple, Cyan, Slate).
+  - Inline title editing, member tab listings with favicons, titles, and pretty URLs, and direct tab jump on click.
+  - 1-click **Stash Group** action (`tabs:groupStash`) that stashes all open tabs belonging to a group into a named, color-coded Tab Stash and closes them.
+  - 1-click **Close Group Tabs** action (`tabs:groupCloseTabs`), 1-click **Ungroup Tab** action, and group deletion.
+  - Integrated into Main Menu, Tab Strip context menu, and Command Palette (`tabGroups`).
+- **Custom Search Engines Portability (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/commandPalette.js`, `src/main/sync.js`)**:
+  - Implemented `search:exportJson` and `search:importJson` for complete custom search engine backup and restoration.
+  - Added URL validation, protocol verification, automatic `{q}` parameter formatting, and duplicate engine merging.
+  - Added Command Palette quick launchers (`searchExportJson` and `searchImportJson`).
+  - Added `search.engines` and `search.defaultEngine` to syncable settings for cloud sync across user devices.
+- **Cloud Sync Engine: Reading List & Quick Notes Synchronization (`src/main/sync.js`, `src/main/schema.js`, `website/api/sync.js`, `src/ui/js/panels.js`)**:
+  - Added two-way cloud synchronization and intelligent conflict resolution for saved Reading List articles (`mergeReadingList`) and Quick Notes (`mergeNotes`).
+  - Supports zero-knowledge End-to-End Encryption (AES-256-GCM + PBKDF2) with master passphrase.
+  - Added granular sync preference toggles in Account Settings and schema (`account.syncReadingList` and `account.syncNotes`).
+  - Extended real-time Account Hub statistics grid with live Reading List and Quick Notes sync counts.
+- **Release Automation & Auto-Update Hardening (`package.json`, `.github/workflows/release.yml`)**:
+  - Configured `releaseType: "release"` in `package.json` to publish non-draft releases automatically.
+  - Added automated GitHub CLI publication step in GitHub Actions release workflow to ensure `latest.yml` is published immediately for older browser versions to auto-update.
+- **Official Documentation Updates (`website/docs/user-guide.html`, `website/index.html`)**:
+  - Documented Tab Groups Studio & Group Stashing under "Organize your work".
+  - Documented Search Engine Portability under "Browse comfortably".
+  - Documented Reading List & Quick Notes Cloud Sync under "Sync".
+  - Updated website hero badge and direct download link to v1.29.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v129Features.test.mjs`)**:
+  - Added automated unit and integration tests covering Tab Groups Studio IPC handlers and UI rendering, search engines JSON export/import and sync, Reading List & Notes normalization and merging algorithms, serverless sync API payloads, and 100% locale key parity across English and German.
+
 ## [1.28.0] - 2026-11-08
 
 ### Added

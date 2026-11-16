@@ -474,6 +474,48 @@ export function installIpc() {
     return true;
   });
 
+  handle('tabs:groupStash', async (groupId) => {
+    const groups = sortedGroups();
+    const group = groups.find((g) => g.id === groupId);
+    const tabsInGroup = tabs.list.filter((t) => t.groupId === groupId && !isInternalUrl(t.url));
+    if (!tabsInGroup.length) {
+      surface.send('toast', { message: 'toast.noTabsInGroupToStash', kind: 'warning' });
+      return { ok: false, error: 'no_tabs' };
+    }
+    const groupTitle = group?.name || 'Tab Group';
+    const dateStr = new Date().toLocaleDateString();
+    const newStash = {
+      id: `stash_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+      title: `${groupTitle} (${dateStr})`,
+      createdAt: Date.now(),
+      color: group?.color || '#4f7cff',
+      tabs: tabsInGroup.map((t) => ({
+        url: t.url,
+        title: t.title || t.url,
+        favicon: t.favicon || '',
+      })),
+    };
+    const stashes = [...(settings.value('data.tabStashes') || [])];
+    stashes.unshift(newStash);
+    settings.set('data.tabStashes', stashes);
+
+    for (const t of tabsInGroup) {
+      tabs.close(t.id);
+    }
+    surface.send('toast', { message: 'toast.groupStashed', kind: 'success' });
+    return { ok: true, stash: newStash, count: tabsInGroup.length };
+  });
+
+  handle('tabs:groupCloseTabs', (groupId) => {
+    const tabsInGroup = tabs.list.filter((t) => t.groupId === groupId);
+    if (!tabsInGroup.length) return { ok: true, count: 0 };
+    for (const t of tabsInGroup) {
+      tabs.close(t.id);
+    }
+    surface.send('toast', { message: 'toast.groupTabsClosed', kind: 'info' });
+    return { ok: true, count: tabsInGroup.length };
+  });
+
   handle('app:checkForUpdates', () => {
     try {
       if (!app.isPackaged) return { ok: false, error: 'notPackaged' };
@@ -847,6 +889,81 @@ export function installIpc() {
     settings.set('search.defaultEngine', 'duckduckgo');
     surface.send('toast', { message: 'toast.searchEnginesReset', kind: 'success' });
     return { ok: true };
+  });
+
+  handle('search:exportJson', async () => {
+    const payload = {
+      version: '1.29.0',
+      exportedAt: new Date().toISOString(),
+      engines: settings.value('search.engines') ?? [],
+      defaultEngine: settings.value('search.defaultEngine') ?? 'duckduckgo',
+    };
+    const json = JSON.stringify(payload, null, 2);
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-search-engines-${Date.now()}.json`,
+      filters: [{ name: 'JSON Document', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, json, 'utf8');
+    surface.send('toast', { message: 'toast.searchEnginesExported', kind: 'success' });
+    return { ok: true, filePath: result.filePath, count: payload.engines.length };
+  });
+
+  handle('search:importJson', async () => {
+    const result = await dialog.showOpenDialog(chromeWindow(), {
+      title: 'Hinterland',
+      properties: ['openFile'],
+      filters: [{ name: 'JSON Document', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePaths?.length) return { ok: false };
+    try {
+      const raw = await readFile(result.filePaths[0], 'utf8');
+      const parsed = JSON.parse(raw);
+      const incomingList = Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.engines) ? parsed.engines : []);
+      const valid = incomingList
+        .filter((e) => e && typeof e.name === 'string' && typeof e.url === 'string' && (e.url.startsWith('http://') || e.url.startsWith('https://')))
+        .map((e) => {
+          let cleanUrl = e.url.trim();
+          if (!cleanUrl.includes('{q}')) {
+            cleanUrl = cleanUrl.includes('?') ? `${cleanUrl}&q={q}` : `${cleanUrl}?q={q}`;
+          }
+          const cleanShortcut = (e.shortcut || '').trim();
+          return {
+            id: typeof e.id === 'string' && e.id ? e.id : `eng_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+            name: String(e.name || '').trim().slice(0, 100),
+            url: cleanUrl,
+            shortcut: cleanShortcut ? (cleanShortcut.startsWith('@') ? cleanShortcut : `@${cleanShortcut}`) : '',
+            enabled: e.enabled !== false,
+          };
+        });
+
+      if (!valid.length) {
+        surface.send('toast', { message: 'toast.searchEnginesImportInvalid', kind: 'warning' });
+        return { ok: false, error: 'noValidEngines' };
+      }
+
+      const existing = [...(settings.value('search.engines') ?? [])];
+      let importedCount = 0;
+      for (const engine of valid) {
+        const existingIdx = existing.findIndex((ex) => ex.id === engine.id || ex.url === engine.url);
+        if (existingIdx >= 0) {
+          existing[existingIdx] = { ...existing[existingIdx], ...engine };
+        } else {
+          existing.push(engine);
+          importedCount++;
+        }
+      }
+      settings.set('search.engines', existing);
+      if (typeof parsed?.defaultEngine === 'string' && existing.some((e) => e.id === parsed.defaultEngine)) {
+        settings.set('search.defaultEngine', parsed.defaultEngine);
+      }
+      surface.send('toast', { message: 'toast.searchEnginesImported', kind: 'success' });
+      return { ok: true, count: importedCount, total: existing.length };
+    } catch (err) {
+      console.warn('[Hinterland] Search engines import failed:', err?.message);
+      return { ok: false, error: 'invalidJson' };
+    }
   });
 
   /* ------------------------------------------------------------ extensions */

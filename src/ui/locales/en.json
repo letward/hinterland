@@ -147,7 +147,9 @@
     "qrCode": "Page QR code",
     "qrCodeDesc": "Generate a scannable QR code to open this tab on your phone",
     "sleepAllInactive": "Sleep all inactive tabs",
-    "saveTabAsNote": "Save tab as note"
+    "saveTabAsNote": "Save tab as note",
+    "tabGroups": "Tab Groups",
+    "manageGroups": "Manage Tab Groups..."
   },
   "find": {
     "placeholder": "Find on page",
@@ -203,7 +205,10 @@
     "noteCurrentTab": "Save active tab as note",
     "sitePermissions": "Site Permissions & Shields",
     "searchSetDefault": "Change default search engine",
-    "searchSetDefaultPrompt": "Enter engine name or ID to set as default:"
+    "searchSetDefaultPrompt": "Enter engine name or ID to set as default:",
+    "tabGroups": "Manage Tab Groups Studio",
+    "searchExportJson": "Export Search Engines (JSON)",
+    "searchImportJson": "Import Search Engines (JSON)"
   },
   "confirm": {
     "closeTitle": "Close tab",
@@ -466,7 +471,15 @@
     "searchEngineDefaultSet": "Default search engine updated",
     "searchEnginesReset": "Search engines restored to defaults",
     "tabsMuted": "All tabs muted ({count})",
-    "tabsUnmuted": "All tabs unmuted ({count})"
+    "tabsUnmuted": "All tabs unmuted ({count})",
+    "noTabsInGroupToStash": "No open web tabs in this group to stash",
+    "groupStashed": "Tab group stashed successfully",
+    "groupCreated": "Tab group created successfully",
+    "groupTabsClosed": "Closed tabs in group",
+    "groupDeleted": "Tab group deleted",
+    "searchEnginesExported": "Search engines exported successfully",
+    "searchEnginesImported": "Search engines imported successfully",
+    "searchEnginesImportInvalid": "No valid search engine definitions found in file"
   },
   "welcome": {
     "title": "Welcome to Hinterland",
@@ -923,6 +936,10 @@
       "syncBookmarksDesc": "Keep your bookmarks synchronized across all browsers.",
       "syncHistory": "Sync search history",
       "syncHistoryDesc": "Keep your search history synchronized across devices.",
+      "syncReadingList": "Sync reading list",
+      "syncReadingListDesc": "Keep saved reading list articles synchronized across devices.",
+      "syncNotes": "Sync quick notes",
+      "syncNotesDesc": "Keep scratchpad notes and clippings synchronized across devices.",
       "syncSettings": "Sync settings & preferences",
       "syncSettingsDesc": "Synchronize themes, appearance, privacy shields, and shortcuts.",
       "serverUrl": "Custom server endpoint",
@@ -1216,6 +1233,25 @@
     "delete": "Delete",
     "deleteConfirm": "Are you sure you want to delete"
   },
+  "tabGroups": {
+    "title": "Tab Groups Studio",
+    "description": "Organize, color-code, and manage active tab groups, or stash entire groups with 1 click.",
+    "newGroupPlaceholder": "New group name...",
+    "create": "Create Group",
+    "defaultName": "Tab Group",
+    "noMatch": "No tab groups match your search.",
+    "empty": "No active tab groups yet. Create a new group above or right-click any tab to add it to a group.",
+    "renameHint": "Click to rename this group",
+    "tab": "tab",
+    "tabs": "tabs",
+    "stashGroup": "Stash all tabs in this group",
+    "stash": "Stash Group",
+    "closeTabs": "Close all tabs in this group",
+    "close": "Close Tabs",
+    "deleteGroup": "Delete group and ungroup tabs",
+    "ungroupTab": "Remove tab from group",
+    "ungroup": "Ungroup"
+  },
   "qr": {
     "title": "Page QR Code",
     "description": "Scan this QR code with your smartphone or tablet camera to open the link directly.",
@@ -1257,6 +1293,10 @@
     "syncBookmarksDesc": "Synchronize all stored bookmarks",
     "syncHistory": "Sync Search History",
     "syncHistoryDesc": "Synchronize search history and visited pages",
+    "syncReadingList": "Sync Reading List",
+    "syncReadingListDesc": "Synchronize saved reading articles and read states across your devices",
+    "syncNotes": "Sync Quick Notes",
+    "syncNotesDesc": "Synchronize scratchpad notes and clippings across your devices",
     "syncSettings": "Sync Settings",
     "syncSettingsDesc": "Synchronize preferences, themes, shortcuts, and privacy toggles",
     "supabaseUrl": "Supabase Project URL",
@@ -1267,6 +1307,8 @@
     "providerInfo": "Connect Hinterland to free cloud backends like Supabase or Vercel serverless functions with zero maintenance.",
     "bookmarksSynced": "Bookmarks",
     "historySynced": "Search History",
+    "readingListSynced": "Reading List",
+    "notesSynced": "Quick Notes",
     "settingsSynced": "Browser Settings & Themes",
     "openPanel": "Open Account Panel",
     "tabDevices": "Connected Devices",

@@ -867,6 +867,16 @@ export const SCHEMA = [
     descKey: 'settings.account.syncHistoryDesc',
     section: 'account',
   }),
+  option('account.syncReadingList', 'bool', true, {
+    labelKey: 'settings.account.syncReadingList',
+    descKey: 'settings.account.syncReadingListDesc',
+    section: 'account',
+  }),
+  option('account.syncNotes', 'bool', true, {
+    labelKey: 'settings.account.syncNotes',
+    descKey: 'settings.account.syncNotesDesc',
+    section: 'account',
+  }),
   option('account.syncSettings', 'bool', true, {
     labelKey: 'settings.account.syncSettings',
     descKey: 'settings.account.syncSettingsDesc',

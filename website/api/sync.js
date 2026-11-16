@@ -112,6 +112,59 @@ function mergeHistory(local = [], remote = []) {
     .slice(0, 1000);
 }
 
+function mergeReadingList(local = [], remote = []) {
+  const map = new Map();
+  for (const item of (Array.isArray(remote) ? remote : [])) {
+    if (item && item.url) map.set(normalizeUrl(item.url), { ...item });
+  }
+  for (const item of (Array.isArray(local) ? local : [])) {
+    if (!item || !item.url) continue;
+    const key = normalizeUrl(item.url);
+    const existing = map.get(key);
+    if (!existing) {
+      map.set(key, { ...item });
+    } else {
+      const merged = { ...existing };
+      if (!merged.title && item.title) merged.title = item.title;
+      if (item.favicon && !merged.favicon) merged.favicon = item.favicon;
+      if (item.read !== undefined && item.read) merged.read = true;
+      if (item.addedAt && (!merged.addedAt || item.addedAt > merged.addedAt)) {
+        merged.addedAt = item.addedAt;
+      }
+      map.set(key, merged);
+    }
+  }
+  return Array.from(map.values())
+    .sort((a, b) => (Number(b.addedAt) || 0) - (Number(a.addedAt) || 0));
+}
+
+function mergeNotes(local = [], remote = []) {
+  const map = new Map();
+  for (const item of (Array.isArray(local) ? local : [])) {
+    if (item && item.id) map.set(item.id, { ...item });
+  }
+  for (const item of (Array.isArray(remote) ? remote : [])) {
+    if (!item || !item.id) continue;
+    const existing = map.get(item.id);
+    if (!existing) {
+      map.set(item.id, { ...item });
+    } else {
+      const remoteUpdated = Number(item.updatedAt) || 0;
+      const localUpdated = Number(existing.updatedAt) || 0;
+      if (remoteUpdated >= localUpdated) {
+        map.set(item.id, { ...existing, ...item });
+      } else {
+        map.set(item.id, { ...item, ...existing });
+      }
+    }
+  }
+  return Array.from(map.values())
+    .sort((a, b) => {
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+      return (Number(b.updatedAt) || 0) - (Number(a.updatedAt) || 0);
+    });
+}
+
 async function resolveUser(token) {
   if (!token) return null;
   if (HAS_SUPABASE) {
@@ -141,7 +194,7 @@ module.exports = async function handler(req, res) {
     return json(res, 200, {
       ok: true,
       service: 'hinterland-sync',
-      version: '1.28.0',
+      version: '1.29.0',
       provider: HAS_SUPABASE ? 'supabase-proxy' : 'serverless',
       time: new Date().toISOString(),
     });
@@ -270,7 +323,7 @@ module.exports = async function handler(req, res) {
   const userId = user.id;
 
   if (action === 'pull') {
-    const stored = syncDataByUser.get(userId) || { bookmarks: [], history: [], settings: {}, updatedAt: null };
+    const stored = syncDataByUser.get(userId) || { bookmarks: [], history: [], readingList: [], notes: [], settings: {}, updatedAt: null };
     return json(res, 200, { ok: true, data: stored, syncedAt: stored.updatedAt });
   }
 
@@ -298,8 +351,17 @@ module.exports = async function handler(req, res) {
 
   const mergedBookmarks = mergeBookmarks(incoming.bookmarks ?? [], current.bookmarks ?? []);
   const mergedHistory = mergeHistory(incoming.history ?? [], current.history ?? []);
+  const mergedReadingList = mergeReadingList(incoming.readingList ?? [], current.readingList ?? []);
+  const mergedNotes = mergeNotes(incoming.notes ?? [], current.notes ?? []);
   const mergedSettings = { ...(current.settings ?? {}), ...(incoming.settings ?? {}) };
-  const merged = { bookmarks: mergedBookmarks, history: mergedHistory, settings: mergedSettings, updatedAt: new Date().toISOString() };
+  const merged = {
+    bookmarks: mergedBookmarks,
+    history: mergedHistory,
+    readingList: mergedReadingList,
+    notes: mergedNotes,
+    settings: mergedSettings,
+    updatedAt: new Date().toISOString(),
+  };
   syncDataByUser.set(userId, merged);
   return json(res, 200, { ok: true, data: merged, syncedAt: merged.updatedAt });
 };
@@ -341,3 +403,8 @@ function base32Decode(str) {
   }
   return new Uint8Array(output);
 }
+
+module.exports.mergeBookmarks = mergeBookmarks;
+module.exports.mergeHistory = mergeHistory;
+module.exports.mergeReadingList = mergeReadingList;
+module.exports.mergeNotes = mergeNotes;

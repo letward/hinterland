@@ -147,7 +147,9 @@
     "qrCode": "QR-Code für Seite",
     "qrCodeDesc": "Erzeuge einen scannbaren QR-Code, um diesen Tab auf dem Smartphone zu öffnen",
     "sleepAllInactive": "Alle inaktiven Tabs schlafenlegen",
-    "saveTabAsNote": "Tab als Notiz erfassen"
+    "saveTabAsNote": "Tab als Notiz erfassen",
+    "tabGroups": "Tab-Gruppen",
+    "manageGroups": "Tab-Gruppen verwalten..."
   },
   "find": {
     "placeholder": "In Seite suchen",
@@ -203,7 +205,10 @@
     "noteCurrentTab": "Aktiven Tab als Notiz erfassen",
     "sitePermissions": "Website-Berechtigungen & Shields",
     "searchSetDefault": "Standardsuchmaschine ändern",
-    "searchSetDefaultPrompt": "Name oder ID der Suchmaschine eingeben, die als Standard gesetzt werden soll:"
+    "searchSetDefaultPrompt": "Name oder ID der Suchmaschine eingeben, die als Standard gesetzt werden soll:",
+    "tabGroups": "Tab-Gruppen Studio verwalten",
+    "searchExportJson": "Suchmaschinen exportieren (JSON)",
+    "searchImportJson": "Suchmaschinen importieren (JSON)"
   },
   "confirm": {
     "closeTitle": "Tab schließen",
@@ -466,7 +471,15 @@
     "searchEngineDefaultSet": "Standardsuchmaschine aktualisiert",
     "searchEnginesReset": "Suchmaschinen auf Standard zurückgesetzt",
     "tabsMuted": "Alle Tabs stummgeschaltet ({count})",
-    "tabsUnmuted": "Stummschaltung aller Tabs aufgehoben ({count})"
+    "tabsUnmuted": "Stummschaltung aller Tabs aufgehoben ({count})",
+    "noTabsInGroupToStash": "Keine offenen Web-Tabs in dieser Gruppe zum Sichern",
+    "groupStashed": "Tab-Gruppe erfolgreich im Stash gesichert",
+    "groupCreated": "Tab-Gruppe erfolgreich erstellt",
+    "groupTabsClosed": "Tabs in der Gruppe geschlossen",
+    "groupDeleted": "Tab-Gruppe gelöscht",
+    "searchEnginesExported": "Suchmaschinen erfolgreich exportiert",
+    "searchEnginesImported": "Suchmaschinen erfolgreich importiert",
+    "searchEnginesImportInvalid": "Keine gültigen Suchmaschinen-Definitionen in der Datei gefunden"
   },
   "welcome": {
     "title": "Willkommen bei Hinterland",
@@ -923,6 +936,10 @@
       "syncBookmarksDesc": "Halte deine Lesezeichen auf allen Browsern synchron.",
       "syncHistory": "Suchverlauf synchronisieren",
       "syncHistoryDesc": "Halte deinen Suchverlauf auf allen Geräten synchron.",
+      "syncReadingList": "Leseliste synchronisieren",
+      "syncReadingListDesc": "Gespeicherte Artikel der Leseliste geräteübergreifend synchronisieren.",
+      "syncNotes": "Notizen synchronisieren",
+      "syncNotesDesc": "Notizen und Web-Clippings geräteübergreifend synchronisieren.",
       "syncSettings": "Einstellungen & Designs synchronisieren",
       "syncSettingsDesc": "Designs, Darstellung, Schutzschilde und Tastenkürzel synchronisieren.",
       "serverUrl": "Benutzerdefinierter Server-Endpunkt",
@@ -1216,6 +1233,25 @@
     "delete": "Löschen",
     "deleteConfirm": "Möchtest du diesen Stash wirklich löschen:"
   },
+  "tabGroups": {
+    "title": "Tab-Gruppen Studio",
+    "description": "Aktive Tab-Gruppen organisieren, farblich kennzeichnen und verwalten oder ganze Gruppen mit 1 Klick sichern.",
+    "newGroupPlaceholder": "Name der neuen Gruppe...",
+    "create": "Gruppe erstellen",
+    "defaultName": "Tab-Gruppe",
+    "noMatch": "Keine Tab-Gruppen entsprechen Ihrer Suche.",
+    "empty": "Noch keine aktiven Tab-Gruppen. Erstellen Sie oben eine Gruppe oder rechtsklicken Sie auf einen Tab, um ihn zuzuordnen.",
+    "renameHint": "Klicken, um Gruppe umzubenennen",
+    "tab": "Tab",
+    "tabs": "Tabs",
+    "stashGroup": "Alle Tabs dieser Gruppe im Stash sichern",
+    "stash": "Gruppe sichern",
+    "closeTabs": "Alle Tabs in dieser Gruppe schließen",
+    "close": "Tabs schließen",
+    "deleteGroup": "Gruppe löschen und Tabs freigeben",
+    "ungroupTab": "Tab aus Gruppe entfernen",
+    "ungroup": "Entfernen"
+  },
   "qr": {
     "title": "QR-Code für Seite",
     "description": "Scanne diesen QR-Code mit der Smartphone- oder Tablet-Kamera, um den Link direkt zu öffnen.",
@@ -1257,6 +1293,10 @@
     "syncBookmarksDesc": "Alle gespeicherten Lesezeichen synchronisieren",
     "syncHistory": "Suchverlauf synchronisieren",
     "syncHistoryDesc": "Suchverlauf und besuchte Seiten synchronisieren",
+    "syncReadingList": "Leseliste synchronisieren",
+    "syncReadingListDesc": "Gespeicherte Artikel und Lesestatus geräteübergreifend synchronisieren",
+    "syncNotes": "Notizen synchronisieren",
+    "syncNotesDesc": "Notizen und Web-Clippings geräteübergreifend synchronisieren",
     "syncSettings": "Einstellungen synchronisieren",
     "syncSettingsDesc": "Präferenzen, Designs, Tastenkürzel und Datenschutzeinstellungen synchronisieren",
     "supabaseUrl": "Supabase-Projekt-URL",
@@ -1267,6 +1307,8 @@
     "providerInfo": "Verbinde Hinterland mit kostenlosen Cloud-Diensten wie Supabase oder Vercel Serverless ohne Wartungsaufwand.",
     "bookmarksSynced": "Lesezeichen",
     "historySynced": "Suchverlauf",
+    "readingListSynced": "Leseliste",
+    "notesSynced": "Notizen",
     "settingsSynced": "Browsereinstellungen & Designs",
     "openPanel": "Konto-Bereich öffnen",
     "tabDevices": "Verbundene Geräte",
