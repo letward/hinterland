@@ -153,7 +153,9 @@
     "memorySaverUnexempt": "Pausieren für diese Seite erlauben",
     "stashTab": "Tab in Stash ablegen",
     "unmuteAllTabs": "Alle Tabs entstummen",
-    "openInPrivate": "In privatem Tab öffnen"
+    "openInPrivate": "In privatem Tab öffnen",
+    "sortByTitle": "Tabs nach Titel sortieren (A-Z)",
+    "sortByDomain": "Tabs nach Domain sortieren"
   },
   "find": {
     "placeholder": "In Seite suchen",
@@ -221,7 +223,12 @@
     "stashCurrentTab": "Aktuellen Tab in Stash ablegen",
     "notesExportMarkdown": "Alle Notizen als Markdown exportieren",
     "notesExportHtml": "Alle Notizen als Offline-HTML exportieren",
-    "openInPrivate": "Aktuellen Tab im privaten Modus öffnen"
+    "openInPrivate": "Aktuellen Tab im privaten Modus öffnen",
+    "tabsSortByTitle": "Tabs nach Titel sortieren (A-Z)",
+    "tabsSortByDomain": "Tabs nach Domain sortieren",
+    "historyExportMarkdown": "Browserverlauf als Markdown exportieren",
+    "historyExportCsv": "Browserverlauf als CSV exportieren",
+    "readingListMarkAllRead": "Leseliste: Alle Artikel als gelesen markieren"
   },
   "confirm": {
     "closeTitle": "Tab schließen",
@@ -267,6 +274,8 @@
     "empty": "Noch keine Einträge.",
     "clear": "Verlauf leeren",
     "exportJson": "Verlauf exportieren (JSON)",
+    "exportMarkdown": "Verlauf exportieren (Markdown)",
+    "exportCsv": "Verlauf exportieren (CSV)",
     "importJson": "Verlauf importieren (JSON)",
     "filterAll": "Alle",
     "filterToday": "Heute",
@@ -500,7 +509,13 @@
     "tabStashed": "\"{title}\" in Stash abgelegt",
     "stashDuplicated": "Stash erfolgreich dupliziert",
     "notesExportedMarkdown": "Notizen als Markdown exportiert",
-    "notesExportedHtml": "Notizen als eigenständiges HTML exportiert"
+    "notesExportedHtml": "Notizen als eigenständiges HTML exportiert",
+    "tabsSortedByTitle": "Tabs nach Titel sortiert",
+    "tabsSortedByDomain": "Tabs nach Domain sortiert",
+    "historyExportedMarkdown": "Browserverlauf als Markdown exportiert",
+    "historyExportedCsv": "Browserverlauf als CSV exportiert",
+    "allReadingListMarkedRead": "Alle Leselisten-Artikel als gelesen markiert",
+    "noteDuplicated": "Notiz erfolgreich dupliziert"
   },
   "welcome": {
     "title": "Willkommen bei Hinterland",
@@ -1075,6 +1090,7 @@
     "noMatch": "Keine Einträge entsprechen Ihrer Suche.",
     "addCurrentTab": "Aktuellen Tab hinzufügen",
     "openAllUnread": "Alle ungelesenen öffnen",
+    "markAllRead": "Alle als gelesen markieren",
     "markRead": "Als gelesen markieren",
     "markUnread": "Als ungelesen markieren",
     "clearRead": "Gelesene Einträge löschen",
@@ -1230,6 +1246,7 @@
     "pinNote": "Notiz anheften",
     "unpinNote": "Notiz lösen",
     "copyNote": "Notiz kopieren",
+    "duplicateNote": "Notiz duplizieren",
     "exportNote": "Als Markdown exportieren (.md)",
     "deleteNote": "Notiz löschen",
     "editMode": "Bearbeiten",
@@ -1271,6 +1288,10 @@
     "create": "Gruppe erstellen",
     "groupByDomain": "Tabs nach Domain gruppieren",
     "groupByDomainDesc": "Geöffnete Tabs automatisch nach Website-Domain in Gruppen organisieren",
+    "sortByTitle": "Tabs nach Titel sortieren",
+    "sortByTitleDesc": "Alle nicht angehefteten Tabs alphabetisch nach Titel sortieren",
+    "sortByDomain": "Tabs nach Domain sortieren",
+    "sortByDomainDesc": "Alle nicht angehefteten Tabs nach Website-Domain sortieren",
     "defaultName": "Tab-Gruppe",
     "noMatch": "Keine Tab-Gruppen entsprechen Ihrer Suche.",
     "empty": "Noch keine aktiven Tab-Gruppen. Erstellen Sie oben eine Gruppe oder rechtsklicken Sie auf einen Tab, um ihn zuzuordnen.",

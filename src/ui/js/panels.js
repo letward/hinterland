@@ -265,6 +265,12 @@ function historyPage() {
           await api().history.exportJson();
         } }, [el('span', { html: icon('download') }), ` ${t('history.exportJson')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
+          await api().history.exportMarkdown();
+        } }, [el('span', { html: icon('copy') }), ` ${t('history.exportMarkdown')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
+          await api().history.exportCsv();
+        } }, [el('span', { html: icon('list') }), ` ${t('history.exportCsv')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
           const res = await api().history.importJson();
           if (res?.ok) await reload();
         } }, [el('span', { html: icon('upload') }), ` ${t('history.importJson')}`]),
@@ -1481,6 +1487,21 @@ function readingListPage(mode = 'unread') {
         );
       }
 
+      if (mode === 'unread' || mode === 'all') {
+        actionRow.append(
+          el('button', {
+            class: 'button',
+            type: 'button',
+            onclick: async () => {
+              const res = await api().readingList.markAllRead();
+              if (res?.count > 0) {
+                refresh();
+              }
+            },
+          }, [el('span', { html: icon('check') }), ` ${t('readingList.markAllRead')}`])
+        );
+      }
+
       if (mode !== 'unread') {
         actionRow.append(
           el('button', {
@@ -1921,6 +1942,19 @@ function notesPage() {
           },
         });
 
+        const duplicateBtn = el('button', {
+          class: 'iconButton small',
+          type: 'button',
+          html: icon('plus'),
+          title: t('notes.duplicateNote'),
+          onclick: async () => {
+            const res = await api().notes.duplicate(activeNote.id);
+            if (res?.ok && res.note) {
+              await loadNotes(res.note.id);
+            }
+          },
+        });
+
         const exportBtn = el('button', {
           class: 'iconButton small',
           type: 'button',
@@ -1948,7 +1982,7 @@ function notesPage() {
           },
         });
 
-        toolbar.append(clipBtn, sep1, editModeBtn, previewModeBtn, sep2, pinBtn, copyBtn, exportBtn, deleteBtn);
+        toolbar.append(clipBtn, sep1, editModeBtn, previewModeBtn, sep2, pinBtn, copyBtn, duplicateBtn, exportBtn, deleteBtn);
 
         let bodyEl;
         if (isPreview) {
@@ -2399,6 +2433,30 @@ function tabGroupsPage() {
         },
       }, [el('span', { html: icon('layers') }), ` ${t('tabGroups.groupByDomain')}`]);
 
+      const sortByTitleBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.sortByTitleDesc'),
+        onclick: async () => {
+          const res = await api().tabs.sortByTitle(true);
+          if (res?.ok) {
+            await refresh();
+          }
+        },
+      }, [el('span', { html: icon('list') }), ` ${t('tabGroups.sortByTitle')}`]);
+
+      const sortByDomainBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.sortByDomainDesc'),
+        onclick: async () => {
+          const res = await api().tabs.sortByDomain(true);
+          if (res?.ok) {
+            await refresh();
+          }
+        },
+      }, [el('span', { html: icon('globe') }), ` ${t('tabGroups.sortByDomain')}`]);
+
       nameInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') createBtn.click();
       });
@@ -2409,6 +2467,8 @@ function tabGroupsPage() {
           colorPalette,
           createBtn,
           autoGroupBtn,
+          sortByTitleBtn,
+          sortByDomainBtn,
         ])
       );
       container.append(creatorCard);

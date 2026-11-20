@@ -511,6 +511,20 @@ export function openCommandPalette() {
             run: () => api().tabs.groupByDomain(),
           },
           {
+            id: 'tabsSortByTitle',
+            title: t('commandPalette.tabsSortByTitle'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'list',
+            run: () => api().tabs.sortByTitle(true),
+          },
+          {
+            id: 'tabsSortByDomain',
+            title: t('commandPalette.tabsSortByDomain'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'globe',
+            run: () => api().tabs.sortByDomain(true),
+          },
+          {
             id: 'stashAllTabs',
             title: t('commandPalette.stashAllTabs'),
             category: t('commandPalette.categoryCommand'),
@@ -709,11 +723,32 @@ export function openCommandPalette() {
             run: () => api().readingList.importJson(),
           },
           {
+            id: 'readingListMarkAllRead',
+            title: t('commandPalette.readingListMarkAllRead'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'check',
+            run: () => api().readingList.markAllRead(),
+          },
+          {
             id: 'historyExport',
             title: t('commandPalette.historyExport'),
             category: t('commandPalette.categoryCommand'),
             icon: 'download',
             run: () => api().history.exportJson(),
+          },
+          {
+            id: 'historyExportMarkdown',
+            title: t('commandPalette.historyExportMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().history.exportMarkdown(),
+          },
+          {
+            id: 'historyExportCsv',
+            title: t('commandPalette.historyExportCsv'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'list',
+            run: () => api().history.exportCsv(),
           },
           {
             id: 'historyImport',

@@ -153,7 +153,9 @@
     "memorySaverUnexempt": "Allow sleeping for this site",
     "stashTab": "Stash Tab",
     "unmuteAllTabs": "Unmute All Tabs",
-    "openInPrivate": "Open in Private Tab"
+    "openInPrivate": "Open in Private Tab",
+    "sortByTitle": "Sort Tabs by Title (A-Z)",
+    "sortByDomain": "Sort Tabs by Domain"
   },
   "find": {
     "placeholder": "Find on page",
@@ -221,7 +223,12 @@
     "stashCurrentTab": "Stash current tab",
     "notesExportMarkdown": "Export all notes as Markdown",
     "notesExportHtml": "Export all notes as standalone HTML",
-    "openInPrivate": "Open current tab in private mode"
+    "openInPrivate": "Open current tab in private mode",
+    "tabsSortByTitle": "Sort tabs by title (A-Z)",
+    "tabsSortByDomain": "Sort tabs by domain",
+    "historyExportMarkdown": "Export browsing history as Markdown",
+    "historyExportCsv": "Export browsing history as CSV",
+    "readingListMarkAllRead": "Reading List: Mark all articles as read"
   },
   "confirm": {
     "closeTitle": "Close tab",
@@ -267,6 +274,8 @@
     "empty": "No entries yet.",
     "clear": "Clear history",
     "exportJson": "Export history (JSON)",
+    "exportMarkdown": "Export History (Markdown)",
+    "exportCsv": "Export History (CSV)",
     "importJson": "Import history (JSON)",
     "filterAll": "All",
     "filterToday": "Today",
@@ -500,7 +509,13 @@
     "tabStashed": "Stashed \"{title}\"",
     "stashDuplicated": "Stash duplicated successfully",
     "notesExportedMarkdown": "Exported Quick Notes as Markdown",
-    "notesExportedHtml": "Exported Quick Notes as standalone HTML"
+    "notesExportedHtml": "Exported Quick Notes as standalone HTML",
+    "tabsSortedByTitle": "Tabs sorted by title",
+    "tabsSortedByDomain": "Tabs sorted by domain",
+    "historyExportedMarkdown": "Browsing history exported as Markdown",
+    "historyExportedCsv": "Browsing history exported as CSV",
+    "allReadingListMarkedRead": "All reading list articles marked as read",
+    "noteDuplicated": "Note duplicated successfully"
   },
   "welcome": {
     "title": "Welcome to Hinterland",
@@ -1075,6 +1090,7 @@
     "noMatch": "No items match your search.",
     "addCurrentTab": "Add current tab",
     "openAllUnread": "Open all unread",
+    "markAllRead": "Mark All as Read",
     "markRead": "Mark as read",
     "markUnread": "Mark as unread",
     "clearRead": "Clear read items",
@@ -1230,6 +1246,7 @@
     "pinNote": "Pin note",
     "unpinNote": "Unpin note",
     "copyNote": "Copy note",
+    "duplicateNote": "Duplicate Note",
     "exportNote": "Export as Markdown (.md)",
     "deleteNote": "Delete note",
     "editMode": "Edit",
@@ -1271,6 +1288,10 @@
     "create": "Create Group",
     "groupByDomain": "Auto-Group by Domain",
     "groupByDomainDesc": "Automatically organize open tabs into groups by website domain",
+    "sortByTitle": "Sort Tabs by Title",
+    "sortByTitleDesc": "Sort all unpinned tabs alphabetically by title",
+    "sortByDomain": "Sort Tabs by Domain",
+    "sortByDomainDesc": "Sort all unpinned tabs by website domain",
     "defaultName": "Tab Group",
     "noMatch": "No tab groups match your search.",
     "empty": "No active tab groups yet. Create a new group above or right-click any tab to add it to a group.",

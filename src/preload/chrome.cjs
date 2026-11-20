@@ -115,6 +115,8 @@ const api = {
     groupStash: (groupId) => ipcRenderer.invoke('tabs:groupStash', groupId),
     groupCloseTabs: (groupId) => ipcRenderer.invoke('tabs:groupCloseTabs', groupId),
     groupByDomain: () => ipcRenderer.invoke('tabs:groupByDomain'),
+    sortByTitle: (ascending = true) => ipcRenderer.invoke('tabs:sortByTitle', ascending),
+    sortByDomain: (ascending = true) => ipcRenderer.invoke('tabs:sortByDomain', ascending),
   },
 
   tab: {
@@ -189,6 +191,8 @@ const api = {
     search: (query) => ipcRenderer.invoke('history:search', query),
     getAll: () => ipcRenderer.invoke('history:getAll'),
     exportJson: () => ipcRenderer.invoke('history:exportJson'),
+    exportMarkdown: () => ipcRenderer.invoke('history:exportMarkdown'),
+    exportCsv: () => ipcRenderer.invoke('history:exportCsv'),
     importJson: () => ipcRenderer.invoke('history:importJson'),
     clear: () => ipcRenderer.invoke('history:clear'),
     remove: (url) => ipcRenderer.invoke('history:remove', url),
@@ -212,6 +216,7 @@ const api = {
     remove: (idOrUrl) => ipcRenderer.invoke('readingList:remove', idOrUrl),
     toggleRead: (id) => ipcRenderer.invoke('readingList:toggleRead', id),
     clearRead: () => ipcRenderer.invoke('readingList:clearRead'),
+    markAllRead: () => ipcRenderer.invoke('readingList:markAllRead'),
     openAllUnread: () => ipcRenderer.invoke('readingList:openAllUnread'),
     exportJson: () => ipcRenderer.invoke('readingList:exportJson'),
     exportMarkdown: () => ipcRenderer.invoke('readingList:exportMarkdown'),
@@ -223,6 +228,7 @@ const api = {
     get: () => ipcRenderer.invoke('notes:get'),
     save: (note) => ipcRenderer.invoke('notes:save', note),
     delete: (id) => ipcRenderer.invoke('notes:delete', id),
+    duplicate: (id) => ipcRenderer.invoke('notes:duplicate', id),
     export: (note) => ipcRenderer.invoke('notes:export', note),
     exportAll: () => ipcRenderer.invoke('notes:exportAll'),
     exportMarkdown: () => ipcRenderer.invoke('notes:exportMarkdown'),

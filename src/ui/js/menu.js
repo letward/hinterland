@@ -140,6 +140,16 @@ export function openMainMenu() {
           },
         }),
         row({
+          iconName: 'list',
+          title: t('menu.sortByTitle'),
+          onSelect: () => api().tabs.sortByTitle(true),
+        }),
+        row({
+          iconName: 'globe',
+          title: t('menu.sortByDomain'),
+          onSelect: () => api().tabs.sortByDomain(true),
+        }),
+        row({
           iconName: 'key',
           title: t('menu.passwords'),
           subtitle: 'Ctrl+Alt+P',
@@ -706,6 +716,16 @@ export function openTabstripMenu() {
             const res = await api().tabs.groupByDomain();
             if (res?.ok) toast(t('toast.tabsGroupedByDomain', { count: res.count, groups: res.groupsCreated }), 'success');
           },
+        }),
+        row({
+          iconName: 'list',
+          title: t('menu.sortByTitle'),
+          onSelect: () => api().tabs.sortByTitle(true),
+        }),
+        row({
+          iconName: 'globe',
+          title: t('menu.sortByDomain'),
+          onSelect: () => api().tabs.sortByDomain(true),
         }),
         row({
           iconName: 'key',

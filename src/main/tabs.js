@@ -418,6 +418,49 @@ export class TabManager extends EventEmitter {
     return count;
   }
 
+  sortByTitle(ascending = true) {
+    const pinned = this.tabs.filter((t) => t.pinned);
+    const unpinned = this.tabs.filter((t) => !t.pinned);
+    unpinned.sort((a, b) => {
+      const nameA = (a.title || a.url || '').toLowerCase();
+      const nameB = (b.title || b.url || '').toLowerCase();
+      const cmp = nameA.localeCompare(nameB);
+      return ascending ? cmp : -cmp;
+    });
+    this.tabs = [...pinned, ...unpinned];
+    this.emit('list', this.snapshot());
+    this.scheduleSave();
+    return unpinned.length;
+  }
+
+  sortByDomain(ascending = true) {
+    const pinned = this.tabs.filter((t) => t.pinned);
+    const unpinned = this.tabs.filter((t) => !t.pinned);
+    const getDomain = (tab) => {
+      try {
+        if (!tab.url || tab.url.startsWith('hinterland://') || tab.url === 'about:blank') {
+          return tab.url || '';
+        }
+        return new URL(tab.url).hostname.replace(/^www\./i, '');
+      } catch {
+        return tab.url || '';
+      }
+    };
+    unpinned.sort((a, b) => {
+      const domA = getDomain(a).toLowerCase();
+      const domB = getDomain(b).toLowerCase();
+      const cmp = domA.localeCompare(domB);
+      if (cmp !== 0) return ascending ? cmp : -cmp;
+      const titleA = (a.title || a.url || '').toLowerCase();
+      const titleB = (b.title || b.url || '').toLowerCase();
+      return titleA.localeCompare(titleB);
+    });
+    this.tabs = [...pinned, ...unpinned];
+    this.emit('list', this.snapshot());
+    this.scheduleSave();
+    return unpinned.length;
+  }
+
   snapshot() {
     return {
       tabs: this.tabs.map((tab) => tab.snapshot()),

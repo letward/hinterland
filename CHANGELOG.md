@@ -4,6 +4,30 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.32.0] - 2026-11-21
+
+### Added
+- **Tabs Sorting by Title & Domain (`src/main/tabs.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `tabs:sortByTitle` and `tabs:sortByDomain` IPC handlers and `TabManager` sorting methods to sort all unpinned tabs alphabetically by title or by website hostname while keeping pinned tabs safely anchored in position.
+  - Added 1-click **Sort Tabs by Title** and **Sort Tabs by Domain** action buttons in Tab Groups Studio toolbar (`openTabGroups`).
+  - Added Sort Tabs by Title and Sort Tabs by Domain actions to both the Tabstrip context menu (`openTabstripMenu`) and Main Menu (`openMainMenu`).
+  - Added Command Palette quick launchers `commandPalette.tabsSortByTitle` and `commandPalette.tabsSortByDomain`.
+- **Browsing History Markdown & CSV Exports (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `history:exportMarkdown` generating a comprehensive chronological Markdown archive grouped by date and time with visit counters and clickable links.
+  - Implemented `history:exportCsv` exporting browsing history into a standard spreadsheet-ready CSV document with Title, URL, Last Visited, and Visit Count columns.
+  - Added Export Markdown and Export CSV action buttons in the History panel toolbar and Command Palette quick launchers (`historyExportMarkdown` and `historyExportCsv`).
+- **Reading List: Mark All as Read (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `readingList:markAllRead` IPC handler and preload API to mark all unread reading list articles as read in 1 click.
+  - Added **Mark All as Read** button in the Reading List panel toolbar and Command Palette quick launcher `commandPalette.readingListMarkAllRead`.
+- **Quick Notes: Duplicate Note (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`)**:
+  - Implemented `notes:duplicate` IPC handler and preload bridge method to clone any active note with a clean `(Copy)` suffix, independent id, and instant persistence.
+  - Added 1-click Duplicate Note action button to the Quick Notes editor toolbar.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`)**:
+  - Documented Tab Sorting by Title & Domain, Browsing History Markdown & CSV Exports, Reading List Mark All as Read, and Note Duplication in the official User Guide.
+  - Updated website hero badge and standalone Windows installer download link to v1.32.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v132Features.test.mjs`)**:
+  - Added 40 automated unit and integration tests covering Tab sorting, History exports, Reading List batch operations, Note duplication, and 100% key parity across English and German locales.
+
 ## [1.31.0] - 2026-11-16
 
 ### Added

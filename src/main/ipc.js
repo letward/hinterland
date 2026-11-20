@@ -361,6 +361,24 @@ export function installIpc() {
     return count;
   });
 
+  handle('tabs:sortByTitle', (ascending = true) => {
+    const count = tabs.sortByTitle(ascending);
+    surface.send('toast', {
+      message: 'toast.tabsSortedByTitle',
+      kind: 'success',
+    });
+    return { ok: true, count };
+  });
+
+  handle('tabs:sortByDomain', (ascending = true) => {
+    const count = tabs.sortByDomain(ascending);
+    surface.send('toast', {
+      message: 'toast.tabsSortedByDomain',
+      kind: 'success',
+    });
+    return { ok: true, count };
+  });
+
   /* ------------------------------------------------------------- tab groups */
   function sortedGroups() {
     const groups = [...(settings.value('tabs.groups', []))];
@@ -1131,6 +1149,80 @@ export function installIpc() {
     surface.send('toast', { message: 'toast.historyExported', kind: 'success' });
     return { ok: true, filePath: result.filePath, count: list.length };
   });
+
+  handle('history:exportMarkdown', async () => {
+    const list = history.getAll() || [];
+    const dateStr = new Date().toLocaleDateString('en-CA');
+    const lines = [
+      '# Hinterland Browsing History Archive',
+      '',
+      `Exported on ${dateStr}. Total entries: ${list.length}.`,
+      '',
+    ];
+
+    const groups = new Map();
+    for (const entry of list) {
+      const visitTime = entry.lastVisited || entry.visitedAt || entry.time || entry.timestamp;
+      let dayKey = 'Earlier';
+      let timeKey = '';
+      if (visitTime) {
+        try {
+          const d = new Date(visitTime);
+          if (!isNaN(d.getTime())) {
+            dayKey = d.toLocaleDateString('en-CA');
+            timeKey = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          }
+        } catch {}
+      }
+      if (!groups.has(dayKey)) groups.set(dayKey, []);
+      groups.get(dayKey).push({ ...entry, timeKey });
+    }
+
+    for (const [day, entries] of groups.entries()) {
+      lines.push(`## ${day}`);
+      lines.push('');
+      for (const item of entries) {
+        const title = (item.title || item.url || 'Untitled').replace(/[\[\]]/g, '');
+        const timePart = item.timeKey ? ` — ${item.timeKey}` : '';
+        const countPart = item.count > 1 ? ` (${item.count} visits)` : '';
+        lines.push(`- [${title}](${item.url})${timePart}${countPart}`);
+      }
+      lines.push('');
+    }
+
+    const markdown = lines.join('\n');
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-history-${Date.now()}.md`,
+      filters: [{ name: 'Markdown Document', extensions: ['md'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, markdown, 'utf8');
+    surface.send('toast', { message: 'toast.historyExportedMarkdown', kind: 'success' });
+    return { ok: true, filePath: result.filePath, count: list.length };
+  });
+
+  handle('history:exportCsv', async () => {
+    const list = history.getAll() || [];
+    const rows = ['"Title","URL","Last Visited","Visit Count"'];
+    for (const item of list) {
+      const title = String(item.title || '').replace(/"/g, '""');
+      const url = String(item.url || '').replace(/"/g, '""');
+      const visited = String(item.lastVisited || item.visitedAt || item.time || item.timestamp || '').replace(/"/g, '""');
+      const count = Number(item.count || item.visitCount || 1);
+      rows.push(`"${title}","${url}","${visited}","${count}"`);
+    }
+    const csv = rows.join('\r\n');
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-history-${Date.now()}.csv`,
+      filters: [{ name: 'CSV Document', extensions: ['csv'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, csv, 'utf8');
+    surface.send('toast', { message: 'toast.historyExportedCsv', kind: 'success' });
+    return { ok: true, filePath: result.filePath, count: list.length };
+  });
   handle('history:importJson', async () => {
     const result = await dialog.showOpenDialog(chromeWindow(), {
       title: 'Hinterland',
@@ -1467,6 +1559,25 @@ export function installIpc() {
     return { ok: true, list };
   });
 
+  handle('readingList:markAllRead', () => {
+    const list = [...(settings.value('data.readingList') || [])];
+    let count = 0;
+    for (const item of list) {
+      if (!item.read) {
+        item.read = true;
+        count++;
+      }
+    }
+    if (count > 0) {
+      settings.set('data.readingList', list);
+    }
+    surface.send('toast', {
+      message: 'toast.allReadingListMarkedRead',
+      kind: 'success',
+    });
+    return { ok: true, count, list };
+  });
+
   handle('readingList:openAllUnread', () => {
     const list = [...(settings.value('data.readingList') || [])];
     const unread = list.filter((e) => !e.read);
@@ -1717,6 +1828,27 @@ ${renderItemsHtml(read)}
     const notes = (settings.value('data.notes') || []).filter((n) => n.id !== id);
     settings.set('data.notes', notes);
     return true;
+  });
+
+  handle('notes:duplicate', (id) => {
+    const list = [...(settings.value('data.notes') || [])];
+    const source = list.find((n) => n.id === id);
+    if (!source) return { ok: false, error: 'not_found' };
+    const copy = {
+      ...source,
+      id: 'note_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      title: `${source.title || 'Untitled'} (Copy)`,
+      pinned: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: Date.now(),
+    };
+    list.unshift(copy);
+    settings.set('data.notes', list);
+    surface.send('toast', {
+      message: 'toast.noteDuplicated',
+      kind: 'success',
+    });
+    return { ok: true, note: copy, notes: list };
   });
 
   handle('notes:export', async (note) => {
