@@ -175,8 +175,8 @@ describe('Hinterland v1.31.0 Features & Polish', () => {
 
     it('updates website/index.html to v1.31.0 release badge and download link', () => {
       const indexHtml = readFileSync(join(ROOT, 'website', 'index.html'), 'utf8');
-      assert.ok(indexHtml.includes('v1.31.0 · Latest Release') || indexHtml.includes('v1.32.0 · Latest Release'));
-      assert.ok(indexHtml.includes('Hinterland-Setup-1.31.0.exe') || indexHtml.includes('Hinterland-Setup-1.32.0.exe'));
+      assert.ok(indexHtml.includes('v1.31.0 · Latest Release') || indexHtml.includes('v1.32.0 · Latest Release') || indexHtml.includes('v1.33.0 · Latest Release'));
+      assert.ok(indexHtml.includes('Hinterland-Setup-1.31.0.exe') || indexHtml.includes('Hinterland-Setup-1.32.0.exe') || indexHtml.includes('Hinterland-Setup-1.33.0.exe'));
     });
   });
 });

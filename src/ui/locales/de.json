@@ -155,7 +155,8 @@
     "unmuteAllTabs": "Alle Tabs entstummen",
     "openInPrivate": "In privatem Tab öffnen",
     "sortByTitle": "Tabs nach Titel sortieren (A-Z)",
-    "sortByDomain": "Tabs nach Domain sortieren"
+    "sortByDomain": "Tabs nach Domain sortieren",
+    "ungroupAllTabs": "Alle Tab-Gruppierungen aufheben"
   },
   "find": {
     "placeholder": "In Seite suchen",
@@ -228,7 +229,10 @@
     "tabsSortByDomain": "Tabs nach Domain sortieren",
     "historyExportMarkdown": "Browserverlauf als Markdown exportieren",
     "historyExportCsv": "Browserverlauf als CSV exportieren",
-    "readingListMarkAllRead": "Leseliste: Alle Artikel als gelesen markieren"
+    "readingListMarkAllRead": "Leseliste: Alle Artikel als gelesen markieren",
+    "tabsUngroupAll": "Alle Tab-Gruppierungen aufheben",
+    "bookmarksExportMarkdown": "Lesezeichen als Markdown exportieren",
+    "downloadsExportMarkdown": "Download-Verlauf als Markdown exportieren"
   },
   "confirm": {
     "closeTitle": "Tab schließen",
@@ -257,10 +261,12 @@
     "removed": "Lesezeichen entfernt",
     "exportHtml": "Lesezeichen exportieren (HTML)",
     "exportJson": "Lesezeichen exportieren (JSON)",
+    "exportMarkdown": "Lesezeichen exportieren (Markdown)",
     "importHtml": "Lesezeichen importieren (HTML)",
     "importJson": "Lesezeichen importieren (JSON)",
     "deduplicate": "Duplikate entfernen",
     "sort": "Nach Name sortieren (A-Z)",
+    "sortByDomain": "Nach Domain sortieren",
     "noMatch": "Keine Lesezeichen entsprechen Ihrer Suche.",
     "savedSession": "Gespeicherte Sitzung",
     "cloudSync": "Cloud-Synchronisierung",
@@ -304,7 +310,8 @@
     "copyLink": "Link kopieren",
     "clearCompleted": "Abgeschlossene leeren",
     "clearAll": "Liste leeren",
-    "openFolder": "Downloads-Ordner öffnen"
+    "openFolder": "Downloads-Ordner öffnen",
+    "exportMarkdown": "Markdown exportieren"
   },
   "shortcuts": {
     "title": "Tastenkürzel",
@@ -515,7 +522,14 @@
     "historyExportedMarkdown": "Browserverlauf als Markdown exportiert",
     "historyExportedCsv": "Browserverlauf als CSV exportiert",
     "allReadingListMarkedRead": "Alle Leselisten-Artikel als gelesen markiert",
-    "noteDuplicated": "Notiz erfolgreich dupliziert"
+    "noteDuplicated": "Notiz erfolgreich dupliziert",
+    "allTabsUngrouped": "Alle Tabs aus Gruppen gelöst",
+    "noGroupedTabs": "Keine gruppierten Tabs vorhanden",
+    "groupLinksCopied": "Gruppen-Links als Markdown kopiert",
+    "noTabsInGroupToCopy": "Keine Web-Tabs in dieser Gruppe zum Kopieren",
+    "downloadsExportedMarkdown": "Download-Verlauf als Markdown exportiert",
+    "bookmarksExportedMarkdown": "Lesezeichen als Markdown exportiert",
+    "bookmarksSortedByDomain": "Lesezeichen nach Domain sortiert"
   },
   "welcome": {
     "title": "Willkommen bei Hinterland",
@@ -1257,6 +1271,9 @@
     "exportHtml": "HTML exportieren",
     "importNotes": "Notizen importieren",
     "clipCurrentTab": "Tab als Notiz erfassen",
+    "wordCount": "{count} Wörter",
+    "charCount": "{count} Zeichen",
+    "readingTime": "~{minutes} Min. Lesezeit",
     "importInvalid": "Keine gültigen Notizen in der Datei gefunden.",
     "welcomeTitle": "Willkommen bei Hinterland Notizen",
     "welcomeContent": "# Willkommen bei Hinterland Notizen\n\nEin schneller, ablenkungsfreier Notizzettel direkt in Ihrem Browser.\n\n### Funktionen:\n- **Markdown-Formatierung**: Unterstützt Überschriften, **fett**, *kursiv*, `Code` und Checklisten.\n- **1-Klick Web-Clipping**: Nutzen Sie die Schaltfläche 'Tab-Link einfügen', um Links aktiver Tabs einzufügen.\n- **Checklisten**:\n  - [x] Erste Notiz ansehen\n  - [ ] Nächstes Projekt recherchieren\n- **Export**: Exportieren Sie jede Notiz als `.md` für Obsidian, Notion oder GitHub."
@@ -1292,6 +1309,10 @@
     "sortByTitleDesc": "Alle nicht angehefteten Tabs alphabetisch nach Titel sortieren",
     "sortByDomain": "Tabs nach Domain sortieren",
     "sortByDomainDesc": "Alle nicht angehefteten Tabs nach Website-Domain sortieren",
+    "ungroupAll": "Alle aufheben",
+    "ungroupAllDesc": "Alle Tabs aus ihren Gruppen lösen, ohne sie zu schließen",
+    "copyLinks": "Links kopieren",
+    "copyLinksDesc": "Alle Tabs dieser Gruppe als Markdown-Liste kopieren",
     "defaultName": "Tab-Gruppe",
     "noMatch": "Keine Tab-Gruppen entsprechen Ihrer Suche.",
     "empty": "Noch keine aktiven Tab-Gruppen. Erstellen Sie oben eine Gruppe oder rechtsklicken Sie auf einen Tab, um ihn zuzuordnen.",

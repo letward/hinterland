@@ -461,6 +461,22 @@ export class TabManager extends EventEmitter {
     return unpinned.length;
   }
 
+  ungroupAll() {
+    let count = 0;
+    for (const tab of this.tabs) {
+      if (tab.groupId) {
+        tab.groupId = null;
+        this.emit('update', tab.snapshot());
+        count += 1;
+      }
+    }
+    if (count > 0) {
+      this.emit('list', this.snapshot());
+      this.scheduleSave();
+    }
+    return count;
+  }
+
   snapshot() {
     return {
       tabs: this.tabs.map((tab) => tab.snapshot()),

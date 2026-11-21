@@ -117,6 +117,8 @@ const api = {
     groupByDomain: () => ipcRenderer.invoke('tabs:groupByDomain'),
     sortByTitle: (ascending = true) => ipcRenderer.invoke('tabs:sortByTitle', ascending),
     sortByDomain: (ascending = true) => ipcRenderer.invoke('tabs:sortByDomain', ascending),
+    ungroupAll: () => ipcRenderer.invoke('tabs:ungroupAll'),
+    groupCopyMarkdown: (groupId) => ipcRenderer.invoke('tabs:groupCopyMarkdown', groupId),
   },
 
   tab: {
@@ -206,6 +208,7 @@ const api = {
     exportHtml: (items) => ipcRenderer.invoke('bookmarks:exportHtml', items),
     importHtml: () => ipcRenderer.invoke('bookmarks:importHtml'),
     exportJson: (items) => ipcRenderer.invoke('bookmarks:exportJson', items),
+    exportMarkdown: (items) => ipcRenderer.invoke('bookmarks:exportMarkdown', items),
     importJson: () => ipcRenderer.invoke('bookmarks:importJson'),
     deduplicate: () => ipcRenderer.invoke('bookmarks:deduplicate'),
   },
@@ -276,6 +279,7 @@ const api = {
     clearCompleted: () => ipcRenderer.invoke('downloads:clearCompleted'),
     removeItem: (id) => ipcRenderer.invoke('downloads:removeItem', id),
     openFile: (path) => ipcRenderer.invoke('downloads:openFile', path),
+    exportMarkdown: () => ipcRenderer.invoke('downloads:exportMarkdown'),
   },
 
   shell: {

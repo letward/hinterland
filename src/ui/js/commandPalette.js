@@ -525,6 +525,13 @@ export function openCommandPalette() {
             run: () => api().tabs.sortByDomain(true),
           },
           {
+            id: 'tabsUngroupAll',
+            title: t('commandPalette.tabsUngroupAll'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'close',
+            run: () => api().tabs.ungroupAll(),
+          },
+          {
             id: 'stashAllTabs',
             title: t('commandPalette.stashAllTabs'),
             category: t('commandPalette.categoryCommand'),
@@ -779,11 +786,25 @@ export function openCommandPalette() {
             run: () => api().bookmarks.deduplicate(),
           },
           {
+            id: 'bookmarksExportMarkdown',
+            title: t('commandPalette.bookmarksExportMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().bookmarks.exportMarkdown(),
+          },
+          {
             id: 'downloadsClearCompleted',
             title: t('commandPalette.downloadsClearCompleted'),
             category: t('commandPalette.categoryCommand'),
             icon: 'check',
             run: () => api().downloads.clearCompleted(),
+          },
+          {
+            id: 'downloadsExportMarkdown',
+            title: t('commandPalette.downloadsExportMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().downloads.exportMarkdown(),
           },
           {
             id: 'clearRecentlyClosed',

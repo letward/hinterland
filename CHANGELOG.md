@@ -4,6 +4,31 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.33.0] - 2026-11-21
+
+### Added
+- **Bookmarks Markdown Export & Domain Sorting (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `bookmarks:exportMarkdown` IPC handler generating a structured Markdown bookmark archive grouped by folder with domain metadata and clickable links.
+  - Added 1-click **Export bookmarks (Markdown)** and **Sort by domain** toolbar buttons in the Bookmarks manager, plus Command Palette quick launcher `commandPalette.bookmarksExportMarkdown`.
+- **Tab Groups Studio: Ungroup All & Copy Group Links as Markdown (`src/main/tabs.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `TabManager.ungroupAll()` and `tabs:ungroupAll` IPC handler to detach all tabs from their groups cleanly while keeping tabs open.
+  - Added `tabs:groupCopyMarkdown` IPC handler and 1-click **Copy Links** button on each group card in Tab Groups Studio to copy all group tabs as a formatted Markdown list.
+  - Added **Ungroup All** button in Tab Groups Studio, **Ungroup All Tabs** in the Main Menu and Tabstrip context menu, and Command Palette quick launcher `commandPalette.tabsUngroupAll`.
+- **Quick Notes: Live Word, Character & Reading Time Counter (`src/ui/js/panels.js`, `src/ui/css/panels.css`)**:
+  - Added a live `.notesStatusBar` footer in the Quick Notes editor showing real-time word count, character count, and estimated reading time as you type or preview notes.
+- **Downloads History Markdown Export (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `downloads:exportMarkdown` IPC handler generating a clean Markdown log of download transfers with status, size, timestamp, and source links.
+  - Added **Export Markdown** button in the Downloads Manager toolbar and Command Palette launcher `commandPalette.downloadsExportMarkdown`.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`, `website/api/sync.js`)**:
+  - Documented Bookmarks Markdown Export & Domain Sorting, Tab Groups Copy Links & Ungroup All, Quick Notes live word/char/reading-time counter, and Downloads Markdown export in the official User Guide.
+  - Updated website hero badge, standalone Windows installer download link, and sync service version to v1.33.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v133Features.test.mjs`)**:
+  - Added automated unit and integration tests covering Bookmarks Markdown export & domain sorting, Tab Groups Ungroup All & Copy Links, Quick Notes live counter, Downloads Markdown export, duplicate tab menu cleanup, and 100% key parity across English and German locales.
+
+### Fixed
+- **Tab Context Menu Cleanup (`src/ui/js/menu.js`)**:
+  - Removed duplicate **Close tabs to the left** and **Close tabs to the right** entries from `openTabMenu`.
+
 ## [1.32.0] - 2026-11-21
 
 ### Added

@@ -607,6 +607,35 @@ export function installIpc() {
     return { ok: true, count: tabsGrouped, groupsCreated };
   });
 
+  handle('tabs:ungroupAll', () => {
+    const count = tabs.ungroupAll();
+    surface.send('tabs:sync', tabs.snapshot());
+    surface.send('toast', {
+      message: count > 0 ? 'toast.allTabsUngrouped' : 'toast.noGroupedTabs',
+      kind: count > 0 ? 'success' : 'info',
+    });
+    return { ok: true, count };
+  });
+
+  handle('tabs:groupCopyMarkdown', (groupId) => {
+    const groups = sortedGroups();
+    const group = groups.find((g) => g.id === groupId);
+    const tabsInGroup = tabs.list.filter((t) => t.groupId === groupId && !isInternalUrl(t.url));
+    if (!tabsInGroup.length) {
+      surface.send('toast', { message: 'toast.noTabsInGroupToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    const groupTitle = group?.name || 'Tab Group';
+    const lines = [`## ${groupTitle}`, ''];
+    for (const tab of tabsInGroup) {
+      const title = String(tab.title || tab.url || 'Untitled').replace(/[\[\]]/g, '');
+      lines.push(`- [${title}](${tab.url})`);
+    }
+    clipboard.writeText(lines.join('\n'));
+    surface.send('toast', { message: 'toast.groupLinksCopied', kind: 'success' });
+    return { ok: true, count: tabsInGroup.length };
+  });
+
   handle('app:checkForUpdates', () => {
     try {
       if (!app.isPackaged) return { ok: false, error: 'notPackaged' };
@@ -1270,6 +1299,48 @@ export function installIpc() {
   handle('downloads:removeItem', (id) => removeDownloadHistoryItem(id));
   handle('downloads:openFile', (filePath) => openDownloadedFile(filePath));
 
+  handle('downloads:exportMarkdown', async () => {
+    const list = getDownloadHistory() || [];
+    const dateStr = new Date().toLocaleDateString('en-CA');
+    const lines = [
+      '# Hinterland Downloads Log',
+      '',
+      `Exported on ${dateStr}. Total downloads: ${list.length}.`,
+      '',
+    ];
+    for (const item of list) {
+      const name = String(item.filename || 'Download').replace(/[\[\]]/g, '');
+      const status = item.state === 'completed' || (item.ok && !item.state)
+        ? 'Completed'
+        : (item.state === 'interrupted' || item.state === 'cancelled' || item.ok === false)
+          ? 'Interrupted'
+          : (item.state || 'In progress');
+      const total = Number(item.totalBytes) || Number(item.receivedBytes) || 0;
+      const sizeStr = total >= 1048576
+        ? `${(total / 1048576).toFixed(2)} MB`
+        : total >= 1024
+          ? `${(total / 1024).toFixed(1)} KB`
+          : `${total} B`;
+      const timeStr = item.timestamp ? new Date(item.timestamp).toLocaleString() : '';
+      const metaParts = [status, sizeStr, timeStr].filter(Boolean).join(' · ');
+      if (item.url) {
+        lines.push(`- **[${name}](${item.url})** — ${metaParts}`);
+      } else {
+        lines.push(`- **${name}** — ${metaParts}`);
+      }
+    }
+    const markdown = lines.join('\n');
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-downloads-${Date.now()}.md`,
+      filters: [{ name: 'Markdown Document', extensions: ['md'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, markdown, 'utf8');
+    surface.send('toast', { message: 'toast.downloadsExportedMarkdown', kind: 'success' });
+    return { ok: true, filePath: result.filePath, count: list.length };
+  });
+
   handle('site:getPermissions', (rawUrl) => {
     try {
       const url = new URL(rawUrl);
@@ -1372,6 +1443,48 @@ export function installIpc() {
     await writeFile(result.filePath, lines.join('\n'), 'utf8');
     surface.send('toast', { message: 'toast.bookmarksExported', kind: 'success' });
     return { ok: true, path: result.filePath };
+  });
+
+  handle('bookmarks:exportMarkdown', async (items) => {
+    const list = Array.isArray(items) ? items : (settings.value('data.bookmarks') ?? []);
+    const dateStr = new Date().toLocaleDateString('en-CA');
+    const lines = [
+      '# Hinterland Bookmarks Archive',
+      '',
+      `Exported on ${dateStr}. Total bookmarks: ${list.length}.`,
+      '',
+    ];
+    const folders = new Map();
+    for (const item of list) {
+      if (!item?.url) continue;
+      const folder = String(item.folder || 'Bookmarks').trim() || 'Bookmarks';
+      if (!folders.has(folder)) folders.set(folder, []);
+      folders.get(folder).push(item);
+    }
+    for (const [folder, entries] of folders.entries()) {
+      lines.push(`## ${folder}`);
+      lines.push('');
+      for (const item of entries) {
+        const title = String(item.title || item.url).replace(/[\[\]]/g, '');
+        let domain = '';
+        try {
+          domain = new URL(item.url).hostname.replace(/^www\./i, '');
+        } catch {}
+        const domainBadge = domain ? ` (${domain})` : '';
+        lines.push(`- [${title}](${item.url})${domainBadge}`);
+      }
+      lines.push('');
+    }
+    const markdown = lines.join('\n');
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-bookmarks-${Date.now()}.md`,
+      filters: [{ name: 'Markdown Document', extensions: ['md'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, markdown, 'utf8');
+    surface.send('toast', { message: 'toast.bookmarksExportedMarkdown', kind: 'success' });
+    return { ok: true, filePath: result.filePath, count: list.length };
   });
 
   handle('bookmarks:importHtml', async () => {

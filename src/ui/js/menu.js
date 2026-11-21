@@ -150,6 +150,11 @@ export function openMainMenu() {
           onSelect: () => api().tabs.sortByDomain(true),
         }),
         row({
+          iconName: 'close',
+          title: t('menu.ungroupAllTabs'),
+          onSelect: () => api().tabs.ungroupAll(),
+        }),
+        row({
           iconName: 'key',
           title: t('menu.passwords'),
           subtitle: 'Ctrl+Alt+P',
@@ -491,16 +496,6 @@ export function openTabMenu(tab, x, y) {
           },
         }),
         row({
-          iconName: 'minus',
-          title: t('menu.closeLeft'),
-          onSelect: () => api().tabs.closeLeft(tab.id),
-        }),
-        row({
-          iconName: 'minus',
-          title: t('menu.closeRight'),
-          onSelect: () => api().tabs.closeRight(tab.id),
-        }),
-        row({
           iconName: 'clock',
           title: t('menu.reopenClosed'),
           onSelect: () => api().tabs.reopen(),
@@ -726,6 +721,11 @@ export function openTabstripMenu() {
           iconName: 'globe',
           title: t('menu.sortByDomain'),
           onSelect: () => api().tabs.sortByDomain(true),
+        }),
+        row({
+          iconName: 'close',
+          title: t('menu.ungroupAllTabs'),
+          onSelect: () => api().tabs.ungroupAll(),
         }),
         row({
           iconName: 'key',

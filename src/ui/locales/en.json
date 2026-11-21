@@ -155,7 +155,8 @@
     "unmuteAllTabs": "Unmute All Tabs",
     "openInPrivate": "Open in Private Tab",
     "sortByTitle": "Sort Tabs by Title (A-Z)",
-    "sortByDomain": "Sort Tabs by Domain"
+    "sortByDomain": "Sort Tabs by Domain",
+    "ungroupAllTabs": "Ungroup All Tabs"
   },
   "find": {
     "placeholder": "Find on page",
@@ -228,7 +229,10 @@
     "tabsSortByDomain": "Sort tabs by domain",
     "historyExportMarkdown": "Export browsing history as Markdown",
     "historyExportCsv": "Export browsing history as CSV",
-    "readingListMarkAllRead": "Reading List: Mark all articles as read"
+    "readingListMarkAllRead": "Reading List: Mark all articles as read",
+    "tabsUngroupAll": "Ungroup all tabs",
+    "bookmarksExportMarkdown": "Export Bookmarks as Markdown",
+    "downloadsExportMarkdown": "Export Downloads Log as Markdown"
   },
   "confirm": {
     "closeTitle": "Close tab",
@@ -257,10 +261,12 @@
     "removed": "Bookmark removed",
     "exportHtml": "Export bookmarks (HTML)",
     "exportJson": "Export bookmarks (JSON)",
+    "exportMarkdown": "Export bookmarks (Markdown)",
     "importHtml": "Import bookmarks (HTML)",
     "importJson": "Import bookmarks (JSON)",
     "deduplicate": "Remove duplicates",
     "sort": "Sort by name (A-Z)",
+    "sortByDomain": "Sort by domain",
     "noMatch": "No bookmarks match your search.",
     "savedSession": "Saved session",
     "cloudSync": "Cloud sync",
@@ -304,7 +310,8 @@
     "copyLink": "Copy link",
     "clearCompleted": "Clear completed",
     "clearAll": "Clear list",
-    "openFolder": "Open downloads folder"
+    "openFolder": "Open downloads folder",
+    "exportMarkdown": "Export Markdown"
   },
   "shortcuts": {
     "title": "Shortcuts",
@@ -515,7 +522,14 @@
     "historyExportedMarkdown": "Browsing history exported as Markdown",
     "historyExportedCsv": "Browsing history exported as CSV",
     "allReadingListMarkedRead": "All reading list articles marked as read",
-    "noteDuplicated": "Note duplicated successfully"
+    "noteDuplicated": "Note duplicated successfully",
+    "allTabsUngrouped": "All tabs ungrouped",
+    "noGroupedTabs": "No grouped tabs to ungroup",
+    "groupLinksCopied": "Group links copied as Markdown",
+    "noTabsInGroupToCopy": "No web tabs in this group to copy",
+    "downloadsExportedMarkdown": "Downloads log exported as Markdown",
+    "bookmarksExportedMarkdown": "Bookmarks exported as Markdown",
+    "bookmarksSortedByDomain": "Bookmarks sorted by domain"
   },
   "welcome": {
     "title": "Welcome to Hinterland",
@@ -1257,6 +1271,9 @@
     "exportHtml": "Export HTML",
     "importNotes": "Import Notes",
     "clipCurrentTab": "Save Tab as Note",
+    "wordCount": "{count} words",
+    "charCount": "{count} chars",
+    "readingTime": "~{minutes} min read",
     "importInvalid": "No valid notes found in file.",
     "welcomeTitle": "Welcome to Hinterland Notes",
     "welcomeContent": "# Welcome to Hinterland Notes\n\nA fast, distraction-free scratchpad built directly into your browser.\n\n### Features:\n- **Markdown formatting**: Supports headings, **bold**, *italics*, `code`, and checklists.\n- **1-Click Web Clipping**: Use the 'Clip Tab Link' button to instantly insert links from active tabs.\n- **Checklists**:\n  - [x] Create first note\n  - [ ] Research next project\n- **Export**: Export any note to `.md` for Obsidian, Notion, or GitHub."
@@ -1292,6 +1309,10 @@
     "sortByTitleDesc": "Sort all unpinned tabs alphabetically by title",
     "sortByDomain": "Sort Tabs by Domain",
     "sortByDomainDesc": "Sort all unpinned tabs by website domain",
+    "ungroupAll": "Ungroup All",
+    "ungroupAllDesc": "Detach all tabs from their groups without closing them",
+    "copyLinks": "Copy Links",
+    "copyLinksDesc": "Copy all tabs in this group as a Markdown list",
     "defaultName": "Tab Group",
     "noMatch": "No tab groups match your search.",
     "empty": "No active tab groups yet. Create a new group above or right-click any tab to add it to a group.",

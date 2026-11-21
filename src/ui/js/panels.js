@@ -1,4 +1,4 @@
-import { el, clear, formatBytes, formatTime, copyToClipboard, prettyUrl } from './util.js';
+import { el, clear, formatBytes, formatTime, copyToClipboard, prettyUrl, hostOf } from './util.js';
 import { icon } from './icons.js';
 import { t, currentLanguage } from './i18n.js';
 import { openModal, closeModal } from './modal.js';
@@ -489,6 +489,10 @@ function bookmarksPage() {
           await api().bookmarks.exportJson(items);
         } }, [el('span', { html: icon('download') }), ` ${t('bookmarks.exportJson')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
+          const items = get('data.bookmarks', []) ?? [];
+          await api().bookmarks.exportMarkdown(items);
+        } }, [el('span', { html: icon('copy') }), ` ${t('bookmarks.exportMarkdown')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
           const result = await api().bookmarks.importHtml();
           if (result?.ok && typeof result.count === 'number') {
             paint(currentFilter);
@@ -511,6 +515,17 @@ function bookmarksPage() {
           items.sort((a, b) => (a.title || a.url || '').localeCompare(b.title || b.url || ''));
           await save(items);
         } }, [el('span', { html: icon('list') }), ` ${t('bookmarks.sort')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
+          const items = [...(get('data.bookmarks', []) ?? [])];
+          items.sort((a, b) => {
+            const domA = hostOf(a.url || '') || (a.url || '');
+            const domB = hostOf(b.url || '') || (b.url || '');
+            const cmp = domA.localeCompare(domB);
+            return cmp !== 0 ? cmp : (a.title || a.url || '').localeCompare(b.title || b.url || '');
+          });
+          await save(items);
+          toast(t('toast.bookmarksSortedByDomain'), 'success');
+        } }, [el('span', { html: icon('globe') }), ` ${t('bookmarks.sortByDomain')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
           const res = await api().account.syncNow();
           if (res?.ok) {
@@ -598,6 +613,12 @@ function downloadsPage() {
         html: `${icon('external')} <span>${t('downloads.openFolder')}</span>`,
         onclick: () => api().app.openFolder('downloads'),
       });
+      const exportMarkdownBtn = el('button', {
+        class: 'button small',
+        type: 'button',
+        html: `${icon('copy')} <span>${t('downloads.exportMarkdown')}</span>`,
+        onclick: () => api().downloads.exportMarkdown(),
+      });
       const clearCompletedBtn = el('button', {
         class: 'button small',
         type: 'button',
@@ -622,7 +643,7 @@ function downloadsPage() {
           paint();
         },
       });
-      actionsGroup.append(openFolderBtn, clearCompletedBtn, clearHistoryBtn);
+      actionsGroup.append(openFolderBtn, exportMarkdownBtn, clearCompletedBtn, clearHistoryBtn);
 
       toolbar.append(searchInput, filtersGroup, actionsGroup);
       container.append(toolbar);
@@ -1985,6 +2006,17 @@ function notesPage() {
         toolbar.append(clipBtn, sep1, editModeBtn, previewModeBtn, sep2, pinBtn, copyBtn, duplicateBtn, exportBtn, deleteBtn);
 
         let bodyEl;
+        const statusBar = el('div', { class: 'notesStatusBar' });
+        const updateStats = (content) => {
+          const raw = String(content || '');
+          const trimmed = raw.trim();
+          const words = trimmed ? trimmed.split(/\s+/).length : 0;
+          const chars = raw.length;
+          const minutes = words > 0 ? Math.max(1, Math.ceil(words / 200)) : 0;
+          statusBar.textContent = `${t('notes.wordCount', { count: words })} · ${t('notes.charCount', { count: chars })}${minutes > 0 ? ` · ${t('notes.readingTime', { minutes })}` : ''}`;
+        };
+        updateStats(activeNote.content);
+
         if (isPreview) {
           bodyEl = el('div', { class: 'notesPreview', html: renderNoteMarkdown(activeNote.content) });
           bodyEl.addEventListener('click', (event) => {
@@ -2002,11 +2034,12 @@ function notesPage() {
           });
           bodyEl.addEventListener('input', () => {
             activeNote.content = bodyEl.value;
+            updateStats(bodyEl.value);
             scheduleSave();
           });
         }
 
-        editorArea.append(header, toolbar, bodyEl);
+        editorArea.append(header, toolbar, bodyEl, statusBar);
       };
 
       const paintList = () => {
@@ -2457,6 +2490,18 @@ function tabGroupsPage() {
         },
       }, [el('span', { html: icon('globe') }), ` ${t('tabGroups.sortByDomain')}`]);
 
+      const ungroupAllBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.ungroupAllDesc'),
+        onclick: async () => {
+          const res = await api().tabs.ungroupAll();
+          if (res?.ok) {
+            await refresh();
+          }
+        },
+      }, [el('span', { html: icon('close') }), ` ${t('tabGroups.ungroupAll')}`]);
+
       nameInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') createBtn.click();
       });
@@ -2469,6 +2514,7 @@ function tabGroupsPage() {
           autoGroupBtn,
           sortByTitleBtn,
           sortByDomainBtn,
+          ungroupAllBtn,
         ])
       );
       container.append(creatorCard);
@@ -2556,6 +2602,14 @@ function tabGroupsPage() {
 
           // Group actions
           const actions = el('div', { style: { display: 'flex', gap: '6px', alignItems: 'center' } }, [
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('tabGroups.copyLinksDesc'),
+              onclick: async () => {
+                await api().tabs.groupCopyMarkdown(group.id);
+              },
+            }, [el('span', { html: icon('copy') }), ` ${t('tabGroups.copyLinks')}`]),
             el('button', {
               class: 'button small',
               type: 'button',

@@ -1441,6 +1441,18 @@
   color: var(--text);
 }
 
+.notesStatusBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 8px;
+  margin-top: 6px;
+  border-top: 1px solid var(--borderSoft);
+  font-size: 0.78em;
+  color: var(--textDim);
+  font-variant-numeric: tabular-nums;
+}
+
 .notesPreview h1, .notesPreview h2, .notesPreview h3 {
   margin: 12px 0 6px 0;
   color: var(--text);
