@@ -99,6 +99,7 @@ const api = {
     unexemptDomain: (domain) => ipcRenderer.invoke('tabs:unexemptDomain', domain),
     getExemptDomains: () => ipcRenderer.invoke('tabs:getExemptDomains'),
     sleepInactive: (delay) => ipcRenderer.invoke('tabs:sleepInactive', delay),
+    wakeAll: () => ipcRenderer.invoke('tabs:wakeAll'),
     reloadAll: () => ipcRenderer.invoke('tabs:reloadAll'),
     closeDuplicates: () => ipcRenderer.invoke('tabs:closeDuplicates'),
     muteAll: (muted) => ipcRenderer.invoke('tabs:muteAll', muted),
@@ -119,6 +120,7 @@ const api = {
     sortByDomain: (ascending = true) => ipcRenderer.invoke('tabs:sortByDomain', ascending),
     ungroupAll: () => ipcRenderer.invoke('tabs:ungroupAll'),
     groupCopyMarkdown: (groupId) => ipcRenderer.invoke('tabs:groupCopyMarkdown', groupId),
+    copyAllMarkdown: () => ipcRenderer.invoke('tabs:copyAllMarkdown'),
   },
 
   tab: {
@@ -251,6 +253,7 @@ const api = {
     removeTab: (stashId, tabIndex) => ipcRenderer.invoke('stashes:removeTab', stashId, tabIndex),
     exportJson: (stashId) => ipcRenderer.invoke('stashes:exportJson', stashId),
     exportMarkdown: (stashId) => ipcRenderer.invoke('stashes:exportMarkdown', stashId),
+    copyMarkdown: (stashId) => ipcRenderer.invoke('stashes:copyMarkdown', stashId),
     importJson: () => ipcRenderer.invoke('stashes:importJson'),
   },
 
@@ -266,6 +269,7 @@ const api = {
     deleteCookie: (opts) => ipcRenderer.invoke('site:deleteCookie', opts),
     clearCookies: (url) => ipcRenderer.invoke('site:clearCookies', url),
     getStorageStats: (url) => ipcRenderer.invoke('site:getStorageStats', url),
+    exportCookies: (url) => ipcRenderer.invoke('site:exportCookies', url),
     resetAllPermissions: () => ipcRenderer.invoke('site:resetAllPermissions'),
     clearOriginPermissions: (origin) => ipcRenderer.invoke('site:clearOriginPermissions', origin),
     allShieldExceptions: () => ipcRenderer.invoke('site:allShieldExceptions'),
@@ -277,6 +281,7 @@ const api = {
     history: () => ipcRenderer.invoke('downloads:history'),
     clearHistory: () => ipcRenderer.invoke('downloads:clearHistory'),
     clearCompleted: () => ipcRenderer.invoke('downloads:clearCompleted'),
+    clearFailed: () => ipcRenderer.invoke('downloads:clearFailed'),
     removeItem: (id) => ipcRenderer.invoke('downloads:removeItem', id),
     openFile: (path) => ipcRenderer.invoke('downloads:openFile', path),
     exportMarkdown: () => ipcRenderer.invoke('downloads:exportMarkdown'),

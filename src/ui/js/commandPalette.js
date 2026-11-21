@@ -173,6 +173,20 @@ export function openCommandPalette() {
             },
           },
           {
+            id: 'tabsWakeAll',
+            title: t('commandPalette.tabsWakeAll'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'sun',
+            run: () => api().tabs.wakeAll(),
+          },
+          {
+            id: 'tabsCopyAllMarkdown',
+            title: t('commandPalette.tabsCopyAllMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().tabs.copyAllMarkdown(),
+          },
+          {
             id: 'memorySaverExemptSite',
             title: t('commandPalette.memorySaverExemptSite'),
             category: t('commandPalette.categoryCommand'),
@@ -798,6 +812,16 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'check',
             run: () => api().downloads.clearCompleted(),
+          },
+          {
+            id: 'downloadsClearFailed',
+            title: t('commandPalette.downloadsClearFailed'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'close',
+            run: async () => {
+              await api().downloads.clearFailed();
+              toast(t('toast.downloadsFailedCleared'), 'info');
+            },
           },
           {
             id: 'downloadsExportMarkdown',

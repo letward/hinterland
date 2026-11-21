@@ -156,7 +156,9 @@
     "openInPrivate": "In privatem Tab öffnen",
     "sortByTitle": "Tabs nach Titel sortieren (A-Z)",
     "sortByDomain": "Tabs nach Domain sortieren",
-    "ungroupAllTabs": "Alle Tab-Gruppierungen aufheben"
+    "ungroupAllTabs": "Alle Tab-Gruppierungen aufheben",
+    "copyAllTabsMarkdown": "Alle offenen Tabs als Markdown kopieren",
+    "wakeAllTabs": "Alle schlafenden Tabs aufwecken"
   },
   "find": {
     "placeholder": "In Seite suchen",
@@ -232,7 +234,10 @@
     "readingListMarkAllRead": "Leseliste: Alle Artikel als gelesen markieren",
     "tabsUngroupAll": "Alle Tab-Gruppierungen aufheben",
     "bookmarksExportMarkdown": "Lesezeichen als Markdown exportieren",
-    "downloadsExportMarkdown": "Download-Verlauf als Markdown exportieren"
+    "downloadsExportMarkdown": "Download-Verlauf als Markdown exportieren",
+    "tabsCopyAllMarkdown": "Alle offenen Tabs als Markdown kopieren",
+    "tabsWakeAll": "Alle schlafenden Tabs aufwecken",
+    "downloadsClearFailed": "Fehlgeschlagene Downloads leeren"
   },
   "confirm": {
     "closeTitle": "Tab schließen",
@@ -309,6 +314,7 @@
     "showInFolder": "Im Ordner anzeigen",
     "copyLink": "Link kopieren",
     "clearCompleted": "Abgeschlossene leeren",
+    "clearFailed": "Fehlgeschlagene leeren",
     "clearAll": "Liste leeren",
     "openFolder": "Downloads-Ordner öffnen",
     "exportMarkdown": "Markdown exportieren"
@@ -529,7 +535,16 @@
     "noTabsInGroupToCopy": "Keine Web-Tabs in dieser Gruppe zum Kopieren",
     "downloadsExportedMarkdown": "Download-Verlauf als Markdown exportiert",
     "bookmarksExportedMarkdown": "Lesezeichen als Markdown exportiert",
-    "bookmarksSortedByDomain": "Lesezeichen nach Domain sortiert"
+    "bookmarksSortedByDomain": "Lesezeichen nach Domain sortiert",
+    "allTabsCopied": "{count} offene(r) Tab(s) als Markdown kopiert",
+    "noTabsToCopy": "Keine offenen Web-Tabs zum Kopieren vorhanden",
+    "wokeAllTabs": "{count} schlafende(r) Tab(s) aufgeweckt",
+    "noSleepingTabs": "Keine schlafenden Tabs zum Aufwecken vorhanden",
+    "cookiesExported": "{count} Cookie(s) als JSON exportiert",
+    "noCookiesToExport": "Keine Cookies für diese Website zum Exportieren vorhanden",
+    "downloadsFailedCleared": "Fehlgeschlagene und unterbrochene Downloads geleert",
+    "stashLinksCopied": "Stash-Links als Markdown kopiert",
+    "noTabsInStashToCopy": "Keine Tabs in diesem Stash zum Kopieren vorhanden"
   },
   "welcome": {
     "title": "Willkommen bei Hinterland",
@@ -1073,6 +1088,7 @@
     "cookiesModalTitle": "Cookies & Websitedaten",
     "cookiesModalDesc": "Gespeicherte Cookies für {host} prüfen und verwalten.",
     "filterCookies": "Cookies nach Name oder Domain filtern...",
+    "exportCookies": "JSON exportieren",
     "clearSiteCookies": "Alle Cookies für diese Website löschen",
     "noCookies": "Keine Cookies für diese Website gespeichert.",
     "cookieName": "Name",
@@ -1125,6 +1141,7 @@
     "tabs": "Tabs",
     "refresh": "Aktualisieren",
     "sleepAll": "Inaktive Tabs schlafen legen",
+    "wakeAll": "Schlafende Tabs aufwecken",
     "empty": "Keine passenden Prozesse gefunden.",
     "processBrowser": "Hinterland Browser",
     "processGPU": "GPU-Prozess",
@@ -1288,6 +1305,7 @@
     "import": "JSON importieren",
     "exportAll": "Alle als JSON exportieren",
     "exportMarkdown": "Markdown exportieren",
+    "copyLinks": "Links als Markdown kopieren",
     "duplicate": "Stash duplizieren",
     "defaultTitle": "Tab-Stash",
     "renameHint": "Klicken, um diesen Stash umzubenennen",
@@ -1313,6 +1331,8 @@
     "ungroupAllDesc": "Alle Tabs aus ihren Gruppen lösen, ohne sie zu schließen",
     "copyLinks": "Links kopieren",
     "copyLinksDesc": "Alle Tabs dieser Gruppe als Markdown-Liste kopieren",
+    "copyAllLinks": "Alle offenen Tabs kopieren",
+    "copyAllLinksDesc": "Alle offenen Web-Tabs dieses Fensters als Markdown-Liste kopieren",
     "defaultName": "Tab-Gruppe",
     "noMatch": "Keine Tab-Gruppen entsprechen Ihrer Suche.",
     "empty": "Noch keine aktiven Tab-Gruppen. Erstellen Sie oben eine Gruppe oder rechtsklicken Sie auf einen Tab, um ihn zuzuordnen.",

@@ -292,6 +292,19 @@ export class TabManager extends EventEmitter {
     return count;
   }
 
+  wakeAll() {
+    let count = 0;
+    for (const tab of this.tabs) {
+      if (tab.sleeping && tab.wake()) {
+        count += 1;
+      }
+    }
+    if (count > 0) {
+      this.emit('list', this.snapshot());
+    }
+    return count;
+  }
+
   cycle(delta) {
     if (this.tabs.length < 2) return;
     const index = this.indexOf(this.activeId);

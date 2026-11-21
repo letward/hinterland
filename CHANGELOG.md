@@ -4,6 +4,29 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.34.0] - 2026-11-21
+
+### Added
+- **Copy All Open Tabs as Markdown (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `tabs:copyAllMarkdown` IPC handler to copy all open non-internal tabs across the window as a structured Markdown link list grouped by Tab Groups.
+  - Added 1-click **Copy All Open Tabs** button in Tab Groups Studio toolbar, **Copy All Open Tabs as Markdown** in Main Menu and Tabstrip context menu, and Command Palette action `commandPalette.tabsCopyAllMarkdown`.
+- **Wake All Sleeping Tabs (`src/main/tabs.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `TabManager.wakeAll()` and `tabs:wakeAll` IPC handler to wake all tabs currently put to sleep by Memory Saver in one click.
+  - Added **Wake sleeping tabs** button in Task Manager summary bar, **Wake All Sleeping Tabs** in Tab & Tabstrip context menus, and Command Palette action `commandPalette.tabsWakeAll`.
+- **Cookie Inspector: Export Site Cookies as JSON (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`)**:
+  - Implemented `site:exportCookies` IPC handler to export a site's stored cookies with host and timestamp metadata into a clean JSON file.
+  - Added **Export JSON** button to the Cookie Inspector toolbar.
+- **Downloads Manager: Clear Failed / Interrupted Downloads (`src/main/downloads.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `clearFailedDownloads()` and `downloads:clearFailed` IPC handler to clear interrupted or cancelled transfers without affecting completed or active downloads.
+  - Added **Clear failed** button to the Downloads Manager toolbar and Command Palette action `commandPalette.downloadsClearFailed`.
+- **Tab Stash: Copy Stash Links as Markdown (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`)**:
+  - Implemented `stashes:copyMarkdown` IPC handler and 1-click **Copy Links as Markdown** button on each stash card to copy a stash's links directly to the clipboard.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`, `website/api/sync.js`)**:
+  - Documented Copy All Open Tabs, Wake Sleeping Tabs, Cookie Inspector JSON export, Clear Failed Downloads, and Tab Stash Copy Links in the official User Guide.
+  - Updated website hero badge, standalone Windows installer download link, and sync service version to v1.34.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v134Features.test.mjs`)**:
+  - Added automated tests covering Copy All Open Tabs as Markdown, Wake All Sleeping Tabs, Cookie Inspector JSON export, Clear Failed Downloads, Tab Stash Copy Links as Markdown, documentation/website updates, and 100% key parity across English and German locales.
+
 ## [1.33.0] - 2026-11-21
 
 ### Added

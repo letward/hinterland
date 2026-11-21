@@ -19,7 +19,7 @@ import { openExternal, blockedSummary, handOffToSystem, stripTracking, toggleSit
 import updater from 'electron-updater';
 const { autoUpdater } = updater;
 import { applySettings, clearBrowsingData, downloadDirectory, clearSiteData, getSiteCookies, deleteSiteCookie, clearSiteCookies, getSiteStorageStats } from './sessions.js';
-import { getDownloadHistory, clearDownloadHistory, clearCompletedDownloads, removeDownloadHistoryItem, openDownloadedFile } from './downloads.js';
+import { getDownloadHistory, clearDownloadHistory, clearCompletedDownloads, clearFailedDownloads, removeDownloadHistoryItem, openDownloadedFile } from './downloads.js';
 import { applyContentSettings } from './content.js';
 
 const registered = new Set();
@@ -335,6 +335,15 @@ export function installIpc() {
   handle('tabs:unexemptDomain', (domain) => tabs.unexemptDomain(domain));
   handle('tabs:getExemptDomains', () => tabs.getExemptDomains());
   handle('tabs:sleepInactive', (delay) => tabs.sleepInactive(delay));
+  handle('tabs:wakeAll', () => {
+    const count = tabs.wakeAll();
+    surface.send('toast', {
+      message: count > 0 ? 'toast.wokeAllTabs' : 'toast.noSleepingTabs',
+      kind: count > 0 ? 'success' : 'info',
+      data: { count },
+    });
+    return { ok: true, count };
+  });
   handle('tabs:reloadAll', () => {
     for (const tab of tabs.list) {
       if (!tab.contents || tab.contents.isDestroyed()) continue;
@@ -634,6 +643,46 @@ export function installIpc() {
     clipboard.writeText(lines.join('\n'));
     surface.send('toast', { message: 'toast.groupLinksCopied', kind: 'success' });
     return { ok: true, count: tabsInGroup.length };
+  });
+
+  handle('tabs:copyAllMarkdown', () => {
+    const webTabs = tabs.list.filter((t) => t.url && !isInternalUrl(t.url));
+    if (!webTabs.length) {
+      surface.send('toast', { message: 'toast.noTabsToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    const groups = sortedGroups();
+    const dateStr = new Date().toLocaleDateString('en-CA');
+    const lines = [`# Hinterland Open Tabs (${dateStr})`, ''];
+    const groupedIds = new Set();
+
+    for (const group of groups) {
+      const members = webTabs.filter((t) => t.groupId === group.id);
+      if (!members.length) continue;
+      lines.push(`## ${group.name || 'Tab Group'}`, '');
+      for (const tab of members) {
+        groupedIds.add(tab.id);
+        const title = String(tab.title || tab.url || 'Untitled').replace(/[\[\]]/g, '');
+        lines.push(`- [${title}](${tab.url})`);
+      }
+      lines.push('');
+    }
+
+    const ungrouped = webTabs.filter((t) => !groupedIds.has(t.id));
+    if (ungrouped.length) {
+      if (groupedIds.size > 0) {
+        lines.push('## Ungrouped', '');
+      }
+      for (const tab of ungrouped) {
+        const title = String(tab.title || tab.url || 'Untitled').replace(/[\[\]]/g, '');
+        lines.push(`- [${title}](${tab.url})`);
+      }
+      lines.push('');
+    }
+
+    clipboard.writeText(lines.join('\n').trim());
+    surface.send('toast', { message: 'toast.allTabsCopied', kind: 'success', data: { count: webTabs.length } });
+    return { ok: true, count: webTabs.length };
   });
 
   handle('app:checkForUpdates', () => {
@@ -1292,10 +1341,34 @@ export function installIpc() {
   handle('site:deleteCookie', (opts) => deleteSiteCookie(opts || {}));
   handle('site:clearCookies', (url) => clearSiteCookies(url));
   handle('site:getStorageStats', (url) => getSiteStorageStats(url));
+  handle('site:exportCookies', async (rawUrl) => {
+    const cookies = (await getSiteCookies(rawUrl)) || [];
+    if (!cookies.length) {
+      surface.send('toast', { message: 'toast.noCookiesToExport', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    const host = normalizeDomain(rawUrl) || 'site';
+    const payload = {
+      host,
+      exportedAt: new Date().toISOString(),
+      count: cookies.length,
+      cookies,
+    };
+    const result = await dialog.showSaveDialog(chromeWindow(), {
+      title: 'Hinterland',
+      defaultPath: `hinterland-cookies-${host}-${Date.now()}.json`,
+      filters: [{ name: 'JSON Document', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePath) return { ok: false };
+    await writeFile(result.filePath, JSON.stringify(payload, null, 2), 'utf8');
+    surface.send('toast', { message: 'toast.cookiesExported', kind: 'success', data: { count: cookies.length } });
+    return { ok: true, filePath: result.filePath, count: cookies.length };
+  });
 
   handle('downloads:history', () => getDownloadHistory());
   handle('downloads:clearHistory', () => clearDownloadHistory());
   handle('downloads:clearCompleted', () => clearCompletedDownloads());
+  handle('downloads:clearFailed', () => clearFailedDownloads());
   handle('downloads:removeItem', (id) => removeDownloadHistoryItem(id));
   handle('downloads:openFile', (filePath) => openDownloadedFile(filePath));
 
@@ -2490,6 +2563,25 @@ ${renderNotesHtml(notes)}
     await writeFile(result.filePath, md, 'utf8');
     surface.send('toast', { message: 'toast.stashExported', kind: 'success' });
     return { ok: true, filePath: result.filePath };
+  });
+
+  handle('stashes:copyMarkdown', (stashId) => {
+    const stashes = settings.value('data.tabStashes') || [];
+    const stash = stashes.find((s) => s.id === stashId);
+    const stashTabs = Array.isArray(stash?.tabs) ? stash.tabs : [];
+    if (!stash || !stashTabs.length) {
+      surface.send('toast', { message: 'toast.noTabsInStashToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    const title = stash.title || 'Tab Stash';
+    const lines = [`## ${title}`, ''];
+    for (const tab of stashTabs) {
+      const tabTitle = String(tab.title || tab.url || 'Tab').replace(/[\[\]]/g, '');
+      lines.push(`- [${tabTitle}](${tab.url})`);
+    }
+    clipboard.writeText(lines.join('\n'));
+    surface.send('toast', { message: 'toast.stashLinksCopied', kind: 'success' });
+    return { ok: true, count: stashTabs.length };
   });
 
   handle('stashes:importJson', async () => {

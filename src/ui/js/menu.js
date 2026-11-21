@@ -155,6 +155,11 @@ export function openMainMenu() {
           onSelect: () => api().tabs.ungroupAll(),
         }),
         row({
+          iconName: 'copy',
+          title: t('menu.copyAllTabsMarkdown'),
+          onSelect: () => api().tabs.copyAllMarkdown(),
+        }),
+        row({
           iconName: 'key',
           title: t('menu.passwords'),
           subtitle: 'Ctrl+Alt+P',
@@ -472,6 +477,11 @@ export function openTabMenu(tab, x, y) {
           },
         }),
         row({
+          iconName: 'sun',
+          title: t('menu.wakeAllTabs'),
+          onSelect: () => api().tabs.wakeAll(),
+        }),
+        row({
           iconName: 'bookmark',
           title: t('menu.bookmarkAllTabs'),
           onSelect: async () => {
@@ -728,6 +738,11 @@ export function openTabstripMenu() {
           onSelect: () => api().tabs.ungroupAll(),
         }),
         row({
+          iconName: 'copy',
+          title: t('menu.copyAllTabsMarkdown'),
+          onSelect: () => api().tabs.copyAllMarkdown(),
+        }),
+        row({
           iconName: 'key',
           title: t('menu.passwords'),
           subtitle: 'Ctrl+Alt+P',
@@ -774,6 +789,11 @@ export function openTabstripMenu() {
             const count = await api().tabs.sleepOthers();
             if (count > 0) toast(t('toast.sleptOthers', { count }), 'info');
           },
+        }),
+        row({
+          iconName: 'sun',
+          title: t('menu.wakeAllTabs'),
+          onSelect: () => api().tabs.wakeAll(),
         }),
         row({
           iconName: 'volumeOff',

@@ -156,7 +156,9 @@
     "openInPrivate": "Open in Private Tab",
     "sortByTitle": "Sort Tabs by Title (A-Z)",
     "sortByDomain": "Sort Tabs by Domain",
-    "ungroupAllTabs": "Ungroup All Tabs"
+    "ungroupAllTabs": "Ungroup All Tabs",
+    "copyAllTabsMarkdown": "Copy All Open Tabs as Markdown",
+    "wakeAllTabs": "Wake All Sleeping Tabs"
   },
   "find": {
     "placeholder": "Find on page",
@@ -232,7 +234,10 @@
     "readingListMarkAllRead": "Reading List: Mark all articles as read",
     "tabsUngroupAll": "Ungroup all tabs",
     "bookmarksExportMarkdown": "Export Bookmarks as Markdown",
-    "downloadsExportMarkdown": "Export Downloads Log as Markdown"
+    "downloadsExportMarkdown": "Export Downloads Log as Markdown",
+    "tabsCopyAllMarkdown": "Copy all open tabs as Markdown",
+    "tabsWakeAll": "Wake all sleeping tabs",
+    "downloadsClearFailed": "Clear failed / interrupted downloads"
   },
   "confirm": {
     "closeTitle": "Close tab",
@@ -309,6 +314,7 @@
     "showInFolder": "Show in folder",
     "copyLink": "Copy link",
     "clearCompleted": "Clear completed",
+    "clearFailed": "Clear failed",
     "clearAll": "Clear list",
     "openFolder": "Open downloads folder",
     "exportMarkdown": "Export Markdown"
@@ -529,7 +535,16 @@
     "noTabsInGroupToCopy": "No web tabs in this group to copy",
     "downloadsExportedMarkdown": "Downloads log exported as Markdown",
     "bookmarksExportedMarkdown": "Bookmarks exported as Markdown",
-    "bookmarksSortedByDomain": "Bookmarks sorted by domain"
+    "bookmarksSortedByDomain": "Bookmarks sorted by domain",
+    "allTabsCopied": "Copied {count} open tab(s) as Markdown",
+    "noTabsToCopy": "No open web tabs to copy",
+    "wokeAllTabs": "Woke {count} sleeping tab(s)",
+    "noSleepingTabs": "No sleeping tabs to wake",
+    "cookiesExported": "Exported {count} cookie(s) as JSON",
+    "noCookiesToExport": "No cookies stored for this site to export",
+    "downloadsFailedCleared": "Failed and interrupted downloads cleared",
+    "stashLinksCopied": "Stash links copied as Markdown",
+    "noTabsInStashToCopy": "No tabs in this stash to copy"
   },
   "welcome": {
     "title": "Welcome to Hinterland",
@@ -1073,6 +1088,7 @@
     "cookiesModalTitle": "Site Cookies & Storage",
     "cookiesModalDesc": "Inspect and manage stored cookies for {host}.",
     "filterCookies": "Filter cookies by name or domain...",
+    "exportCookies": "Export JSON",
     "clearSiteCookies": "Clear all cookies for this site",
     "noCookies": "No cookies stored for this site.",
     "cookieName": "Name",
@@ -1125,6 +1141,7 @@
     "tabs": "Tabs",
     "refresh": "Refresh",
     "sleepAll": "Sleep inactive tabs",
+    "wakeAll": "Wake sleeping tabs",
     "empty": "No matching processes found.",
     "processBrowser": "Hinterland Browser",
     "processGPU": "GPU Process",
@@ -1288,6 +1305,7 @@
     "import": "Import JSON",
     "exportAll": "Export all JSON",
     "exportMarkdown": "Export Markdown",
+    "copyLinks": "Copy Links as Markdown",
     "duplicate": "Duplicate Stash",
     "defaultTitle": "Tab Stash",
     "renameHint": "Click to rename this stash",
@@ -1313,6 +1331,8 @@
     "ungroupAllDesc": "Detach all tabs from their groups without closing them",
     "copyLinks": "Copy Links",
     "copyLinksDesc": "Copy all tabs in this group as a Markdown list",
+    "copyAllLinks": "Copy All Open Tabs",
+    "copyAllLinksDesc": "Copy all open web tabs across the window as a Markdown list",
     "defaultName": "Tab Group",
     "noMatch": "No tab groups match your search.",
     "empty": "No active tab groups yet. Create a new group above or right-click any tab to add it to a group.",

@@ -632,6 +632,19 @@ function downloadsPage() {
           paint();
         },
       });
+      const clearFailedBtn = el('button', {
+        class: 'button small',
+        type: 'button',
+        html: `${icon('close')} <span>${t('downloads.clearFailed')}</span>`,
+        onclick: async () => {
+          await api().downloads.clearFailed();
+          for (const [id, val] of [...downloads.entries()]) {
+            if (val.state === 'interrupted' || val.state === 'cancelled' || val.ok === false) downloads.delete(id);
+          }
+          toast(t('toast.downloadsFailedCleared'), 'info');
+          paint();
+        },
+      });
       const clearHistoryBtn = el('button', {
         class: 'button small',
         type: 'button',
@@ -643,7 +656,7 @@ function downloadsPage() {
           paint();
         },
       });
-      actionsGroup.append(openFolderBtn, exportMarkdownBtn, clearCompletedBtn, clearHistoryBtn);
+      actionsGroup.append(openFolderBtn, exportMarkdownBtn, clearCompletedBtn, clearFailedBtn, clearHistoryBtn);
 
       toolbar.append(searchInput, filtersGroup, actionsGroup);
       container.append(toolbar);
@@ -810,6 +823,11 @@ function cookieInspectorPage(targetUrl) {
         placeholder: t('siteInfo.filterCookies'),
         style: { flex: '1' },
       });
+      const exportBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        onclick: () => api().site.exportCookies(targetUrl),
+      }, [el('span', { html: icon('download') }), ` ${t('siteInfo.exportCookies')}`]);
       const clearBtn = el('button', {
         class: 'button',
         type: 'button',
@@ -820,7 +838,7 @@ function cookieInspectorPage(targetUrl) {
         },
       }, [el('span', { html: icon('trash') }), ` ${t('siteInfo.clearSiteCookies')}`]);
 
-      toolbar.append(searchInput, clearBtn);
+      toolbar.append(searchInput, exportBtn, clearBtn);
       container.append(toolbar);
 
       const list = el('div', { class: 'card cookiesList' });
@@ -1197,7 +1215,16 @@ function taskManagerPage() {
           },
         }, [el('span', { html: icon('moon') }), ` ${t('taskManager.sleepAll')}`]);
 
-        summaryCard.append(memStat, procStat, tabStat, saverStat, sleepOthersBtn, refreshBtn);
+        const wakeAllBtn = el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            await api().tabs.wakeAll();
+            refresh();
+          },
+        }, [el('span', { html: icon('sun') }), ` ${t('taskManager.wakeAll')}`]);
+
+        summaryCard.append(memStat, procStat, tabStat, saverStat, sleepOthersBtn, wakeAllBtn, refreshBtn);
 
         clear(list);
         let items = data.processes || [];
@@ -2285,6 +2312,14 @@ function tabStashPage() {
             el('button', {
               class: 'button small',
               type: 'button',
+              title: t('stash.copyLinks'),
+              onclick: async () => {
+                await api().stashes.copyMarkdown(stash.id);
+              },
+            }, [el('span', { html: icon('link') })]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
               title: t('stash.exportMarkdown'),
               onclick: async () => {
                 await api().stashes.exportMarkdown(stash.id);
@@ -2502,6 +2537,15 @@ function tabGroupsPage() {
         },
       }, [el('span', { html: icon('close') }), ` ${t('tabGroups.ungroupAll')}`]);
 
+      const copyAllLinksBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.copyAllLinksDesc'),
+        onclick: async () => {
+          await api().tabs.copyAllMarkdown();
+        },
+      }, [el('span', { html: icon('copy') }), ` ${t('tabGroups.copyAllLinks')}`]);
+
       nameInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') createBtn.click();
       });
@@ -2515,6 +2559,7 @@ function tabGroupsPage() {
           sortByTitleBtn,
           sortByDomainBtn,
           ungroupAllBtn,
+          copyAllLinksBtn,
         ])
       );
       container.append(creatorCard);
