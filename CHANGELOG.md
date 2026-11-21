@@ -4,6 +4,36 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.35.0] - 2026-11-21
+
+### Added
+- **Close Tabs from Same Domain (`src/main/tabs.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `TabManager.closeByDomain(id)` and `tabs:closeByDomain` IPC handler to close all unpinned tabs sharing the selected tab's hostname in one click.
+  - Wired **Close Tabs from Same Domain** into Tab context menu (`openTabMenu`), Tabstrip context menu (`openTabstripMenu`), and Command Palette (`commandPalette.tabsCloseByDomain`).
+- **Copy All Open Tabs as Plain URLs & Open URLs from Clipboard (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `tabs:copyAllUrls` to copy all open non-internal tab URLs one per line to the clipboard.
+  - Implemented `tabs:openClipboardUrls` to parse, deduplicate, and open valid HTTP/HTTPS URLs (including links inside Markdown) from the clipboard in background tabs (safely capped at 30 tabs).
+  - Added **Copy All URLs** and **Open URLs from Clipboard** buttons in Tab Groups Studio toolbar, entries in Main Menu and Tabstrip context menu, and Command Palette actions `commandPalette.tabsCopyAllUrls` and `commandPalette.tabsOpenClipboardUrls`.
+- **Bookmarks Manager: Copy as Markdown (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `bookmarks:copyMarkdown` IPC handler sharing a unified Markdown formatter with `bookmarks:exportMarkdown` to copy bookmarks directly to the clipboard.
+  - Added 1-click **Copy as Markdown** button in Bookmarks Manager and Command Palette action `commandPalette.bookmarksCopyMarkdown`.
+- **Recently Closed Tabs: Search Filter & Copy Link (`src/ui/js/panels.js`)**:
+  - Added a live search box to filter recently closed tabs by title or URL, plus a 1-click **Copy link** button on each entry.
+- **About Panel: Copy Diagnostics (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Implemented `app:copyDiagnostics` IPC handler to copy a privacy-safe summary of browser version, runtime versions, platform, locale, open/sleeping tabs, and session blocked request count.
+  - Added **Copy Diagnostics** button in About Hinterland and Command Palette action `commandPalette.copyDiagnostics`.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`, `website/api/sync.js`)**:
+  - Documented Close Tabs from Same Domain, Copy All URLs, Open URLs from Clipboard, Copy Bookmarks as Markdown, Recently Closed Search & Copy Link, and Copy Diagnostics in the official User Guide.
+  - Updated website hero badge, standalone Windows installer download link, and sync service version to v1.35.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v135Features.test.mjs`)**:
+  - Added automated tests covering `tabs:list`, Close Tabs from Same Domain, Copy All URLs, Open URLs from Clipboard, Bookmarks Copy as Markdown, Recently Closed Search & Copy Link, About Diagnostics & Action Row persistence, documentation/website updates, and 100% key parity across English and German locales.
+
+### Fixed
+- **Tab Groups Studio Tab Listing (`src/main/ipc.js`, `src/preload/chrome.cjs`)**:
+  - Implemented missing `tabs:list` IPC handler and `window.hinterland.tabs.list()` preload bridge used by `openTabGroups()`.
+- **About Panel Action Row Persistence (`src/ui/js/panels.js`)**:
+  - Preserved the Website, User Guide, Open data folder, and Open downloads folder action buttons when `aboutPage()` populates `app.info()`.
+
 ## [1.34.0] - 2026-11-21
 
 ### Added

@@ -418,6 +418,30 @@ export class TabManager extends EventEmitter {
     return toClose.length;
   }
 
+  async closeByDomain(id) {
+    const target = this.byId(id);
+    if (!target || !target.url) return { count: 0, domain: '' };
+    const normalizeHost = (rawUrl) => {
+      try {
+        if (!rawUrl || rawUrl.startsWith('hinterland://') || rawUrl === 'about:blank') return '';
+        const parsed = new URL(rawUrl);
+        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '';
+        return parsed.hostname.replace(/^www\./i, '').toLowerCase();
+      } catch {
+        return '';
+      }
+    };
+    const domain = normalizeHost(target.url);
+    if (!domain) return { count: 0, domain: '' };
+    const toClose = this.tabs
+      .filter((tab) => !tab.pinned && normalizeHost(tab.url) === domain)
+      .map((tab) => tab.id);
+    for (const tabId of toClose) {
+      await this.close(tabId, { force: true });
+    }
+    return { count: toClose.length, domain };
+  }
+
   muteAll(muted = true) {
     let count = 0;
     for (const tab of this.tabs) {

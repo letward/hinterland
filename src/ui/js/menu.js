@@ -160,6 +160,16 @@ export function openMainMenu() {
           onSelect: () => api().tabs.copyAllMarkdown(),
         }),
         row({
+          iconName: 'link',
+          title: t('menu.copyAllTabsUrls'),
+          onSelect: () => api().tabs.copyAllUrls(),
+        }),
+        row({
+          iconName: 'external',
+          title: t('menu.openClipboardUrls'),
+          onSelect: () => api().tabs.openClipboardUrls(),
+        }),
+        row({
           iconName: 'key',
           title: t('menu.passwords'),
           subtitle: 'Ctrl+Alt+P',
@@ -469,6 +479,11 @@ export function openTabMenu(tab, x, y) {
           onSelect: () => api().tabs.closeDuplicates(),
         }),
         row({
+          iconName: 'globe',
+          title: t('menu.closeByDomain'),
+          onSelect: () => api().tabs.closeByDomain(tab.id),
+        }),
+        row({
           iconName: 'moon',
           title: t('menu.sleepAllInactive'),
           onSelect: async () => {
@@ -743,6 +758,16 @@ export function openTabstripMenu() {
           onSelect: () => api().tabs.copyAllMarkdown(),
         }),
         row({
+          iconName: 'link',
+          title: t('menu.copyAllTabsUrls'),
+          onSelect: () => api().tabs.copyAllUrls(),
+        }),
+        row({
+          iconName: 'external',
+          title: t('menu.openClipboardUrls'),
+          onSelect: () => api().tabs.openClipboardUrls(),
+        }),
+        row({
           iconName: 'key',
           title: t('menu.passwords'),
           subtitle: 'Ctrl+Alt+P',
@@ -781,6 +806,14 @@ export function openTabstripMenu() {
           iconName: 'minus',
           title: t('menu.closeDuplicates'),
           onSelect: () => api().tabs.closeDuplicates(),
+        }),
+        row({
+          iconName: 'globe',
+          title: t('menu.closeByDomain'),
+          onSelect: () => {
+            const cur = currentTab();
+            if (cur) api().tabs.closeByDomain(cur.id);
+          },
         }),
         row({
           iconName: 'moon',

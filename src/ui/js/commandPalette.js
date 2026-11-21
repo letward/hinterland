@@ -187,6 +187,27 @@ export function openCommandPalette() {
             run: () => api().tabs.copyAllMarkdown(),
           },
           {
+            id: 'tabsCopyAllUrls',
+            title: t('commandPalette.tabsCopyAllUrls'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'link',
+            run: () => api().tabs.copyAllUrls(),
+          },
+          {
+            id: 'tabsOpenClipboardUrls',
+            title: t('commandPalette.tabsOpenClipboardUrls'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'external',
+            run: () => api().tabs.openClipboardUrls(),
+          },
+          {
+            id: 'tabsCloseByDomain',
+            title: t('commandPalette.tabsCloseByDomain'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'globe',
+            run: () => { if (current) api().tabs.closeByDomain(current.id); },
+          },
+          {
             id: 'memorySaverExemptSite',
             title: t('commandPalette.memorySaverExemptSite'),
             category: t('commandPalette.categoryCommand'),
@@ -807,6 +828,13 @@ export function openCommandPalette() {
             run: () => api().bookmarks.exportMarkdown(),
           },
           {
+            id: 'bookmarksCopyMarkdown',
+            title: t('commandPalette.bookmarksCopyMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'link',
+            run: () => api().bookmarks.copyMarkdown(),
+          },
+          {
             id: 'downloadsClearCompleted',
             title: t('commandPalette.downloadsClearCompleted'),
             category: t('commandPalette.categoryCommand'),
@@ -913,6 +941,13 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'info',
             run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'about' } })),
+          },
+          {
+            id: 'copyDiagnostics',
+            title: t('commandPalette.copyDiagnostics'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().app.copyDiagnostics(),
           },
           {
             id: 'fullscreen',

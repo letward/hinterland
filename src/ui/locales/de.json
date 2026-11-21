@@ -158,6 +158,9 @@
     "sortByDomain": "Tabs nach Domain sortieren",
     "ungroupAllTabs": "Alle Tab-Gruppierungen aufheben",
     "copyAllTabsMarkdown": "Alle offenen Tabs als Markdown kopieren",
+    "copyAllTabsUrls": "Alle offenen Tabs als URLs kopieren",
+    "openClipboardUrls": "URLs aus Zwischenablage öffnen",
+    "closeByDomain": "Tabs derselben Domain schließen",
     "wakeAllTabs": "Alle schlafenden Tabs aufwecken"
   },
   "find": {
@@ -236,6 +239,11 @@
     "bookmarksExportMarkdown": "Lesezeichen als Markdown exportieren",
     "downloadsExportMarkdown": "Download-Verlauf als Markdown exportieren",
     "tabsCopyAllMarkdown": "Alle offenen Tabs als Markdown kopieren",
+    "tabsCopyAllUrls": "Alle offenen Tabs als reine URLs kopieren",
+    "tabsOpenClipboardUrls": "URLs aus der Zwischenablage in Hintergrund-Tabs öffnen",
+    "tabsCloseByDomain": "Alle Tabs derselben Domain schließen",
+    "bookmarksCopyMarkdown": "Lesezeichen als Markdown kopieren",
+    "copyDiagnostics": "Systemdiagnose in die Zwischenablage kopieren",
     "tabsWakeAll": "Alle schlafenden Tabs aufwecken",
     "downloadsClearFailed": "Fehlgeschlagene Downloads leeren"
   },
@@ -267,6 +275,7 @@
     "exportHtml": "Lesezeichen exportieren (HTML)",
     "exportJson": "Lesezeichen exportieren (JSON)",
     "exportMarkdown": "Lesezeichen exportieren (Markdown)",
+    "copyMarkdown": "Als Markdown kopieren",
     "importHtml": "Lesezeichen importieren (HTML)",
     "importJson": "Lesezeichen importieren (JSON)",
     "deduplicate": "Duplikate entfernen",
@@ -297,6 +306,7 @@
     "recentlyClosedTitle": "Kürzlich geschlossene Tabs",
     "recentlyClosedDesc": "In dieser Sitzung geschlossene Tabs, die wiederhergestellt werden können.",
     "recentlyClosedEmpty": "Keine kürzlich geschlossenen Tabs vorhanden.",
+    "recentlyClosedNoMatch": "Keine kürzlich geschlossenen Tabs entsprechen Ihrer Suche.",
     "restoreAll": "Alle wiederherstellen",
     "clearRecentlyClosed": "Geschlossene Tabs leeren"
   },
@@ -409,7 +419,8 @@
     "openFolder": "Datenordner öffnen",
     "openDownloads": "Downloadordner öffnen",
     "website": "Offizielle Website",
-    "userGuide": "Benutzerhandbuch"
+    "userGuide": "Benutzerhandbuch",
+    "copyDiagnostics": "Diagnose kopieren"
   },
   "toast": {
     "copiedCleanUrl": "Bereinigter Link in die Zwischenablage kopiert",
@@ -544,7 +555,15 @@
     "noCookiesToExport": "Keine Cookies für diese Website zum Exportieren vorhanden",
     "downloadsFailedCleared": "Fehlgeschlagene und unterbrochene Downloads geleert",
     "stashLinksCopied": "Stash-Links als Markdown kopiert",
-    "noTabsInStashToCopy": "Keine Tabs in diesem Stash zum Kopieren vorhanden"
+    "noTabsInStashToCopy": "Keine Tabs in diesem Stash zum Kopieren vorhanden",
+    "allUrlsCopied": "{count} offene Tab-URL(s) in die Zwischenablage kopiert",
+    "openedClipboardUrls": "{count} URL(s) aus der Zwischenablage geöffnet",
+    "noUrlsInClipboard": "Keine gültigen HTTP/HTTPS-URLs in der Zwischenablage gefunden",
+    "closedSameDomain": "{count} Tab(s) von {domain} geschlossen",
+    "noSameDomainTabs": "Keine schließbaren Tabs für diese Domain gefunden",
+    "bookmarksCopied": "{count} Lesezeichen als Markdown kopiert",
+    "noBookmarksToCopy": "Keine Lesezeichen zum Kopieren vorhanden",
+    "diagnosticsCopied": "Browser-Diagnose in die Zwischenablage kopiert"
   },
   "welcome": {
     "title": "Willkommen bei Hinterland",
@@ -1333,6 +1352,10 @@
     "copyLinksDesc": "Alle Tabs dieser Gruppe als Markdown-Liste kopieren",
     "copyAllLinks": "Alle offenen Tabs kopieren",
     "copyAllLinksDesc": "Alle offenen Web-Tabs dieses Fensters als Markdown-Liste kopieren",
+    "copyAllUrls": "Alle URLs kopieren",
+    "copyAllUrlsDesc": "Alle offenen Web-Tab-URLs als einfache Liste zeilenweise kopieren",
+    "openClipboardUrls": "URLs aus Zwischenablage öffnen",
+    "openClipboardUrlsDesc": "Alle HTTP/HTTPS-URLs aus der Zwischenablage in Hintergrund-Tabs öffnen",
     "defaultName": "Tab-Gruppe",
     "noMatch": "Keine Tab-Gruppen entsprechen Ihrer Suche.",
     "empty": "Noch keine aktiven Tab-Gruppen. Erstellen Sie oben eine Gruppe oder rechtsklicken Sie auf einen Tab, um ihn zuzuordnen.",

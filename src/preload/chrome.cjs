@@ -45,6 +45,7 @@ const api = {
     killProcess: (pid) => ipcRenderer.invoke('app:killProcess', pid),
     isDefaultBrowser: () => ipcRenderer.invoke('app:isDefaultBrowser'),
     setDefaultBrowser: () => ipcRenderer.invoke('app:setDefaultBrowser'),
+    copyDiagnostics: () => ipcRenderer.invoke('app:copyDiagnostics'),
   },
 
   settings: {
@@ -121,6 +122,10 @@ const api = {
     ungroupAll: () => ipcRenderer.invoke('tabs:ungroupAll'),
     groupCopyMarkdown: (groupId) => ipcRenderer.invoke('tabs:groupCopyMarkdown', groupId),
     copyAllMarkdown: () => ipcRenderer.invoke('tabs:copyAllMarkdown'),
+    copyAllUrls: () => ipcRenderer.invoke('tabs:copyAllUrls'),
+    openClipboardUrls: () => ipcRenderer.invoke('tabs:openClipboardUrls'),
+    closeByDomain: (id) => ipcRenderer.invoke('tabs:closeByDomain', id),
+    list: () => ipcRenderer.invoke('tabs:list'),
   },
 
   tab: {
@@ -211,6 +216,7 @@ const api = {
     importHtml: () => ipcRenderer.invoke('bookmarks:importHtml'),
     exportJson: (items) => ipcRenderer.invoke('bookmarks:exportJson', items),
     exportMarkdown: (items) => ipcRenderer.invoke('bookmarks:exportMarkdown', items),
+    copyMarkdown: (items) => ipcRenderer.invoke('bookmarks:copyMarkdown', items),
     importJson: () => ipcRenderer.invoke('bookmarks:importJson'),
     deduplicate: () => ipcRenderer.invoke('bookmarks:deduplicate'),
   },

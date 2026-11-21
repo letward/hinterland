@@ -158,6 +158,9 @@
     "sortByDomain": "Sort Tabs by Domain",
     "ungroupAllTabs": "Ungroup All Tabs",
     "copyAllTabsMarkdown": "Copy All Open Tabs as Markdown",
+    "copyAllTabsUrls": "Copy All Open Tabs as URLs",
+    "openClipboardUrls": "Open URLs from Clipboard",
+    "closeByDomain": "Close Tabs from Same Domain",
     "wakeAllTabs": "Wake All Sleeping Tabs"
   },
   "find": {
@@ -236,6 +239,11 @@
     "bookmarksExportMarkdown": "Export Bookmarks as Markdown",
     "downloadsExportMarkdown": "Export Downloads Log as Markdown",
     "tabsCopyAllMarkdown": "Copy all open tabs as Markdown",
+    "tabsCopyAllUrls": "Copy all open tabs as plain URLs",
+    "tabsOpenClipboardUrls": "Open URLs from clipboard in background tabs",
+    "tabsCloseByDomain": "Close all tabs from same domain",
+    "bookmarksCopyMarkdown": "Copy Bookmarks as Markdown",
+    "copyDiagnostics": "Copy system diagnostics to clipboard",
     "tabsWakeAll": "Wake all sleeping tabs",
     "downloadsClearFailed": "Clear failed / interrupted downloads"
   },
@@ -267,6 +275,7 @@
     "exportHtml": "Export bookmarks (HTML)",
     "exportJson": "Export bookmarks (JSON)",
     "exportMarkdown": "Export bookmarks (Markdown)",
+    "copyMarkdown": "Copy as Markdown",
     "importHtml": "Import bookmarks (HTML)",
     "importJson": "Import bookmarks (JSON)",
     "deduplicate": "Remove duplicates",
@@ -297,6 +306,7 @@
     "recentlyClosedTitle": "Recently closed tabs",
     "recentlyClosedDesc": "Tabs closed in this session that can be restored.",
     "recentlyClosedEmpty": "No recently closed tabs.",
+    "recentlyClosedNoMatch": "No recently closed tabs match your search.",
     "restoreAll": "Restore all",
     "clearRecentlyClosed": "Clear closed tabs"
   },
@@ -409,7 +419,8 @@
     "openFolder": "Open data folder",
     "openDownloads": "Open downloads folder",
     "website": "Official Website",
-    "userGuide": "User Guide"
+    "userGuide": "User Guide",
+    "copyDiagnostics": "Copy Diagnostics"
   },
   "toast": {
     "copiedCleanUrl": "Clean link copied to clipboard",
@@ -544,7 +555,15 @@
     "noCookiesToExport": "No cookies stored for this site to export",
     "downloadsFailedCleared": "Failed and interrupted downloads cleared",
     "stashLinksCopied": "Stash links copied as Markdown",
-    "noTabsInStashToCopy": "No tabs in this stash to copy"
+    "noTabsInStashToCopy": "No tabs in this stash to copy",
+    "allUrlsCopied": "Copied {count} open tab URL(s) to clipboard",
+    "openedClipboardUrls": "Opened {count} URL(s) from clipboard",
+    "noUrlsInClipboard": "No valid HTTP/HTTPS URLs found in clipboard",
+    "closedSameDomain": "Closed {count} tab(s) from {domain}",
+    "noSameDomainTabs": "No closeable tabs found for this domain",
+    "bookmarksCopied": "Copied {count} bookmark(s) as Markdown",
+    "noBookmarksToCopy": "No bookmarks available to copy",
+    "diagnosticsCopied": "Browser diagnostics copied to clipboard"
   },
   "welcome": {
     "title": "Welcome to Hinterland",
@@ -1333,6 +1352,10 @@
     "copyLinksDesc": "Copy all tabs in this group as a Markdown list",
     "copyAllLinks": "Copy All Open Tabs",
     "copyAllLinksDesc": "Copy all open web tabs across the window as a Markdown list",
+    "copyAllUrls": "Copy All URLs",
+    "copyAllUrlsDesc": "Copy all open web tab URLs as a plain line-by-line list",
+    "openClipboardUrls": "Open URLs from Clipboard",
+    "openClipboardUrlsDesc": "Open all HTTP/HTTPS URLs from the clipboard in background tabs",
     "defaultName": "Tab Group",
     "noMatch": "No tab groups match your search.",
     "empty": "No active tab groups yet. Create a new group above or right-click any tab to add it to a group.",

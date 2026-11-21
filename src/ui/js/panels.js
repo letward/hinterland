@@ -326,6 +326,7 @@ function recentlyClosedPage() {
 
       const list = el('div', { class: 'card' });
       const language = currentLanguage();
+      let currentFilter = '';
 
       const paint = async () => {
         clear(list);
@@ -334,8 +335,18 @@ function recentlyClosedPage() {
           list.append(el('div', { class: 'empty', text: t('history.recentlyClosedEmpty') }));
           return;
         }
-        for (let i = 0; i < entries.length; i++) {
-          const entry = entries[i];
+        const filtered = entries
+          .map((entry, originalIndex) => ({ entry, originalIndex }))
+          .filter(({ entry }) => {
+            if (!currentFilter) return true;
+            return (entry.title || '').toLowerCase().includes(currentFilter)
+              || (entry.url || '').toLowerCase().includes(currentFilter);
+          });
+        if (!filtered.length) {
+          list.append(el('div', { class: 'empty', text: t('history.recentlyClosedNoMatch') }));
+          return;
+        }
+        for (const { entry, originalIndex } of filtered) {
           list.append(
             el('div', { class: 'option' }, [
               el('div', { class: 'optionText' }, [
@@ -347,10 +358,20 @@ function recentlyClosedPage() {
                 el('button', {
                   class: 'iconButton small',
                   type: 'button',
+                  html: icon('link'),
+                  title: t('menu.copyLink'),
+                  onclick: async () => {
+                    await api().tab.copyText(entry.url);
+                    toast(t('toast.linkCopied'), 'success');
+                  },
+                }),
+                el('button', {
+                  class: 'iconButton small',
+                  type: 'button',
                   html: icon('external'),
                   title: t('action.restore'),
                   onclick: async () => {
-                    await api().tabs.restoreClosed(i);
+                    await api().tabs.restoreClosed(originalIndex);
                     closeModal();
                   },
                 }),
@@ -359,6 +380,11 @@ function recentlyClosedPage() {
           );
         }
       };
+
+      const { field } = searchBox((value) => {
+        currentFilter = value.toLowerCase().trim();
+        paint();
+      });
 
       container.append(
         el('div', { class: 'actionRow', style: { marginBottom: '14px' } }, [
@@ -380,6 +406,7 @@ function recentlyClosedPage() {
             },
           }, [t('history.clearRecentlyClosed')]),
         ]),
+        field,
         list,
       );
 
@@ -492,6 +519,10 @@ function bookmarksPage() {
           const items = get('data.bookmarks', []) ?? [];
           await api().bookmarks.exportMarkdown(items);
         } }, [el('span', { html: icon('copy') }), ` ${t('bookmarks.exportMarkdown')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
+          const items = get('data.bookmarks', []) ?? [];
+          await api().bookmarks.copyMarkdown(items);
+        } }, [el('span', { html: icon('link') }), ` ${t('bookmarks.copyMarkdown')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
           const result = await api().bookmarks.importHtml();
           if (result?.ok && typeof result.count === 'number') {
@@ -1093,15 +1124,14 @@ function aboutPage() {
     render: () => {
       const container = el('div');
       const card = el('div', { class: 'card' });
-      container.append(card);
-      container.append(
-        el('div', { class: 'actionRow', style: { marginTop: '22px' } }, [
-          el('button', { class: 'button', type: 'button', onclick: () => api().tabs.create({ url: 'https://hinterland-browser.vercel.app' }) }, [t('about.website')]),
-          el('button', { class: 'button', type: 'button', onclick: () => api().tabs.create({ url: 'https://hinterland-browser.vercel.app/docs/user-guide.html' }) }, [t('about.userGuide')]),
-          el('button', { class: 'button', type: 'button', onclick: () => api().app.openFolder('userData') }, [t('about.openFolder')]),
-          el('button', { class: 'button', type: 'button', onclick: () => api().app.openFolder('downloads') }, [t('about.openDownloads')]),
-        ]),
-      );
+      const actions = el('div', { class: 'actionRow', style: { marginTop: '22px' } }, [
+        el('button', { class: 'button primary', type: 'button', onclick: () => api().app.copyDiagnostics() }, [el('span', { html: icon('copy') }), ` ${t('about.copyDiagnostics')}`]),
+        el('button', { class: 'button', type: 'button', onclick: () => api().tabs.create({ url: 'https://hinterland-browser.vercel.app' }) }, [t('about.website')]),
+        el('button', { class: 'button', type: 'button', onclick: () => api().tabs.create({ url: 'https://hinterland-browser.vercel.app/docs/user-guide.html' }) }, [t('about.userGuide')]),
+        el('button', { class: 'button', type: 'button', onclick: () => api().app.openFolder('userData') }, [t('about.openFolder')]),
+        el('button', { class: 'button', type: 'button', onclick: () => api().app.openFolder('downloads') }, [t('about.openDownloads')]),
+      ]);
+      container.append(card, actions);
 
       api().app.info().then((info) => {
         const logo = el('img', {
@@ -1113,6 +1143,7 @@ function aboutPage() {
           logo,
           head(`${info.name} ${info.version}`, t('about.tagline')),
           card,
+          actions,
         );
 
         const rows = [
@@ -2546,6 +2577,25 @@ function tabGroupsPage() {
         },
       }, [el('span', { html: icon('copy') }), ` ${t('tabGroups.copyAllLinks')}`]);
 
+      const copyAllUrlsBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.copyAllUrlsDesc'),
+        onclick: async () => {
+          await api().tabs.copyAllUrls();
+        },
+      }, [el('span', { html: icon('link') }), ` ${t('tabGroups.copyAllUrls')}`]);
+
+      const openClipboardUrlsBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.openClipboardUrlsDesc'),
+        onclick: async () => {
+          const res = await api().tabs.openClipboardUrls();
+          if (res?.ok) await refresh();
+        },
+      }, [el('span', { html: icon('external') }), ` ${t('tabGroups.openClipboardUrls')}`]);
+
       nameInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') createBtn.click();
       });
@@ -2560,6 +2610,8 @@ function tabGroupsPage() {
           sortByDomainBtn,
           ungroupAllBtn,
           copyAllLinksBtn,
+          copyAllUrlsBtn,
+          openClipboardUrlsBtn,
         ])
       );
       container.append(creatorCard);

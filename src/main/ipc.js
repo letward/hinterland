@@ -76,6 +76,26 @@ export function installIpc() {
     v8: process.versions.v8,
   }));
 
+  handle('app:copyDiagnostics', () => {
+    const blockedCount = blockedSummary().reduce((sum, entry) => sum + (Number(entry.count) || 0), 0);
+    const lines = [
+      `# ${app.getName()} Diagnostics`,
+      '',
+      `- **Version**: ${app.getVersion()}`,
+      `- **Platform**: ${process.platform} (${process.arch})`,
+      `- **Locale**: ${language()}`,
+      `- **Electron**: ${process.versions.electron}`,
+      `- **Chromium**: ${process.versions.chrome || 'unknown'}`,
+      `- **Node**: ${process.versions.node}`,
+      `- **Open Tabs**: ${tabs.list.length} (${tabs.list.filter((t) => t.sleeping).length} sleeping)`,
+      `- **Blocked Requests (Session)**: ${blockedCount}`,
+    ];
+    const diagnostics = lines.join('\n');
+    clipboard.writeText(diagnostics);
+    surface.send('toast', { message: 'toast.diagnosticsCopied', kind: 'success' });
+    return { ok: true, diagnostics };
+  });
+
   handle('app:openFolder', (target) => {
     const folder = target === 'userData' ? app.getPath('userData') : downloadDirectory();
     shell.openPath(folder).catch(() => {});
@@ -685,6 +705,58 @@ export function installIpc() {
     return { ok: true, count: webTabs.length };
   });
 
+  handle('tabs:copyAllUrls', () => {
+    const webTabs = tabs.list.filter((t) => t.url && !isInternalUrl(t.url));
+    if (!webTabs.length) {
+      surface.send('toast', { message: 'toast.noTabsToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(webTabs.map((t) => t.url).join('\n'));
+    surface.send('toast', { message: 'toast.allUrlsCopied', kind: 'success', data: { count: webTabs.length } });
+    return { ok: true, count: webTabs.length };
+  });
+
+  handle('tabs:openClipboardUrls', () => {
+    const raw = clipboard.readText() || '';
+    const matches = raw.match(/https?:\/\/[^\s<>"')\]]+/gi) || [];
+    const seen = new Set();
+    const urls = [];
+    for (const candidate of matches) {
+      const cleaned = candidate.replace(/[.,;:!?]+$/, '');
+      try {
+        const parsed = new URL(cleaned);
+        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') continue;
+        const normalized = parsed.href;
+        if (!seen.has(normalized)) {
+          seen.add(normalized);
+          urls.push(normalized);
+        }
+      } catch {}
+      if (urls.length >= 30) break;
+    }
+    if (!urls.length) {
+      surface.send('toast', { message: 'toast.noUrlsInClipboard', kind: 'warning' });
+      return { ok: false, count: 0, urls: [] };
+    }
+    for (const url of urls) {
+      tabs.create({ url, background: true });
+    }
+    surface.send('toast', { message: 'toast.openedClipboardUrls', kind: 'success', data: { count: urls.length } });
+    return { ok: true, count: urls.length, urls };
+  });
+
+  handle('tabs:closeByDomain', async (id) => {
+    const target = activeTab(id);
+    if (!target) return { ok: false, count: 0, domain: '' };
+    const result = await tabs.closeByDomain(target.id);
+    surface.send('toast', {
+      message: result.count > 0 ? 'toast.closedSameDomain' : 'toast.noSameDomainTabs',
+      kind: result.count > 0 ? 'success' : 'info',
+      data: { count: result.count, domain: result.domain },
+    });
+    return { ok: result.count > 0, count: result.count, domain: result.domain };
+  });
+
   handle('app:checkForUpdates', () => {
     try {
       if (!app.isPackaged) return { ok: false, error: 'notPackaged' };
@@ -697,6 +769,7 @@ export function installIpc() {
     }
   });
   handle('tabs:snapshot', () => tabs.snapshot());
+  handle('tabs:list', () => tabs.snapshot().tabs);
 
   /* ----------------------------------------------------------- tab actions */
   handle('tab:navigate', (id, input) => {
@@ -1518,8 +1591,7 @@ export function installIpc() {
     return { ok: true, path: result.filePath };
   });
 
-  handle('bookmarks:exportMarkdown', async (items) => {
-    const list = Array.isArray(items) ? items : (settings.value('data.bookmarks') ?? []);
+  const formatBookmarksMarkdown = (list) => {
     const dateStr = new Date().toLocaleDateString('en-CA');
     const lines = [
       '# Hinterland Bookmarks Archive',
@@ -1548,7 +1620,12 @@ export function installIpc() {
       }
       lines.push('');
     }
-    const markdown = lines.join('\n');
+    return lines.join('\n').trim();
+  };
+
+  handle('bookmarks:exportMarkdown', async (items) => {
+    const list = Array.isArray(items) ? items : (settings.value('data.bookmarks') ?? []);
+    const markdown = formatBookmarksMarkdown(list);
     const result = await dialog.showSaveDialog(chromeWindow(), {
       title: 'Hinterland',
       defaultPath: `hinterland-bookmarks-${Date.now()}.md`,
@@ -1558,6 +1635,17 @@ export function installIpc() {
     await writeFile(result.filePath, markdown, 'utf8');
     surface.send('toast', { message: 'toast.bookmarksExportedMarkdown', kind: 'success' });
     return { ok: true, filePath: result.filePath, count: list.length };
+  });
+
+  handle('bookmarks:copyMarkdown', (items) => {
+    const list = (Array.isArray(items) ? items : (settings.value('data.bookmarks') ?? [])).filter((item) => item?.url);
+    if (!list.length) {
+      surface.send('toast', { message: 'toast.noBookmarksToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(formatBookmarksMarkdown(list));
+    surface.send('toast', { message: 'toast.bookmarksCopied', kind: 'success', data: { count: list.length } });
+    return { ok: true, count: list.length };
   });
 
   handle('bookmarks:importHtml', async () => {
