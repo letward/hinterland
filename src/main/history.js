@@ -112,6 +112,24 @@ export class HistoryStore {
     this.schedule();
   }
 
+  removeByDomain(domain) {
+    const normalize = (value) => String(value || '').trim().replace(/^www\./i, '').toLowerCase();
+    const target = normalize(domain);
+    if (!target) return 0;
+    const before = this.entries.length;
+    this.entries = this.entries.filter((entry) => {
+      try {
+        const host = normalize(new URL(entry.url).hostname);
+        return host !== target && !host.endsWith(`.${target}`);
+      } catch {
+        return true;
+      }
+    });
+    const removed = before - this.entries.length;
+    if (removed > 0) this.saveNow();
+    return removed;
+  }
+
   clear() {
     this.entries = [];
     this.saveNow();

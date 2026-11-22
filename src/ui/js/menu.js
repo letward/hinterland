@@ -170,6 +170,11 @@ export function openMainMenu() {
           onSelect: () => api().tabs.openClipboardUrls(),
         }),
         row({
+          iconName: 'minus',
+          title: t('menu.closeUngroupedTabs'),
+          onSelect: () => api().tabs.closeUngrouped(),
+        }),
+        row({
           iconName: 'key',
           title: t('menu.passwords'),
           subtitle: 'Ctrl+Alt+P',
@@ -814,6 +819,11 @@ export function openTabstripMenu() {
             const cur = currentTab();
             if (cur) api().tabs.closeByDomain(cur.id);
           },
+        }),
+        row({
+          iconName: 'minus',
+          title: t('menu.closeUngroupedTabs'),
+          onSelect: () => api().tabs.closeUngrouped(),
         }),
         row({
           iconName: 'moon',

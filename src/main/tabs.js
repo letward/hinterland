@@ -442,6 +442,16 @@ export class TabManager extends EventEmitter {
     return { count: toClose.length, domain };
   }
 
+  async closeUngrouped() {
+    const toClose = this.tabs
+      .filter((tab) => !tab.pinned && !tab.groupId)
+      .map((tab) => tab.id);
+    for (const tabId of toClose) {
+      await this.close(tabId, { force: true });
+    }
+    return toClose.length;
+  }
+
   muteAll(muted = true) {
     let count = 0;
     for (const tab of this.tabs) {

@@ -208,6 +208,13 @@ export function openCommandPalette() {
             run: () => { if (current) api().tabs.closeByDomain(current.id); },
           },
           {
+            id: 'tabsCloseUngrouped',
+            title: t('commandPalette.tabsCloseUngrouped'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'minus',
+            run: () => api().tabs.closeUngrouped(),
+          },
+          {
             id: 'memorySaverExemptSite',
             title: t('commandPalette.memorySaverExemptSite'),
             category: t('commandPalette.categoryCommand'),
@@ -751,6 +758,13 @@ export function openCommandPalette() {
             run: () => api().readingList.exportMarkdown(),
           },
           {
+            id: 'readingListCopyMarkdown',
+            title: t('commandPalette.readingListCopyMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'link',
+            run: () => api().readingList.copyMarkdown('all'),
+          },
+          {
             id: 'readingListExportHtml',
             title: t('commandPalette.readingListExportHtml'),
             category: t('commandPalette.categoryCommand'),
@@ -800,6 +814,17 @@ export function openCommandPalette() {
             run: () => api().history.importJson(),
           },
           {
+            id: 'historyClearCurrentDomain',
+            title: t('commandPalette.historyClearCurrentDomain'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'filter',
+            run: () => {
+              const host = hostOf(current?.url || '');
+              if (host) api().history.removeByDomain(host);
+              else toast(t('toast.cannotExemptSpecialPage'), 'warning');
+            },
+          },
+          {
             id: 'bookmarksExportJson',
             title: t('commandPalette.bookmarksExportJson'),
             category: t('commandPalette.categoryCommand'),
@@ -835,6 +860,13 @@ export function openCommandPalette() {
             run: () => api().bookmarks.copyMarkdown(),
           },
           {
+            id: 'bookmarksCopyUrls',
+            title: t('commandPalette.bookmarksCopyUrls'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().bookmarks.copyUrls(),
+          },
+          {
             id: 'downloadsClearCompleted',
             title: t('commandPalette.downloadsClearCompleted'),
             category: t('commandPalette.categoryCommand'),
@@ -857,6 +889,13 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'copy',
             run: () => api().downloads.exportMarkdown(),
+          },
+          {
+            id: 'downloadsCopyUrls',
+            title: t('commandPalette.downloadsCopyUrls'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'link',
+            run: () => api().downloads.copyUrls(),
           },
           {
             id: 'clearRecentlyClosed',

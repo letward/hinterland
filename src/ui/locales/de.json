@@ -161,6 +161,7 @@
     "copyAllTabsUrls": "Alle offenen Tabs als URLs kopieren",
     "openClipboardUrls": "URLs aus Zwischenablage öffnen",
     "closeByDomain": "Tabs derselben Domain schließen",
+    "closeUngroupedTabs": "Nicht gruppierte Tabs schließen",
     "wakeAllTabs": "Alle schlafenden Tabs aufwecken"
   },
   "find": {
@@ -242,7 +243,12 @@
     "tabsCopyAllUrls": "Alle offenen Tabs als reine URLs kopieren",
     "tabsOpenClipboardUrls": "URLs aus der Zwischenablage in Hintergrund-Tabs öffnen",
     "tabsCloseByDomain": "Alle Tabs derselben Domain schließen",
+    "tabsCloseUngrouped": "Alle nicht gruppierten Tabs schließen",
+    "readingListCopyMarkdown": "Leseliste als Markdown kopieren",
+    "historyClearCurrentDomain": "Verlauf: Alle Einträge dieser Website löschen",
     "bookmarksCopyMarkdown": "Lesezeichen als Markdown kopieren",
+    "bookmarksCopyUrls": "Alle Lesezeichen-URLs kopieren",
+    "downloadsCopyUrls": "Alle Download-URLs kopieren",
     "copyDiagnostics": "Systemdiagnose in die Zwischenablage kopieren",
     "tabsWakeAll": "Alle schlafenden Tabs aufwecken",
     "downloadsClearFailed": "Fehlgeschlagene Downloads leeren"
@@ -276,6 +282,8 @@
     "exportJson": "Lesezeichen exportieren (JSON)",
     "exportMarkdown": "Lesezeichen exportieren (Markdown)",
     "copyMarkdown": "Als Markdown kopieren",
+    "copyUrls": "URLs kopieren",
+    "countBadge": "{count} Lesezeichen",
     "importHtml": "Lesezeichen importieren (HTML)",
     "importJson": "Lesezeichen importieren (JSON)",
     "deduplicate": "Duplikate entfernen",
@@ -301,6 +309,9 @@
     "filterToday": "Heute",
     "filterYesterday": "Gestern",
     "filterOlder": "Älter",
+    "filterMostVisited": "Meistbesucht",
+    "visitCountTitle": "Gesamtzahl erfasster Besuche",
+    "removeByDomain": "Gesamten Verlauf für {domain} löschen",
     "entriesCount": "{count} Einträge",
     "recentlyClosed": "Kürzlich geschlossen",
     "recentlyClosedTitle": "Kürzlich geschlossene Tabs",
@@ -327,7 +338,9 @@
     "clearFailed": "Fehlgeschlagene leeren",
     "clearAll": "Liste leeren",
     "openFolder": "Downloads-Ordner öffnen",
-    "exportMarkdown": "Markdown exportieren"
+    "exportMarkdown": "Markdown exportieren",
+    "copyUrls": "URLs kopieren",
+    "summaryCount": "{count} Dateien ({size})"
   },
   "shortcuts": {
     "title": "Tastenkürzel",
@@ -563,7 +576,17 @@
     "noSameDomainTabs": "Keine schließbaren Tabs für diese Domain gefunden",
     "bookmarksCopied": "{count} Lesezeichen als Markdown kopiert",
     "noBookmarksToCopy": "Keine Lesezeichen zum Kopieren vorhanden",
-    "diagnosticsCopied": "Browser-Diagnose in die Zwischenablage kopiert"
+    "diagnosticsCopied": "Browser-Diagnose in die Zwischenablage kopiert",
+    "groupUrlsCopied": "{count} Gruppen-URL(s) in die Zwischenablage kopiert",
+    "closedUngrouped": "{count} nicht gruppierte(n) Tab(s) geschlossen",
+    "noUngroupedTabs": "Keine nicht gruppierten Tabs zum Schließen vorhanden",
+    "historyDomainCleared": "{count} Verlaufseintrag/-einträge für {domain} entfernt",
+    "historyNoDomainEntries": "Keine Verlaufseinträge für {domain} gefunden",
+    "downloadUrlsCopied": "{count} Download-URL(s) in die Zwischenablage kopiert",
+    "noDownloadsToCopy": "Keine Download-URLs zum Kopieren vorhanden",
+    "bookmarkUrlsCopied": "{count} Lesezeichen-URL(s) in die Zwischenablage kopiert",
+    "readingListCopied": "{count} Leselisten-Artikel als Markdown kopiert",
+    "readingListEmptyToCopy": "Keine Leselisten-Artikel zum Kopieren vorhanden"
   },
   "welcome": {
     "title": "Willkommen bei Hinterland",
@@ -1148,6 +1171,7 @@
     "tab_all": "Alle Einträge",
     "exportJson": "Exportieren (JSON)",
     "exportMarkdown": "Exportieren (Markdown)",
+    "copyMarkdown": "Als Markdown kopieren",
     "exportHtml": "Exportieren (HTML)",
     "importJson": "Importieren",
     "importInvalid": "Keine gültigen Leselisten-Einträge in der Datei gefunden."
@@ -1350,6 +1374,11 @@
     "ungroupAllDesc": "Alle Tabs aus ihren Gruppen lösen, ohne sie zu schließen",
     "copyLinks": "Links kopieren",
     "copyLinksDesc": "Alle Tabs dieser Gruppe als Markdown-Liste kopieren",
+    "copyUrls": "URLs kopieren",
+    "copyUrlsDesc": "Alle Tab-URLs dieser Gruppe zeilenweise kopieren",
+    "recolorHint": "Klicken, um Gruppenfarbe zu wechseln",
+    "closeUngrouped": "Ungruppierte schließen",
+    "closeUngroupedDesc": "Alle nicht angehefteten Tabs schließen, die keiner Gruppe angehören",
     "copyAllLinks": "Alle offenen Tabs kopieren",
     "copyAllLinksDesc": "Alle offenen Web-Tabs dieses Fensters als Markdown-Liste kopieren",
     "copyAllUrls": "Alle URLs kopieren",

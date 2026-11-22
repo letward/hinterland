@@ -4,6 +4,29 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.36.0] - 2026-11-22
+
+### Added
+- **History Manager: Most Visited View, Visit Count Badges & Delete by Domain (`src/main/history.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `HistoryStore.removeByDomain(domain)` and `history:removeByDomain` IPC handler to purge all history entries for a given domain and its subdomains in 1 click.
+  - Added a **Most visited** filter pill in History that sorts entries by recorded visit count, live visit-count badges (`N×`) on revisited pages, 1-click **Remove all history for domain** buttons on each row, and Command Palette action `commandPalette.historyClearCurrentDomain`.
+- **Close Ungrouped Tabs, Group URLs Copy & Inline Group Recolor (`src/main/tabs.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `TabManager.closeUngrouped()` and `tabs:closeUngrouped` IPC handler to close all unpinned tabs that do not belong to any group while keeping pinned and grouped tabs safe.
+  - Added `tabs:groupCopyUrls` IPC handler and 1-click **Copy URLs** button on each group card in Tab Groups Studio, plus clickable color indicators to cycle group colours inline.
+  - Wired **Close Ungrouped Tabs** into Tab Groups Studio, Main Menu, Tabstrip context menu, and Command Palette (`commandPalette.tabsCloseUngrouped`).
+- **Reading List: Copy as Markdown (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `formatReadingListMarkdown` formatter and added `readingList:copyMarkdown` IPC handler supporting `unread`, `read`, and `all` views.
+  - Added **Copy as Markdown** button in the Reading List toolbar and Command Palette action `commandPalette.readingListCopyMarkdown`.
+- **Bookmarks Manager: Copy URLs, Row Copy Link & Live Count Badge (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `bookmarks:copyUrls` IPC handler, **Copy URLs** toolbar button, 1-click per-row **Copy link** button, live matching bookmark count badge, and Command Palette action `commandPalette.bookmarksCopyUrls`.
+- **Downloads Manager: Copy URLs & Summary Counter (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `downloads:copyUrls` IPC handler, **Copy URLs** toolbar button, live filtered file count and total size summary badge, and Command Palette action `commandPalette.downloadsCopyUrls`.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`, `website/api/sync.js`)**:
+  - Documented Most visited history, Delete by domain, Close Ungrouped Tabs, Tab Group Copy URLs & inline color cycling, Reading List Copy as Markdown, Bookmarks Copy URLs, and Downloads summary & Copy URLs in the official User Guide.
+  - Updated website hero badge, standalone Windows installer download link, and sync service version to v1.36.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v136Features.test.mjs`)**:
+  - Added automated unit and integration tests covering `HistoryStore.removeByDomain()`, `tabs:closeUngrouped`, `tabs:groupCopyUrls`, `readingList:copyMarkdown`, `bookmarks:copyUrls`, `downloads:copyUrls`, UI/menu/Command Palette wiring, documentation/website updates, and 100% key parity across English and German locales.
+
 ## [1.35.0] - 2026-11-21
 
 ### Added

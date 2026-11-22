@@ -121,10 +121,12 @@ const api = {
     sortByDomain: (ascending = true) => ipcRenderer.invoke('tabs:sortByDomain', ascending),
     ungroupAll: () => ipcRenderer.invoke('tabs:ungroupAll'),
     groupCopyMarkdown: (groupId) => ipcRenderer.invoke('tabs:groupCopyMarkdown', groupId),
+    groupCopyUrls: (groupId) => ipcRenderer.invoke('tabs:groupCopyUrls', groupId),
     copyAllMarkdown: () => ipcRenderer.invoke('tabs:copyAllMarkdown'),
     copyAllUrls: () => ipcRenderer.invoke('tabs:copyAllUrls'),
     openClipboardUrls: () => ipcRenderer.invoke('tabs:openClipboardUrls'),
     closeByDomain: (id) => ipcRenderer.invoke('tabs:closeByDomain', id),
+    closeUngrouped: () => ipcRenderer.invoke('tabs:closeUngrouped'),
     list: () => ipcRenderer.invoke('tabs:list'),
   },
 
@@ -205,6 +207,7 @@ const api = {
     importJson: () => ipcRenderer.invoke('history:importJson'),
     clear: () => ipcRenderer.invoke('history:clear'),
     remove: (url) => ipcRenderer.invoke('history:remove', url),
+    removeByDomain: (domain) => ipcRenderer.invoke('history:removeByDomain', domain),
   },
 
   data: {
@@ -217,6 +220,7 @@ const api = {
     exportJson: (items) => ipcRenderer.invoke('bookmarks:exportJson', items),
     exportMarkdown: (items) => ipcRenderer.invoke('bookmarks:exportMarkdown', items),
     copyMarkdown: (items) => ipcRenderer.invoke('bookmarks:copyMarkdown', items),
+    copyUrls: (items) => ipcRenderer.invoke('bookmarks:copyUrls', items),
     importJson: () => ipcRenderer.invoke('bookmarks:importJson'),
     deduplicate: () => ipcRenderer.invoke('bookmarks:deduplicate'),
   },
@@ -231,6 +235,7 @@ const api = {
     openAllUnread: () => ipcRenderer.invoke('readingList:openAllUnread'),
     exportJson: () => ipcRenderer.invoke('readingList:exportJson'),
     exportMarkdown: () => ipcRenderer.invoke('readingList:exportMarkdown'),
+    copyMarkdown: (mode) => ipcRenderer.invoke('readingList:copyMarkdown', mode),
     exportHtml: () => ipcRenderer.invoke('readingList:exportHtml'),
     importJson: () => ipcRenderer.invoke('readingList:importJson'),
   },
@@ -291,6 +296,7 @@ const api = {
     removeItem: (id) => ipcRenderer.invoke('downloads:removeItem', id),
     openFile: (path) => ipcRenderer.invoke('downloads:openFile', path),
     exportMarkdown: () => ipcRenderer.invoke('downloads:exportMarkdown'),
+    copyUrls: () => ipcRenderer.invoke('downloads:copyUrls'),
   },
 
   shell: {

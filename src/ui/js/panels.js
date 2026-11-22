@@ -196,7 +196,7 @@ function historyPage() {
         const startOfYesterday = startOfToday - 24 * 60 * 60 * 1000;
         const q = searchQuery.toLowerCase().trim();
 
-        return allEntries.filter((entry) => {
+        const result = allEntries.filter((entry) => {
           const time = entry.time || 0;
           if (currentFilter === 'today' && time < startOfToday) return false;
           if (currentFilter === 'yesterday' && (time < startOfYesterday || time >= startOfToday)) return false;
@@ -209,6 +209,12 @@ function historyPage() {
           }
           return true;
         });
+
+        if (currentFilter === 'mostVisited') {
+          result.sort((a, b) => (Number(b.visits) || 1) - (Number(a.visits) || 1) || (b.time || 0) - (a.time || 0));
+        }
+
+        return result;
       };
 
       const paint = () => {
@@ -222,6 +228,8 @@ function historyPage() {
         }
 
         for (const entry of filtered) {
+          const host = hostOf(entry.url);
+          const visits = Number(entry.visits) || 1;
           list.append(
             el('div', { class: 'option' }, [
               el('div', { class: 'optionText' }, [
@@ -229,8 +237,19 @@ function historyPage() {
                 el('div', { class: 'optionHint', text: entry.url }),
               ]),
               el('div', { class: 'optionControl' }, [
+                visits > 1 ? el('span', { class: 'rowAside', text: `${visits}×`, title: t('history.visitCountTitle') }) : null,
                 el('span', { class: 'rowAside', text: formatTime(entry.time, language) }),
                 el('button', { class: 'iconButton small', type: 'button', html: icon('external'), title: t('action.open'), onclick: () => api().tabs.create({ url: entry.url }) }),
+                host ? el('button', {
+                  class: 'iconButton small',
+                  type: 'button',
+                  html: icon('filter'),
+                  title: t('history.removeByDomain', { domain: host }),
+                  onclick: async () => {
+                    await api().history.removeByDomain(host);
+                    await reload();
+                  },
+                }) : null,
                 el('button', { class: 'iconButton small', type: 'button', html: icon('trash'), title: t('action.remove'), onclick: async () => {
                   await api().history.remove(entry.url);
                   allEntries = allEntries.filter((e) => e.url !== entry.url);
@@ -281,6 +300,7 @@ function historyPage() {
         { id: 'today', labelKey: 'history.filterToday' },
         { id: 'yesterday', labelKey: 'history.filterYesterday' },
         { id: 'older', labelKey: 'history.filterOlder' },
+        { id: 'mostVisited', labelKey: 'history.filterMostVisited' },
       ];
 
       const filterBar = el('div', { class: 'historyFilters', style: { display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px', flexWrap: 'wrap' } });
@@ -432,6 +452,7 @@ function bookmarksPage() {
       container.append(head(t('bookmarks.title'), t('bookmarks.description')));
 
       const list = el('div', { class: 'card' });
+      const countBadge = el('span', { class: 'rowAside', style: { fontWeight: '500', marginLeft: 'auto' } });
       let currentFilter = '';
 
       const save = async (items) => {
@@ -444,6 +465,7 @@ function bookmarksPage() {
         const items = get('data.bookmarks', []) ?? [];
         clear(list);
         if (!items.length) {
+          countBadge.textContent = t('bookmarks.countBadge', { count: 0 });
           list.append(el('div', { class: 'empty', text: t('bookmarks.empty') }));
           return;
         }
@@ -454,6 +476,7 @@ function bookmarksPage() {
           const url = (item.url || '').toLowerCase();
           return title.includes(currentFilter) || url.includes(currentFilter);
         });
+        countBadge.textContent = t('bookmarks.countBadge', { count: filtered.length });
 
         if (!filtered.length) {
           list.append(el('div', { class: 'empty', text: t('bookmarks.noMatch') }));
@@ -480,6 +503,16 @@ function bookmarksPage() {
             el('div', { class: 'option' }, [
               el('div', { class: 'optionText' }, [el('div', { class: 'listItemFields' }, [title, url])]),
               el('div', { class: 'optionControl' }, [
+                el('button', {
+                  class: 'iconButton small',
+                  type: 'button',
+                  html: icon('link'),
+                  title: t('menu.copyLink'),
+                  onclick: async () => {
+                    await api().tab.copyText(item.url);
+                    toast(t('toast.linkCopied'), 'success');
+                  },
+                }),
                 el('button', { class: 'iconButton small', type: 'button', html: icon('external'), title: t('action.open'), onclick: () => api().tabs.create({ url: item.url }) }),
                 el('button', { class: 'iconButton small', type: 'button', html: icon('trash'), title: t('action.remove'), onclick: () => {
                   if (originalIndex >= 0) {
@@ -494,6 +527,10 @@ function bookmarksPage() {
       };
 
       const { field } = searchBox((value) => paint(value));
+      field.style.display = 'flex';
+      field.style.alignItems = 'center';
+      field.style.gap = '10px';
+      field.append(countBadge);
 
       const actions = el('div', { class: 'actionRow', style: { marginBottom: '14px', flexWrap: 'wrap', gap: '8px' } }, [
         el('button', { class: 'button primary', type: 'button', onclick: async () => {
@@ -523,6 +560,10 @@ function bookmarksPage() {
           const items = get('data.bookmarks', []) ?? [];
           await api().bookmarks.copyMarkdown(items);
         } }, [el('span', { html: icon('link') }), ` ${t('bookmarks.copyMarkdown')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
+          const items = get('data.bookmarks', []) ?? [];
+          await api().bookmarks.copyUrls(items);
+        } }, [el('span', { html: icon('copy') }), ` ${t('bookmarks.copyUrls')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
           const result = await api().bookmarks.importHtml();
           if (result?.ok && typeof result.count === 'number') {
@@ -650,6 +691,12 @@ function downloadsPage() {
         html: `${icon('copy')} <span>${t('downloads.exportMarkdown')}</span>`,
         onclick: () => api().downloads.exportMarkdown(),
       });
+      const copyUrlsBtn = el('button', {
+        class: 'button small',
+        type: 'button',
+        html: `${icon('link')} <span>${t('downloads.copyUrls')}</span>`,
+        onclick: () => api().downloads.copyUrls(),
+      });
       const clearCompletedBtn = el('button', {
         class: 'button small',
         type: 'button',
@@ -687,9 +734,10 @@ function downloadsPage() {
           paint();
         },
       });
-      actionsGroup.append(openFolderBtn, exportMarkdownBtn, clearCompletedBtn, clearFailedBtn, clearHistoryBtn);
+      const summaryBadge = el('span', { class: 'rowAside', style: { fontWeight: '500', marginLeft: 'auto' } });
+      actionsGroup.append(openFolderBtn, exportMarkdownBtn, copyUrlsBtn, clearCompletedBtn, clearFailedBtn, clearHistoryBtn);
 
-      toolbar.append(searchInput, filtersGroup, actionsGroup);
+      toolbar.append(searchInput, filtersGroup, summaryBadge, actionsGroup);
       container.append(toolbar);
 
       const list = el('div', { class: 'card' });
@@ -722,6 +770,9 @@ function downloadsPage() {
           if (currentFilter === 'failed') return entry.state === 'interrupted' || entry.state === 'cancelled' || entry.ok === false;
           return true;
         });
+
+        const totalSize = filtered.reduce((sum, entry) => sum + (Number(entry.totalBytes) || Number(entry.receivedBytes) || 0), 0);
+        summaryBadge.textContent = t('downloads.summaryCount', { count: filtered.length, size: formatBytes(totalSize) });
 
         if (!filtered.length) {
           list.append(el('div', { class: 'empty', text: t('downloads.empty') }));
@@ -1595,6 +1646,13 @@ function readingListPage(mode = 'unread') {
       }
 
       actionRow.append(
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            await api().readingList.copyMarkdown(mode);
+          },
+        }, [el('span', { html: icon('link') }), ` ${t('readingList.copyMarkdown')}`]),
         el('button', {
           class: 'button',
           type: 'button',
@@ -2596,6 +2654,16 @@ function tabGroupsPage() {
         },
       }, [el('span', { html: icon('external') }), ` ${t('tabGroups.openClipboardUrls')}`]);
 
+      const closeUngroupedBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.closeUngroupedDesc'),
+        onclick: async () => {
+          const res = await api().tabs.closeUngrouped();
+          if (res?.ok) await refresh();
+        },
+      }, [el('span', { html: icon('close') }), ` ${t('tabGroups.closeUngrouped')}`]);
+
       nameInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') createBtn.click();
       });
@@ -2612,6 +2680,7 @@ function tabGroupsPage() {
           copyAllLinksBtn,
           copyAllUrlsBtn,
           openClipboardUrlsBtn,
+          closeUngroupedBtn,
         ])
       );
       container.append(creatorCard);
@@ -2655,9 +2724,17 @@ function tabGroupsPage() {
           const header = el('div', { class: 'tabGroupHeader', style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: memberTabs.length ? '10px' : '0' } });
           const left = el('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } });
 
-          const colorPill = el('span', {
+          const colorPill = el('button', {
             class: 'groupColorIndicator',
-            style: { width: '12px', height: '12px', background: group.color || '#4f7cff', display: 'inline-block' },
+            type: 'button',
+            title: t('tabGroups.recolorHint'),
+            style: { width: '14px', height: '14px', background: group.color || '#4f7cff', display: 'inline-block', border: '1px solid rgba(255,255,255,0.25)', padding: '0', cursor: 'pointer' },
+            onclick: async () => {
+              const currentIdx = presetColors.indexOf((group.color || '').toLowerCase());
+              const nextColor = presetColors[(currentIdx + 1) % presetColors.length];
+              await api().tabs.groupRecolor(group.id, nextColor);
+              await refresh();
+            },
           });
 
           const titleEl = el('span', {
@@ -2707,6 +2784,14 @@ function tabGroupsPage() {
                 await api().tabs.groupCopyMarkdown(group.id);
               },
             }, [el('span', { html: icon('copy') }), ` ${t('tabGroups.copyLinks')}`]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('tabGroups.copyUrlsDesc'),
+              onclick: async () => {
+                await api().tabs.groupCopyUrls(group.id);
+              },
+            }, [el('span', { html: icon('link') }), ` ${t('tabGroups.copyUrls')}`]),
             el('button', {
               class: 'button small',
               type: 'button',

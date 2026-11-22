@@ -161,6 +161,7 @@
     "copyAllTabsUrls": "Copy All Open Tabs as URLs",
     "openClipboardUrls": "Open URLs from Clipboard",
     "closeByDomain": "Close Tabs from Same Domain",
+    "closeUngroupedTabs": "Close Ungrouped Tabs",
     "wakeAllTabs": "Wake All Sleeping Tabs"
   },
   "find": {
@@ -242,7 +243,12 @@
     "tabsCopyAllUrls": "Copy all open tabs as plain URLs",
     "tabsOpenClipboardUrls": "Open URLs from clipboard in background tabs",
     "tabsCloseByDomain": "Close all tabs from same domain",
+    "tabsCloseUngrouped": "Close all ungrouped tabs",
+    "readingListCopyMarkdown": "Copy Reading List as Markdown",
+    "historyClearCurrentDomain": "History: Clear all entries for current site",
     "bookmarksCopyMarkdown": "Copy Bookmarks as Markdown",
+    "bookmarksCopyUrls": "Copy all Bookmark URLs",
+    "downloadsCopyUrls": "Copy all Download URLs",
     "copyDiagnostics": "Copy system diagnostics to clipboard",
     "tabsWakeAll": "Wake all sleeping tabs",
     "downloadsClearFailed": "Clear failed / interrupted downloads"
@@ -276,6 +282,8 @@
     "exportJson": "Export bookmarks (JSON)",
     "exportMarkdown": "Export bookmarks (Markdown)",
     "copyMarkdown": "Copy as Markdown",
+    "copyUrls": "Copy URLs",
+    "countBadge": "{count} bookmarks",
     "importHtml": "Import bookmarks (HTML)",
     "importJson": "Import bookmarks (JSON)",
     "deduplicate": "Remove duplicates",
@@ -301,6 +309,9 @@
     "filterToday": "Today",
     "filterYesterday": "Yesterday",
     "filterOlder": "Older",
+    "filterMostVisited": "Most visited",
+    "visitCountTitle": "Total recorded visits",
+    "removeByDomain": "Remove all history for {domain}",
     "entriesCount": "{count} entries",
     "recentlyClosed": "Recently closed",
     "recentlyClosedTitle": "Recently closed tabs",
@@ -327,7 +338,9 @@
     "clearFailed": "Clear failed",
     "clearAll": "Clear list",
     "openFolder": "Open downloads folder",
-    "exportMarkdown": "Export Markdown"
+    "exportMarkdown": "Export Markdown",
+    "copyUrls": "Copy URLs",
+    "summaryCount": "{count} files ({size})"
   },
   "shortcuts": {
     "title": "Shortcuts",
@@ -563,7 +576,17 @@
     "noSameDomainTabs": "No closeable tabs found for this domain",
     "bookmarksCopied": "Copied {count} bookmark(s) as Markdown",
     "noBookmarksToCopy": "No bookmarks available to copy",
-    "diagnosticsCopied": "Browser diagnostics copied to clipboard"
+    "diagnosticsCopied": "Browser diagnostics copied to clipboard",
+    "groupUrlsCopied": "Copied {count} group URL(s) to clipboard",
+    "closedUngrouped": "Closed {count} ungrouped tab(s)",
+    "noUngroupedTabs": "No ungrouped tabs to close",
+    "historyDomainCleared": "Removed {count} history entry/entries for {domain}",
+    "historyNoDomainEntries": "No history entries found for {domain}",
+    "downloadUrlsCopied": "Copied {count} download URL(s) to clipboard",
+    "noDownloadsToCopy": "No download URLs available to copy",
+    "bookmarkUrlsCopied": "Copied {count} bookmark URL(s) to clipboard",
+    "readingListCopied": "Copied {count} reading list article(s) as Markdown",
+    "readingListEmptyToCopy": "No reading list articles available to copy"
   },
   "welcome": {
     "title": "Welcome to Hinterland",
@@ -1148,6 +1171,7 @@
     "tab_all": "All items",
     "exportJson": "Export (JSON)",
     "exportMarkdown": "Export (Markdown)",
+    "copyMarkdown": "Copy as Markdown",
     "exportHtml": "Export (HTML)",
     "importJson": "Import",
     "importInvalid": "No valid reading list items found in file."
@@ -1350,6 +1374,11 @@
     "ungroupAllDesc": "Detach all tabs from their groups without closing them",
     "copyLinks": "Copy Links",
     "copyLinksDesc": "Copy all tabs in this group as a Markdown list",
+    "copyUrls": "Copy URLs",
+    "copyUrlsDesc": "Copy all tab URLs in this group line by line",
+    "recolorHint": "Click to cycle group colour",
+    "closeUngrouped": "Close Ungrouped",
+    "closeUngroupedDesc": "Close all unpinned tabs that are not in any group",
     "copyAllLinks": "Copy All Open Tabs",
     "copyAllLinksDesc": "Copy all open web tabs across the window as a Markdown list",
     "copyAllUrls": "Copy All URLs",
