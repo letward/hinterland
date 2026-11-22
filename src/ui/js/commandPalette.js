@@ -215,6 +215,13 @@ export function openCommandPalette() {
             run: () => api().tabs.closeUngrouped(),
           },
           {
+            id: 'tabsGroupPruneEmpty',
+            title: t('commandPalette.tabsGroupPruneEmpty'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'trash',
+            run: () => api().tabs.groupPruneEmpty(),
+          },
+          {
             id: 'memorySaverExemptSite',
             title: t('commandPalette.memorySaverExemptSite'),
             category: t('commandPalette.categoryCommand'),
@@ -765,6 +772,13 @@ export function openCommandPalette() {
             run: () => api().readingList.copyMarkdown('all'),
           },
           {
+            id: 'readingListCopyUrls',
+            title: t('commandPalette.readingListCopyUrls'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().readingList.copyUrls('all'),
+          },
+          {
             id: 'readingListExportHtml',
             title: t('commandPalette.readingListExportHtml'),
             category: t('commandPalette.categoryCommand'),
@@ -823,6 +837,13 @@ export function openCommandPalette() {
               if (host) api().history.removeByDomain(host);
               else toast(t('toast.cannotExemptSpecialPage'), 'warning');
             },
+          },
+          {
+            id: 'historyCopyUrls',
+            title: t('commandPalette.historyCopyUrls'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'link',
+            run: () => api().history.copyUrls(),
           },
           {
             id: 'bookmarksExportJson',
@@ -917,6 +938,13 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'copy',
             run: () => api().notes.exportMarkdown(),
+          },
+          {
+            id: 'notesCopyMarkdown',
+            title: t('commandPalette.notesCopyMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'link',
+            run: () => api().notes.copyMarkdown(),
           },
           {
             id: 'notesExportHtml',

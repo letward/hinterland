@@ -4,6 +4,28 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.37.0] - 2026-11-22
+
+### Added
+- **Tab Stash: Copy URLs, Add Current Tab to Stash & Summary Counter (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`)**:
+  - Added `stashes:copyUrls` and `stashes:addTab` IPC handlers with duplicate-URL protection and toast feedback.
+  - Added 1-click **Add current tab to this stash** and **Copy URLs** buttons on each stash card header, plus a live summary badge showing total stashes and stashed tabs.
+- **Quick Notes: Copy as Markdown & Live Note Count Badge (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `formatNotesMarkdown` helper and added `notes:copyMarkdown` IPC handler supporting single-note and full-vault Markdown clipboard copy.
+  - Added **Copy as Markdown** button in the Quick Notes toolbar, a live note count badge in the sidebar, and Command Palette action `commandPalette.notesCopyMarkdown`.
+- **Reading List: Copy URLs, Row Copy Link & Live Count Badge (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `filterReadingListByMode` helper and added `readingList:copyUrls` IPC handler supporting `unread`, `read`, and `all` views.
+  - Added **Copy URLs** toolbar button, per-row 1-click **Copy link** button, live matching article count badge, and Command Palette action `commandPalette.readingListCopyUrls`.
+- **History Manager: Copy URLs & Per-Row Copy Link (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `history:copyUrls` IPC handler supporting filtered URL lists or full history, **Copy URLs** toolbar button, per-row 1-click **Copy link** button, and Command Palette action `commandPalette.historyCopyUrls`.
+- **Tab Groups Studio: Add Active Tab & Prune Empty Groups (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `tabs:groupPruneEmpty` IPC handler to remove empty tab groups cleanly, **Prune Empty** toolbar button, 1-click **Add Active Tab** button on each group card, and Command Palette action `commandPalette.tabsGroupPruneEmpty`.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`, `website/api/sync.js`)**:
+  - Documented Tab Stash Copy URLs & Add current tab, Quick Notes Copy as Markdown & count badge, Reading List Copy URLs & count badge, History Copy URLs & row copy link, and Tab Groups Studio Add Active Tab & Prune Empty in the official User Guide.
+  - Updated website hero badge, standalone Windows installer download link, and sync service version to v1.37.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v137Features.test.mjs`)**:
+  - Added automated unit and integration tests covering `stashes:copyUrls`, `stashes:addTab`, `notes:copyMarkdown`, `readingList:copyUrls`, `history:copyUrls`, `tabs:groupPruneEmpty`, UI/Command Palette wiring, documentation/website updates, and 100% key parity across English and German locales.
+
 ## [1.36.0] - 2026-11-22
 
 ### Added

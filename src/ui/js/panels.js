@@ -239,6 +239,16 @@ function historyPage() {
               el('div', { class: 'optionControl' }, [
                 visits > 1 ? el('span', { class: 'rowAside', text: `${visits}×`, title: t('history.visitCountTitle') }) : null,
                 el('span', { class: 'rowAside', text: formatTime(entry.time, language) }),
+                el('button', {
+                  class: 'iconButton small',
+                  type: 'button',
+                  html: icon('link'),
+                  title: t('menu.copyLink'),
+                  onclick: async () => {
+                    await api().tab.copyText(entry.url);
+                    toast(t('toast.linkCopied'), 'success');
+                  },
+                }),
                 el('button', { class: 'iconButton small', type: 'button', html: icon('external'), title: t('action.open'), onclick: () => api().tabs.create({ url: entry.url }) }),
                 host ? el('button', {
                   class: 'iconButton small',
@@ -289,6 +299,10 @@ function historyPage() {
         el('button', { class: 'button', type: 'button', onclick: async () => {
           await api().history.exportCsv();
         } }, [el('span', { html: icon('list') }), ` ${t('history.exportCsv')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
+          const urls = getFilteredEntries().map((e) => e.url).filter(Boolean);
+          await api().history.copyUrls(urls);
+        } }, [el('span', { html: icon('link') }), ` ${t('history.copyUrls')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
           const res = await api().history.importJson();
           if (res?.ok) await reload();
@@ -1501,6 +1515,7 @@ function readingListPage(mode = 'unread') {
       container.append(head(t('readingList.title'), t('readingList.description')));
 
       const list = el('div', { class: 'card' });
+      const countBadge = el('span', { class: 'rowAside', style: { marginLeft: 'auto', fontWeight: '500' } });
       let currentFilter = '';
       const language = currentLanguage();
 
@@ -1517,6 +1532,7 @@ function readingListPage(mode = 'unread') {
           );
         }
 
+        countBadge.textContent = t('readingList.countBadge', { count: items.length });
         clear(list);
         if (!items.length) {
           list.append(el('div', { class: 'empty', text: currentFilter ? t('readingList.noMatch') : t('readingList.empty') }));
@@ -1549,6 +1565,17 @@ function readingListPage(mode = 'unread') {
             },
           });
 
+          const copyLinkBtn = el('button', {
+            class: 'iconButton small',
+            type: 'button',
+            html: icon('link'),
+            title: t('menu.copyLink'),
+            onclick: async () => {
+              await api().tab.copyText(item.url);
+              toast(t('toast.linkCopied'), 'success');
+            },
+          });
+
           const openBtn = el('button', {
             class: 'iconButton small',
             type: 'button',
@@ -1568,7 +1595,7 @@ function readingListPage(mode = 'unread') {
             },
           });
 
-          const controls = el('div', { class: 'optionControl' }, [timeAside, toggleBtn, openBtn, removeBtn]);
+          const controls = el('div', { class: 'optionControl' }, [timeAside, toggleBtn, copyLinkBtn, openBtn, removeBtn]);
 
           itemRow.append(
             el('div', { class: 'rowIcon', html: icon(item.read ? 'check' : 'bookmark') }),
@@ -1584,6 +1611,10 @@ function readingListPage(mode = 'unread') {
         currentFilter = val.toLowerCase().trim();
         refresh();
       });
+      field.style.display = 'flex';
+      field.style.alignItems = 'center';
+      field.style.gap = '10px';
+      field.append(countBadge);
 
       const actionRow = el('div', { class: 'actionRow', style: { marginBottom: '14px' } }, [
         el('button', {
@@ -1653,6 +1684,13 @@ function readingListPage(mode = 'unread') {
             await api().readingList.copyMarkdown(mode);
           },
         }, [el('span', { html: icon('link') }), ` ${t('readingList.copyMarkdown')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            await api().readingList.copyUrls(mode);
+          },
+        }, [el('span', { html: icon('copy') }), ` ${t('readingList.copyUrls')}`]),
         el('button', {
           class: 'button',
           type: 'button',
@@ -1968,8 +2006,13 @@ function notesPage() {
         paintList();
       });
 
+      const notesCountBadge = el('span', {
+        class: 'rowAside',
+        style: { fontSize: '0.8em', fontWeight: '500', marginBottom: '4px' },
+      });
+
       const listCard = el('div', { class: 'notesList card' });
-      sidebar.append(newBtn, clipTabBtn, backupRow, exportRow, searchInput, listCard);
+      sidebar.append(newBtn, clipTabBtn, backupRow, exportRow, searchInput, notesCountBadge, listCard);
 
       const scheduleSave = () => {
         if (!activeNote) return;
@@ -2079,6 +2122,16 @@ function notesPage() {
           },
         });
 
+        const copyMarkdownBtn = el('button', {
+          class: 'iconButton small',
+          type: 'button',
+          html: icon('link'),
+          title: t('notes.copyMarkdown'),
+          onclick: async () => {
+            await api().notes.copyMarkdown(activeNote.id);
+          },
+        });
+
         const duplicateBtn = el('button', {
           class: 'iconButton small',
           type: 'button',
@@ -2119,7 +2172,7 @@ function notesPage() {
           },
         });
 
-        toolbar.append(clipBtn, sep1, editModeBtn, previewModeBtn, sep2, pinBtn, copyBtn, duplicateBtn, exportBtn, deleteBtn);
+        toolbar.append(clipBtn, sep1, editModeBtn, previewModeBtn, sep2, pinBtn, copyBtn, copyMarkdownBtn, duplicateBtn, exportBtn, deleteBtn);
 
         let bodyEl;
         const statusBar = el('div', { class: 'notesStatusBar' });
@@ -2172,6 +2225,8 @@ function notesPage() {
           if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
           return (b.updatedAt || 0) - (a.updatedAt || 0);
         });
+
+        notesCountBadge.textContent = t('notes.countBadge', { count: items.length });
 
         if (!items.length) {
           listCard.append(el('div', { class: 'empty', text: filterText ? t('notes.noMatch') : t('notes.noNotes') }));
@@ -2256,11 +2311,16 @@ function tabStashPage() {
 
       let stashes = [];
       let filterText = '';
+      const stashSummaryBadge = el('span', { class: 'rowAside', style: { marginLeft: 'auto', fontWeight: '500' } });
 
       const search = searchBox((value) => {
         filterText = value.toLowerCase();
         paint();
       });
+      search.field.style.display = 'flex';
+      search.field.style.alignItems = 'center';
+      search.field.style.gap = '10px';
+      search.field.append(stashSummaryBadge);
 
       const topActions = el('div', { class: 'actionRow stashActions' }, [
         el('button', {
@@ -2329,6 +2389,9 @@ function tabStashPage() {
           });
         }
 
+        const totalTabs = items.reduce((sum, s) => sum + ((s.tabs || []).length), 0);
+        stashSummaryBadge.textContent = t('stash.summaryCount', { stashes: items.length, tabs: totalTabs });
+
         if (!items.length) {
           listContainer.append(el('div', { class: 'empty', text: filterText ? t('stash.noMatch') : t('stash.empty') }));
           return;
@@ -2393,6 +2456,15 @@ function tabStashPage() {
             el('button', {
               class: 'button small',
               type: 'button',
+              title: t('stash.addCurrentTab'),
+              onclick: async () => {
+                const res = await api().stashes.addTab(stash.id);
+                if (res?.ok) await loadStashes();
+              },
+            }, [el('span', { html: icon('plus') })]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
               title: t('stash.export'),
               onclick: async () => {
                 await api().stashes.exportJson(stash.id);
@@ -2406,6 +2478,14 @@ function tabStashPage() {
                 await api().stashes.copyMarkdown(stash.id);
               },
             }, [el('span', { html: icon('link') })]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('stash.copyUrls'),
+              onclick: async () => {
+                await api().stashes.copyUrls(stash.id);
+              },
+            }, [el('span', { html: icon('list') })]),
             el('button', {
               class: 'button small',
               type: 'button',
@@ -2664,6 +2744,16 @@ function tabGroupsPage() {
         },
       }, [el('span', { html: icon('close') }), ` ${t('tabGroups.closeUngrouped')}`]);
 
+      const pruneEmptyBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.pruneEmptyDesc'),
+        onclick: async () => {
+          const res = await api().tabs.groupPruneEmpty();
+          if (res?.ok) await refresh();
+        },
+      }, [el('span', { html: icon('trash') }), ` ${t('tabGroups.pruneEmpty')}`]);
+
       nameInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') createBtn.click();
       });
@@ -2681,6 +2771,7 @@ function tabGroupsPage() {
           copyAllUrlsBtn,
           openClipboardUrlsBtn,
           closeUngroupedBtn,
+          pruneEmptyBtn,
         ])
       );
       container.append(creatorCard);
@@ -2776,6 +2867,18 @@ function tabGroupsPage() {
 
           // Group actions
           const actions = el('div', { style: { display: 'flex', gap: '6px', alignItems: 'center' } }, [
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('tabGroups.addActiveTabDesc'),
+              onclick: async () => {
+                const cur = currentTab();
+                if (!cur) return;
+                await api().tabs.setGroup(cur.id, group.id);
+                toast(t('toast.tabAddedToGroup'), 'success');
+                await refresh();
+              },
+            }, [el('span', { html: icon('plus') }), ` ${t('tabGroups.addActiveTab')}`]),
             el('button', {
               class: 'button small',
               type: 'button',

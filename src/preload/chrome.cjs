@@ -122,6 +122,7 @@ const api = {
     ungroupAll: () => ipcRenderer.invoke('tabs:ungroupAll'),
     groupCopyMarkdown: (groupId) => ipcRenderer.invoke('tabs:groupCopyMarkdown', groupId),
     groupCopyUrls: (groupId) => ipcRenderer.invoke('tabs:groupCopyUrls', groupId),
+    groupPruneEmpty: () => ipcRenderer.invoke('tabs:groupPruneEmpty'),
     copyAllMarkdown: () => ipcRenderer.invoke('tabs:copyAllMarkdown'),
     copyAllUrls: () => ipcRenderer.invoke('tabs:copyAllUrls'),
     openClipboardUrls: () => ipcRenderer.invoke('tabs:openClipboardUrls'),
@@ -208,6 +209,7 @@ const api = {
     clear: () => ipcRenderer.invoke('history:clear'),
     remove: (url) => ipcRenderer.invoke('history:remove', url),
     removeByDomain: (domain) => ipcRenderer.invoke('history:removeByDomain', domain),
+    copyUrls: (urls) => ipcRenderer.invoke('history:copyUrls', urls),
   },
 
   data: {
@@ -236,6 +238,7 @@ const api = {
     exportJson: () => ipcRenderer.invoke('readingList:exportJson'),
     exportMarkdown: () => ipcRenderer.invoke('readingList:exportMarkdown'),
     copyMarkdown: (mode) => ipcRenderer.invoke('readingList:copyMarkdown', mode),
+    copyUrls: (mode) => ipcRenderer.invoke('readingList:copyUrls', mode),
     exportHtml: () => ipcRenderer.invoke('readingList:exportHtml'),
     importJson: () => ipcRenderer.invoke('readingList:importJson'),
   },
@@ -248,6 +251,7 @@ const api = {
     export: (note) => ipcRenderer.invoke('notes:export', note),
     exportAll: () => ipcRenderer.invoke('notes:exportAll'),
     exportMarkdown: () => ipcRenderer.invoke('notes:exportMarkdown'),
+    copyMarkdown: (id) => ipcRenderer.invoke('notes:copyMarkdown', id),
     exportHtml: () => ipcRenderer.invoke('notes:exportHtml'),
     importAll: () => ipcRenderer.invoke('notes:importAll'),
     createFromTab: (tabId) => ipcRenderer.invoke('notes:createFromTab', tabId),
@@ -265,6 +269,8 @@ const api = {
     exportJson: (stashId) => ipcRenderer.invoke('stashes:exportJson', stashId),
     exportMarkdown: (stashId) => ipcRenderer.invoke('stashes:exportMarkdown', stashId),
     copyMarkdown: (stashId) => ipcRenderer.invoke('stashes:copyMarkdown', stashId),
+    copyUrls: (stashId) => ipcRenderer.invoke('stashes:copyUrls', stashId),
+    addTab: (stashId, tabId) => ipcRenderer.invoke('stashes:addTab', stashId, tabId),
     importJson: () => ipcRenderer.invoke('stashes:importJson'),
   },
 

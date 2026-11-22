@@ -676,6 +676,20 @@ export function installIpc() {
     return { ok: true, count: tabsInGroup.length };
   });
 
+  handle('tabs:groupPruneEmpty', () => {
+    const groups = sortedGroups();
+    const activeGroupIds = new Set(tabs.list.map((t) => t.groupId).filter(Boolean));
+    const kept = groups.filter((g) => activeGroupIds.has(g.id));
+    const removed = groups.length - kept.length;
+    if (removed > 0) {
+      persistGroups(kept);
+      surface.send('toast', { message: 'toast.emptyGroupsPruned', kind: 'success', data: { count: removed } });
+    } else {
+      surface.send('toast', { message: 'toast.noEmptyGroups', kind: 'info' });
+    }
+    return { ok: removed > 0, removed };
+  });
+
   handle('tabs:copyAllMarkdown', () => {
     const webTabs = tabs.list.filter((t) => t.url && !isInternalUrl(t.url));
     if (!webTabs.length) {
@@ -1317,6 +1331,24 @@ export function installIpc() {
       data: { count: removed, domain: target },
     });
     return { ok: removed > 0, removed, domain: target };
+  });
+  handle('history:copyUrls', (urls = null) => {
+    const source = Array.isArray(urls) ? urls : (history.getAll() || []).map((entry) => entry?.url);
+    const uniqueUrls = [];
+    const seen = new Set();
+    for (const raw of source) {
+      const url = typeof raw === 'string' ? raw.trim() : '';
+      if (!url || seen.has(url)) continue;
+      seen.add(url);
+      uniqueUrls.push(url);
+    }
+    if (!uniqueUrls.length) {
+      surface.send('toast', { message: 'toast.historyNoUrlsToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(uniqueUrls.join('\n'));
+    surface.send('toast', { message: 'toast.historyUrlsCopied', kind: 'success', data: { count: uniqueUrls.length } });
+    return { ok: true, count: uniqueUrls.length };
   });
   handle('history:exportJson', async () => {
     const list = history.getAll();
@@ -1994,13 +2026,15 @@ export function installIpc() {
     return { ok: true, filePath: result.filePath };
   });
 
-  handle('readingList:copyMarkdown', (mode = 'all') => {
+  const filterReadingListByMode = (mode = 'all') => {
     const all = settings.value('data.readingList') || [];
-    const list = mode === 'unread'
-      ? all.filter((i) => !i.read)
-      : mode === 'read'
-        ? all.filter((i) => i.read)
-        : all;
+    if (mode === 'unread') return all.filter((i) => !i.read);
+    if (mode === 'read') return all.filter((i) => i.read);
+    return all;
+  };
+
+  handle('readingList:copyMarkdown', (mode = 'all') => {
+    const list = filterReadingListByMode(mode);
     if (!list.length) {
       surface.send('toast', { message: 'toast.readingListEmptyToCopy', kind: 'warning' });
       return { ok: false, count: 0 };
@@ -2008,6 +2042,17 @@ export function installIpc() {
     clipboard.writeText(formatReadingListMarkdown(list));
     surface.send('toast', { message: 'toast.readingListCopied', kind: 'success', data: { count: list.length } });
     return { ok: true, count: list.length };
+  });
+
+  handle('readingList:copyUrls', (mode = 'all') => {
+    const urls = filterReadingListByMode(mode).map((i) => i.url).filter(Boolean);
+    if (!urls.length) {
+      surface.send('toast', { message: 'toast.readingListEmptyToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(urls.join('\n'));
+    surface.send('toast', { message: 'toast.readingListUrlsCopied', kind: 'success', data: { count: urls.length } });
+    return { ok: true, count: urls.length };
   });
 
   handle('readingList:exportHtml', async () => {
@@ -2233,8 +2278,7 @@ ${renderItemsHtml(read)}
     return { ok: true, filePath: result.filePath };
   });
 
-  handle('notes:exportMarkdown', async () => {
-    const notes = settings.value('data.notes') || [];
+  const formatNotesMarkdown = (notes = []) => {
     const dateStr = new Date().toISOString().split('T')[0];
     const pinned = notes.filter((n) => n.pinned);
     const regular = notes.filter((n) => !n.pinned);
@@ -2275,7 +2319,12 @@ ${renderItemsHtml(read)}
       }
     }
 
-    const markdown = lines.join('\n');
+    return lines.join('\n');
+  };
+
+  handle('notes:exportMarkdown', async () => {
+    const notes = settings.value('data.notes') || [];
+    const markdown = formatNotesMarkdown(notes);
     const result = await dialog.showSaveDialog(chromeWindow(), {
       title: 'Hinterland',
       defaultPath: `hinterland-notes-${Date.now()}.md`,
@@ -2285,6 +2334,30 @@ ${renderItemsHtml(read)}
     await writeFile(result.filePath, markdown, 'utf8');
     surface.send('toast', { message: 'toast.notesExportedMarkdown', kind: 'success' });
     return { ok: true, filePath: result.filePath };
+  });
+
+  handle('notes:copyMarkdown', (noteId = null) => {
+    const notes = settings.value('data.notes') || [];
+    if (noteId) {
+      const note = notes.find((n) => n.id === noteId);
+      if (!note) {
+        surface.send('toast', { message: 'toast.noNotesToCopy', kind: 'warning' });
+        return { ok: false, count: 0 };
+      }
+      const title = (note.title || 'Untitled Note').trim();
+      const body = String(note.content || '').trim();
+      const md = body ? `# ${title}\n\n${body}` : `# ${title}`;
+      clipboard.writeText(md);
+      surface.send('toast', { message: 'toast.noteMarkdownCopied', kind: 'success', data: { count: 1 } });
+      return { ok: true, count: 1 };
+    }
+    if (!notes.length) {
+      surface.send('toast', { message: 'toast.noNotesToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(formatNotesMarkdown(notes));
+    surface.send('toast', { message: 'toast.noteMarkdownCopied', kind: 'success', data: { count: notes.length } });
+    return { ok: true, count: notes.length };
   });
 
   handle('notes:exportHtml', async () => {
@@ -2750,6 +2823,43 @@ ${renderNotesHtml(notes)}
     clipboard.writeText(lines.join('\n'));
     surface.send('toast', { message: 'toast.stashLinksCopied', kind: 'success' });
     return { ok: true, count: stashTabs.length };
+  });
+
+  handle('stashes:copyUrls', (stashId) => {
+    const stashes = settings.value('data.tabStashes') || [];
+    const stash = stashes.find((s) => s.id === stashId);
+    const urls = (Array.isArray(stash?.tabs) ? stash.tabs : []).map((t) => t?.url).filter(Boolean);
+    if (!stash || !urls.length) {
+      surface.send('toast', { message: 'toast.noTabsInStashToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(urls.join('\n'));
+    surface.send('toast', { message: 'toast.stashUrlsCopied', kind: 'success', data: { count: urls.length } });
+    return { ok: true, count: urls.length };
+  });
+
+  handle('stashes:addTab', (stashId, tabId = null) => {
+    const tab = (tabId ? tabs.byId(tabId) : null) || tabs.active;
+    if (!tab || !tab.url || tab.url === NEW_TAB_URL || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) {
+      surface.send('toast', { message: 'toast.noTabsToStash', kind: 'warning' });
+      return { ok: false, error: 'no_tabs' };
+    }
+    const stashes = [...(settings.value('data.tabStashes') || [])];
+    const stash = stashes.find((s) => s.id === stashId);
+    if (!stash) return { ok: false, error: 'not_found' };
+    const existingTabs = Array.isArray(stash.tabs) ? stash.tabs : (stash.tabs = []);
+    if (existingTabs.some((t) => t.url === tab.url)) {
+      surface.send('toast', { message: 'toast.stashTabAlreadyExists', kind: 'info' });
+      return { ok: false, error: 'duplicate' };
+    }
+    existingTabs.push({
+      url: tab.url,
+      title: tab.title || tab.url,
+      favicon: tab.favicon || '',
+    });
+    settings.set('data.tabStashes', stashes);
+    surface.send('toast', { message: 'toast.stashTabAdded', kind: 'success' });
+    return { ok: true, stash };
   });
 
   handle('stashes:importJson', async () => {

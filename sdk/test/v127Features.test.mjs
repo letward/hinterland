@@ -213,8 +213,8 @@ describe('Hinterland v1.27.0 Features & Polish', () => {
     });
 
     it('updates website/index.html to v1.27.0 release', () => {
-      assert.ok(websiteIndex.includes('v1.27.0') || websiteIndex.includes('v1.28.0') || websiteIndex.includes('v1.29.0') || websiteIndex.includes('v1.30.0') || websiteIndex.includes('v1.31.0') || websiteIndex.includes('v1.32.0') || websiteIndex.includes('v1.33.0') || websiteIndex.includes('v1.34.0') || websiteIndex.includes('v1.35.0') || websiteIndex.includes('v1.36.0'));
-      assert.ok(websiteIndex.includes('Hinterland-Setup-1.27.0.exe') || websiteIndex.includes('Hinterland-Setup-1.28.0.exe') || websiteIndex.includes('Hinterland-Setup-1.29.0.exe') || websiteIndex.includes('Hinterland-Setup-1.30.0.exe') || websiteIndex.includes('Hinterland-Setup-1.31.0.exe') || websiteIndex.includes('Hinterland-Setup-1.32.0.exe') || websiteIndex.includes('Hinterland-Setup-1.33.0.exe') || websiteIndex.includes('Hinterland-Setup-1.34.0.exe') || websiteIndex.includes('Hinterland-Setup-1.35.0.exe') || websiteIndex.includes('Hinterland-Setup-1.36.0.exe'));
+      assert.ok(websiteIndex.includes('v1.27.0') || websiteIndex.includes('v1.28.0') || websiteIndex.includes('v1.29.0') || websiteIndex.includes('v1.30.0') || websiteIndex.includes('v1.31.0') || websiteIndex.includes('v1.32.0') || websiteIndex.includes('v1.33.0') || websiteIndex.includes('v1.34.0') || websiteIndex.includes('v1.35.0') || websiteIndex.includes('v1.36.0') || websiteIndex.includes('v1.37.0'));
+      assert.ok(websiteIndex.includes('Hinterland-Setup-1.27.0.exe') || websiteIndex.includes('Hinterland-Setup-1.28.0.exe') || websiteIndex.includes('Hinterland-Setup-1.29.0.exe') || websiteIndex.includes('Hinterland-Setup-1.30.0.exe') || websiteIndex.includes('Hinterland-Setup-1.31.0.exe') || websiteIndex.includes('Hinterland-Setup-1.32.0.exe') || websiteIndex.includes('Hinterland-Setup-1.33.0.exe') || websiteIndex.includes('Hinterland-Setup-1.34.0.exe') || websiteIndex.includes('Hinterland-Setup-1.35.0.exe') || websiteIndex.includes('Hinterland-Setup-1.36.0.exe') || websiteIndex.includes('Hinterland-Setup-1.37.0.exe'));
     });
   });
 });
