@@ -76,6 +76,24 @@ export function installIpc() {
     v8: process.versions.v8,
   }));
 
+  const copyUniqueUrls = (source, emptyToast, successToast) => {
+    const uniqueUrls = [];
+    const seen = new Set();
+    for (const raw of source || []) {
+      const url = typeof raw === 'string' ? raw.trim() : '';
+      if (!url || seen.has(url)) continue;
+      seen.add(url);
+      uniqueUrls.push(url);
+    }
+    if (!uniqueUrls.length) {
+      surface.send('toast', { message: emptyToast, kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(uniqueUrls.join('\n'));
+    surface.send('toast', { message: successToast, kind: 'success', data: { count: uniqueUrls.length } });
+    return { ok: true, count: uniqueUrls.length };
+  };
+
   handle('app:copyDiagnostics', () => {
     const blockedCount = blockedSummary().reduce((sum, entry) => sum + (Number(entry.count) || 0), 0);
     const lines = [
@@ -94,6 +112,17 @@ export function installIpc() {
     clipboard.writeText(diagnostics);
     surface.send('toast', { message: 'toast.diagnosticsCopied', kind: 'success' });
     return { ok: true, diagnostics };
+  });
+
+  handle('shortcuts:copyMarkdown', (markdown) => {
+    const text = typeof markdown === 'string' ? markdown.trim() : '';
+    if (!text) {
+      surface.send('toast', { message: 'toast.noShortcutsToCopy', kind: 'warning' });
+      return { ok: false };
+    }
+    clipboard.writeText(text);
+    surface.send('toast', { message: 'toast.shortcutsCopied', kind: 'success' });
+    return { ok: true };
   });
 
   handle('app:openFolder', (target) => {
@@ -325,6 +354,10 @@ export function installIpc() {
   handle('tabs:cycle', (delta) => tabs.cycle(delta));
   handle('tabs:reopen', (index) => tabs.reopenClosed(index));
   handle('tabs:recentlyClosed', () => tabs.recentlyClosed());
+  handle('tabs:copyRecentlyClosedUrls', (urls = null) => {
+    const source = Array.isArray(urls) ? urls : (tabs.recentlyClosed() || []).map((entry) => entry?.url);
+    return copyUniqueUrls(source, 'toast.noRecentlyClosedToCopy', 'toast.recentlyClosedUrlsCopied');
+  });
   handle('tabs:restoreClosed', (index) => tabs.reopenClosed(index));
   handle('tabs:clearRecentlyClosed', () => tabs.clearRecentlyClosed());
   handle('tabs:restoreAllClosed', () => tabs.restoreAllClosed());
@@ -1245,6 +1278,23 @@ export function installIpc() {
 
   /* ------------------------------------------------------------ extensions */
   handle('extensions:list', () => extensions.list());
+  handle('extensions:copyList', () => {
+    const list = extensions.list() || [];
+    if (!list.length) {
+      surface.send('toast', { message: 'toast.noExtensionsToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    const lines = ['# Hinterland Extensions', ''];
+    for (const ext of list) {
+      const status = ext.enabled ? 'Active' : 'Paused';
+      const source = ext.bundled ? 'Included' : 'Unpacked';
+      const version = ext.version ? ` v${ext.version}` : '';
+      lines.push(`- **${ext.name || ext.id}**${version} (${status}, ${source}) — \`${ext.id}\``);
+    }
+    clipboard.writeText(lines.join('\n'));
+    surface.send('toast', { message: 'toast.extensionsListCopied', kind: 'success', data: { count: list.length } });
+    return { ok: true, count: list.length };
+  });
   handle('extensions:install', async () => {
     if (!settings.value('extensions.allowUnpacked')) return { ok: false, error: 'blocked' };
     const result = await dialog.showOpenDialog(chromeWindow(), {
@@ -1477,28 +1527,44 @@ export function installIpc() {
   handle('site:deleteCookie', (opts) => deleteSiteCookie(opts || {}));
   handle('site:clearCookies', (url) => clearSiteCookies(url));
   handle('site:getStorageStats', (url) => getSiteStorageStats(url));
-  handle('site:exportCookies', async (rawUrl) => {
+  const buildCookiesPayload = async (rawUrl) => {
     const cookies = (await getSiteCookies(rawUrl)) || [];
-    if (!cookies.length) {
-      surface.send('toast', { message: 'toast.noCookiesToExport', kind: 'warning' });
-      return { ok: false, count: 0 };
-    }
+    if (!cookies.length) return null;
     const host = normalizeDomain(rawUrl) || 'site';
-    const payload = {
+    return {
       host,
       exportedAt: new Date().toISOString(),
       count: cookies.length,
       cookies,
     };
+  };
+
+  handle('site:exportCookies', async (rawUrl) => {
+    const payload = await buildCookiesPayload(rawUrl);
+    if (!payload) {
+      surface.send('toast', { message: 'toast.noCookiesToExport', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
     const result = await dialog.showSaveDialog(chromeWindow(), {
       title: 'Hinterland',
-      defaultPath: `hinterland-cookies-${host}-${Date.now()}.json`,
+      defaultPath: `hinterland-cookies-${payload.host}-${Date.now()}.json`,
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
     await writeFile(result.filePath, JSON.stringify(payload, null, 2), 'utf8');
-    surface.send('toast', { message: 'toast.cookiesExported', kind: 'success', data: { count: cookies.length } });
-    return { ok: true, filePath: result.filePath, count: cookies.length };
+    surface.send('toast', { message: 'toast.cookiesExported', kind: 'success', data: { count: payload.count } });
+    return { ok: true, filePath: result.filePath, count: payload.count };
+  });
+
+  handle('site:copyCookiesJson', async (rawUrl) => {
+    const payload = await buildCookiesPayload(rawUrl);
+    if (!payload) {
+      surface.send('toast', { message: 'toast.noCookiesToExport', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(JSON.stringify(payload, null, 2));
+    surface.send('toast', { message: 'toast.cookiesCopiedJson', kind: 'success', data: { count: payload.count } });
+    return { ok: true, count: payload.count };
   });
 
   handle('downloads:history', () => getDownloadHistory());
@@ -1640,6 +1706,43 @@ export function installIpc() {
     settings.set('privacy.allowedSites', {});
     surface.send('toast', { message: 'toast.allShieldsReset', kind: 'success' });
     return { ok: true };
+  });
+
+  handle('site:copySummary', () => {
+    const permsMap = settings.value('privacy.sitePermissions') ?? {};
+    const shieldMap = settings.value('privacy.allowedSites') ?? {};
+    const permOrigins = Object.keys(permsMap).filter((origin) => Object.keys(permsMap[origin] || {}).length > 0);
+    const shieldDomains = Object.keys(shieldMap);
+    if (!permOrigins.length && !shieldDomains.length) {
+      surface.send('toast', { message: 'toast.noSiteRulesToCopy', kind: 'warning' });
+      return { ok: false, permissionsCount: 0, shieldsCount: 0 };
+    }
+    const lines = ['# Hinterland Site Permissions & Shields Summary', ''];
+    lines.push(`## Site Permissions (${permOrigins.length})`);
+    if (!permOrigins.length) {
+      lines.push('*No custom site permissions configured.*', '');
+    } else {
+      for (const origin of permOrigins) {
+        const grants = Object.entries(permsMap[origin] || {}).map(([k, v]) => `${k}: ${v}`).join(', ');
+        lines.push(`- **${origin}** — ${grants}`);
+      }
+      lines.push('');
+    }
+    lines.push(`## Shield Exceptions (${shieldDomains.length})`);
+    if (!shieldDomains.length) {
+      lines.push('*All sites protected by Hinterland Shield.*');
+    } else {
+      for (const domain of shieldDomains) {
+        lines.push(`- **${domain}** — Tracking Protection Paused`);
+      }
+    }
+    clipboard.writeText(lines.join('\n').trim());
+    surface.send('toast', {
+      message: 'toast.siteSummaryCopied',
+      kind: 'success',
+      data: { count: permOrigins.length + shieldDomains.length },
+    });
+    return { ok: true, permissionsCount: permOrigins.length, shieldsCount: shieldDomains.length };
   });
 
   handle('bookmarks:exportHtml', async (items) => {
@@ -2713,6 +2816,40 @@ ${renderNotesHtml(notes)}
     return { ok: true, count: stash.tabs.length };
   });
 
+  handle('stashes:restoreAsGroup', (stashId) => {
+    const stashes = [...(settings.value('data.tabStashes') || [])];
+    const stash = stashes.find((s) => s.id === stashId);
+    if (!stash || !stash.tabs?.length) return { ok: false, error: 'not_found' };
+
+    const groups = sortedGroups();
+    const groupId = `g${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 5)}`;
+    groups.push({
+      id: groupId,
+      name: String(stash.title || 'Tab Stash').slice(0, 40),
+      color: /^#[0-9a-f]{6}$/i.test(stash.color || '') ? stash.color : '#388bfd',
+      collapsed: false,
+    });
+    persistGroups(groups);
+
+    for (let i = 0; i < stash.tabs.length; i++) {
+      const entry = stash.tabs[i];
+      const created = tabs.create({ url: entry.url, background: i > 0, title: entry.title });
+      if (created) {
+        created.groupId = groupId;
+        surface.send('tab:update', created.snapshot());
+      }
+    }
+    tabs.scheduleSave();
+
+    surface.send('toast', {
+      message: 'toast.stashRestoredAsGroup',
+      kind: 'success',
+      data: { count: stash.tabs.length, name: String(stash.title || 'Tab Stash').slice(0, 40) },
+    });
+
+    return { ok: true, groupId, count: stash.tabs.length };
+  });
+
   handle('stashes:delete', (stashId) => {
     const stashes = [...(settings.value('data.tabStashes') || [])];
     const updated = stashes.filter((s) => s.id !== stashId);
@@ -2836,6 +2973,12 @@ ${renderNotesHtml(notes)}
     clipboard.writeText(urls.join('\n'));
     surface.send('toast', { message: 'toast.stashUrlsCopied', kind: 'success', data: { count: urls.length } });
     return { ok: true, count: urls.length };
+  });
+
+  handle('stashes:copyAllUrls', () => {
+    const stashes = settings.value('data.tabStashes') || [];
+    const urls = stashes.flatMap((stash) => (Array.isArray(stash?.tabs) ? stash.tabs : []).map((t) => t?.url));
+    return copyUniqueUrls(urls, 'toast.noTabsInStashToCopy', 'toast.stashAllUrlsCopied');
   });
 
   handle('stashes:addTab', (stashId, tabId = null) => {

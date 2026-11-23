@@ -60,18 +60,42 @@ function extensionsPage() {
       container.append(head(t('extensions.title'), t('extensions.description')));
 
       const list = el('div', { class: 'card' });
+      const summaryBadge = el('span', { class: 'rowAside', style: { marginLeft: 'auto', fontWeight: '500' } });
+      let allEntries = [];
+      let filterText = '';
 
-      const load = async () => {
-        const entries = await api().extensions.list();
+      const paint = () => {
         clear(list);
-        if (!entries.length) {
-          list.append(el('div', { class: 'empty', text: t('extensions.none') }));
+        const activeCount = allEntries.filter((e) => e.enabled).length;
+        summaryBadge.textContent = t('extensions.summaryCount', { active: activeCount, total: allEntries.length });
+        const filtered = allEntries.filter((entry) => {
+          if (!filterText) return true;
+          return (entry.name || '').toLowerCase().includes(filterText)
+            || (entry.description || '').toLowerCase().includes(filterText)
+            || (entry.id || '').toLowerCase().includes(filterText);
+        });
+        if (!filtered.length) {
+          list.append(el('div', { class: 'empty', text: filterText ? t('extensions.noMatch') : t('extensions.none') }));
           return;
         }
-        for (const entry of entries) {
+        for (const entry of filtered) {
           list.append(extensionRow(entry, load));
         }
       };
+
+      const load = async () => {
+        allEntries = (await api().extensions.list()) || [];
+        paint();
+      };
+
+      const search = searchBox((value) => {
+        filterText = value.toLowerCase().trim();
+        paint();
+      });
+      search.field.style.display = 'flex';
+      search.field.style.alignItems = 'center';
+      search.field.style.gap = '10px';
+      search.field.append(summaryBadge);
 
       const actions = el('div', { class: 'actionRow', style: { marginBottom: '16px' } }, [
         el('button', {
@@ -110,11 +134,16 @@ function extensionsPage() {
             load();
           },
         }, [el('span', { html: icon('refresh') }), ` ${t('action.reload')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: () => api().extensions.copyList(),
+        }, [el('span', { html: icon('copy') }), ` ${t('extensions.copyList')}`]),
       ]);
 
       load();
 
-      container.append(actions, list);
+      container.append(actions, search.field, list);
       container.append(el('p', { class: 'optionHint', style: { marginTop: '14px' }, text: t('extensions.hint') }));
       return container;
     },
@@ -359,13 +388,17 @@ function recentlyClosedPage() {
       container.append(head(t('history.recentlyClosedTitle'), t('history.recentlyClosedDesc')));
 
       const list = el('div', { class: 'card' });
+      const countBadge = el('span', { class: 'rowAside', style: { marginLeft: 'auto', fontWeight: '500' } });
       const language = currentLanguage();
       let currentFilter = '';
+      let lastFilteredUrls = [];
 
       const paint = async () => {
         clear(list);
         const entries = (await api().tabs.recentlyClosed()) || [];
         if (!entries.length) {
+          lastFilteredUrls = [];
+          countBadge.textContent = t('history.recentlyClosedCount', { count: 0 });
           list.append(el('div', { class: 'empty', text: t('history.recentlyClosedEmpty') }));
           return;
         }
@@ -376,6 +409,8 @@ function recentlyClosedPage() {
             return (entry.title || '').toLowerCase().includes(currentFilter)
               || (entry.url || '').toLowerCase().includes(currentFilter);
           });
+        lastFilteredUrls = filtered.map(({ entry }) => entry.url).filter(Boolean);
+        countBadge.textContent = t('history.recentlyClosedCount', { count: filtered.length });
         if (!filtered.length) {
           list.append(el('div', { class: 'empty', text: t('history.recentlyClosedNoMatch') }));
           return;
@@ -419,6 +454,10 @@ function recentlyClosedPage() {
         currentFilter = value.toLowerCase().trim();
         paint();
       });
+      field.style.display = 'flex';
+      field.style.alignItems = 'center';
+      field.style.gap = '10px';
+      field.append(countBadge);
 
       container.append(
         el('div', { class: 'actionRow', style: { marginBottom: '14px' } }, [
@@ -430,6 +469,11 @@ function recentlyClosedPage() {
               closeModal();
             },
           }, [t('history.restoreAll')]),
+          el('button', {
+            class: 'button',
+            type: 'button',
+            onclick: () => api().tabs.copyRecentlyClosedUrls(lastFilteredUrls),
+          }, [el('span', { html: icon('link') }), ` ${t('history.copyUrls')}`]),
           el('button', {
             class: 'button',
             type: 'button',
@@ -912,13 +956,19 @@ function cookieInspectorPage(targetUrl) {
       const host = hostOf(targetUrl) || targetUrl;
       container.append(head(t('siteInfo.cookiesModalTitle'), t('siteInfo.cookiesModalDesc', { host })));
 
-      const toolbar = el('div', { class: 'actionRow cookiesToolbar', style: { display: 'flex', gap: '8px', marginBottom: '14px', alignItems: 'center' } });
+      const toolbar = el('div', { class: 'actionRow cookiesToolbar', style: { display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px', alignItems: 'center' } });
       const searchInput = el('input', {
         class: 'input cookiesSearchInput',
         type: 'text',
         placeholder: t('siteInfo.filterCookies'),
-        style: { flex: '1' },
+        style: { flex: '1', minWidth: '180px' },
       });
+      const cookieCountBadge = el('span', { class: 'rowAside', style: { fontWeight: '500' } });
+      const copyJsonBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        onclick: () => api().site.copyCookiesJson(targetUrl),
+      }, [el('span', { html: icon('copy') }), ` ${t('siteInfo.copyCookiesJson')}`]);
       const exportBtn = el('button', {
         class: 'button',
         type: 'button',
@@ -934,7 +984,7 @@ function cookieInspectorPage(targetUrl) {
         },
       }, [el('span', { html: icon('trash') }), ` ${t('siteInfo.clearSiteCookies')}`]);
 
-      toolbar.append(searchInput, exportBtn, clearBtn);
+      toolbar.append(searchInput, cookieCountBadge, copyJsonBtn, exportBtn, clearBtn);
       container.append(toolbar);
 
       const list = el('div', { class: 'card cookiesList' });
@@ -954,6 +1004,7 @@ function cookieInspectorPage(targetUrl) {
           if (!query) return true;
           return (c.name || '').toLowerCase().includes(query) || (c.domain && c.domain.toLowerCase().includes(query));
         });
+        cookieCountBadge.textContent = t('siteInfo.cookieCountBadge', { count: filtered.length });
 
         if (!filtered.length) {
           list.append(el('div', { class: 'empty', text: t('siteInfo.noCookies') }));
@@ -1120,10 +1171,14 @@ function shortcutsPage() {
         return frag;
       }
 
+      const shortcutsCountBadge = el('span', { class: 'rowAside', style: { marginLeft: 'auto', fontWeight: '500' } });
+      let lastMatchedGroups = [];
+
       const paint = (filter = '') => {
         clear(listContainer);
         const query = filter.toLowerCase().trim();
         let total = 0;
+        lastMatchedGroups = [];
 
         for (const group of shortcutGroups) {
           const matched = group.items.filter((item) => {
@@ -1135,6 +1190,7 @@ function shortcutsPage() {
           if (!matched.length) continue;
 
           total += matched.length;
+          lastMatchedGroups.push({ title: t(group.titleKey), items: matched });
           const card = el('div', { class: 'card', style: { marginBottom: '16px' } });
           for (const item of matched) {
             card.append(
@@ -1147,12 +1203,18 @@ function shortcutsPage() {
           listContainer.append(el('h2', { class: 'groupTitle', text: t(group.titleKey) }), card);
         }
 
+        shortcutsCountBadge.textContent = t('shortcuts.countBadge', { count: total });
+
         if (total === 0) {
           listContainer.append(el('div', { class: 'empty', text: t('shortcuts.noMatch') }));
         }
       };
 
       const { field } = searchBox((value) => paint(value));
+      field.style.display = 'flex';
+      field.style.alignItems = 'center';
+      field.style.gap = '10px';
+      field.append(shortcutsCountBadge);
 
       container.append(
         el('div', { class: 'actionRow', style: { marginBottom: '14px' } }, [
@@ -1164,6 +1226,21 @@ function shortcutsPage() {
               window.dispatchEvent(new CustomEvent('hinterland:opensettings', { detail: { section: 'shortcuts' } }));
             },
           }, [el('span', { html: icon('gear') }), ` ${t('shortcuts.edit')}`]),
+          el('button', {
+            class: 'button',
+            type: 'button',
+            onclick: () => {
+              const lines = [`# ${t('shortcuts.title')}`, ''];
+              for (const grp of lastMatchedGroups) {
+                lines.push(`## ${grp.title}`, '');
+                for (const item of grp.items) {
+                  lines.push(`- **${t(item.labelKey)}** — \`${item.combo}\``);
+                }
+                lines.push('');
+              }
+              api().shortcuts.copyMarkdown(lines.join('\n').trim());
+            },
+          }, [el('span', { html: icon('copy') }), ` ${t('shortcuts.copyCheatsheet')}`]),
         ]),
         field,
         listContainer,
@@ -2371,6 +2448,11 @@ function tabStashPage() {
             await api().stashes.exportMarkdown();
           },
         }, [el('span', { html: icon('copy') }), ` ${t('stash.exportMarkdown')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: () => api().stashes.copyAllUrls(),
+        }, [el('span', { html: icon('link') }), ` ${t('stash.copyAllUrls')}`]),
       ]);
 
       const listContainer = el('div', { class: 'stashList' });
@@ -2453,6 +2535,15 @@ function tabStashPage() {
                 closeModal();
               },
             }, [el('span', { html: icon('external') }), ` ${t('stash.restore')}`]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('stash.restoreAsGroupDesc'),
+              onclick: async () => {
+                await api().stashes.restoreAsGroup(stash.id);
+                closeModal();
+              },
+            }, [el('span', { html: icon('tabs') }), ` ${t('stash.restoreAsGroup')}`]),
             el('button', {
               class: 'button small',
               type: 'button',
@@ -4400,7 +4491,14 @@ function sitePermissionsPage() {
       });
       tabGroup.append(btnPerms, btnShields);
 
-      const actionsGroup = el('div', { style: { display: 'flex', gap: '6px' } });
+      const actionsGroup = el('div', { style: { display: 'flex', gap: '6px', alignItems: 'center' } });
+      const countBadge = el('span', { class: 'rowAside', style: { fontWeight: '500' } });
+      const copySummaryBtn = el('button', {
+        class: 'button small',
+        type: 'button',
+        html: `${icon('copy')} <span>${t('sitePermissions.copySummary')}</span>`,
+        onclick: () => api().site.copySummary(),
+      });
       const resetBtn = el('button', {
         class: 'button small danger',
         type: 'button',
@@ -4414,7 +4512,7 @@ function sitePermissionsPage() {
           paint();
         },
       });
-      actionsGroup.append(resetBtn);
+      actionsGroup.append(countBadge, copySummaryBtn, resetBtn);
 
       toolbar.append(searchInput, tabGroup, actionsGroup);
       container.append(toolbar);
@@ -4437,6 +4535,7 @@ function sitePermissionsPage() {
           if (searchQuery) {
             origins = origins.filter((o) => o.toLowerCase().includes(searchQuery));
           }
+          countBadge.textContent = t('sitePermissions.countBadge', { count: origins.length });
 
           if (origins.length === 0) {
             contentBox.append(
@@ -4492,6 +4591,7 @@ function sitePermissionsPage() {
           if (searchQuery) {
             domains = domains.filter((d) => d.toLowerCase().includes(searchQuery));
           }
+          countBadge.textContent = t('sitePermissions.countBadge', { count: domains.length });
 
           if (domains.length === 0) {
             contentBox.append(

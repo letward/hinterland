@@ -255,7 +255,11 @@
     "tabsGroupPruneEmpty": "Tab-Gruppen: Leere Gruppen entfernen",
     "readingListCopyUrls": "Leselisten-URLs kopieren",
     "historyCopyUrls": "Verlaufs-URLs kopieren",
-    "notesCopyMarkdown": "Alle Notizen als Markdown kopieren"
+    "notesCopyMarkdown": "Alle Notizen als Markdown kopieren",
+    "extensionsCopyList": "Erweiterungen: Installierte Liste als Markdown kopieren",
+    "tabsCopyRecentlyClosedUrls": "URLs kürzlich geschlossener Tabs kopieren",
+    "siteCopySummary": "Zusammenfassung der Website-Berechtigungen & Shields kopieren",
+    "stashesCopyAllUrls": "Tab-Stash: Alle gesicherten URLs kopieren"
   },
   "confirm": {
     "closeTitle": "Tab schließen",
@@ -323,6 +327,7 @@
     "recentlyClosedDesc": "In dieser Sitzung geschlossene Tabs, die wiederhergestellt werden können.",
     "recentlyClosedEmpty": "Keine kürzlich geschlossenen Tabs vorhanden.",
     "recentlyClosedNoMatch": "Keine kürzlich geschlossenen Tabs entsprechen Ihrer Suche.",
+    "recentlyClosedCount": "{count} geschlossene Tabs",
     "restoreAll": "Alle wiederherstellen",
     "clearRecentlyClosed": "Geschlossene Tabs leeren"
   },
@@ -359,6 +364,8 @@
     "groupView": "Ansicht & Werkzeuge",
     "groupBrowser": "Browser & Verwaltung",
     "noMatch": "Keine Tastenkürzel für diese Suche gefunden.",
+    "countBadge": "{count} Kürzel",
+    "copyCheatsheet": "Spickzettel kopieren",
     "action": {
       "newTab": "Neuer Tab",
       "privateTab": "Privater Tab",
@@ -407,6 +414,9 @@
     "title": "Erweiterungen",
     "description": "Native Browser Erweiterungen. Jede läuft in einem eigenen, abgeschotteten Prozess.",
     "none": "Keine Erweiterungen installiert.",
+    "noMatch": "Keine Erweiterungen entsprechen Ihrer Suche.",
+    "summaryCount": "{active} aktiv · {total} gesamt",
+    "copyList": "Erweiterungsliste kopieren",
     "on": "Aktiv",
     "off": "Pausiert",
     "bundled": "Mitgeliefert",
@@ -600,9 +610,20 @@
     "readingListUrlsCopied": "{count} Leselisten-URL(s) in die Zwischenablage kopiert",
     "noteMarkdownCopied": "{count} Notiz(en) als Markdown kopiert",
     "noNotesToCopy": "Keine Notizen zum Kopieren vorhanden",
-    "stashUrlsCopied": "{count} Stash-URL(s) in die Zwischenablage kopiert",
+    "stashUrlsCopied": "Copied {count} Stash-URL(s) in die Zwischenablage kopiert",
     "stashTabAdded": "Aktiven Tab zum Stash hinzugefügt",
-    "stashTabAlreadyExists": "Dieser Tab ist bereits in diesem Stash vorhanden"
+    "stashTabAlreadyExists": "Dieser Tab ist bereits in diesem Stash vorhanden",
+    "noShortcutsToCopy": "Keine Tastenkürzel zum Kopieren vorhanden",
+    "shortcutsCopied": "Tastenkürzel-Übersicht als Markdown kopiert",
+    "noRecentlyClosedToCopy": "Keine URLs kürzlich geschlossener Tabs zum Kopieren vorhanden",
+    "recentlyClosedUrlsCopied": "{count} URL(s) kürzlich geschlossener Tabs in die Zwischenablage kopiert",
+    "noExtensionsToCopy": "Keine installierten Erweiterungen zum Kopieren vorhanden",
+    "extensionsListCopied": "{count} Erweiterung(en) als Markdown kopiert",
+    "cookiesCopiedJson": "{count} Cookie(s) als JSON in die Zwischenablage kopiert",
+    "noSiteRulesToCopy": "Keine benutzerdefinierten Website-Berechtigungen oder Shield-Ausnahmen zum Kopieren vorhanden",
+    "siteSummaryCopied": "Zusammenfassung der Berechtigungen & Shields kopiert ({count} Einträge)",
+    "stashRestoredAsGroup": "{count} Tab(s) in Gruppe „{name}“ wiederhergestellt",
+    "stashAllUrlsCopied": "{count} gesicherte URL(s) in die Zwischenablage kopiert"
   },
   "welcome": {
     "title": "Willkommen bei Hinterland",
@@ -1146,6 +1167,8 @@
     "cookiesModalTitle": "Cookies & Websitedaten",
     "cookiesModalDesc": "Gespeicherte Cookies für {host} prüfen und verwalten.",
     "filterCookies": "Cookies nach Name oder Domain filtern...",
+    "cookieCountBadge": "{count} Cookies",
+    "copyCookiesJson": "JSON kopieren",
     "exportCookies": "JSON exportieren",
     "clearSiteCookies": "Alle Cookies für diese Website löschen",
     "noCookies": "Keine Cookies für diese Website gespeichert.",
@@ -1169,7 +1192,9 @@
     "resetAllShields": "Alle Ausnahmen zurücksetzen",
     "revokeOrigin": "Widerrufen",
     "enableShield": "Shield aktivieren",
-    "shieldPaused": "Tracking-Schutz pausiert"
+    "shieldPaused": "Tracking-Schutz pausiert",
+    "copySummary": "Zusammenfassung kopieren",
+    "countBadge": "{count} Einträge"
   },
   "readingList": {
     "title": "Leseliste",
@@ -1370,6 +1395,7 @@
     "exportMarkdown": "Markdown exportieren",
     "copyLinks": "Links als Markdown kopieren",
     "copyUrls": "URLs kopieren",
+    "copyAllUrls": "Alle URLs kopieren",
     "addCurrentTab": "Aktuellen Tab zu diesem Stash hinzufügen",
     "summaryCount": "{stashes} Stashes · {tabs} Tabs",
     "duplicate": "Stash duplizieren",
@@ -1378,6 +1404,8 @@
     "tab": "Tab",
     "tabs": "Tabs",
     "restore": "Alle wiederherstellen",
+    "restoreAsGroup": "Als Gruppe öffnen",
+    "restoreAsGroupDesc": "Alle Tabs dieses Stashs in einer neuen Tab-Gruppe öffnen",
     "export": "Als JSON exportieren",
     "delete": "Löschen",
     "deleteConfirm": "Möchtest du diesen Stash wirklich löschen:"

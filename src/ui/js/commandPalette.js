@@ -299,6 +299,13 @@ export function openCommandPalette() {
             run: () => openSitePermissions(),
           },
           {
+            id: 'siteCopySummary',
+            title: t('commandPalette.siteCopySummary'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().site.copySummary(),
+          },
+          {
             id: 'searchSetDefault',
             title: t('commandPalette.searchSetDefault'),
             category: t('commandPalette.categoryCommand'),
@@ -610,6 +617,13 @@ export function openCommandPalette() {
             run: () => api().stashes.exportMarkdown(),
           },
           {
+            id: 'stashesCopyAllUrls',
+            title: t('commandPalette.stashesCopyAllUrls'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'link',
+            run: () => api().stashes.copyAllUrls(),
+          },
+          {
             id: 'storeThemes',
             title: t('commandPalette.browseThemes'),
             category: t('commandPalette.categoryCommand'),
@@ -705,6 +719,13 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'puzzle',
             run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'extensions' } })),
+          },
+          {
+            id: 'extensionsCopyList',
+            title: t('commandPalette.extensionsCopyList'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().extensions.copyList(),
           },
           {
             id: 'shortcuts',
@@ -924,6 +945,13 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'clock',
             run: () => api().tabs.clearRecentlyClosed(),
+          },
+          {
+            id: 'tabsCopyRecentlyClosedUrls',
+            title: t('commandPalette.tabsCopyRecentlyClosedUrls'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'link',
+            run: () => api().tabs.copyRecentlyClosedUrls(),
           },
           {
             id: 'notesExportAll',

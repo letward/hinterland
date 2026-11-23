@@ -86,6 +86,7 @@ const api = {
     cycle: (delta) => ipcRenderer.invoke('tabs:cycle', delta),
     reopen: (index) => ipcRenderer.invoke('tabs:reopen', index),
     recentlyClosed: () => ipcRenderer.invoke('tabs:recentlyClosed'),
+    copyRecentlyClosedUrls: (urls) => ipcRenderer.invoke('tabs:copyRecentlyClosedUrls', urls),
     restoreClosed: (index) => ipcRenderer.invoke('tabs:restoreClosed', index),
     clearRecentlyClosed: () => ipcRenderer.invoke('tabs:clearRecentlyClosed'),
     restoreAllClosed: () => ipcRenderer.invoke('tabs:restoreAllClosed'),
@@ -176,6 +177,7 @@ const api = {
 
   extensions: {
     list: () => ipcRenderer.invoke('extensions:list'),
+    copyList: () => ipcRenderer.invoke('extensions:copyList'),
     install: () => ipcRenderer.invoke('extensions:install'),
     installPath: (path) => ipcRenderer.invoke('extensions:installPath', path),
     uninstall: (id) => ipcRenderer.invoke('extensions:uninstall', id),
@@ -263,6 +265,7 @@ const api = {
     stashTab: (tabId) => ipcRenderer.invoke('stashes:stashTab', tabId),
     duplicate: (stashId) => ipcRenderer.invoke('stashes:duplicate', stashId),
     restore: (stashId, options) => ipcRenderer.invoke('stashes:restore', stashId, options),
+    restoreAsGroup: (stashId) => ipcRenderer.invoke('stashes:restoreAsGroup', stashId),
     delete: (stashId) => ipcRenderer.invoke('stashes:delete', stashId),
     rename: (stashId, newTitle) => ipcRenderer.invoke('stashes:rename', stashId, newTitle),
     removeTab: (stashId, tabIndex) => ipcRenderer.invoke('stashes:removeTab', stashId, tabIndex),
@@ -270,6 +273,7 @@ const api = {
     exportMarkdown: (stashId) => ipcRenderer.invoke('stashes:exportMarkdown', stashId),
     copyMarkdown: (stashId) => ipcRenderer.invoke('stashes:copyMarkdown', stashId),
     copyUrls: (stashId) => ipcRenderer.invoke('stashes:copyUrls', stashId),
+    copyAllUrls: () => ipcRenderer.invoke('stashes:copyAllUrls'),
     addTab: (stashId, tabId) => ipcRenderer.invoke('stashes:addTab', stashId, tabId),
     importJson: () => ipcRenderer.invoke('stashes:importJson'),
   },
@@ -287,11 +291,17 @@ const api = {
     clearCookies: (url) => ipcRenderer.invoke('site:clearCookies', url),
     getStorageStats: (url) => ipcRenderer.invoke('site:getStorageStats', url),
     exportCookies: (url) => ipcRenderer.invoke('site:exportCookies', url),
+    copyCookiesJson: (url) => ipcRenderer.invoke('site:copyCookiesJson', url),
     resetAllPermissions: () => ipcRenderer.invoke('site:resetAllPermissions'),
     clearOriginPermissions: (origin) => ipcRenderer.invoke('site:clearOriginPermissions', origin),
     allShieldExceptions: () => ipcRenderer.invoke('site:allShieldExceptions'),
     removeShieldException: (domain) => ipcRenderer.invoke('site:removeShieldException', domain),
     resetAllShieldExceptions: () => ipcRenderer.invoke('site:resetAllShieldExceptions'),
+    copySummary: () => ipcRenderer.invoke('site:copySummary'),
+  },
+
+  shortcuts: {
+    copyMarkdown: (markdown) => ipcRenderer.invoke('shortcuts:copyMarkdown', markdown),
   },
 
   downloads: {

@@ -255,7 +255,11 @@
     "tabsGroupPruneEmpty": "Tab Groups: Remove empty groups",
     "readingListCopyUrls": "Copy Reading List URLs",
     "historyCopyUrls": "Copy History URLs",
-    "notesCopyMarkdown": "Copy all Notes as Markdown"
+    "notesCopyMarkdown": "Copy all Notes as Markdown",
+    "extensionsCopyList": "Extensions: Copy installed list as Markdown",
+    "tabsCopyRecentlyClosedUrls": "Copy recently closed tab URLs",
+    "siteCopySummary": "Copy Site Permissions & Shields summary",
+    "stashesCopyAllUrls": "Tab Stash: Copy all stashed URLs"
   },
   "confirm": {
     "closeTitle": "Close tab",
@@ -323,6 +327,7 @@
     "recentlyClosedDesc": "Tabs closed in this session that can be restored.",
     "recentlyClosedEmpty": "No recently closed tabs.",
     "recentlyClosedNoMatch": "No recently closed tabs match your search.",
+    "recentlyClosedCount": "{count} closed tabs",
     "restoreAll": "Restore all",
     "clearRecentlyClosed": "Clear closed tabs"
   },
@@ -359,6 +364,8 @@
     "groupView": "View & Tools",
     "groupBrowser": "Browser & Management",
     "noMatch": "No shortcuts match your search.",
+    "countBadge": "{count} shortcuts",
+    "copyCheatsheet": "Copy Cheatsheet",
     "action": {
       "newTab": "New tab",
       "privateTab": "Private tab",
@@ -407,6 +414,9 @@
     "title": "Extensions",
     "description": "Native browser extensions. Everything here runs in its own isolated process.",
     "none": "No extensions installed.",
+    "noMatch": "No extensions match your search.",
+    "summaryCount": "{active} active · {total} total",
+    "copyList": "Copy Extensions List",
     "on": "Active",
     "off": "Paused",
     "bundled": "Included",
@@ -602,7 +612,18 @@
     "noNotesToCopy": "No notes available to copy",
     "stashUrlsCopied": "Copied {count} stash URL(s) to clipboard",
     "stashTabAdded": "Active tab added to stash",
-    "stashTabAlreadyExists": "This tab is already in the selected stash"
+    "stashTabAlreadyExists": "This tab is already in the selected stash",
+    "noShortcutsToCopy": "No keyboard shortcuts available to copy",
+    "shortcutsCopied": "Keyboard shortcuts cheatsheet copied as Markdown",
+    "noRecentlyClosedToCopy": "No recently closed tab URLs available to copy",
+    "recentlyClosedUrlsCopied": "Copied {count} recently closed tab URL(s) to clipboard",
+    "noExtensionsToCopy": "No extensions installed to copy",
+    "extensionsListCopied": "Copied {count} extension(s) as Markdown",
+    "cookiesCopiedJson": "Copied {count} cookie(s) as JSON to clipboard",
+    "noSiteRulesToCopy": "No custom site permissions or shield exceptions to copy",
+    "siteSummaryCopied": "Copied site permissions & shields summary ({count} entries)",
+    "stashRestoredAsGroup": "Restored {count} tab(s) into group \"{name}\"",
+    "stashAllUrlsCopied": "Copied {count} stashed URL(s) to clipboard"
   },
   "welcome": {
     "title": "Welcome to Hinterland",
@@ -1146,6 +1167,8 @@
     "cookiesModalTitle": "Site Cookies & Storage",
     "cookiesModalDesc": "Inspect and manage stored cookies for {host}.",
     "filterCookies": "Filter cookies by name or domain...",
+    "cookieCountBadge": "{count} cookies",
+    "copyCookiesJson": "Copy JSON",
     "exportCookies": "Export JSON",
     "clearSiteCookies": "Clear all cookies for this site",
     "noCookies": "No cookies stored for this site.",
@@ -1169,7 +1192,9 @@
     "resetAllShields": "Reset All Exceptions",
     "revokeOrigin": "Revoke",
     "enableShield": "Enable Shield",
-    "shieldPaused": "Tracking Protection Paused"
+    "shieldPaused": "Tracking Protection Paused",
+    "copySummary": "Copy Summary",
+    "countBadge": "{count} entries"
   },
   "readingList": {
     "title": "Reading List",
@@ -1370,6 +1395,7 @@
     "exportMarkdown": "Export Markdown",
     "copyLinks": "Copy Links as Markdown",
     "copyUrls": "Copy URLs",
+    "copyAllUrls": "Copy All URLs",
     "addCurrentTab": "Add current tab to this stash",
     "summaryCount": "{stashes} stashes · {tabs} tabs",
     "duplicate": "Duplicate Stash",
@@ -1378,6 +1404,8 @@
     "tab": "tab",
     "tabs": "tabs",
     "restore": "Restore all",
+    "restoreAsGroup": "Restore as Group",
+    "restoreAsGroupDesc": "Open all tabs from this stash inside a new tab group",
     "export": "Export JSON",
     "delete": "Delete",
     "deleteConfirm": "Are you sure you want to delete"

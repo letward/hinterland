@@ -4,6 +4,32 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.38.0] - 2026-11-23
+
+### Added
+- **Extensions Manager: Live Search Filter, Summary Counter & Copy Extensions List (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `extensions:copyList` IPC handler to copy installed extensions as a structured Markdown summary with version, status, source, and extension ID.
+  - Added real-time search filtering (by name, description, or ID), a live active/total summary badge (`extensions.summaryCount`), a **Copy Extensions List** toolbar button, and Command Palette action `commandPalette.extensionsCopyList`.
+- **Recently Closed Tabs: Copy URLs & Live Count Badge (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `copyUniqueUrls` helper and added `tabs:copyRecentlyClosedUrls` IPC handler supporting filtered or full recently closed URL lists.
+  - Added a **Copy URLs** button and live matching count badge in Recently Closed Tabs, plus Command Palette action `commandPalette.tabsCopyRecentlyClosedUrls`.
+- **Cookie Inspector: Copy Cookies as JSON & Live Count Badge (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`)**:
+  - Extracted shared `buildCookiesPayload` helper and added `site:copyCookiesJson` IPC handler to copy site cookies as formatted JSON directly to the clipboard.
+  - Added a **Copy JSON** button and live filtered cookie count badge in the Cookie Inspector toolbar.
+- **Keyboard Shortcuts: Copy Cheatsheet as Markdown & Live Count Badge (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`)**:
+  - Added `shortcuts:copyMarkdown` IPC handler, a **Copy Cheatsheet** button to copy currently matched shortcut groups as formatted Markdown, and a live shortcut count badge.
+- **Tab Stash: Restore Stash as Tab Group & Copy All Stashed URLs (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `stashes:restoreAsGroup` IPC handler to open all tabs from a stash inside a newly created color-coded tab group using the stash's title and colour.
+  - Added `stashes:copyAllUrls` IPC handler, **Restore as Group** button on each stash card, **Copy All URLs** toolbar button, and Command Palette action `commandPalette.stashesCopyAllUrls`.
+- **Site Permissions & Shields Dashboard: Copy Summary & Live Count Badge (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `site:copySummary` IPC handler to copy a Markdown audit of custom per-site permission grants and Shield exceptions.
+  - Added a **Copy Summary** button and live entry count badge in the Site Permissions & Shields toolbar, plus Command Palette action `commandPalette.siteCopySummary`.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`, `website/api/sync.js`)**:
+  - Documented Extensions search & list copy, Recently Closed Copy URLs, Cookie Inspector Copy JSON, Shortcuts Copy Cheatsheet, Tab Stash Restore as Group & Copy All URLs, and Site Permissions Copy Summary in the official User Guide.
+  - Updated website hero badge, standalone Windows installer download link, and sync service version to v1.38.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v138Features.test.mjs`)**:
+  - Added automated unit and integration tests covering `extensions:copyList`, `tabs:copyRecentlyClosedUrls`, `site:copyCookiesJson`, `shortcuts:copyMarkdown`, `stashes:restoreAsGroup`, `stashes:copyAllUrls`, `site:copySummary`, UI/Command Palette wiring, documentation/website updates, and 100% key parity across English and German locales.
+
 ## [1.37.0] - 2026-11-22
 
 ### Added

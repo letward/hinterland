@@ -187,8 +187,8 @@ describe('Hinterland v1.30.0 Features & Polish', () => {
 
     it('updates website/index.html to v1.30.0 release badge and download link', () => {
       const indexHtml = readFileSync(join(ROOT, 'website', 'index.html'), 'utf8');
-      assert.ok(indexHtml.includes('v1.30.0 · Latest Release') || indexHtml.includes('v1.31.0 · Latest Release') || indexHtml.includes('v1.32.0 · Latest Release') || indexHtml.includes('v1.33.0 · Latest Release') || indexHtml.includes('v1.34.0 · Latest Release') || indexHtml.includes('v1.35.0 · Latest Release') || indexHtml.includes('v1.36.0 · Latest Release') || indexHtml.includes('v1.37.0 · Latest Release'));
-      assert.ok(indexHtml.includes('Hinterland-Setup-1.30.0.exe') || indexHtml.includes('Hinterland-Setup-1.31.0.exe') || indexHtml.includes('Hinterland-Setup-1.32.0.exe') || indexHtml.includes('Hinterland-Setup-1.33.0.exe') || indexHtml.includes('Hinterland-Setup-1.34.0.exe') || indexHtml.includes('Hinterland-Setup-1.35.0.exe') || indexHtml.includes('Hinterland-Setup-1.36.0.exe') || indexHtml.includes('Hinterland-Setup-1.37.0.exe'));
+      assert.ok(indexHtml.includes('v1.30.0 · Latest Release') || indexHtml.includes('v1.31.0 · Latest Release') || indexHtml.includes('v1.32.0 · Latest Release') || indexHtml.includes('v1.33.0 · Latest Release') || indexHtml.includes('v1.34.0 · Latest Release') || indexHtml.includes('v1.35.0 · Latest Release') || indexHtml.includes('v1.36.0 · Latest Release') || indexHtml.includes('v1.37.0 · Latest Release') || indexHtml.includes('v1.38.0 · Latest Release'));
+      assert.ok(indexHtml.includes('Hinterland-Setup-1.30.0.exe') || indexHtml.includes('Hinterland-Setup-1.31.0.exe') || indexHtml.includes('Hinterland-Setup-1.32.0.exe') || indexHtml.includes('Hinterland-Setup-1.33.0.exe') || indexHtml.includes('Hinterland-Setup-1.34.0.exe') || indexHtml.includes('Hinterland-Setup-1.35.0.exe') || indexHtml.includes('Hinterland-Setup-1.36.0.exe') || indexHtml.includes('Hinterland-Setup-1.37.0.exe') || indexHtml.includes('Hinterland-Setup-1.38.0.exe'));
     });
   });
 });
