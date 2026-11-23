@@ -4,6 +4,31 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.39.0] - 2026-11-23
+
+### Added
+- **Tab Groups Studio & Tab Management: Collapse/Expand All, Unpin All & Copy Domain URLs (`src/main/tabs.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted `TabManager.normalizeHost(rawUrl)` and added `TabManager.urlsByDomain(id)` and `TabManager.unpinAll()`.
+  - Added `tabs:unpinAll`, `tabs:copyDomainUrls`, and `tabs:groupSetAllCollapsed` IPC handlers.
+  - Added **Collapse All**, **Expand All**, **Unpin All**, and **Copy Domain URLs** buttons in Tab Groups Studio, **Copy Tabs from Same Domain** in the tab context menu, **Unpin All Tabs** in the tabstrip context menu, and corresponding Command Palette actions.
+- **Task Manager: Copy Process Report as Markdown (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `collectAppMetrics` helper and added `app:copyMetricsSummary` IPC handler to copy a structured Markdown table of total memory, Memory Saver status, and active browser/tab processes.
+  - Added **Copy Report** button in Task Manager and Command Palette action `commandPalette.copyTaskReport`.
+- **History Manager: Copy Filtered History as Markdown (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `formatHistoryMarkdown` helper and added `history:copyMarkdown` IPC handler supporting filtered or full browsing history.
+  - Added **Copy as Markdown** button in History Manager and Command Palette action `commandPalette.historyCopyMarkdown`.
+- **Bookmarks Manager: Open Matching Bookmarks in Background Tabs (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `openValidatedUrlsInTabs` helper (reused by `tabs:openClipboardUrls` and `bookmarks:openUrls`) and added `bookmarks:openUrls` IPC handler with safe HTTP/HTTPS validation and tab-count cap.
+  - Added **Open Matching** toolbar button in Bookmarks Manager and Command Palette action `commandPalette.bookmarksOpenMatching`.
+- **Downloads Manager: Copy as Markdown & Retry / Re-download (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `formatDownloadsMarkdown` helper and added `downloads:copyMarkdown` and `downloads:retry` IPC handlers.
+  - Added **Copy as Markdown** toolbar button, per-row **Download again** button for HTTP/HTTPS items, and Command Palette action `commandPalette.downloadsCopyMarkdown`.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`, `website/api/sync.js`)**:
+  - Documented Collapse All / Expand All, Unpin All, Copy Domain URLs, Bookmarks Open Matching, History Copy as Markdown, Downloads Copy as Markdown & Download again, and Task Manager Copy Report in the official User Guide.
+  - Updated website hero badge, standalone Windows installer download link, and sync service version to v1.39.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v139Features.test.mjs`)**:
+  - Added automated unit and integration tests covering all v1.39.0 IPC handlers, `TabManager` helpers, UI/menu/Command Palette wiring, documentation/website updates, and 100% key parity across English and German locales.
+
 ## [1.38.0] - 2026-11-23
 
 ### Added

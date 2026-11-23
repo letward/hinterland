@@ -222,6 +222,34 @@ export function openCommandPalette() {
             run: () => api().tabs.groupPruneEmpty(),
           },
           {
+            id: 'tabsGroupsCollapseAll',
+            title: t('commandPalette.tabsGroupsCollapseAll'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'collapse',
+            run: () => api().tabs.groupSetAllCollapsed(true),
+          },
+          {
+            id: 'tabsGroupsExpandAll',
+            title: t('commandPalette.tabsGroupsExpandAll'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'expand',
+            run: () => api().tabs.groupSetAllCollapsed(false),
+          },
+          {
+            id: 'tabsUnpinAll',
+            title: t('commandPalette.tabsUnpinAll'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'pin',
+            run: () => api().tabs.unpinAll(),
+          },
+          {
+            id: 'tabsCopyDomainUrls',
+            title: t('commandPalette.tabsCopyDomainUrls'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'link',
+            run: () => { if (current) api().tabs.copyDomainUrls(current.id); },
+          },
+          {
             id: 'memorySaverExemptSite',
             title: t('commandPalette.memorySaverExemptSite'),
             category: t('commandPalette.categoryCommand'),
@@ -743,6 +771,13 @@ export function openCommandPalette() {
             run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'taskManager' } })),
           },
           {
+            id: 'copyTaskReport',
+            title: t('commandPalette.copyTaskReport'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().app.copyMetricsSummary(),
+          },
+          {
             id: 'capturePageClipboard',
             title: t('commandPalette.capturePageClipboard'),
             category: t('commandPalette.categoryCommand'),
@@ -835,6 +870,13 @@ export function openCommandPalette() {
             run: () => api().history.exportMarkdown(),
           },
           {
+            id: 'historyCopyMarkdown',
+            title: t('commandPalette.historyCopyMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().history.copyMarkdown(),
+          },
+          {
             id: 'historyExportCsv',
             title: t('commandPalette.historyExportCsv'),
             category: t('commandPalette.categoryCommand'),
@@ -909,6 +951,13 @@ export function openCommandPalette() {
             run: () => api().bookmarks.copyUrls(),
           },
           {
+            id: 'bookmarksOpenMatching',
+            title: t('commandPalette.bookmarksOpenMatching'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'external',
+            run: () => api().bookmarks.openUrls(),
+          },
+          {
             id: 'downloadsClearCompleted',
             title: t('commandPalette.downloadsClearCompleted'),
             category: t('commandPalette.categoryCommand'),
@@ -931,6 +980,13 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'copy',
             run: () => api().downloads.exportMarkdown(),
+          },
+          {
+            id: 'downloadsCopyMarkdown',
+            title: t('commandPalette.downloadsCopyMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().downloads.copyMarkdown(),
           },
           {
             id: 'downloadsCopyUrls',

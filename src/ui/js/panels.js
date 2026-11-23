@@ -326,6 +326,9 @@ function historyPage() {
           await api().history.exportMarkdown();
         } }, [el('span', { html: icon('copy') }), ` ${t('history.exportMarkdown')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
+          await api().history.copyMarkdown(getFilteredEntries());
+        } }, [el('span', { html: icon('copy') }), ` ${t('history.copyMarkdown')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
           await api().history.exportCsv();
         } }, [el('span', { html: icon('list') }), ` ${t('history.exportCsv')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
@@ -512,6 +515,7 @@ function bookmarksPage() {
       const list = el('div', { class: 'card' });
       const countBadge = el('span', { class: 'rowAside', style: { fontWeight: '500', marginLeft: 'auto' } });
       let currentFilter = '';
+      let lastFilteredUrls = [];
 
       const save = async (items) => {
         await api().settings.set('data.bookmarks', items);
@@ -523,6 +527,7 @@ function bookmarksPage() {
         const items = get('data.bookmarks', []) ?? [];
         clear(list);
         if (!items.length) {
+          lastFilteredUrls = [];
           countBadge.textContent = t('bookmarks.countBadge', { count: 0 });
           list.append(el('div', { class: 'empty', text: t('bookmarks.empty') }));
           return;
@@ -534,6 +539,7 @@ function bookmarksPage() {
           const url = (item.url || '').toLowerCase();
           return title.includes(currentFilter) || url.includes(currentFilter);
         });
+        lastFilteredUrls = filtered.map((item) => item.url).filter(Boolean);
         countBadge.textContent = t('bookmarks.countBadge', { count: filtered.length });
 
         if (!filtered.length) {
@@ -622,6 +628,9 @@ function bookmarksPage() {
           const items = get('data.bookmarks', []) ?? [];
           await api().bookmarks.copyUrls(items);
         } }, [el('span', { html: icon('copy') }), ` ${t('bookmarks.copyUrls')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
+          await api().bookmarks.openUrls(lastFilteredUrls);
+        } }, [el('span', { html: icon('external') }), ` ${t('bookmarks.openMatching')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
           const result = await api().bookmarks.importHtml();
           if (result?.ok && typeof result.count === 'number') {
@@ -749,6 +758,12 @@ function downloadsPage() {
         html: `${icon('copy')} <span>${t('downloads.exportMarkdown')}</span>`,
         onclick: () => api().downloads.exportMarkdown(),
       });
+      const copyMarkdownBtn = el('button', {
+        class: 'button small',
+        type: 'button',
+        html: `${icon('copy')} <span>${t('downloads.copyMarkdown')}</span>`,
+        onclick: () => api().downloads.copyMarkdown(),
+      });
       const copyUrlsBtn = el('button', {
         class: 'button small',
         type: 'button',
@@ -793,7 +808,7 @@ function downloadsPage() {
         },
       });
       const summaryBadge = el('span', { class: 'rowAside', style: { fontWeight: '500', marginLeft: 'auto' } });
-      actionsGroup.append(openFolderBtn, exportMarkdownBtn, copyUrlsBtn, clearCompletedBtn, clearFailedBtn, clearHistoryBtn);
+      actionsGroup.append(openFolderBtn, exportMarkdownBtn, copyMarkdownBtn, copyUrlsBtn, clearCompletedBtn, clearFailedBtn, clearHistoryBtn);
 
       toolbar.append(searchInput, filtersGroup, summaryBadge, actionsGroup);
       container.append(toolbar);
@@ -896,6 +911,17 @@ function downloadsPage() {
                 },
               }),
             );
+            if (/^https?:\/\//i.test(entry.url)) {
+              controls.append(
+                el('button', {
+                  class: 'iconButton small',
+                  type: 'button',
+                  html: icon('reload'),
+                  title: t('downloads.retryDownload'),
+                  onclick: () => api().downloads.retry(entry.url),
+                }),
+              );
+            }
           }
 
           controls.append(
@@ -1397,7 +1423,13 @@ function taskManagerPage() {
           },
         }, [el('span', { html: icon('sun') }), ` ${t('taskManager.wakeAll')}`]);
 
-        summaryCard.append(memStat, procStat, tabStat, saverStat, sleepOthersBtn, wakeAllBtn, refreshBtn);
+        const copyReportBtn = el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: () => api().app.copyMetricsSummary(),
+        }, [el('span', { html: icon('copy') }), ` ${t('taskManager.copyReport')}`]);
+
+        summaryCard.append(memStat, procStat, tabStat, saverStat, sleepOthersBtn, wakeAllBtn, copyReportBtn, refreshBtn);
 
         clear(list);
         let items = data.processes || [];
@@ -2845,6 +2877,43 @@ function tabGroupsPage() {
         },
       }, [el('span', { html: icon('trash') }), ` ${t('tabGroups.pruneEmpty')}`]);
 
+      const collapseAllBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.collapseAllDesc'),
+        onclick: async () => {
+          const res = await api().tabs.groupSetAllCollapsed(true);
+          if (res?.ok) await refresh();
+        },
+      }, [el('span', { html: icon('collapse') }), ` ${t('tabGroups.collapseAll')}`]);
+
+      const expandAllBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.expandAllDesc'),
+        onclick: async () => {
+          const res = await api().tabs.groupSetAllCollapsed(false);
+          if (res?.ok) await refresh();
+        },
+      }, [el('span', { html: icon('expand') }), ` ${t('tabGroups.expandAll')}`]);
+
+      const unpinAllBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.unpinAllDesc'),
+        onclick: async () => {
+          const res = await api().tabs.unpinAll();
+          if (res?.ok) await refresh();
+        },
+      }, [el('span', { html: icon('pin') }), ` ${t('tabGroups.unpinAll')}`]);
+
+      const copyDomainUrlsBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.copyDomainUrlsDesc'),
+        onclick: () => api().tabs.copyDomainUrls(),
+      }, [el('span', { html: icon('link') }), ` ${t('tabGroups.copyDomainUrls')}`]);
+
       nameInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') createBtn.click();
       });
@@ -2860,9 +2929,13 @@ function tabGroupsPage() {
           ungroupAllBtn,
           copyAllLinksBtn,
           copyAllUrlsBtn,
+          copyDomainUrlsBtn,
           openClipboardUrlsBtn,
+          unpinAllBtn,
           closeUngroupedBtn,
           pruneEmptyBtn,
+          collapseAllBtn,
+          expandAllBtn,
         ])
       );
       container.append(creatorCard);

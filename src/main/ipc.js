@@ -76,7 +76,7 @@ export function installIpc() {
     v8: process.versions.v8,
   }));
 
-  const copyUniqueUrls = (source, emptyToast, successToast) => {
+  const copyUniqueUrls = (source, emptyToast, successToast, extraData = {}) => {
     const uniqueUrls = [];
     const seen = new Set();
     for (const raw of source || []) {
@@ -86,12 +86,40 @@ export function installIpc() {
       uniqueUrls.push(url);
     }
     if (!uniqueUrls.length) {
-      surface.send('toast', { message: emptyToast, kind: 'warning' });
+      surface.send('toast', { message: emptyToast, kind: 'warning', data: extraData });
       return { ok: false, count: 0 };
     }
     clipboard.writeText(uniqueUrls.join('\n'));
-    surface.send('toast', { message: successToast, kind: 'success', data: { count: uniqueUrls.length } });
+    surface.send('toast', { message: successToast, kind: 'success', data: { count: uniqueUrls.length, ...extraData } });
     return { ok: true, count: uniqueUrls.length };
+  };
+
+  const openValidatedUrlsInTabs = (candidates, { limit = 30, emptyToast, successToast } = {}) => {
+    const seen = new Set();
+    const urls = [];
+    for (const candidate of candidates || []) {
+      const cleaned = String(candidate || '').trim().replace(/[.,;:!?]+$/, '');
+      if (!cleaned) continue;
+      try {
+        const parsed = new URL(cleaned);
+        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') continue;
+        const normalized = parsed.href;
+        if (!seen.has(normalized)) {
+          seen.add(normalized);
+          urls.push(normalized);
+        }
+      } catch {}
+      if (urls.length >= limit) break;
+    }
+    if (!urls.length) {
+      if (emptyToast) surface.send('toast', { message: emptyToast, kind: 'warning' });
+      return { ok: false, count: 0, urls: [] };
+    }
+    for (const url of urls) {
+      tabs.create({ url, background: true });
+    }
+    if (successToast) surface.send('toast', { message: successToast, kind: 'success', data: { count: urls.length } });
+    return { ok: true, count: urls.length, urls };
   };
 
   handle('app:copyDiagnostics', () => {
@@ -154,7 +182,7 @@ export function installIpc() {
   });
 
   /* -------------------------------------------------------- task manager & metrics */
-  handle('app:metrics', () => {
+  const collectAppMetrics = () => {
     const metrics = app.getAppMetrics();
     const tabList = tabs.list;
     const tabByPid = new Map();
@@ -192,6 +220,35 @@ export function installIpc() {
       tabCount: tabList.length,
       processCount: processes.length,
     };
+  };
+
+  handle('app:metrics', () => collectAppMetrics());
+
+  handle('app:copyMetricsSummary', () => {
+    const data = collectAppMetrics();
+    const saverStats = tabs.getMemorySaverStats();
+    const totalMB = (data.totalMemoryKB / 1024).toFixed(1);
+    const lines = [
+      `# ${app.getName()} Task Manager Report`,
+      '',
+      `- **Generated**: ${new Date().toISOString()}`,
+      `- **Total Memory**: ${totalMB} MB`,
+      `- **Processes**: ${data.processCount}`,
+      `- **Open Tabs**: ${data.tabCount}`,
+      `- **Memory Saver**: ${saverStats.enabled ? 'Enabled' : 'Disabled'} (${saverStats.sleepingCount} sleeping, ~${saverStats.estimatedSavedMB} MB saved)`,
+      '',
+      '| Type | PID | Memory (MB) | CPU (%) | Tab / Details |',
+      '| --- | ---: | ---: | ---: | --- |',
+    ];
+    const sorted = [...data.processes].sort((a, b) => (b.memoryKB || 0) - (a.memoryKB || 0)).slice(0, 25);
+    for (const proc of sorted) {
+      const firstTab = proc.tabs?.[0];
+      const detail = firstTab ? String(firstTab.title || firstTab.url || 'Tab').replace(/\|/g, '/') : proc.type;
+      lines.push(`| ${proc.type} | ${proc.pid} | ${(proc.memoryKB / 1024).toFixed(1)} | ${proc.cpu} | ${detail} |`);
+    }
+    clipboard.writeText(lines.join('\n'));
+    surface.send('toast', { message: 'toast.taskReportCopied', kind: 'success' });
+    return { ok: true, processCount: data.processCount };
   });
 
   handle('app:killProcess', (pid) => {
@@ -723,6 +780,23 @@ export function installIpc() {
     return { ok: removed > 0, removed };
   });
 
+  handle('tabs:groupSetAllCollapsed', (collapsed = true) => {
+    const groups = sortedGroups();
+    if (!groups.length) {
+      surface.send('toast', { message: 'toast.noTabGroups', kind: 'info' });
+      return { ok: false, count: 0 };
+    }
+    const target = Boolean(collapsed);
+    const updated = groups.map((g) => ({ ...g, collapsed: target }));
+    persistGroups(updated);
+    surface.send('toast', {
+      message: target ? 'toast.groupsCollapsedAll' : 'toast.groupsExpandedAll',
+      kind: 'success',
+      data: { count: updated.length },
+    });
+    return { ok: true, count: updated.length, collapsed: target };
+  });
+
   handle('tabs:copyAllMarkdown', () => {
     const webTabs = tabs.list.filter((t) => t.url && !isInternalUrl(t.url));
     if (!webTabs.length) {
@@ -777,30 +851,32 @@ export function installIpc() {
   handle('tabs:openClipboardUrls', () => {
     const raw = clipboard.readText() || '';
     const matches = raw.match(/https?:\/\/[^\s<>"')\]]+/gi) || [];
-    const seen = new Set();
-    const urls = [];
-    for (const candidate of matches) {
-      const cleaned = candidate.replace(/[.,;:!?]+$/, '');
-      try {
-        const parsed = new URL(cleaned);
-        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') continue;
-        const normalized = parsed.href;
-        if (!seen.has(normalized)) {
-          seen.add(normalized);
-          urls.push(normalized);
-        }
-      } catch {}
-      if (urls.length >= 30) break;
+    return openValidatedUrlsInTabs(matches, {
+      limit: 30,
+      emptyToast: 'toast.noUrlsInClipboard',
+      successToast: 'toast.openedClipboardUrls',
+    });
+  });
+
+  handle('tabs:unpinAll', () => {
+    const count = tabs.unpinAll();
+    surface.send('toast', {
+      message: count > 0 ? 'toast.tabsUnpinnedAll' : 'toast.noPinnedTabs',
+      kind: count > 0 ? 'success' : 'info',
+      data: { count },
+    });
+    return { ok: count > 0, count };
+  });
+
+  handle('tabs:copyDomainUrls', (id) => {
+    const target = activeTab(id);
+    if (!target) {
+      surface.send('toast', { message: 'toast.noDomainUrlsToCopy', kind: 'warning' });
+      return { ok: false, count: 0, domain: '' };
     }
-    if (!urls.length) {
-      surface.send('toast', { message: 'toast.noUrlsInClipboard', kind: 'warning' });
-      return { ok: false, count: 0, urls: [] };
-    }
-    for (const url of urls) {
-      tabs.create({ url, background: true });
-    }
-    surface.send('toast', { message: 'toast.openedClipboardUrls', kind: 'success', data: { count: urls.length } });
-    return { ok: true, count: urls.length, urls };
+    const { domain, urls } = tabs.urlsByDomain(target.id);
+    const res = copyUniqueUrls(urls, 'toast.noDomainUrlsToCopy', 'toast.domainUrlsCopied', { domain });
+    return { ...res, domain };
   });
 
   handle('tabs:closeByDomain', async (id) => {
@@ -1414,8 +1490,7 @@ export function installIpc() {
     return { ok: true, filePath: result.filePath, count: list.length };
   });
 
-  handle('history:exportMarkdown', async () => {
-    const list = history.getAll() || [];
+  const formatHistoryMarkdown = (list) => {
     const dateStr = new Date().toLocaleDateString('en-CA');
     const lines = [
       '# Hinterland Browsing History Archive',
@@ -1426,6 +1501,7 @@ export function installIpc() {
 
     const groups = new Map();
     for (const entry of list) {
+      if (!entry?.url) continue;
       const visitTime = entry.lastVisited || entry.visitedAt || entry.time || entry.timestamp;
       let dayKey = 'Earlier';
       let timeKey = '';
@@ -1446,15 +1522,20 @@ export function installIpc() {
       lines.push(`## ${day}`);
       lines.push('');
       for (const item of entries) {
-        const title = (item.title || item.url || 'Untitled').replace(/[\[\]]/g, '');
+        const title = String(item.title || item.url || 'Untitled').replace(/[\[\]]/g, '');
         const timePart = item.timeKey ? ` — ${item.timeKey}` : '';
-        const countPart = item.count > 1 ? ` (${item.count} visits)` : '';
+        const visits = Number(item.visits || item.count || item.visitCount || 1);
+        const countPart = visits > 1 ? ` (${visits} visits)` : '';
         lines.push(`- [${title}](${item.url})${timePart}${countPart}`);
       }
       lines.push('');
     }
+    return lines.join('\n');
+  };
 
-    const markdown = lines.join('\n');
+  handle('history:exportMarkdown', async () => {
+    const list = history.getAll() || [];
+    const markdown = formatHistoryMarkdown(list);
     const result = await dialog.showSaveDialog(chromeWindow(), {
       title: 'Hinterland',
       defaultPath: `hinterland-history-${Date.now()}.md`,
@@ -1464,6 +1545,17 @@ export function installIpc() {
     await writeFile(result.filePath, markdown, 'utf8');
     surface.send('toast', { message: 'toast.historyExportedMarkdown', kind: 'success' });
     return { ok: true, filePath: result.filePath, count: list.length };
+  });
+
+  handle('history:copyMarkdown', (entries = null) => {
+    const list = (Array.isArray(entries) ? entries : (history.getAll() || [])).filter((e) => e?.url);
+    if (!list.length) {
+      surface.send('toast', { message: 'toast.noHistoryToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(formatHistoryMarkdown(list));
+    surface.send('toast', { message: 'toast.historyCopied', kind: 'success', data: { count: list.length } });
+    return { ok: true, count: list.length };
   });
 
   handle('history:exportCsv', async () => {
@@ -1574,8 +1666,7 @@ export function installIpc() {
   handle('downloads:removeItem', (id) => removeDownloadHistoryItem(id));
   handle('downloads:openFile', (filePath) => openDownloadedFile(filePath));
 
-  handle('downloads:exportMarkdown', async () => {
-    const list = getDownloadHistory() || [];
+  const formatDownloadsMarkdown = (list) => {
     const dateStr = new Date().toLocaleDateString('en-CA');
     const lines = [
       '# Hinterland Downloads Log',
@@ -1604,7 +1695,12 @@ export function installIpc() {
         lines.push(`- **${name}** — ${metaParts}`);
       }
     }
-    const markdown = lines.join('\n');
+    return lines.join('\n');
+  };
+
+  handle('downloads:exportMarkdown', async () => {
+    const list = getDownloadHistory() || [];
+    const markdown = formatDownloadsMarkdown(list);
     const result = await dialog.showSaveDialog(chromeWindow(), {
       title: 'Hinterland',
       defaultPath: `hinterland-downloads-${Date.now()}.md`,
@@ -1614,6 +1710,38 @@ export function installIpc() {
     await writeFile(result.filePath, markdown, 'utf8');
     surface.send('toast', { message: 'toast.downloadsExportedMarkdown', kind: 'success' });
     return { ok: true, filePath: result.filePath, count: list.length };
+  });
+
+  handle('downloads:copyMarkdown', () => {
+    const list = getDownloadHistory() || [];
+    if (!list.length) {
+      surface.send('toast', { message: 'toast.noDownloadsToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(formatDownloadsMarkdown(list));
+    surface.send('toast', { message: 'toast.downloadsCopied', kind: 'success', data: { count: list.length } });
+    return { ok: true, count: list.length };
+  });
+
+  handle('downloads:retry', (rawUrl) => {
+    try {
+      const parsed = new URL(String(rawUrl || '').trim());
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+        surface.send('toast', { message: 'toast.downloadRetryInvalid', kind: 'warning' });
+        return { ok: false };
+      }
+      const tab = tabs.active;
+      if (tab?.contents && !tab.contents.isDestroyed()) {
+        tab.contents.downloadURL(parsed.href);
+      } else {
+        tabs.create({ url: parsed.href, background: true });
+      }
+      surface.send('toast', { message: 'toast.downloadRetried', kind: 'info' });
+      return { ok: true, url: parsed.href };
+    } catch {
+      surface.send('toast', { message: 'toast.downloadRetryInvalid', kind: 'warning' });
+      return { ok: false };
+    }
   });
 
   handle('downloads:copyUrls', () => {
@@ -1844,6 +1972,17 @@ export function installIpc() {
     clipboard.writeText(list.join('\n'));
     surface.send('toast', { message: 'toast.bookmarkUrlsCopied', kind: 'success', data: { count: list.length } });
     return { ok: true, count: list.length };
+  });
+
+  handle('bookmarks:openUrls', (urls = null) => {
+    const source = Array.isArray(urls)
+      ? urls
+      : (settings.value('data.bookmarks') ?? []).map((item) => item?.url);
+    return openValidatedUrlsInTabs(source, {
+      limit: 15,
+      emptyToast: 'toast.noBookmarksToOpen',
+      successToast: 'toast.bookmarksOpened',
+    });
   });
 
   handle('bookmarks:importHtml', async () => {

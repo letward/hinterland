@@ -387,6 +387,11 @@ export function openTabMenu(tab, x, y) {
           title: tab.pinned ? t('menu.unpin') : t('menu.pin'),
           onSelect: () => api().tabs.pin(tab.id, !tab.pinned),
         }),
+        row({
+          iconName: 'link',
+          title: t('menu.copyDomainUrls'),
+          onSelect: () => api().tabs.copyDomainUrls(tab.id),
+        }),
         separator(),
         section('menu.group'),
         row({
@@ -819,6 +824,11 @@ export function openTabstripMenu() {
             const cur = currentTab();
             if (cur) api().tabs.closeByDomain(cur.id);
           },
+        }),
+        row({
+          iconName: 'pin',
+          title: t('menu.unpinAllTabs'),
+          onSelect: () => api().tabs.unpinAll(),
         }),
         row({
           iconName: 'minus',

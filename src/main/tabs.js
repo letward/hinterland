@@ -418,23 +418,51 @@ export class TabManager extends EventEmitter {
     return toClose.length;
   }
 
+  normalizeHost(rawUrl) {
+    try {
+      if (!rawUrl || rawUrl.startsWith('hinterland://') || rawUrl === 'about:blank') return '';
+      const parsed = new URL(rawUrl);
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '';
+      return parsed.hostname.replace(/^www\./i, '').toLowerCase();
+    } catch {
+      return '';
+    }
+  }
+
+  urlsByDomain(id) {
+    const target = id ? this.byId(id) : this.active;
+    if (!target || !target.url) return { domain: '', urls: [] };
+    const domain = this.normalizeHost(target.url);
+    if (!domain) return { domain: '', urls: [] };
+    const urls = this.tabs
+      .filter((tab) => this.normalizeHost(tab.url) === domain)
+      .map((tab) => tab.url);
+    return { domain, urls };
+  }
+
+  unpinAll() {
+    let count = 0;
+    for (const tab of this.tabs) {
+      if (tab.pinned) {
+        tab.pinned = false;
+        this.emit('update', tab.snapshot());
+        count += 1;
+      }
+    }
+    if (count > 0) {
+      this.emit('list', this.snapshot());
+      this.scheduleSave();
+    }
+    return count;
+  }
+
   async closeByDomain(id) {
     const target = this.byId(id);
     if (!target || !target.url) return { count: 0, domain: '' };
-    const normalizeHost = (rawUrl) => {
-      try {
-        if (!rawUrl || rawUrl.startsWith('hinterland://') || rawUrl === 'about:blank') return '';
-        const parsed = new URL(rawUrl);
-        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '';
-        return parsed.hostname.replace(/^www\./i, '').toLowerCase();
-      } catch {
-        return '';
-      }
-    };
-    const domain = normalizeHost(target.url);
+    const domain = this.normalizeHost(target.url);
     if (!domain) return { count: 0, domain: '' };
     const toClose = this.tabs
-      .filter((tab) => !tab.pinned && normalizeHost(tab.url) === domain)
+      .filter((tab) => !tab.pinned && this.normalizeHost(tab.url) === domain)
       .map((tab) => tab.id);
     for (const tabId of toClose) {
       await this.close(tabId, { force: true });
