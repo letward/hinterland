@@ -1,0 +1,57 @@
+{
+  "appId": "de.hinterland",
+  "productName": "Hinterland",
+  "copyright": "Copyright © 2026 Hinterland Contributors",
+  "asarUnpack": [
+    "src/extensions/**/*"
+  ],
+  "protocols": [
+    {
+      "name": "Hinterland Protocol",
+      "schemes": [
+        "hinterland"
+      ]
+    }
+  ],
+  "fileAssociations": [
+    {
+      "ext": "html",
+      "name": "HTML Document",
+      "description": "HTML Document",
+      "icon": "build/icons/icon.ico",
+      "role": "Viewer"
+    },
+    {
+      "ext": "htm",
+      "name": "HTML Document",
+      "description": "HTML Document",
+      "icon": "build/icons/icon.ico",
+      "role": "Viewer"
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "appx",
+        "arch": [
+          "x64"
+        ]
+      }
+    ],
+    "icon": "build/icons/icon.ico",
+    "requestedExecutionLevel": "asInvoker"
+  },
+  "appx": {
+    "applicationId": "Hinterland",
+    "identityName": "Hinterland.Browser",
+    "publisher": "CN=Hinterland",
+    "publisherDisplayName": "Hinterland",
+    "backgroundColor": "#090b0e",
+    "showNameOnTiles": true,
+    "languages": [
+      "en-US",
+      "de-DE"
+    ],
+    "artifactName": "${productName}-Store-${version}.${ext}"
+  }
+}

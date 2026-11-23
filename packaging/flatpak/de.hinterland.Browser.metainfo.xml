@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>de.hinterland.Browser</id>
+  <name>Hinterland</name>
+  <summary>A fast, secure and freely customisable browser</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <developer id="de.hinterland">
+    <name>Hinterland</name>
+  </developer>
+  <description>
+    <p>
+      Hinterland is a fast, private, and customisable Chromium/Electron web browser designed for focus and security.
+    </p>
+    <ul>
+      <li>Built-in tracker blocking, HTTPS-First navigation, DNT, and per-site shields</li>
+      <li>Tab Groups Studio, Tab Stash, Reader Mode, and Quick Notes</li>
+      <li>Zero-knowledge AES-256-GCM password manager and MV3 Extension SDK</li>
+      <li>Optional end-to-end encrypted cloud sync</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">de.hinterland.Browser.desktop</launchable>
+  <url type="homepage">https://hinterland-browser.vercel.app</url>
+  <url type="bugtracker">https://github.com/letward/Hinterland/issues</url>
+  <url type="help">https://hinterland-browser.vercel.app/docs/user-guide.html</url>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="1.39.0" date="2026-11-23">
+      <url>https://github.com/letward/Hinterland/releases/tag/v1.39.0</url>
+    </release>
+  </releases>
+</component>

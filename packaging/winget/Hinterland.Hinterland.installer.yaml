@@ -1,0 +1,26 @@
+# Created using wingetcreate / Hinterland release automation
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.6.0.schema.json
+
+PackageIdentifier: Hinterland.Hinterland
+PackageVersion: 1.39.0
+Platform:
+  - Windows.Desktop
+MinimumOSVersion: 10.0.0.0
+InstallerType: nullsoft
+Scope: user
+InstallModes:
+  - silent
+UpgradeBehavior: install
+Protocols:
+  - http
+  - https
+  - hinterland
+FileExtensions:
+  - htm
+  - html
+Installers:
+  - Architecture: x64
+    InstallerUrl: https://github.com/letward/Hinterland/releases/download/v1.39.0/Hinterland-Setup-1.39.0.exe
+    InstallerSha256: AC5886AFDB447EEC7E1FA19F406971F382BD35FFB195E20AE3C1BF2FB68582B6
+ManifestType: installer
+ManifestVersion: 1.6.0

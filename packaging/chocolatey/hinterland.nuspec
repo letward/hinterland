@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>hinterland</id>
+    <version>1.39.0</version>
+    <packageSourceUrl>https://github.com/letward/Hinterland/tree/main/packaging/chocolatey</packageSourceUrl>
+    <owners>Hinterland</owners>
+    <title>Hinterland Browser</title>
+    <authors>Hinterland</authors>
+    <projectUrl>https://hinterland-browser.vercel.app</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/letward/Hinterland/main/build/icons/icon.png</iconUrl>
+    <copyright>Copyright (c) 2026 Hinterland Contributors</copyright>
+    <licenseUrl>https://github.com/letward/Hinterland/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/letward/Hinterland</projectSourceUrl>
+    <docsUrl>https://hinterland-browser.vercel.app/docs/user-guide.html</docsUrl>
+    <bugTrackerUrl>https://github.com/letward/Hinterland/issues</bugTrackerUrl>
+    <tags>hinterland browser chromium electron privacy security</tags>
+    <summary>A fast, secure and freely customisable browser.</summary>
+    <description>Hinterland is a fast, private, and customisable Chromium/Electron browser with built-in tracker blocking, HTTPS-First, Reader Mode, Tab Stash, Quick Notes, a zero-knowledge AES-GCM password manager, and an MV3 Extension SDK.</description>
+    <releaseNotes>https://github.com/letward/Hinterland/releases/tag/v1.39.0</releaseNotes>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>

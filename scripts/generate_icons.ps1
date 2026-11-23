@@ -113,7 +113,54 @@ for ($i = 0; $i -lt $sizes.Count; $i++) {
 $bw.Flush()
 $bw.Close()
 $fs.Close()
+
+# 3. Generate Microsoft Store AppX / MSIX tile and splash assets
+$appxDir = Join-Path $root "build\appx"
+if (-not (Test-Path $appxDir)) {
+    New-Item -ItemType Directory -Path $appxDir -Force | Out-Null
+}
+
+$squareAssets = @{
+    "StoreLogo.png"       = 50
+    "Square44x44Logo.png" = 44
+    "SmallTile.png"       = 71
+    "Square150x150Logo.png" = 150
+    "LargeTile.png"       = 310
+}
+
+foreach ($entry in $squareAssets.GetEnumerator()) {
+    $tileBmp = CreateCircularBadge $entry.Value
+    $tileOut = Join-Path $appxDir $entry.Key
+    $tileBmp.Save($tileOut, [System.Drawing.Imaging.ImageFormat]::Png)
+    $tileBmp.Dispose()
+    Write-Host "Created $tileOut"
+}
+
+function CreateWideObsidianTile([int]$width, [int]$height, [int]$logoSize, [string]$outFile) {
+    $wideBmp = New-Object System.Drawing.Bitmap($width, $height, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+    $wg = [System.Drawing.Graphics]::FromImage($wideBmp)
+    $wg.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+    $wg.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
+    $wg.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+    $wg.Clear([System.Drawing.Color]::FromArgb(255, 9, 11, 14)) # #090b0e
+
+    $badge = CreateCircularBadge $logoSize
+    $dx = [int](($width - $logoSize) / 2)
+    $dy = [int](($height - $logoSize) / 2)
+    $dest = New-Object System.Drawing.Rectangle($dx, $dy, $logoSize, $logoSize)
+    $wg.DrawImage($badge, $dest)
+
+    $badge.Dispose()
+    $wg.Dispose()
+    $wideBmp.Save($outFile, [System.Drawing.Imaging.ImageFormat]::Png)
+    $wideBmp.Dispose()
+    Write-Host "Created $outFile"
+}
+
+CreateWideObsidianTile 310 150 110 (Join-Path $appxDir "Wide310x150Logo.png")
+CreateWideObsidianTile 620 300 180 (Join-Path $appxDir "SplashScreen.png")
+
 $bmp512.Dispose()
 $src.Dispose()
 
-Write-Host "Created $outIco successfully with sizes: $($sizes -join ', ')"
+Write-Host "Created $outIco and Store AppX assets successfully with sizes: $($sizes -join ', ')"

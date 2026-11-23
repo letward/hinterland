@@ -56,10 +56,19 @@ npm run dist       # Windows-Installer bauen
 - [Incident Response](docs/incident-response.md)
 - [Security / Threat Model](docs/security/threat-model.md)
 - [Release Policy](docs/security/release-policy.md)
+- [Code Signing Policy](docs/security/code-signing-policy.md)
+- [Multi-Platform Distribution ($0)](docs/distribution.md)
 
 ## Website (Vercel)
 
 Der Ordner `website/` ist das Root Directory des Vercel-Projekts. Er zeigt Download-Button + neuesten Changelog. Änderungen an `CHANGELOG.md` auf `main` erscheinen dort automatisch.
+
+## Plattformen, Signatur & Lizenzen
+
+- **Windows:** 1-Klick-Installer (NSIS), Microsoft Store AppX (`build/electron-builder.store.json`) sowie Paket-Manifeste für WinGet, Scoop und Chocolatey (`packaging/`).
+- **Linux & macOS:** AppImage, `.deb`, Flatpak-Manifest sowie `.dmg`/`.zip`.
+- **Code-Signierung:** Free code signing provided by SignPath.io, certificate by SignPath Foundation.
+- **Lizenzen & Datenschutz:** [LICENSE](LICENSE) (MIT), [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) und [Privacy Policy](website/docs/privacy.html).
 
 ## Lizenz
 

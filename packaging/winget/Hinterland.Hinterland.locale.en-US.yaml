@@ -1,0 +1,31 @@
+# Created using wingetcreate / Hinterland release automation
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.6.0.schema.json
+
+PackageIdentifier: Hinterland.Hinterland
+PackageVersion: 1.39.0
+PackageLocale: en-US
+Publisher: Hinterland
+PublisherUrl: https://hinterland-browser.vercel.app
+PublisherSupportUrl: https://github.com/letward/Hinterland/issues
+PrivacyUrl: https://hinterland-browser.vercel.app/docs/privacy.html
+Author: Hinterland
+PackageName: Hinterland
+PackageUrl: https://hinterland-browser.vercel.app
+License: MIT
+LicenseUrl: https://github.com/letward/Hinterland/blob/main/LICENSE
+Copyright: Copyright (c) 2026 Hinterland Contributors
+ShortDescription: A fast, secure and freely customisable browser.
+Description: Hinterland is a fast, private, and customizable Electron/Chromium web browser featuring built-in tracker blocking, HTTPS-First navigation, Reader Mode, Tab Stashes, Quick Notes, a zero-knowledge AES-GCM password manager, and an MV3 Extension SDK.
+Moniker: hinterland
+Tags:
+  - browser
+  - chromium
+  - electron
+  - privacy
+  - web-browser
+ReleaseNotesUrl: https://github.com/letward/Hinterland/releases/tag/v1.39.0
+Documentations:
+  - DocumentLabel: User Guide
+    DocumentUrl: https://hinterland-browser.vercel.app/docs/user-guide.html
+ManifestType: defaultLocale
+ManifestVersion: 1.6.0

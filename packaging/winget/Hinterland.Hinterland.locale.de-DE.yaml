@@ -1,0 +1,21 @@
+# Created using wingetcreate / Hinterland release automation
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.locale.1.6.0.schema.json
+
+PackageIdentifier: Hinterland.Hinterland
+PackageVersion: 1.39.0
+PackageLocale: de-DE
+Publisher: Hinterland
+PublisherUrl: https://hinterland-browser.vercel.app
+PublisherSupportUrl: https://github.com/letward/Hinterland/issues
+PrivacyUrl: https://hinterland-browser.vercel.app/docs/privacy.html
+PackageName: Hinterland
+PackageUrl: https://hinterland-browser.vercel.app
+License: MIT
+LicenseUrl: https://github.com/letward/Hinterland/blob/main/LICENSE
+ShortDescription: Ein schneller, sicherer und frei anpassbarer Browser.
+Description: Hinterland ist ein schneller, privater und frei anpassbarer Webbrowser mit integriertem Tracker-Blocker, HTTPS-First, Lesemodus, Tab-Stash, Notizen, Zero-Knowledge AES-GCM Passwort-Manager und Extension-SDK.
+Documentations:
+  - DocumentLabel: Benutzerhandbuch
+    DocumentUrl: https://hinterland-browser.vercel.app/docs/user-guide.html
+ManifestType: locale
+ManifestVersion: 1.6.0

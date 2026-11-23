@@ -7,6 +7,11 @@
   "type": "module",
   "author": "Hinterland",
   "license": "MIT",
+  "homepage": "https://hinterland-browser.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/letward/Hinterland.git"
+  },
   "private": true,
   "engines": {
     "node": ">=20"
@@ -19,7 +24,11 @@
     "test": "node scripts/check.mjs && node --test sdk/test/*.test.mjs",
     "sdk": "node sdk/bin/hinterland-sdk.mjs",
     "icons": "node scripts/makeicon.mjs",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win nsis",
+    "dist:store": "electron-builder --win appx --config build/electron-builder.store.json --publish never",
+    "dist:linux": "electron-builder --linux AppImage deb",
+    "dist:mac": "electron-builder --mac dmg zip"
   },
   "dependencies": {
     "electron-updater": "^6.3.9"
@@ -31,6 +40,7 @@
   "build": {
     "appId": "de.hinterland",
     "productName": "Hinterland",
+    "copyright": "Copyright © 2026 Hinterland Contributors",
     "artifactName": "${productName}-Setup-${version}.${ext}",
     "publish": {
       "provider": "github",
@@ -69,7 +79,28 @@
     ],
     "win": {
       "target": "nsis",
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/icon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "build/icons/icon.png",
+      "category": "Network;WebBrowser;",
+      "maintainer": "Hinterland <security@hinterland.browser>",
+      "synopsis": "A fast, secure and freely customisable browser.",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "build/icons/icon.png",
+      "category": "public.app-category.productivity",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "nsis": {
       "oneClick": true,

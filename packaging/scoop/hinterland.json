@@ -1,0 +1,32 @@
+{
+  "version": "1.39.0",
+  "description": "A fast, secure and freely customisable browser.",
+  "homepage": "https://hinterland-browser.vercel.app",
+  "license": "MIT",
+  "architecture": {
+    "64bit": {
+      "url": "https://github.com/letward/Hinterland/releases/download/v1.39.0/Hinterland-Setup-1.39.0.exe#/dl.7z",
+      "hash": "ac5886afdb447eec7e1fa19f406971f382bd35ffb195e20ae3c1bf2fb68582b6",
+      "pre_install": [
+        "Expand-7zipArchive \"$dir\\`$PLUGINSDIR\\app-64.7z\" \"$dir\"",
+        "Remove-Item \"$dir\\`$PLUGINSDIR\", \"$dir\\Uninstall*\" -Force -Recurse -ErrorAction SilentlyContinue"
+      ]
+    }
+  },
+  "shortcuts": [
+    [
+      "Hinterland.exe",
+      "Hinterland"
+    ]
+  ],
+  "checkver": {
+    "github": "https://github.com/letward/Hinterland"
+  },
+  "autoupdate": {
+    "architecture": {
+      "64bit": {
+        "url": "https://github.com/letward/Hinterland/releases/download/v$version/Hinterland-Setup-$version.exe#/dl.7z"
+      }
+    }
+  }
+}

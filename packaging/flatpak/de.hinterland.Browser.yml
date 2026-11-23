@@ -1,0 +1,32 @@
+app-id: de.hinterland.Browser
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+base: org.electronjs.Electron2.BaseApp
+base-version: '24.08'
+command: hinterland
+separate-locales: false
+finish-args:
+  - --share=ipc
+  - --share=network
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --device=dri
+  - --filesystem=xdg-download
+  - --talk-name=org.freedesktop.Notifications
+modules:
+  - name: hinterland
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 de.hinterland.Browser.desktop /app/share/applications/de.hinterland.Browser.desktop
+      - install -Dm644 de.hinterland.Browser.metainfo.xml /app/share/metainfo/de.hinterland.Browser.metainfo.xml
+      - install -Dm644 build/icons/icon.png /app/share/icons/hicolor/512x512/apps/de.hinterland.Browser.png
+    sources:
+      - type: git
+        url: https://github.com/letward/Hinterland.git
+        tag: v1.39.0
+      - type: file
+        path: de.hinterland.Browser.desktop
+      - type: file
+        path: de.hinterland.Browser.metainfo.xml

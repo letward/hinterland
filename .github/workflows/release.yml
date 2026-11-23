@@ -13,7 +13,8 @@ on:
 
 permissions:
   contents: write
-  id-token: write   # für OIDC / Attestations (falls später genutzt)
+  id-token: write
+  attestations: write
 
 jobs:
   idempotency-check:
@@ -21,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       skip: ${{ steps.check.outputs.skip }}
+      tag: ${{ steps.tag.outputs.tag }}
     steps:
       - name: Determine tag
         id: tag
@@ -45,12 +47,14 @@ jobs:
           fi
 
   build-windows:
-    name: Build Windows Installer
+    name: Build Windows Installer & Microsoft Store AppX
     needs: idempotency-check
     if: needs.idempotency-check.outputs.skip == 'false'
     runs-on: windows-latest
     permissions:
       contents: write
+      id-token: write
+      attestations: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -67,28 +71,107 @@ jobs:
       - name: Run static checks
         run: npm run check
 
-      - name: Build Windows Installer
+      - name: Build Windows NSIS Installer
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npx electron-builder --win nsis --publish always
 
+      - name: Build Microsoft Store AppX
+        env:
+          MS_STORE_IDENTITY_NAME: ${{ vars.MS_STORE_IDENTITY_NAME }}
+          MS_STORE_PUBLISHER: ${{ vars.MS_STORE_PUBLISHER }}
+          MS_STORE_PUBLISHER_DISPLAY_NAME: ${{ vars.MS_STORE_PUBLISHER_DISPLAY_NAME }}
+        run: |
+          $cfg = Get-Content -Raw 'build/electron-builder.store.json' | ConvertFrom-Json
+          if ($env:MS_STORE_IDENTITY_NAME) { $cfg.appx.identityName = $env:MS_STORE_IDENTITY_NAME }
+          if ($env:MS_STORE_PUBLISHER) { $cfg.appx.publisher = $env:MS_STORE_PUBLISHER }
+          if ($env:MS_STORE_PUBLISHER_DISPLAY_NAME) { $cfg.appx.publisherDisplayName = $env:MS_STORE_PUBLISHER_DISPLAY_NAME }
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          $jsonText = $cfg | ConvertTo-Json -Depth 10
+          [System.IO.File]::WriteAllText((Join-Path (Resolve-Path 'dist') 'electron-builder.store.resolved.json'), $jsonText, [System.Text.UTF8Encoding]::new($false))
+          npx electron-builder --win appx --config dist/electron-builder.store.resolved.json --publish never
+
+      - name: Upload unsigned Windows installer for optional SignPath signing
+        id: upload-unsigned-installer
+        if: ${{ secrets.SIGNPATH_API_TOKEN != '' && secrets.SIGNPATH_ORGANIZATION_ID != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-windows-installer
+          path: dist/*.exe
+          retention-days: 1
+
+      - name: Sign Windows Installer via SignPath Foundation (Free OSS)
+        if: ${{ secrets.SIGNPATH_API_TOKEN != '' && secrets.SIGNPATH_ORGANIZATION_ID != '' }}
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: 'hinterland'
+          signing-policy-slug: 'release-signing'
+          github-artifact-id: ${{ steps.upload-unsigned-installer.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: 'dist-signed'
+
+      - name: Apply signed installer and refresh latest.yml hashes
+        if: ${{ secrets.SIGNPATH_API_TOKEN != '' && secrets.SIGNPATH_ORGANIZATION_ID != '' }}
+        shell: pwsh
+        run: |
+          Copy-Item dist-signed\*.exe dist\ -Force
+          $exe = Get-ChildItem dist\*.exe | Select-Object -First 1
+          $stream = [System.IO.File]::OpenRead($exe.FullName)
+          try {
+            $sha512Bytes = [System.Security.Cryptography.SHA512]::Create().ComputeHash($stream)
+          } finally {
+            $stream.Dispose()
+          }
+          $sha512 = [Convert]::ToBase64String($sha512Bytes)
+          $ymlPath = (Resolve-Path 'dist/latest.yml').Path
+          $yml = [System.IO.File]::ReadAllText($ymlPath)
+          $yml = [regex]::Replace($yml, 'sha512: .+', "sha512: $sha512")
+          $yml = [regex]::Replace($yml, 'size: \d+', "size: $($exe.Length)")
+          [System.IO.File]::WriteAllText($ymlPath, $yml, [System.Text.UTF8Encoding]::new($false))
+
+      - name: Generate SHA256 Checksums
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem -Path dist -File | Where-Object { $_.Extension -in '.exe', '.appx' }
+          $lines = foreach ($f in $files) {
+            $h = (Get-FileHash -Path $f.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            "$h  $($f.Name)"
+          }
+          $lines | Out-File -FilePath dist\SHA256SUMS-windows.txt -Encoding utf8
+          Get-Content dist\SHA256SUMS-windows.txt
+
       - name: Verify artefacts exist
         run: |
-          Get-ChildItem dist/*.exe, dist/*.blockmap, dist/latest.yml
+          Get-ChildItem dist/*.exe, dist/*.blockmap, dist/latest.yml, dist/*.appx, dist/SHA256SUMS-windows.txt
+
+      - name: Attest Build Provenance (Windows EXE)
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'dist/*.exe'
+
+      - name: Attest Build Provenance (Microsoft Store AppX)
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'dist/*.appx'
 
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          $TAG = "${{ github.ref_name }}"
-          if (-not $TAG -or $TAG -notlike "v*") {
-            $TAG = "${{ github.event.inputs.tag }}"
-          }
+          $TAG = "${{ needs.idempotency-check.outputs.tag }}"
           if (-not $TAG) {
-            $TAG = ($env:GITHUB_REF -replace '^refs/tags/', '')
+            $TAG = "${{ github.ref_name }}"
           }
-          Write-Host "Ensuring release is published for tag: $TAG"
+          Write-Host "Ensuring release and uploading Store AppX + checksums for tag: $TAG"
+          $signedFiles = @()
+          $signedFiles += (Get-ChildItem dist/*.exe).FullName
+          $signedFiles += (Get-ChildItem dist/*.appx).FullName
+          $signedFiles += (Get-Item dist/latest.yml).FullName
+          $signedFiles += (Get-Item dist/SHA256SUMS-windows.txt).FullName
+          gh release upload "$TAG" @signedFiles --clobber
           gh release edit "$TAG" --draft=false
 
       - name: Upload build artefacts
@@ -98,5 +181,146 @@ jobs:
           path: |
             dist/*.exe
             dist/*.blockmap
+            dist/*.appx
             dist/latest.yml
-          retention-days: 7
+            dist/SHA256SUMS-windows.txt
+          retention-days: 14
+
+  build-linux:
+    name: Build Linux AppImage & DEB
+    needs:
+      - idempotency-check
+      - build-windows
+    if: needs.idempotency-check.outputs.skip == 'false'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Linux packages
+        run: npx electron-builder --linux AppImage deb --publish never
+
+      - name: Generate SHA256 Checksums
+        run: |
+          cd dist
+          sha256sum *.AppImage *.deb > SHA256SUMS-linux.txt
+          cat SHA256SUMS-linux.txt
+
+      - name: Attest Build Provenance (Linux AppImage)
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'dist/*.AppImage'
+
+      - name: Attest Build Provenance (Linux DEB)
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'dist/*.deb'
+
+      - name: Attach Linux artefacts to GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ needs.idempotency-check.outputs.tag }}"
+          gh release upload "$TAG" dist/*.AppImage dist/*.deb dist/SHA256SUMS-linux.txt --clobber
+
+      - name: Upload Linux artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: hinterland-linux-${{ github.run_id }}
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+            dist/SHA256SUMS-linux.txt
+          retention-days: 14
+
+  build-macos:
+    name: Build macOS DMG & ZIP ($0 unsigned)
+    needs:
+      - idempotency-check
+      - build-windows
+    if: needs.idempotency-check.outputs.skip == 'false'
+    runs-on: macos-latest
+    continue-on-error: true
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build macOS packages (unsigned, $0)
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+        run: npx electron-builder --mac dmg zip --publish never
+
+      - name: Generate SHA256 Checksums
+        run: |
+          cd dist
+          shasum -a 256 *.dmg *.zip > SHA256SUMS-macos.txt
+          cat SHA256SUMS-macos.txt
+
+      - name: Attest Build Provenance (macOS DMG)
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'dist/*.dmg'
+
+      - name: Attest Build Provenance (macOS ZIP)
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'dist/*.zip'
+
+      - name: Attach macOS artefacts to GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ needs.idempotency-check.outputs.tag }}"
+          gh release upload "$TAG" dist/*.dmg dist/*.zip dist/SHA256SUMS-macos.txt --clobber
+
+      - name: Upload macOS artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: hinterland-macos-${{ github.run_id }}
+          path: |
+            dist/*.dmg
+            dist/*.zip
+            dist/SHA256SUMS-macos.txt
+          retention-days: 14
+
+  publish-winget:
+    name: Submit update to WinGet (optional)
+    needs:
+      - idempotency-check
+      - build-windows
+    if: needs.idempotency-check.outputs.skip == 'false'
+    runs-on: windows-latest
+    steps:
+      - name: Run WinGet Releaser
+        if: ${{ secrets.WINGET_ACC_TOKEN != '' }}
+        uses: vedantmgoyal9/winget-releaser@v2
+        with:
+          identifier: Hinterland.Hinterland
+          installers-regex: 'Hinterland-Setup-.*\.exe$'
+          token: ${{ secrets.WINGET_ACC_TOKEN }}

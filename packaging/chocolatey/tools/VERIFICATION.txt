@@ -1,0 +1,15 @@
+VERIFICATION
+Verification is intended to assist the Chocolatey moderators and community in verifying that this package's contents are trustworthy.
+
+1. Download the official Windows installer:
+   https://github.com/letward/Hinterland/releases/download/v1.39.0/Hinterland-Setup-1.39.0.exe
+
+2. Verify the SHA-256 checksum matches:
+   ac5886afdb447eec7e1fa19f406971f382bd35ffb195e20ae3c1bf2fb68582b6
+
+3. Verify the GitHub Release SLSA Build Provenance Attestation and SHA256SUMS-windows.txt on:
+   https://github.com/letward/Hinterland/releases/tag/v1.39.0
+
+4. License & Privacy Policy:
+   - MIT License: https://github.com/letward/Hinterland/blob/main/LICENSE
+   - Privacy Policy: https://hinterland-browser.vercel.app/docs/privacy.html

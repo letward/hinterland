@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hinterland Browser — Privacy Policy</title>
+  <meta name="description" content="Official privacy policy for Hinterland Browser (Windows, Microsoft Store, Linux, and macOS).">
+  <link rel="stylesheet" href="../tokens.css">
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.7 var(--font); }
+    a { color: var(--accent); }
+    .wrap { width: min(100% - 40px, 1080px); margin: auto; }
+    header { padding: 56px 0 34px; border-bottom: 1px solid var(--borderSoft); }
+    header a { text-decoration: none; }
+    .eyebrow { color: var(--accent); text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; font-weight: 700; }
+    h1 { margin: 8px 0; font-size: clamp(2.1rem, 5vw, 3.8rem); line-height: 1.05; letter-spacing: -.04em; }
+    h2 { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--borderSoft); font-size: 1.5rem; }
+    p, li { color: var(--textDim); }
+    strong { color: var(--text); }
+    main { padding: 20px 0 80px; }
+    .note { padding: 18px 22px; border: 1px solid var(--borderSoft); border-left: 4px solid var(--accent); border-radius: var(--radiusLarge); background: var(--surface); margin: 20px 0; }
+    footer { padding: 28px 0; border-top: 1px solid var(--borderSoft); color: var(--textDim); font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <a href="../">← Back to Hinterland</a>
+      <p class="eyebrow">Hinterland Browser</p>
+      <h1>Privacy Policy</h1>
+      <p>Effective date: November 23, 2026 · Last updated: November 23, 2026</p>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="note">
+      <strong>Core Principle:</strong> Hinterland is a local-first, open-source web browser (MIT License). Your browsing history, bookmarks, reading list, quick notes, and passwords belong exclusively to you. Hinterland does <strong>not</strong> sell data, serve tracking ads, or build behavioral advertising profiles.
+    </div>
+
+    <section>
+      <h2>1. Data Stored Locally on Your Device</h2>
+      <p>By default, Hinterland stores all browser data exclusively on your local machine in your user profile directory:</p>
+      <ul>
+        <li><strong>Browsing History, Bookmarks, Reading List &amp; Quick Notes:</strong> Saved locally so the browser works offline and instantaneously.</li>
+        <li><strong>Passwords (Hinterland Pass Vault):</strong> Encrypted locally using zero-knowledge <strong>AES-256-GCM</strong> encryption derived from your master password. Nobody outside your device can decrypt your vault.</li>
+        <li><strong>Site Permissions &amp; Shields:</strong> Camera, microphone, geolocation, notification, and tracker-blocking preferences are stored locally per site.</li>
+        <li><strong>Private Tabs:</strong> Opened inside an isolated incognito session that does not write local browsing history after the tab is closed.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>2. Optional Account &amp; Zero-Knowledge Cloud Sync</h2>
+      <p>Creating a Hinterland account is completely optional. If you choose to sign in and enable Cloud Sync in <strong>Settings → Account</strong>:</p>
+      <ul>
+        <li>You control individually which categories are synchronized (bookmarks, search history, reading list, quick notes, and portable browser preferences).</li>
+        <li>You may set a client-side sync passphrase so your data is end-to-end encrypted before leaving your device.</li>
+        <li>Sync endpoints are hosted via Vercel and Supabase strictly to deliver your explicitly requested multi-device synchronization.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>3. Network Requests &amp; Updates</h2>
+      <ul>
+        <li><strong>Web Browsing:</strong> Websites you visit receive standard HTTP/HTTPS requests from Chromium; Hinterland strips common tracking query parameters (such as <code>utm_*</code>, <code>fbclid</code>, <code>gclid</code>) and blocks known trackers when Shield protection is enabled.</li>
+        <li><strong>Microsoft Store Package:</strong> Application updates are delivered exclusively through Windows / Microsoft Store; third-party auto-update checks are disabled inside Store builds.</li>
+        <li><strong>Standalone Desktop Installer:</strong> Checks GitHub Releases (<code>letward/Hinterland</code>) solely to notify you of verified browser updates.</li>
+        <li><strong>Optional Feedback Form:</strong> If you voluntarily submit feedback on the website, only the text and optional contact email you enter are submitted to create a GitHub issue.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>4. Permissions Explained</h2>
+      <p>Hinterland only requests operating-system permissions you explicitly approve when visiting websites (for example camera, microphone, geolocation, or notifications) and per-user protocol registration (<code>hinterland://</code>, plus optional <code>http</code>/<code>https</code> on standalone installers when chosen as default browser). No admin elevation is required.</p>
+    </section>
+
+    <section>
+      <h2>5. Security &amp; Contact</h2>
+      <p>Hinterland isolates extensions under strict Manifest V3 sandboxing (`EXTENSION_PRELOAD`) and strict Content Security Policy enforcement. Source code and security documentation are publicly auditable at <a href="https://github.com/letward/Hinterland" target="_blank" rel="noopener">github.com/letward/Hinterland</a>.</p>
+      <p>Questions, data deletion requests, or vulnerability reports can be submitted via <a href="https://github.com/letward/Hinterland/issues" target="_blank" rel="noopener">GitHub Issues</a> or GitHub Private Vulnerability Reporting (<a href="https://github.com/letward/Hinterland/security/advisories" target="_blank" rel="noopener">Security Advisories</a>).</p>
+    </section>
+  </main>
+  <footer>
+    <div class="wrap">Hinterland Browser · MIT License · <a href="../docs/user-guide.html">User Guide</a> · <a href="../">Home</a></div>
+  </footer>
+</body>
+</html>

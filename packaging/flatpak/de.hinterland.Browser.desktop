@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Hinterland
+Comment=A fast, secure and freely customisable browser
+Exec=hinterland %U
+Terminal=false
+Type=Application
+Icon=de.hinterland.Browser
+StartupWMClass=Hinterland
+Categories=Network;WebBrowser;
+MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/hinterland;
