@@ -609,6 +609,10 @@ function bookmarksPage() {
           await save(items);
         } }, [el('span', { html: icon('plus') }), ` ${t('bookmarks.addCurrent')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
+          const res = await api().bookmarks.bookmarkAllTabs();
+          if (res?.ok) paint(currentFilter);
+        } }, [el('span', { html: icon('bookmark') }), ` ${t('bookmarks.bookmarkAllTabs')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
           const items = get('data.bookmarks', []) ?? [];
           await api().bookmarks.exportHtml(items);
         } }, [el('span', { html: icon('download') }), ` ${t('bookmarks.exportHtml')}`]),
@@ -1739,6 +1743,14 @@ function readingListPage(mode = 'unread') {
             }
           },
         }, [el('span', { html: icon('plus') }), ` ${t('readingList.addCurrentTab')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            const res = await api().readingList.addAllTabs();
+            if (res?.ok) refresh();
+          },
+        }, [el('span', { html: icon('tabs') }), ` ${t('readingList.addAllTabs')}`]),
       ]);
 
       if (mode === 'unread') {
@@ -2084,7 +2096,16 @@ function notesPage() {
         }, [el('span', { html: icon('folder') }), ` ${t('notes.importNotes')}`]),
       ]);
 
-      const exportRow = el('div', { class: 'actionRow small', style: { display: 'flex', gap: '6px', marginBottom: '8px' } }, [
+      const exportRow = el('div', { class: 'actionRow small', style: { display: 'flex', gap: '6px', marginBottom: '8px', flexWrap: 'wrap' } }, [
+        el('button', {
+          class: 'button small',
+          type: 'button',
+          style: { flex: 1 },
+          title: t('notes.copyAllMarkdown'),
+          onclick: async () => {
+            await api().notes.copyMarkdown();
+          },
+        }, [el('span', { html: icon('copy') }), ` ${t('notes.copyAllMarkdown')}`]),
         el('button', {
           class: 'button small',
           type: 'button',
@@ -2093,7 +2114,7 @@ function notesPage() {
           onclick: async () => {
             await api().notes.exportMarkdown();
           },
-        }, [el('span', { html: icon('copy') }), ` ${t('notes.exportMarkdown')}`]),
+        }, [el('span', { html: icon('download') }), ` ${t('notes.exportMarkdown')}`]),
         el('button', {
           class: 'button small',
           type: 'button',
@@ -2241,6 +2262,16 @@ function notesPage() {
           },
         });
 
+        const openLinksBtn = el('button', {
+          class: 'iconButton small',
+          type: 'button',
+          html: icon('external'),
+          title: t('notes.openLinks'),
+          onclick: async () => {
+            await api().notes.openLinks(activeNote.id);
+          },
+        });
+
         const duplicateBtn = el('button', {
           class: 'iconButton small',
           type: 'button',
@@ -2281,7 +2312,7 @@ function notesPage() {
           },
         });
 
-        toolbar.append(clipBtn, sep1, editModeBtn, previewModeBtn, sep2, pinBtn, copyBtn, copyMarkdownBtn, duplicateBtn, exportBtn, deleteBtn);
+        toolbar.append(clipBtn, sep1, editModeBtn, previewModeBtn, sep2, pinBtn, copyBtn, copyMarkdownBtn, openLinksBtn, duplicateBtn, exportBtn, deleteBtn);
 
         let bodyEl;
         const statusBar = el('div', { class: 'notesStatusBar' });
@@ -2914,6 +2945,23 @@ function tabGroupsPage() {
         onclick: () => api().tabs.copyDomainUrls(),
       }, [el('span', { html: icon('link') }), ` ${t('tabGroups.copyDomainUrls')}`]);
 
+      const copyPinnedUrlsBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.copyPinnedUrlsDesc'),
+        onclick: () => api().tabs.copyPinnedUrls(),
+      }, [el('span', { html: icon('pin') }), ` ${t('tabGroups.copyPinnedUrls')}`]);
+
+      const closeSleepingBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.closeSleepingDesc'),
+        onclick: async () => {
+          const res = await api().tabs.closeSleeping();
+          if (res?.ok) await refresh();
+        },
+      }, [el('span', { html: icon('moon') }), ` ${t('tabGroups.closeSleeping')}`]);
+
       nameInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') createBtn.click();
       });
@@ -2930,9 +2978,11 @@ function tabGroupsPage() {
           copyAllLinksBtn,
           copyAllUrlsBtn,
           copyDomainUrlsBtn,
+          copyPinnedUrlsBtn,
           openClipboardUrlsBtn,
           unpinAllBtn,
           closeUngroupedBtn,
+          closeSleepingBtn,
           pruneEmptyBtn,
           collapseAllBtn,
           expandAllBtn,

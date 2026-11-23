@@ -831,9 +831,19 @@ export function openTabstripMenu() {
           onSelect: () => api().tabs.unpinAll(),
         }),
         row({
+          iconName: 'link',
+          title: t('menu.copyPinnedUrls'),
+          onSelect: () => api().tabs.copyPinnedUrls(),
+        }),
+        row({
           iconName: 'minus',
           title: t('menu.closeUngroupedTabs'),
           onSelect: () => api().tabs.closeUngrouped(),
+        }),
+        row({
+          iconName: 'moon',
+          title: t('menu.closeSleepingTabs'),
+          onSelect: () => api().tabs.closeSleeping(),
         }),
         row({
           iconName: 'moon',

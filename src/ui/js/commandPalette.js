@@ -250,6 +250,20 @@ export function openCommandPalette() {
             run: () => { if (current) api().tabs.copyDomainUrls(current.id); },
           },
           {
+            id: 'tabsCopyPinnedUrls',
+            title: t('commandPalette.tabsCopyPinnedUrls'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'pin',
+            run: () => api().tabs.copyPinnedUrls(),
+          },
+          {
+            id: 'tabsCloseSleeping',
+            title: t('commandPalette.tabsCloseSleeping'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'moon',
+            run: () => api().tabs.closeSleeping(),
+          },
+          {
             id: 'memorySaverExemptSite',
             title: t('commandPalette.memorySaverExemptSite'),
             category: t('commandPalette.categoryCommand'),
@@ -362,6 +376,13 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'upload',
             run: () => api().search.importJson(),
+          },
+          {
+            id: 'searchCopyMarkdown',
+            title: t('commandPalette.searchCopyMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().search.copyMarkdown(),
           },
           {
             id: 'reload',
@@ -856,6 +877,13 @@ export function openCommandPalette() {
             run: () => api().readingList.markAllRead(),
           },
           {
+            id: 'readingListAddAllTabs',
+            title: t('commandPalette.readingListAddAllTabs'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'tabs',
+            run: () => api().readingList.addAllTabs(),
+          },
+          {
             id: 'historyExport',
             title: t('commandPalette.historyExport'),
             category: t('commandPalette.categoryCommand'),
@@ -958,6 +986,13 @@ export function openCommandPalette() {
             run: () => api().bookmarks.openUrls(),
           },
           {
+            id: 'bookmarksBookmarkAllTabs',
+            title: t('commandPalette.bookmarksBookmarkAllTabs'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'bookmark',
+            run: () => api().bookmarks.bookmarkAllTabs(),
+          },
+          {
             id: 'downloadsClearCompleted',
             title: t('commandPalette.downloadsClearCompleted'),
             category: t('commandPalette.categoryCommand'),
@@ -1050,6 +1085,13 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'link',
             run: () => api().notes.createFromTab(),
+          },
+          {
+            id: 'notesOpenLinks',
+            title: t('commandPalette.notesOpenLinks'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'external',
+            run: () => api().notes.openLinks(),
           },
           {
             id: 'closeDuplicates',

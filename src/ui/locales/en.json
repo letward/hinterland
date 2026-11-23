@@ -164,7 +164,9 @@
     "closeUngroupedTabs": "Close Ungrouped Tabs",
     "wakeAllTabs": "Wake All Sleeping Tabs",
     "copyDomainUrls": "Copy Tabs from Same Domain",
-    "unpinAllTabs": "Unpin All Tabs"
+    "unpinAllTabs": "Unpin All Tabs",
+    "copyPinnedUrls": "Copy Pinned Tab URLs",
+    "closeSleepingTabs": "Close Sleeping Tabs"
   },
   "find": {
     "placeholder": "Find on page",
@@ -269,7 +271,13 @@
     "historyCopyMarkdown": "Copy Browsing History as Markdown",
     "bookmarksOpenMatching": "Open all saved Bookmarks in tabs",
     "downloadsCopyMarkdown": "Copy Downloads Log as Markdown",
-    "copyTaskReport": "Task Manager: Copy Process Report as Markdown"
+    "copyTaskReport": "Task Manager: Copy Process Report as Markdown",
+    "tabsCopyPinnedUrls": "Copy all pinned tab URLs",
+    "tabsCloseSleeping": "Close all sleeping tabs",
+    "searchCopyMarkdown": "Copy Search Engines as Markdown",
+    "readingListAddAllTabs": "Reading List: Add all open tabs",
+    "bookmarksBookmarkAllTabs": "Bookmarks: Bookmark all open tabs",
+    "notesOpenLinks": "Quick Notes: Open all links from notes"
   },
   "confirm": {
     "closeTitle": "Close tab",
@@ -294,6 +302,7 @@
     "empty": "No bookmarks yet. Use the star next to the address bar.",
     "noPage": "This page cannot be bookmarked.",
     "addCurrent": "Add current page",
+    "bookmarkAllTabs": "Bookmark Open Tabs",
     "added": "Bookmark saved",
     "removed": "Bookmark removed",
     "exportHtml": "Export bookmarks (HTML)",
@@ -652,7 +661,17 @@
     "downloadRetried": "Restarted download",
     "downloadRetryInvalid": "Cannot retry this download URL",
     "bookmarksOpened": "Opened {count} bookmark(s) in background tabs",
-    "noBookmarksToOpen": "No valid HTTP/HTTPS bookmarks to open"
+    "noBookmarksToOpen": "No valid HTTP/HTTPS bookmarks to open",
+    "closedSleepingTabs": "Closed {count} sleeping tab(s)",
+    "pinnedUrlsCopied": "Copied {count} pinned tab URL(s) to clipboard",
+    "searchEnginesCopied": "Copied {count} search engine(s) as Markdown",
+    "noSearchEnginesToCopy": "No search engines available to copy",
+    "bookmarkedAllTabs": "Bookmarked {count} open tab(s)",
+    "allTabsAlreadyBookmarked": "All open web tabs are already bookmarked",
+    "readingListAddedAll": "Added {count} open tab(s) to Reading List",
+    "readingListAllTabsPresent": "All open web tabs are already in your Reading List",
+    "noteLinksOpened": "Opened {count} link(s) from notes in background tabs",
+    "noLinksInNote": "No valid HTTP/HTTPS links found in notes"
   },
   "welcome": {
     "title": "Welcome to Hinterland",
@@ -1231,6 +1250,7 @@
     "empty": "Your Reading List is empty.",
     "noMatch": "No items match your search.",
     "addCurrentTab": "Add current tab",
+    "addAllTabs": "Add Open Tabs",
     "openAllUnread": "Open all unread",
     "markAllRead": "Mark All as Read",
     "markRead": "Mark as read",
@@ -1394,6 +1414,8 @@
     "unpinNote": "Unpin note",
     "copyNote": "Copy note",
     "copyMarkdown": "Copy as Markdown",
+    "openLinks": "Open links in tabs",
+    "copyAllMarkdown": "Copy All (MD)",
     "duplicateNote": "Duplicate Note",
     "exportNote": "Export as Markdown (.md)",
     "deleteNote": "Delete note",
@@ -1470,6 +1492,10 @@
     "unpinAllDesc": "Unpin all pinned tabs in the window",
     "copyDomainUrls": "Copy Domain URLs",
     "copyDomainUrlsDesc": "Copy all open tab URLs sharing the active tab's domain",
+    "copyPinnedUrls": "Copy Pinned URLs",
+    "copyPinnedUrlsDesc": "Copy all pinned web tab URLs line by line",
+    "closeSleeping": "Close Sleeping",
+    "closeSleepingDesc": "Close all unpinned tabs currently sleeping in Memory Saver",
     "addActiveTab": "Add Active Tab",
     "addActiveTabDesc": "Assign the current active tab to this group",
     "copyAllLinks": "Copy All Open Tabs",

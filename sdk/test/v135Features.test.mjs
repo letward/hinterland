@@ -193,13 +193,13 @@ describe('Hinterland v1.35.0 Features & Polish', () => {
 
     it('updates website/index.html to v1.35.0 release badge and download link', () => {
       const indexHtml = readFileSync(join(ROOT, 'website', 'index.html'), 'utf8');
-      assert.ok(indexHtml.includes('v1.35.0 · Latest Release') || indexHtml.includes('v1.36.0 · Latest Release') || indexHtml.includes('v1.37.0 · Latest Release') || indexHtml.includes('v1.38.0 · Latest Release') || indexHtml.includes('v1.39.0 · Latest Release'));
-      assert.ok(indexHtml.includes('Hinterland-Setup-1.35.0.exe') || indexHtml.includes('Hinterland-Setup-1.36.0.exe') || indexHtml.includes('Hinterland-Setup-1.37.0.exe') || indexHtml.includes('Hinterland-Setup-1.38.0.exe') || indexHtml.includes('Hinterland-Setup-1.39.0.exe'));
+      assert.ok(indexHtml.includes('v1.35.0 · Latest Release') || indexHtml.includes('v1.36.0 · Latest Release') || indexHtml.includes('v1.37.0 · Latest Release') || indexHtml.includes('v1.38.0 · Latest Release') || indexHtml.includes('v1.39.0 · Latest Release') || indexHtml.includes('v1.40.0 · Latest Release'));
+      assert.ok(indexHtml.includes('Hinterland-Setup-1.35.0.exe') || indexHtml.includes('Hinterland-Setup-1.36.0.exe') || indexHtml.includes('Hinterland-Setup-1.37.0.exe') || indexHtml.includes('Hinterland-Setup-1.38.0.exe') || indexHtml.includes('Hinterland-Setup-1.39.0.exe') || indexHtml.includes('Hinterland-Setup-1.40.0.exe'));
     });
 
     it('updates website/api/sync.js to v1.35.0', () => {
       const syncJs = readFileSync(join(ROOT, 'website', 'api', 'sync.js'), 'utf8');
-      assert.ok(syncJs.includes("version: '1.35.0'") || syncJs.includes("version: '1.36.0'") || syncJs.includes("version: '1.37.0'") || syncJs.includes("version: '1.38.0'") || syncJs.includes("version: '1.39.0'"));
+      assert.ok(syncJs.includes("version: '1.35.0'") || syncJs.includes("version: '1.36.0'") || syncJs.includes("version: '1.37.0'") || syncJs.includes("version: '1.38.0'") || syncJs.includes("version: '1.39.0'") || syncJs.includes("version: '1.40.0'"));
     });
   });
 });

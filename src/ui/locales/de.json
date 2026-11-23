@@ -164,7 +164,9 @@
     "closeUngroupedTabs": "Nicht gruppierte Tabs schließen",
     "wakeAllTabs": "Alle schlafenden Tabs aufwecken",
     "copyDomainUrls": "Tabs derselben Domain kopieren",
-    "unpinAllTabs": "Alle Tabs lösen"
+    "unpinAllTabs": "Alle Tabs lösen",
+    "copyPinnedUrls": "Angeheftete Tab-URLs kopieren",
+    "closeSleepingTabs": "Schlafende Tabs schließen"
   },
   "find": {
     "placeholder": "In Seite suchen",
@@ -269,7 +271,13 @@
     "historyCopyMarkdown": "Browserverlauf als Markdown kopieren",
     "bookmarksOpenMatching": "Alle gespeicherten Lesezeichen in Tabs öffnen",
     "downloadsCopyMarkdown": "Download-Verlauf als Markdown kopieren",
-    "copyTaskReport": "Task-Manager: Prozessbericht als Markdown kopieren"
+    "copyTaskReport": "Task-Manager: Prozessbericht als Markdown kopieren",
+    "tabsCopyPinnedUrls": "Alle angehefteten Tab-URLs kopieren",
+    "tabsCloseSleeping": "Alle schlafenden Tabs schließen",
+    "searchCopyMarkdown": "Suchmaschinen als Markdown kopieren",
+    "readingListAddAllTabs": "Leseliste: Alle offenen Tabs hinzufügen",
+    "bookmarksBookmarkAllTabs": "Lesezeichen: Alle offenen Tabs speichern",
+    "notesOpenLinks": "Schnellnotizen: Alle Links aus Notizen öffnen"
   },
   "confirm": {
     "closeTitle": "Tab schließen",
@@ -294,6 +302,7 @@
     "empty": "Noch keine Lesezeichen. Nutze den Stern an der Adressleiste.",
     "noPage": "Diese Seite kann nicht gespeichert werden.",
     "addCurrent": "Aktuelle Seite hinzufügen",
+    "bookmarkAllTabs": "Offene Tabs speichern",
     "added": "Lesezeichen gespeichert",
     "removed": "Lesezeichen entfernt",
     "exportHtml": "Lesezeichen exportieren (HTML)",
@@ -652,7 +661,17 @@
     "downloadRetried": "Download erneut gestartet",
     "downloadRetryInvalid": "Diese Download-URL kann nicht erneut gestartet werden",
     "bookmarksOpened": "{count} Lesezeichen in Hintergrund-Tabs geöffnet",
-    "noBookmarksToOpen": "Keine gültigen HTTP/HTTPS-Lesezeichen zum Öffnen vorhanden"
+    "noBookmarksToOpen": "Keine gültigen HTTP/HTTPS-Lesezeichen zum Öffnen vorhanden",
+    "closedSleepingTabs": "{count} schlafende(n) Tab(s) geschlossen",
+    "pinnedUrlsCopied": "{count} angeheftete Tab-URL(s) in die Zwischenablage kopiert",
+    "searchEnginesCopied": "{count} Suchmaschine(n) als Markdown kopiert",
+    "noSearchEnginesToCopy": "Keine Suchmaschinen zum Kopieren vorhanden",
+    "bookmarkedAllTabs": "{count} offene(n) Tab(s) als Lesezeichen gespeichert",
+    "allTabsAlreadyBookmarked": "Alle offenen Web-Tabs sind bereits als Lesezeichen gespeichert",
+    "readingListAddedAll": "{count} offene(n) Tab(s) zur Leseliste hinzugefügt",
+    "readingListAllTabsPresent": "Alle offenen Web-Tabs befinden sich bereits in Ihrer Leseliste",
+    "noteLinksOpened": "{count} Link(s) aus Notizen in Hintergrund-Tabs geöffnet",
+    "noLinksInNote": "Keine gültigen HTTP/HTTPS-Links in Notizen gefunden"
   },
   "welcome": {
     "title": "Willkommen bei Hinterland",
@@ -1231,6 +1250,7 @@
     "empty": "Ihre Leseliste ist leer.",
     "noMatch": "Keine Einträge entsprechen Ihrer Suche.",
     "addCurrentTab": "Aktuellen Tab hinzufügen",
+    "addAllTabs": "Offene Tabs hinzufügen",
     "openAllUnread": "Alle ungelesenen öffnen",
     "markAllRead": "Alle als gelesen markieren",
     "markRead": "Als gelesen markieren",
@@ -1394,6 +1414,8 @@
     "unpinNote": "Notiz lösen",
     "copyNote": "Notiz kopieren",
     "copyMarkdown": "Als Markdown kopieren",
+    "openLinks": "Links in Tabs öffnen",
+    "copyAllMarkdown": "Alle kopieren (MD)",
     "duplicateNote": "Notiz duplizieren",
     "exportNote": "Als Markdown exportieren (.md)",
     "deleteNote": "Notiz löschen",
@@ -1470,6 +1492,10 @@
     "unpinAllDesc": "Alle angehefteten Tabs in diesem Fenster lösen",
     "copyDomainUrls": "Domain-URLs kopieren",
     "copyDomainUrlsDesc": "Alle offenen Tab-URLs derselben Domain wie der aktive Tab kopieren",
+    "copyPinnedUrls": "Angeheftete URLs kopieren",
+    "copyPinnedUrlsDesc": "Alle angehefteten Web-Tab-URLs zeilenweise kopieren",
+    "closeSleeping": "Schlafende schließen",
+    "closeSleepingDesc": "Alle nicht angehefteten, derzeit im Memory Saver schlafenden Tabs schließen",
     "addActiveTab": "Aktiven Tab hinzufügen",
     "addActiveTabDesc": "Den aktuell aktiven Tab dieser Gruppe zuordnen",
     "copyAllLinks": "Alle offenen Tabs kopieren",

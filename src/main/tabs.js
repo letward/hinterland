@@ -480,6 +480,22 @@ export class TabManager extends EventEmitter {
     return toClose.length;
   }
 
+  async closeSleeping() {
+    const toClose = this.tabs
+      .filter((tab) => !tab.pinned && tab.sleeping)
+      .map((tab) => tab.id);
+    for (const tabId of toClose) {
+      await this.close(tabId, { force: true });
+    }
+    return toClose.length;
+  }
+
+  pinnedUrls() {
+    return this.tabs
+      .filter((tab) => tab.pinned && tab.url && !tab.url.startsWith('hinterland://') && tab.url !== 'about:blank')
+      .map((tab) => tab.url);
+  }
+
   muteAll(muted = true) {
     let count = 0;
     for (const tab of this.tabs) {

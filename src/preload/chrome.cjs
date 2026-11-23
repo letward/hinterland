@@ -133,6 +133,8 @@ const api = {
     copyDomainUrls: (id) => ipcRenderer.invoke('tabs:copyDomainUrls', id),
     closeByDomain: (id) => ipcRenderer.invoke('tabs:closeByDomain', id),
     closeUngrouped: () => ipcRenderer.invoke('tabs:closeUngrouped'),
+    closeSleeping: () => ipcRenderer.invoke('tabs:closeSleeping'),
+    copyPinnedUrls: () => ipcRenderer.invoke('tabs:copyPinnedUrls'),
     list: () => ipcRenderer.invoke('tabs:list'),
   },
 
@@ -177,6 +179,7 @@ const api = {
     resetEngines: () => ipcRenderer.invoke('search:resetEngines'),
     exportJson: () => ipcRenderer.invoke('search:exportJson'),
     importJson: () => ipcRenderer.invoke('search:importJson'),
+    copyMarkdown: () => ipcRenderer.invoke('search:copyMarkdown'),
   },
 
   extensions: {
@@ -233,6 +236,7 @@ const api = {
     openUrls: (urls) => ipcRenderer.invoke('bookmarks:openUrls', urls),
     importJson: () => ipcRenderer.invoke('bookmarks:importJson'),
     deduplicate: () => ipcRenderer.invoke('bookmarks:deduplicate'),
+    bookmarkAllTabs: () => ipcRenderer.invoke('bookmarks:bookmarkAllTabs'),
   },
 
   readingList: {
@@ -243,6 +247,7 @@ const api = {
     clearRead: () => ipcRenderer.invoke('readingList:clearRead'),
     markAllRead: () => ipcRenderer.invoke('readingList:markAllRead'),
     openAllUnread: () => ipcRenderer.invoke('readingList:openAllUnread'),
+    addAllTabs: () => ipcRenderer.invoke('readingList:addAllTabs'),
     exportJson: () => ipcRenderer.invoke('readingList:exportJson'),
     exportMarkdown: () => ipcRenderer.invoke('readingList:exportMarkdown'),
     copyMarkdown: (mode) => ipcRenderer.invoke('readingList:copyMarkdown', mode),
@@ -263,6 +268,7 @@ const api = {
     exportHtml: () => ipcRenderer.invoke('notes:exportHtml'),
     importAll: () => ipcRenderer.invoke('notes:importAll'),
     createFromTab: (tabId) => ipcRenderer.invoke('notes:createFromTab', tabId),
+    openLinks: (id) => ipcRenderer.invoke('notes:openLinks', id),
   },
 
   stashes: {

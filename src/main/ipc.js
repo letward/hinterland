@@ -901,6 +901,20 @@ export function installIpc() {
     return { ok: count > 0, count };
   });
 
+  handle('tabs:closeSleeping', async () => {
+    const count = await tabs.closeSleeping();
+    surface.send('toast', {
+      message: count > 0 ? 'toast.closedSleepingTabs' : 'toast.noSleepingTabs',
+      kind: count > 0 ? 'success' : 'info',
+      data: { count },
+    });
+    return { ok: count > 0, count };
+  });
+
+  handle('tabs:copyPinnedUrls', () => {
+    return copyUniqueUrls(tabs.pinnedUrls(), 'toast.noPinnedTabs', 'toast.pinnedUrlsCopied');
+  });
+
   handle('app:checkForUpdates', () => {
     try {
       if (!app.isPackaged) return { ok: false, error: 'notPackaged' };
@@ -1350,6 +1364,39 @@ export function installIpc() {
       console.warn('[Hinterland] Search engines import failed:', err?.message);
       return { ok: false, error: 'invalidJson' };
     }
+  });
+
+  const formatSearchEnginesMarkdown = (list, defaultId) => {
+    const dateStr = new Date().toLocaleDateString('en-CA');
+    const lines = [
+      '# Hinterland Search Engines',
+      '',
+      `Exported on ${dateStr}. Total engines: ${list.length}.`,
+      '',
+      '| Engine | Shortcut | Status | Search URL |',
+      '| --- | --- | --- | --- |',
+    ];
+    for (const engine of list) {
+      const name = String(engine.name || engine.id || 'Engine').replace(/\|/g, '\\|');
+      const isDefault = engine.id === defaultId ? ' ★' : '';
+      const shortcut = engine.shortcut ? `\`${engine.shortcut}\`` : '—';
+      const status = engine.enabled === false ? 'Disabled' : 'Enabled';
+      const url = String(engine.url || '').replace(/\|/g, '\\|');
+      lines.push(`| ${name}${isDefault} | ${shortcut} | ${status} | ${url} |`);
+    }
+    return lines.join('\n');
+  };
+
+  handle('search:copyMarkdown', () => {
+    const engines = settings.value('search.engines') ?? [];
+    if (!engines.length) {
+      surface.send('toast', { message: 'toast.noSearchEnginesToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    const defaultId = settings.value('search.defaultEngine') ?? 'duckduckgo';
+    clipboard.writeText(formatSearchEnginesMarkdown(engines, defaultId));
+    surface.send('toast', { message: 'toast.searchEnginesCopied', kind: 'success', data: { count: engines.length } });
+    return { ok: true, count: engines.length };
   });
 
   /* ------------------------------------------------------------ extensions */
@@ -2115,6 +2162,46 @@ export function installIpc() {
     return { ok: true, count: deduplicated.length, removed };
   });
 
+  const collectUnseenWebTabs = (existingItems = []) => {
+    const webTabs = tabs.list.filter((t) => t.url && (t.url.startsWith('http://') || t.url.startsWith('https://')));
+    if (!webTabs.length) {
+      surface.send('toast', { message: 'toast.noTabsToBookmark', kind: 'warning' });
+      return { hasWebTabs: false, newTabs: [] };
+    }
+    const normalizeUrl = (raw) => String(raw || '').trim().replace(/\/+$/, '').toLowerCase();
+    const seen = new Set((existingItems || []).map((item) => normalizeUrl(item?.url)).filter(Boolean));
+    const newTabs = [];
+    for (const tab of webTabs) {
+      const key = normalizeUrl(tab.url);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      newTabs.push(tab);
+    }
+    return { hasWebTabs: true, newTabs };
+  };
+
+  handle('bookmarks:bookmarkAllTabs', () => {
+    const existing = [...(settings.value('data.bookmarks') ?? [])];
+    const { hasWebTabs, newTabs } = collectUnseenWebTabs(existing);
+    if (!hasWebTabs) return { ok: false, added: 0 };
+    if (!newTabs.length) {
+      surface.send('toast', { message: 'toast.allTabsAlreadyBookmarked', kind: 'info' });
+      return { ok: false, added: 0, total: existing.length };
+    }
+    const folder = `Session ${new Date().toLocaleDateString('en-CA')}`;
+    for (const tab of newTabs) {
+      existing.push({
+        url: tab.url,
+        title: (tab.title || tab.url).trim(),
+        addedAt: Date.now(),
+        folder,
+      });
+    }
+    settings.set('data.bookmarks', existing);
+    surface.send('toast', { message: 'toast.bookmarkedAllTabs', kind: 'success', data: { count: newTabs.length } });
+    return { ok: true, added: newTabs.length, total: existing.length };
+  });
+
   /* ------------------------------------------------------------- reading list */
   handle('readingList:get', () => {
     return settings.value('data.readingList') || [];
@@ -2200,6 +2287,29 @@ export function installIpc() {
       settings.set('data.readingList', list);
     }
     return { ok: true, count: unread.length };
+  });
+
+  handle('readingList:addAllTabs', () => {
+    const list = [...(settings.value('data.readingList') || [])];
+    const { hasWebTabs, newTabs } = collectUnseenWebTabs(list);
+    if (!hasWebTabs) return { ok: false, added: 0 };
+    if (!newTabs.length) {
+      surface.send('toast', { message: 'toast.readingListAllTabsPresent', kind: 'info' });
+      return { ok: false, added: 0, total: list.length };
+    }
+    for (const tab of newTabs) {
+      list.unshift({
+        id: `rl_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+        url: tab.url,
+        title: (tab.title || tab.url).trim(),
+        favicon: tab.favicon || '',
+        addedAt: Date.now(),
+        read: false,
+      });
+    }
+    settings.set('data.readingList', list);
+    surface.send('toast', { message: 'toast.readingListAddedAll', kind: 'success', data: { count: newTabs.length } });
+    return { ok: true, added: newTabs.length, total: list.length };
   });
 
   handle('readingList:exportJson', async () => {
@@ -2869,6 +2979,21 @@ ${renderNotesHtml(notes)}
     settings.set('data.notes', notes);
     surface.send('toast', { message: 'toast.noteCreatedFromTab', kind: 'success' });
     return { ok: true, note: fresh };
+  });
+
+  handle('notes:openLinks', (noteId = null) => {
+    const notes = settings.value('data.notes') || [];
+    const targets = noteId ? notes.filter((n) => n.id === noteId) : notes;
+    const candidates = [];
+    for (const note of targets) {
+      const matches = String(note?.content || '').match(/https?:\/\/[^\s<>"')\]]+/gi) || [];
+      candidates.push(...matches);
+    }
+    return openValidatedUrlsInTabs(candidates, {
+      limit: 20,
+      emptyToast: 'toast.noLinksInNote',
+      successToast: 'toast.noteLinksOpened',
+    });
   });
 
   /* ------------------------------------------------------------- tab stashes */

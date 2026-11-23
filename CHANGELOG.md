@@ -4,6 +4,31 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.40.0] - 2026-11-23
+
+### Added
+- **Tab Management & Memory Saver: Close Sleeping Tabs & Copy Pinned URLs (`src/main/tabs.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `TabManager.closeSleeping()` and `TabManager.pinnedUrls()` helpers.
+  - Added `tabs:closeSleeping` and `tabs:copyPinnedUrls` IPC handlers (reusing `copyUniqueUrls`).
+  - Added **Close Sleeping** and **Copy Pinned URLs** buttons in Tab Groups Studio, **Close Sleeping Tabs** and **Copy Pinned Tab URLs** in the tabstrip context menu, and corresponding Command Palette actions.
+- **Bookmarks Manager: Bookmark All Open Tabs (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `collectUnseenWebTabs` helper and added `bookmarks:bookmarkAllTabs` IPC handler to save all open HTTP/HTTPS tabs into a dated session folder while automatically skipping already-bookmarked URLs.
+  - Added **Bookmark Open Tabs** button in Bookmarks Manager and Command Palette action `commandPalette.bookmarksBookmarkAllTabs`.
+- **Reading List: Add All Open Tabs (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `readingList:addAllTabs` IPC handler (reusing `collectUnseenWebTabs`) to batch-add all open HTTP/HTTPS tabs without duplicates.
+  - Added **Add Open Tabs** button in Reading List and Command Palette action `commandPalette.readingListAddAllTabs`.
+- **Quick Notes: Open Links in Tabs & Copy All Notes as Markdown (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `notes:openLinks` IPC handler (reusing `openValidatedUrlsInTabs`) to extract and launch HTTP/HTTPS links from notes in background tabs.
+  - Added **Open links in tabs** button to the Quick Notes editor toolbar, **Copy All (MD)** button to the Quick Notes sidebar, and Command Palette action `commandPalette.notesOpenLinks`.
+- **Search Engines: Copy Engines as Markdown (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/commandPalette.js`)**:
+  - Extracted `formatSearchEnginesMarkdown` helper and added `search:copyMarkdown` IPC handler to copy all configured search engines, shortcuts, statuses, and URL templates as a Markdown table.
+  - Wired `commandPalette.searchCopyMarkdown` in the Command Palette.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`, `website/api/sync.js`)**:
+  - Documented Close Sleeping, Copy Pinned URLs, Bookmark Open Tabs, Reading List Add Open Tabs, Quick Notes Copy All (MD) & Open links in tabs, and Copy Search Engines as Markdown in the official User Guide.
+  - Updated website hero badge, standalone Windows installer download link, and sync service version to v1.40.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v140Features.test.mjs`)**:
+  - Added automated unit and integration tests covering all v1.40.0 IPC handlers, `TabManager` helpers, UI/menu/Command Palette wiring, documentation/website updates, and 100% key parity across English and German locales.
+
 ## [1.39.0] - 2026-11-23
 
 ### Added
