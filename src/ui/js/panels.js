@@ -139,6 +139,11 @@ function extensionsPage() {
           type: 'button',
           onclick: () => api().extensions.copyList(),
         }, [el('span', { html: icon('copy') }), ` ${t('extensions.copyList')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: () => api().extensions.copyJson(),
+        }, [el('span', { html: icon('copy') }), ` ${t('extensions.copyJson')}`]),
       ]);
 
       load();
@@ -335,6 +340,10 @@ function historyPage() {
           const urls = getFilteredEntries().map((e) => e.url).filter(Boolean);
           await api().history.copyUrls(urls);
         } }, [el('span', { html: icon('link') }), ` ${t('history.copyUrls')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
+          const urls = getFilteredEntries().map((e) => e.url).filter(Boolean);
+          await api().history.openUrls(urls);
+        } }, [el('span', { html: icon('external') }), ` ${t('history.openMatching')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
           const res = await api().history.importJson();
           if (res?.ok) await reload();
@@ -633,6 +642,10 @@ function bookmarksPage() {
           await api().bookmarks.copyUrls(items);
         } }, [el('span', { html: icon('copy') }), ` ${t('bookmarks.copyUrls')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
+          const items = get('data.bookmarks', []) ?? [];
+          await api().bookmarks.copyJson(items);
+        } }, [el('span', { html: icon('copy') }), ` ${t('bookmarks.copyJson')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
           await api().bookmarks.openUrls(lastFilteredUrls);
         } }, [el('span', { html: icon('external') }), ` ${t('bookmarks.openMatching')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
@@ -774,6 +787,12 @@ function downloadsPage() {
         html: `${icon('link')} <span>${t('downloads.copyUrls')}</span>`,
         onclick: () => api().downloads.copyUrls(),
       });
+      const copyJsonBtn = el('button', {
+        class: 'button small',
+        type: 'button',
+        html: `${icon('copy')} <span>${t('downloads.copyJson')}</span>`,
+        onclick: () => api().downloads.copyJson(),
+      });
       const clearCompletedBtn = el('button', {
         class: 'button small',
         type: 'button',
@@ -812,7 +831,7 @@ function downloadsPage() {
         },
       });
       const summaryBadge = el('span', { class: 'rowAside', style: { fontWeight: '500', marginLeft: 'auto' } });
-      actionsGroup.append(openFolderBtn, exportMarkdownBtn, copyMarkdownBtn, copyUrlsBtn, clearCompletedBtn, clearFailedBtn, clearHistoryBtn);
+      actionsGroup.append(openFolderBtn, exportMarkdownBtn, copyMarkdownBtn, copyUrlsBtn, copyJsonBtn, clearCompletedBtn, clearFailedBtn, clearHistoryBtn);
 
       toolbar.append(searchInput, filtersGroup, summaryBadge, actionsGroup);
       container.append(toolbar);
@@ -1812,6 +1831,29 @@ function readingListPage(mode = 'unread') {
             await api().readingList.copyUrls(mode);
           },
         }, [el('span', { html: icon('copy') }), ` ${t('readingList.copyUrls')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            await api().readingList.copyJson(mode);
+          },
+        }, [el('span', { html: icon('copy') }), ` ${t('readingList.copyJson')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            const res = await api().readingList.sort('alpha');
+            if (res?.ok) refresh();
+          },
+        }, [el('span', { html: icon('list') }), ` ${t('readingList.sortAlpha')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            const res = await api().readingList.sort('domain');
+            if (res?.ok) refresh();
+          },
+        }, [el('span', { html: icon('globe') }), ` ${t('readingList.sortByDomain')}`]),
         el('button', {
           class: 'button',
           type: 'button',
@@ -2962,6 +3004,26 @@ function tabGroupsPage() {
         },
       }, [el('span', { html: icon('moon') }), ` ${t('tabGroups.closeSleeping')}`]);
 
+      const wakeAllBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.wakeAllDesc'),
+        onclick: async () => {
+          const res = await api().tabs.wakeAll();
+          if (res?.ok) await refresh();
+        },
+      }, [el('span', { html: icon('sun') }), ` ${t('tabGroups.wakeAll')}`]);
+
+      const closeDuplicatesBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.closeDuplicatesDesc'),
+        onclick: async () => {
+          const res = await api().tabs.closeDuplicates();
+          if (res?.ok || typeof res === 'number') await refresh();
+        },
+      }, [el('span', { html: icon('copy') }), ` ${t('tabGroups.closeDuplicates')}`]);
+
       nameInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') createBtn.click();
       });
@@ -2983,6 +3045,8 @@ function tabGroupsPage() {
           unpinAllBtn,
           closeUngroupedBtn,
           closeSleepingBtn,
+          wakeAllBtn,
+          closeDuplicatesBtn,
           pruneEmptyBtn,
           collapseAllBtn,
           expandAllBtn,

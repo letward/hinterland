@@ -159,7 +159,7 @@ describe('Hinterland v1.29.0 Features & Polish', () => {
       };
       await syncApi({ method: 'GET', headers: {} }, fakeRes);
       assert.equal(statusCode, 200);
-      assert.ok(jsonPayload?.version === '1.29.0' || jsonPayload?.version === '1.30.0' || jsonPayload?.version === '1.31.0' || jsonPayload?.version === '1.32.0' || jsonPayload?.version === '1.33.0' || jsonPayload?.version === '1.34.0' || jsonPayload?.version === '1.35.0' || jsonPayload?.version === '1.36.0' || jsonPayload?.version === '1.37.0' || jsonPayload?.version === '1.38.0' || jsonPayload?.version === '1.39.0' || jsonPayload?.version === '1.40.0');
+      assert.ok(jsonPayload?.version === '1.29.0' || jsonPayload?.version === '1.30.0' || jsonPayload?.version === '1.31.0' || jsonPayload?.version === '1.32.0' || jsonPayload?.version === '1.33.0' || jsonPayload?.version === '1.34.0' || jsonPayload?.version === '1.35.0' || jsonPayload?.version === '1.36.0' || jsonPayload?.version === '1.37.0' || jsonPayload?.version === '1.38.0' || jsonPayload?.version === '1.39.0' || jsonPayload?.version === '1.40.0' || jsonPayload?.version === '1.41.0');
     });
 
     it('reports readingListCount and notesCount in getSyncStats()', async () => {
@@ -249,8 +249,8 @@ describe('Hinterland v1.29.0 Features & Polish', () => {
 
     it('updates website/index.html to v1.29.0 release badge and download link', () => {
       const html = readFileSync(join(ROOT, 'website', 'index.html'), 'utf8');
-      assert.ok(html.includes('v1.29.0 · Latest Release') || html.includes('v1.30.0 · Latest Release') || html.includes('v1.31.0 · Latest Release') || html.includes('v1.32.0 · Latest Release') || html.includes('v1.33.0 · Latest Release') || html.includes('v1.34.0 · Latest Release') || html.includes('v1.35.0 · Latest Release') || html.includes('v1.36.0 · Latest Release') || html.includes('v1.37.0 · Latest Release') || html.includes('v1.38.0 · Latest Release') || html.includes('v1.39.0 · Latest Release') || html.includes('v1.40.0 · Latest Release'));
-      assert.ok(html.includes('Hinterland-Setup-1.29.0.exe') || html.includes('Hinterland-Setup-1.30.0.exe') || html.includes('Hinterland-Setup-1.31.0.exe') || html.includes('Hinterland-Setup-1.32.0.exe') || html.includes('Hinterland-Setup-1.33.0.exe') || html.includes('Hinterland-Setup-1.34.0.exe') || html.includes('Hinterland-Setup-1.35.0.exe') || html.includes('Hinterland-Setup-1.36.0.exe') || html.includes('Hinterland-Setup-1.37.0.exe') || html.includes('Hinterland-Setup-1.38.0.exe') || html.includes('Hinterland-Setup-1.39.0.exe') || html.includes('Hinterland-Setup-1.40.0.exe'));
+      assert.ok(html.includes('v1.29.0 · Latest Release') || html.includes('v1.30.0 · Latest Release') || html.includes('v1.31.0 · Latest Release') || html.includes('v1.32.0 · Latest Release') || html.includes('v1.33.0 · Latest Release') || html.includes('v1.34.0 · Latest Release') || html.includes('v1.35.0 · Latest Release') || html.includes('v1.36.0 · Latest Release') || html.includes('v1.37.0 · Latest Release') || html.includes('v1.38.0 · Latest Release') || html.includes('v1.39.0 · Latest Release') || html.includes('v1.40.0 · Latest Release') || html.includes('v1.41.0 · Latest Release'));
+      assert.ok(html.includes('Hinterland-Setup-1.29.0.exe') || html.includes('Hinterland-Setup-1.30.0.exe') || html.includes('Hinterland-Setup-1.31.0.exe') || html.includes('Hinterland-Setup-1.32.0.exe') || html.includes('Hinterland-Setup-1.33.0.exe') || html.includes('Hinterland-Setup-1.34.0.exe') || html.includes('Hinterland-Setup-1.35.0.exe') || html.includes('Hinterland-Setup-1.36.0.exe') || html.includes('Hinterland-Setup-1.37.0.exe') || html.includes('Hinterland-Setup-1.38.0.exe') || html.includes('Hinterland-Setup-1.39.0.exe') || html.includes('Hinterland-Setup-1.40.0.exe') || html.includes('Hinterland-Setup-1.41.0.exe'));
     });
 
     it('configures releaseType: release in package.json publish config', () => {

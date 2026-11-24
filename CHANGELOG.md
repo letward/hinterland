@@ -4,6 +4,34 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.41.0] - 2026-11-24
+
+### Added
+- **Tab Management & Tab Groups Studio: Close Duplicates & Wake Sleeping Tabs (`src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added **Close Duplicates** and **Wake Sleeping** buttons to Tab Groups Studio toolbar to instantly deduplicate open tabs by URL and wake all suspended sleeping tabs into memory.
+  - Added `commandPalette.tabsCloseDuplicates` to the Command Palette for quick keyboard-driven duplicate cleanup.
+- **History Manager: Open Matching History in Background Tabs (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `history:openUrls` IPC handler leveraging shared `openValidatedUrlsInTabs` with safety validation (HTTP/HTTPS only, 15 tab cap).
+  - Added **Open Matching** button in the History Manager toolbar to open all filtered history search results in background tabs, paired with Command Palette action `commandPalette.historyOpenMatching`.
+- **Bookmarks Manager: Copy as JSON (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `bookmarks:copyJson` IPC handler to export all or filtered bookmarks as formatted JSON to the system clipboard.
+  - Added **Copy JSON** button in the Bookmarks Manager toolbar and Command Palette action `commandPalette.bookmarksCopyJson`.
+- **Reading List: Copy as JSON & Sorting (A-Z and Domain) (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `readingList:copyJson` IPC handler to copy unread, read, or all reading list entries as structured JSON.
+  - Added `readingList:sort` IPC handler supporting both alphabetical (`'alpha'`) and domain-based (`'domain'`) in-place sorting.
+  - Added **Copy JSON**, **Sort A-Z**, and **Sort by Domain** toolbar buttons in Reading List along with Command Palette actions `commandPalette.readingListCopyJson`, `commandPalette.readingListSortAlpha`, and `commandPalette.readingListSortByDomain`.
+- **Downloads Manager: Copy as JSON (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `downloads:copyJson` IPC handler to export the download history to the clipboard as pretty-printed JSON.
+  - Added **Copy JSON** button in the Downloads toolbar and Command Palette action `commandPalette.downloadsCopyJson`.
+- **Extensions Manager: Copy Extensions as JSON (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `extensions:copyJson` IPC handler to serialize installed extension metadata (id, name, version, enabled, description, homepage, permissions) to clipboard JSON.
+  - Added **Copy JSON** button in the Extensions Manager toolbar and Command Palette action `commandPalette.extensionsCopyJson`.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`, `website/api/sync.js`)**:
+  - Documented Close Duplicates, Wake Sleeping, History Open Matching, and Copy JSON / Sorting across Bookmarks, Reading List, Downloads, and Extensions in the User Guide.
+  - Updated website hero badge, standalone Windows installer download link, and sync service version to v1.41.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v141Features.test.mjs`)**:
+  - Added 42 automated tests covering all v1.41.0 IPC handlers, preload bindings, panel controls, Command Palette wiring, website/documentation updates, and full 100% string parity across English and German locales.
+
 ## [1.40.0] - 2026-11-23
 
 ### Added

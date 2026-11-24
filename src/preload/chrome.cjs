@@ -185,6 +185,7 @@ const api = {
   extensions: {
     list: () => ipcRenderer.invoke('extensions:list'),
     copyList: () => ipcRenderer.invoke('extensions:copyList'),
+    copyJson: () => ipcRenderer.invoke('extensions:copyJson'),
     install: () => ipcRenderer.invoke('extensions:install'),
     installPath: (path) => ipcRenderer.invoke('extensions:installPath', path),
     uninstall: (id) => ipcRenderer.invoke('extensions:uninstall', id),
@@ -220,6 +221,7 @@ const api = {
     remove: (url) => ipcRenderer.invoke('history:remove', url),
     removeByDomain: (domain) => ipcRenderer.invoke('history:removeByDomain', domain),
     copyUrls: (urls) => ipcRenderer.invoke('history:copyUrls', urls),
+    openUrls: (urls) => ipcRenderer.invoke('history:openUrls', urls),
   },
 
   data: {
@@ -233,6 +235,7 @@ const api = {
     exportMarkdown: (items) => ipcRenderer.invoke('bookmarks:exportMarkdown', items),
     copyMarkdown: (items) => ipcRenderer.invoke('bookmarks:copyMarkdown', items),
     copyUrls: (items) => ipcRenderer.invoke('bookmarks:copyUrls', items),
+    copyJson: (items) => ipcRenderer.invoke('bookmarks:copyJson', items),
     openUrls: (urls) => ipcRenderer.invoke('bookmarks:openUrls', urls),
     importJson: () => ipcRenderer.invoke('bookmarks:importJson'),
     deduplicate: () => ipcRenderer.invoke('bookmarks:deduplicate'),
@@ -252,6 +255,8 @@ const api = {
     exportMarkdown: () => ipcRenderer.invoke('readingList:exportMarkdown'),
     copyMarkdown: (mode) => ipcRenderer.invoke('readingList:copyMarkdown', mode),
     copyUrls: (mode) => ipcRenderer.invoke('readingList:copyUrls', mode),
+    copyJson: (mode) => ipcRenderer.invoke('readingList:copyJson', mode),
+    sort: (mode) => ipcRenderer.invoke('readingList:sort', mode),
     exportHtml: () => ipcRenderer.invoke('readingList:exportHtml'),
     importJson: () => ipcRenderer.invoke('readingList:importJson'),
   },
@@ -326,6 +331,7 @@ const api = {
     exportMarkdown: () => ipcRenderer.invoke('downloads:exportMarkdown'),
     copyMarkdown: () => ipcRenderer.invoke('downloads:copyMarkdown'),
     copyUrls: () => ipcRenderer.invoke('downloads:copyUrls'),
+    copyJson: () => ipcRenderer.invoke('downloads:copyJson'),
     retry: (url) => ipcRenderer.invoke('downloads:retry', url),
   },
 

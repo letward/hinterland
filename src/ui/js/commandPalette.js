@@ -264,6 +264,13 @@ export function openCommandPalette() {
             run: () => api().tabs.closeSleeping(),
           },
           {
+            id: 'tabsCloseDuplicates',
+            title: t('commandPalette.tabsCloseDuplicates'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().tabs.closeDuplicates(),
+          },
+          {
             id: 'memorySaverExemptSite',
             title: t('commandPalette.memorySaverExemptSite'),
             category: t('commandPalette.categoryCommand'),
@@ -777,6 +784,13 @@ export function openCommandPalette() {
             run: () => api().extensions.copyList(),
           },
           {
+            id: 'extensionsCopyJson',
+            title: t('commandPalette.extensionsCopyJson'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'download',
+            run: () => api().extensions.copyJson(),
+          },
+          {
             id: 'shortcuts',
             title: t('menu.shortcuts'),
             category: t('commandPalette.categoryCommand'),
@@ -854,6 +868,27 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'copy',
             run: () => api().readingList.copyUrls('all'),
+          },
+          {
+            id: 'readingListCopyJson',
+            title: t('commandPalette.readingListCopyJson'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'download',
+            run: () => api().readingList.copyJson('all'),
+          },
+          {
+            id: 'readingListSortAlpha',
+            title: t('commandPalette.readingListSortAlpha'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'list',
+            run: () => api().readingList.sort('alpha'),
+          },
+          {
+            id: 'readingListSortByDomain',
+            title: t('commandPalette.readingListSortByDomain'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'globe',
+            run: () => api().readingList.sort('domain'),
           },
           {
             id: 'readingListExportHtml',
@@ -937,6 +972,13 @@ export function openCommandPalette() {
             run: () => api().history.copyUrls(),
           },
           {
+            id: 'historyOpenMatching',
+            title: t('commandPalette.historyOpenMatching'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'external',
+            run: () => api().history.openUrls(),
+          },
+          {
             id: 'bookmarksExportJson',
             title: t('commandPalette.bookmarksExportJson'),
             category: t('commandPalette.categoryCommand'),
@@ -977,6 +1019,13 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'copy',
             run: () => api().bookmarks.copyUrls(),
+          },
+          {
+            id: 'bookmarksCopyJson',
+            title: t('commandPalette.bookmarksCopyJson'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'download',
+            run: () => api().bookmarks.copyJson(),
           },
           {
             id: 'bookmarksOpenMatching',
@@ -1029,6 +1078,13 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'link',
             run: () => api().downloads.copyUrls(),
+          },
+          {
+            id: 'downloadsCopyJson',
+            title: t('commandPalette.downloadsCopyJson'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'download',
+            run: () => api().downloads.copyJson(),
           },
           {
             id: 'clearRecentlyClosed',

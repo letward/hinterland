@@ -1418,6 +1418,16 @@ export function installIpc() {
     surface.send('toast', { message: 'toast.extensionsListCopied', kind: 'success', data: { count: list.length } });
     return { ok: true, count: list.length };
   });
+  handle('extensions:copyJson', () => {
+    const list = extensions.list() || [];
+    if (!list.length) {
+      surface.send('toast', { message: 'toast.noExtensionsToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(JSON.stringify(list, null, 2));
+    surface.send('toast', { message: 'toast.extensionsJsonCopied', kind: 'success', data: { count: list.length } });
+    return { ok: true, count: list.length };
+  });
   handle('extensions:install', async () => {
     if (!settings.value('extensions.allowUnpacked')) return { ok: false, error: 'blocked' };
     const result = await dialog.showOpenDialog(chromeWindow(), {
@@ -1522,6 +1532,16 @@ export function installIpc() {
     clipboard.writeText(uniqueUrls.join('\n'));
     surface.send('toast', { message: 'toast.historyUrlsCopied', kind: 'success', data: { count: uniqueUrls.length } });
     return { ok: true, count: uniqueUrls.length };
+  });
+  handle('history:openUrls', (urls = null) => {
+    const source = Array.isArray(urls)
+      ? urls
+      : (history.getAll() || []).map((entry) => entry?.url);
+    return openValidatedUrlsInTabs(source, {
+      limit: 15,
+      emptyToast: 'toast.noHistoryToOpen',
+      successToast: 'toast.historyOpened',
+    });
   });
   handle('history:exportJson', async () => {
     const list = history.getAll();
@@ -1809,6 +1829,16 @@ export function installIpc() {
     surface.send('toast', { message: 'toast.downloadUrlsCopied', kind: 'success', data: { count: urls.length } });
     return { ok: true, count: urls.length };
   });
+  handle('downloads:copyJson', () => {
+    const list = getDownloadHistory() || [];
+    if (!list.length) {
+      surface.send('toast', { message: 'toast.noDownloadsToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(JSON.stringify(list, null, 2));
+    surface.send('toast', { message: 'toast.downloadsJsonCopied', kind: 'success', data: { count: list.length } });
+    return { ok: true, count: list.length };
+  });
 
   handle('site:getPermissions', (rawUrl) => {
     try {
@@ -2078,6 +2108,18 @@ export function installIpc() {
       return { ok: true, count: imported.length, bookmarks: merged };
     }
     return { ok: true, count: 0, bookmarks: existing };
+  });
+
+  handle('bookmarks:copyJson', (items = null) => {
+    const list = (Array.isArray(items) ? items : (settings.value('data.bookmarks') ?? []))
+      .filter((b) => b?.url);
+    if (!list.length) {
+      surface.send('toast', { message: 'toast.noBookmarksToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(JSON.stringify(list, null, 2));
+    surface.send('toast', { message: 'toast.bookmarkJsonCopied', kind: 'success', data: { count: list.length } });
+    return { ok: true, count: list.length };
   });
 
   handle('bookmarks:exportJson', async (items) => {
@@ -2405,6 +2447,38 @@ export function installIpc() {
     clipboard.writeText(urls.join('\n'));
     surface.send('toast', { message: 'toast.readingListUrlsCopied', kind: 'success', data: { count: urls.length } });
     return { ok: true, count: urls.length };
+  });
+
+  handle('readingList:copyJson', (mode = 'all') => {
+    const list = filterReadingListByMode(mode);
+    if (!list.length) {
+      surface.send('toast', { message: 'toast.readingListEmptyToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(JSON.stringify(list, null, 2));
+    surface.send('toast', { message: 'toast.readingListCopiedJson', kind: 'success', data: { count: list.length } });
+    return { ok: true, count: list.length };
+  });
+
+  handle('readingList:sort', (mode = 'alpha') => {
+    const list = [...(settings.value('data.readingList') || [])];
+    if (mode === 'domain') {
+      list.sort((a, b) => {
+        const domA = normalizeDomain(a.url) || a.url || '';
+        const domB = normalizeDomain(b.url) || b.url || '';
+        const cmp = domA.localeCompare(domB);
+        return cmp !== 0 ? cmp : (a.title || a.url || '').localeCompare(b.title || b.url || '');
+      });
+    } else {
+      list.sort((a, b) => (a.title || a.url || '').localeCompare(b.title || b.url || ''));
+    }
+    settings.set('data.readingList', list);
+    surface.send('toast', {
+      message: mode === 'domain' ? 'toast.readingListSortedByDomain' : 'toast.readingListSortedAlpha',
+      kind: 'success',
+      data: { count: list.length },
+    });
+    return { ok: true, count: list.length, items: list };
   });
 
   handle('readingList:exportHtml', async () => {
