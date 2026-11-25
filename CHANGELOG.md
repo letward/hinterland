@@ -4,6 +4,29 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.43.0] - 2026-11-25
+
+### Added
+- **Tab Management & Tab Groups Studio (`src/main/tabs.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `TabManager.reloadOthers(id)` and `tabs:reloadOthers` IPC handler to reload all other active non-sleeping tabs, wired in the Tab Context Menu, Tabstrip Menu, and Command Palette (`commandPalette.tabsReloadOthers`).
+  - Added `tabs:groupSortAlpha` IPC handler and **Sort Groups A-Z** button in Tab Groups Studio (plus Command Palette `commandPalette.tabsGroupSortAlpha`) to sort tab groups alphabetically and persist their order.
+  - Added `tabs:groupBookmark` IPC handler and **Bookmark Group** button on each group card in Tab Groups Studio to save all web tabs in a group into a named bookmark folder with automatic deduplication.
+- **Reading List: Clipboard Import & Deduplication (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `normalizeComparableUrl` helper and added `readingList:addFromClipboard` and `readingList:deduplicate` IPC handlers.
+  - Wired **Add from Clipboard** and **Deduplicate** buttons in the Reading List toolbar and corresponding Command Palette actions (`commandPalette.readingListAddFromClipboard`, `commandPalette.readingListDeduplicate`).
+- **Tab Stash: Save as Note, Prune Empty & Sort Toggle (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `stashes:toNote` IPC handler and **Save as Note** button on every stash card to convert a saved stash into a formatted Markdown Quick Note.
+  - Added `stashes:pruneEmpty` IPC handler and **Prune Empty** toolbar button (plus Command Palette `commandPalette.stashesPruneEmpty`) to remove empty stashes.
+  - Added **Sort A-Z / Sort Recent** toggle in the Tab Stash search bar to switch stash ordering on the fly.
+- **Quick Notes & Downloads QoL (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `extractUrlsFromNotes` helper and added `notes:copyLinks` IPC handler with a **Copy all links** button in Quick Notes and Command Palette action `commandPalette.notesCopyLinks`.
+  - Added `downloads:exportJson` IPC handler and **Export JSON** button in Downloads Manager (plus Command Palette `commandPalette.downloadsExportJson`) to save the download history log as a JSON file.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`, `website/api/sync.js`)**:
+  - Documented Reload other tabs, Sort Groups A-Z, Bookmark Group, Reading List Add from Clipboard & Deduplicate, Tab Stash Save as Note / Prune Empty / Sorting, Quick Notes Copy all links, and Downloads Export JSON in the User Guide.
+  - Updated website hero badge, standalone Windows installer download link, and sync service version to v1.43.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v143Features.test.mjs`)**:
+  - Added automated tests covering all v1.43.0 helpers, IPC handlers, preload bindings, UI/menu/Command Palette wiring, documentation/website updates, and 100% EN/DE locale parity.
+
 ## [1.42.0] - 2026-11-25
 
 ### Added

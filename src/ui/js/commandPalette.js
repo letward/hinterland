@@ -428,6 +428,20 @@ export function openCommandPalette() {
             run: () => api().tabs.reloadAll(),
           },
           {
+            id: 'tabsReloadOthers',
+            title: t('commandPalette.tabsReloadOthers'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'reload',
+            run: () => { if (current) api().tabs.reloadOthers(current.id); },
+          },
+          {
+            id: 'tabsGroupSortAlpha',
+            title: t('commandPalette.tabsGroupSortAlpha'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'list',
+            run: () => api().tabs.groupSortAlpha(),
+          },
+          {
             id: 'readerMode',
             title: t('menu.reader'),
             category: t('commandPalette.categoryCommand'),
@@ -722,6 +736,13 @@ export function openCommandPalette() {
             run: () => api().stashes.deduplicate(),
           },
           {
+            id: 'stashesPruneEmpty',
+            title: t('commandPalette.stashesPruneEmpty'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'trash',
+            run: () => api().stashes.pruneEmpty(),
+          },
+          {
             id: 'storeThemes',
             title: t('commandPalette.browseThemes'),
             category: t('commandPalette.categoryCommand'),
@@ -961,6 +982,20 @@ export function openCommandPalette() {
             run: () => api().readingList.addAllTabs(),
           },
           {
+            id: 'readingListAddFromClipboard',
+            title: t('commandPalette.readingListAddFromClipboard'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'plus',
+            run: () => api().readingList.addFromClipboard(),
+          },
+          {
+            id: 'readingListDeduplicate',
+            title: t('commandPalette.readingListDeduplicate'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'check',
+            run: () => api().readingList.deduplicate(),
+          },
+          {
             id: 'historyExport',
             title: t('commandPalette.historyExport'),
             category: t('commandPalette.categoryCommand'),
@@ -1143,6 +1178,13 @@ export function openCommandPalette() {
             run: () => api().downloads.copyJson(),
           },
           {
+            id: 'downloadsExportJson',
+            title: t('commandPalette.downloadsExportJson'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'download',
+            run: () => api().downloads.exportJson(),
+          },
+          {
             id: 'clearRecentlyClosed',
             title: t('commandPalette.clearRecentlyClosed'),
             category: t('commandPalette.categoryCommand'),
@@ -1211,6 +1253,13 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'external',
             run: () => api().notes.openLinks(),
+          },
+          {
+            id: 'notesCopyLinks',
+            title: t('commandPalette.notesCopyLinks'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'link',
+            run: () => api().notes.copyLinks(),
           },
           {
             id: 'notesCreateFromClipboard',

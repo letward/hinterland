@@ -506,6 +506,17 @@ export class TabManager extends EventEmitter {
       .map((tab) => tab.url);
   }
 
+  reloadOthers(id) {
+    const keep = id ? this.byId(id) : this.active;
+    let count = 0;
+    for (const tab of this.tabs) {
+      if (tab.id === keep?.id || tab.sleeping || !tab.contents || tab.contents.isDestroyed()) continue;
+      tab.contents.reload();
+      count += 1;
+    }
+    return count;
+  }
+
   muteAll(muted = true) {
     let count = 0;
     for (const tab of this.tabs) {

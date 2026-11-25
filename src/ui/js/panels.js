@@ -808,6 +808,12 @@ function downloadsPage() {
         html: `${icon('copy')} <span>${t('downloads.copyJson')}</span>`,
         onclick: () => api().downloads.copyJson(),
       });
+      const exportJsonBtn = el('button', {
+        class: 'button small',
+        type: 'button',
+        html: `${icon('download')} <span>${t('downloads.exportJson')}</span>`,
+        onclick: () => api().downloads.exportJson(),
+      });
       const clearCompletedBtn = el('button', {
         class: 'button small',
         type: 'button',
@@ -846,7 +852,7 @@ function downloadsPage() {
         },
       });
       const summaryBadge = el('span', { class: 'rowAside', style: { fontWeight: '500', marginLeft: 'auto' } });
-      actionsGroup.append(openFolderBtn, exportMarkdownBtn, copyMarkdownBtn, copyUrlsBtn, copyJsonBtn, clearCompletedBtn, clearFailedBtn, clearHistoryBtn);
+      actionsGroup.append(openFolderBtn, exportMarkdownBtn, exportJsonBtn, copyMarkdownBtn, copyUrlsBtn, copyJsonBtn, clearCompletedBtn, clearFailedBtn, clearHistoryBtn);
 
       toolbar.append(searchInput, filtersGroup, summaryBadge, actionsGroup);
       container.append(toolbar);
@@ -1785,6 +1791,22 @@ function readingListPage(mode = 'unread') {
             if (res?.ok) refresh();
           },
         }, [el('span', { html: icon('tabs') }), ` ${t('readingList.addAllTabs')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            const res = await api().readingList.addFromClipboard();
+            if (res?.ok) refresh();
+          },
+        }, [el('span', { html: icon('plus') }), ` ${t('readingList.addFromClipboard')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            const res = await api().readingList.deduplicate();
+            if (res?.ok && res.removed > 0) refresh();
+          },
+        }, [el('span', { html: icon('check') }), ` ${t('readingList.deduplicate')}`]),
       ]);
 
       if (mode === 'unread') {
@@ -2376,6 +2398,16 @@ function notesPage() {
           },
         });
 
+        const copyLinksBtn = el('button', {
+          class: 'iconButton small',
+          type: 'button',
+          html: icon('copy'),
+          title: t('notes.copyLinks'),
+          onclick: async () => {
+            await api().notes.copyLinks(activeNote.id);
+          },
+        });
+
         const duplicateBtn = el('button', {
           class: 'iconButton small',
           type: 'button',
@@ -2416,7 +2448,7 @@ function notesPage() {
           },
         });
 
-        toolbar.append(clipBtn, sep1, editModeBtn, previewModeBtn, sep2, pinBtn, copyBtn, copyMarkdownBtn, copyJsonBtn, openLinksBtn, duplicateBtn, exportBtn, deleteBtn);
+        toolbar.append(clipBtn, sep1, editModeBtn, previewModeBtn, sep2, pinBtn, copyBtn, copyMarkdownBtn, copyJsonBtn, openLinksBtn, copyLinksBtn, duplicateBtn, exportBtn, deleteBtn);
 
         let bodyEl;
         const statusBar = el('div', { class: 'notesStatusBar' });
@@ -2558,7 +2590,19 @@ function tabStashPage() {
 
       let stashes = [];
       let filterText = '';
+      let sortMode = 'recent';
       const stashSummaryBadge = el('span', { class: 'rowAside', style: { marginLeft: 'auto', fontWeight: '500' } });
+
+      const sortStashBtn = el('button', {
+        class: 'button small',
+        type: 'button',
+        text: t('stash.sortAlpha'),
+        onclick: () => {
+          sortMode = sortMode === 'recent' ? 'alpha' : 'recent';
+          sortStashBtn.textContent = sortMode === 'recent' ? t('stash.sortAlpha') : t('stash.sortRecent');
+          paint();
+        },
+      });
 
       const search = searchBox((value) => {
         filterText = value.toLowerCase();
@@ -2567,7 +2611,7 @@ function tabStashPage() {
       search.field.style.display = 'flex';
       search.field.style.alignItems = 'center';
       search.field.style.gap = '10px';
-      search.field.append(stashSummaryBadge);
+      search.field.append(stashSummaryBadge, sortStashBtn);
 
       const topActions = el('div', { class: 'actionRow stashActions' }, [
         el('button', {
@@ -2644,6 +2688,14 @@ function tabStashPage() {
             if (res?.ok && res.removed > 0) await loadStashes();
           },
         }, [el('span', { html: icon('check') }), ` ${t('stash.deduplicate')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            const res = await api().stashes.pruneEmpty();
+            if (res?.ok) await loadStashes();
+          },
+        }, [el('span', { html: icon('trash') }), ` ${t('stash.pruneEmpty')}`]),
       ]);
 
       const listContainer = el('div', { class: 'stashList' });
@@ -2660,6 +2712,12 @@ function tabStashPage() {
             );
             return matchTitle || matchTab;
           });
+        }
+
+        if (sortMode === 'alpha') {
+          items.sort((a, b) => (a.title || t('stash.defaultTitle')).localeCompare(b.title || t('stash.defaultTitle')));
+        } else {
+          items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         }
 
         const totalTabs = items.reduce((sum, s) => sum + ((s.tabs || []).length), 0);
@@ -2793,6 +2851,14 @@ function tabStashPage() {
                 if (res?.ok) await loadStashes();
               },
             }, [el('span', { html: icon('layers') })]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('stash.toNote'),
+              onclick: async () => {
+                await api().stashes.toNote(stash.id);
+              },
+            }, [el('span', { html: icon('notes') })]),
             el('button', {
               class: 'button small danger',
               type: 'button',
@@ -3063,6 +3129,16 @@ function tabGroupsPage() {
         },
       }, [el('span', { html: icon('trash') }), ` ${t('tabGroups.pruneEmpty')}`]);
 
+      const sortGroupsBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.sortGroupsDesc'),
+        onclick: async () => {
+          const res = await api().tabs.groupSortAlpha();
+          if (res?.ok) await refresh();
+        },
+      }, [el('span', { html: icon('list') }), ` ${t('tabGroups.sortGroups')}`]);
+
       const collapseAllBtn = el('button', {
         class: 'button',
         type: 'button',
@@ -3163,6 +3239,7 @@ function tabGroupsPage() {
           wakeAllBtn,
           closeDuplicatesBtn,
           pruneEmptyBtn,
+          sortGroupsBtn,
           collapseAllBtn,
           expandAllBtn,
         ])
@@ -3300,6 +3377,14 @@ function tabGroupsPage() {
                 }
               },
             }, [el('span', { html: icon('archive') }), ` ${t('tabGroups.stash')}`]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('tabGroups.bookmarkGroupDesc'),
+              onclick: async () => {
+                await api().tabs.groupBookmark(group.id);
+              },
+            }, [el('span', { html: icon('bookmark') }), ` ${t('tabGroups.bookmarkGroup')}`]),
             el('button', {
               class: 'button small',
               type: 'button',

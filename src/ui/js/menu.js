@@ -479,6 +479,11 @@ export function openTabMenu(tab, x, y) {
           onSelect: () => api().tabs.reloadAll(),
         }),
         row({
+          iconName: 'reload',
+          title: t('menu.reloadOthers'),
+          onSelect: () => api().tabs.reloadOthers(tab.id),
+        }),
+        row({
           iconName: 'minus',
           title: t('menu.closeOthers'),
           onSelect: () => api().tabs.closeOthers(tab.id),
@@ -831,6 +836,14 @@ export function openTabstripMenu() {
           iconName: 'reload',
           title: t('menu.reloadAll'),
           onSelect: () => api().tabs.reloadAll(),
+        }),
+        row({
+          iconName: 'reload',
+          title: t('menu.reloadOthers'),
+          onSelect: () => {
+            const cur = currentTab();
+            if (cur) api().tabs.reloadOthers(cur.id);
+          },
         }),
         row({
           iconName: 'minus',

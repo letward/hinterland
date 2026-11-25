@@ -106,6 +106,7 @@ const api = {
     wakeAll: () => ipcRenderer.invoke('tabs:wakeAll'),
     focusAudible: () => ipcRenderer.invoke('tabs:focusAudible'),
     reloadAll: () => ipcRenderer.invoke('tabs:reloadAll'),
+    reloadOthers: (id) => ipcRenderer.invoke('tabs:reloadOthers', id),
     closeDuplicates: () => ipcRenderer.invoke('tabs:closeDuplicates'),
     muteAll: (muted) => ipcRenderer.invoke('tabs:muteAll', muted),
     confirmClose: (id, answer) => ipcRenderer.invoke('tab:confirmClose', id, answer),
@@ -129,6 +130,8 @@ const api = {
     groupPruneEmpty: () => ipcRenderer.invoke('tabs:groupPruneEmpty'),
     groupSetAllCollapsed: (collapsed) => ipcRenderer.invoke('tabs:groupSetAllCollapsed', collapsed),
     groupOpenFromClipboard: () => ipcRenderer.invoke('tabs:groupOpenFromClipboard'),
+    groupSortAlpha: () => ipcRenderer.invoke('tabs:groupSortAlpha'),
+    groupBookmark: (groupId) => ipcRenderer.invoke('tabs:groupBookmark', groupId),
     copyAllMarkdown: () => ipcRenderer.invoke('tabs:copyAllMarkdown'),
     copyAllUrls: () => ipcRenderer.invoke('tabs:copyAllUrls'),
     copyAllJson: () => ipcRenderer.invoke('tabs:copyAllJson'),
@@ -257,6 +260,8 @@ const api = {
     markAllRead: () => ipcRenderer.invoke('readingList:markAllRead'),
     openAllUnread: () => ipcRenderer.invoke('readingList:openAllUnread'),
     addAllTabs: () => ipcRenderer.invoke('readingList:addAllTabs'),
+    addFromClipboard: () => ipcRenderer.invoke('readingList:addFromClipboard'),
+    deduplicate: () => ipcRenderer.invoke('readingList:deduplicate'),
     exportJson: () => ipcRenderer.invoke('readingList:exportJson'),
     exportMarkdown: () => ipcRenderer.invoke('readingList:exportMarkdown'),
     copyMarkdown: (mode) => ipcRenderer.invoke('readingList:copyMarkdown', mode),
@@ -282,6 +287,7 @@ const api = {
     createFromTab: (tabId) => ipcRenderer.invoke('notes:createFromTab', tabId),
     createFromClipboard: () => ipcRenderer.invoke('notes:createFromClipboard'),
     openLinks: (id) => ipcRenderer.invoke('notes:openLinks', id),
+    copyLinks: (id) => ipcRenderer.invoke('notes:copyLinks', id),
   },
 
   stashes: {
@@ -303,6 +309,8 @@ const api = {
     addTab: (stashId, tabId) => ipcRenderer.invoke('stashes:addTab', stashId, tabId),
     createFromClipboard: () => ipcRenderer.invoke('stashes:createFromClipboard'),
     deduplicate: () => ipcRenderer.invoke('stashes:deduplicate'),
+    toNote: (stashId) => ipcRenderer.invoke('stashes:toNote', stashId),
+    pruneEmpty: () => ipcRenderer.invoke('stashes:pruneEmpty'),
     importJson: () => ipcRenderer.invoke('stashes:importJson'),
   },
 
@@ -343,6 +351,7 @@ const api = {
     copyMarkdown: () => ipcRenderer.invoke('downloads:copyMarkdown'),
     copyUrls: () => ipcRenderer.invoke('downloads:copyUrls'),
     copyJson: () => ipcRenderer.invoke('downloads:copyJson'),
+    exportJson: () => ipcRenderer.invoke('downloads:exportJson'),
     retry: (url) => ipcRenderer.invoke('downloads:retry', url),
   },
 
