@@ -165,6 +165,16 @@ export function openMainMenu() {
           onSelect: () => api().tabs.copyAllUrls(),
         }),
         row({
+          iconName: 'copy',
+          title: t('menu.copyAllTabsJson'),
+          onSelect: () => api().tabs.copyAllJson(),
+        }),
+        row({
+          iconName: 'volume',
+          title: t('menu.focusAudibleTab'),
+          onSelect: () => api().tabs.focusAudible(),
+        }),
+        row({
           iconName: 'external',
           title: t('menu.openClipboardUrls'),
           onSelect: () => api().tabs.openClipboardUrls(),
@@ -773,6 +783,16 @@ export function openTabstripMenu() {
           onSelect: () => api().tabs.copyAllUrls(),
         }),
         row({
+          iconName: 'copy',
+          title: t('menu.copyAllTabsJson'),
+          onSelect: () => api().tabs.copyAllJson(),
+        }),
+        row({
+          iconName: 'volume',
+          title: t('menu.focusAudibleTab'),
+          onSelect: () => api().tabs.focusAudible(),
+        }),
+        row({
           iconName: 'external',
           title: t('menu.openClipboardUrls'),
           onSelect: () => api().tabs.openClipboardUrls(),
@@ -900,6 +920,15 @@ export function openMediaControls() {
           el('span', { class: 'mediaBadge active', text: t('media.playingCount', { count: activePlayingCount }) }),
         ]),
         el('div', { class: 'mediaHeaderButtons' }, [
+          el('button', {
+            class: 'button small',
+            type: 'button',
+            onclick: async (e) => {
+              e.stopPropagation();
+              await api().tabs.focusAudible();
+              closePopup();
+            },
+          }, [el('span', { html: icon('external') }), ` ${t('media.focusPlaying')}`]),
           el('button', {
             class: 'button small',
             type: 'button',

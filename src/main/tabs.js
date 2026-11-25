@@ -305,6 +305,16 @@ export class TabManager extends EventEmitter {
     return count;
   }
 
+  focusAudible() {
+    const audible = this.tabs.filter((tab) => tab.audible && !tab.muted);
+    const pool = audible.length ? audible : this.tabs.filter((tab) => tab.audible);
+    if (!pool.length) return { ok: false, tab: null };
+    const currentIndex = pool.findIndex((tab) => tab.id === this.activeId);
+    const target = pool[(currentIndex + 1) % pool.length];
+    this.activate(target.id);
+    return { ok: true, tab: target.snapshot() };
+  }
+
   cycle(delta) {
     if (this.tabs.length < 2) return;
     const index = this.indexOf(this.activeId);

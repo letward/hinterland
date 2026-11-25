@@ -94,6 +94,28 @@ export function installIpc() {
     return { ok: true, count: uniqueUrls.length };
   };
 
+  const extractValidatedUrlsFromClipboard = (limit = 30) => {
+    const raw = clipboard.readText() || '';
+    const matches = raw.match(/https?:\/\/[^\s<>"')\]]+/gi) || [];
+    const seen = new Set();
+    const urls = [];
+    for (const candidate of matches) {
+      const cleaned = String(candidate || '').trim().replace(/[.,;:!?]+$/, '');
+      if (!cleaned) continue;
+      try {
+        const parsed = new URL(cleaned);
+        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') continue;
+        const normalized = parsed.href;
+        if (!seen.has(normalized)) {
+          seen.add(normalized);
+          urls.push(normalized);
+        }
+      } catch {}
+      if (urls.length >= limit) break;
+    }
+    return urls;
+  };
+
   const openValidatedUrlsInTabs = (candidates, { limit = 30, emptyToast, successToast } = {}) => {
     const seen = new Set();
     const urls = [];
@@ -415,6 +437,21 @@ export function installIpc() {
     const source = Array.isArray(urls) ? urls : (tabs.recentlyClosed() || []).map((entry) => entry?.url);
     return copyUniqueUrls(source, 'toast.noRecentlyClosedToCopy', 'toast.recentlyClosedUrlsCopied');
   });
+  handle('tabs:copyRecentlyClosedMarkdown', (entries = null) => {
+    const source = (Array.isArray(entries) ? entries : (tabs.recentlyClosed() || [])).filter((entry) => entry?.url);
+    if (!source.length) {
+      surface.send('toast', { message: 'toast.noRecentlyClosedToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    const lines = ['# Recently Closed Tabs', ''];
+    for (const entry of source) {
+      const title = String(entry.title || entry.url || 'Untitled').replace(/[\[\]]/g, '');
+      lines.push(`- [${title}](${entry.url})`);
+    }
+    clipboard.writeText(lines.join('\n'));
+    surface.send('toast', { message: 'toast.recentlyClosedMarkdownCopied', kind: 'success', data: { count: source.length } });
+    return { ok: true, count: source.length };
+  });
   handle('tabs:restoreClosed', (index) => tabs.reopenClosed(index));
   handle('tabs:clearRecentlyClosed', () => tabs.clearRecentlyClosed());
   handle('tabs:restoreAllClosed', () => tabs.restoreAllClosed());
@@ -453,6 +490,19 @@ export function installIpc() {
       data: { count },
     });
     return { ok: true, count };
+  });
+  handle('tabs:focusAudible', () => {
+    const res = tabs.focusAudible();
+    if (!res.ok) {
+      surface.send('toast', { message: 'toast.noAudibleTabs', kind: 'info' });
+      return { ok: false };
+    }
+    surface.send('toast', {
+      message: 'toast.focusedAudibleTab',
+      kind: 'info',
+      data: { title: res.tab?.title || res.tab?.url || 'Tab' },
+    });
+    return res;
   });
   handle('tabs:reloadAll', () => {
     for (const tab of tabs.list) {
@@ -797,6 +847,41 @@ export function installIpc() {
     return { ok: true, count: updated.length, collapsed: target };
   });
 
+  handle('tabs:groupOpenFromClipboard', () => {
+    const urls = extractValidatedUrlsFromClipboard(20);
+    if (!urls.length) {
+      surface.send('toast', { message: 'toast.noUrlsInClipboard', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    const groups = sortedGroups();
+    const dateStr = new Date().toLocaleDateString('en-CA');
+    const name = `Clipboard (${dateStr})`;
+    const groupId = `g${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 5)}`;
+    const colors = ['#388bfd', '#2ea043', '#d29922', '#f85149', '#a371f7', '#39c5bb', '#8b949e'];
+    groups.push({
+      id: groupId,
+      name,
+      color: colors[groups.length % colors.length],
+      collapsed: false,
+    });
+    persistGroups(groups);
+    for (let i = 0; i < urls.length; i++) {
+      const created = tabs.create({ url: urls[i], background: i > 0 });
+      if (created) {
+        created.groupId = groupId;
+        surface.send('tab:update', created.snapshot());
+      }
+    }
+    tabs.scheduleSave();
+    surface.send('tabs:sync', tabs.snapshot());
+    surface.send('toast', {
+      message: 'toast.groupOpenedFromClipboard',
+      kind: 'success',
+      data: { count: urls.length, name },
+    });
+    return { ok: true, groupId, count: urls.length };
+  });
+
   handle('tabs:copyAllMarkdown', () => {
     const webTabs = tabs.list.filter((t) => t.url && !isInternalUrl(t.url));
     if (!webTabs.length) {
@@ -848,10 +933,30 @@ export function installIpc() {
     return { ok: true, count: webTabs.length };
   });
 
+  handle('tabs:copyAllJson', () => {
+    const webTabs = tabs.list.filter((t) => t.url && !isInternalUrl(t.url));
+    if (!webTabs.length) {
+      surface.send('toast', { message: 'toast.noTabsToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    const payload = webTabs.map((t) => ({
+      id: t.id,
+      title: t.title || t.url,
+      url: t.url,
+      pinned: Boolean(t.pinned),
+      sleeping: Boolean(t.sleeping),
+      groupId: t.groupId || null,
+      audible: Boolean(t.audible),
+      muted: Boolean(t.muted),
+    }));
+    clipboard.writeText(JSON.stringify(payload, null, 2));
+    surface.send('toast', { message: 'toast.allTabsJsonCopied', kind: 'success', data: { count: payload.length } });
+    return { ok: true, count: payload.length };
+  });
+
   handle('tabs:openClipboardUrls', () => {
-    const raw = clipboard.readText() || '';
-    const matches = raw.match(/https?:\/\/[^\s<>"')\]]+/gi) || [];
-    return openValidatedUrlsInTabs(matches, {
+    const urls = extractValidatedUrlsFromClipboard(30);
+    return openValidatedUrlsInTabs(urls, {
       limit: 30,
       emptyToast: 'toast.noUrlsInClipboard',
       successToast: 'toast.openedClipboardUrls',
@@ -1542,6 +1647,16 @@ export function installIpc() {
       emptyToast: 'toast.noHistoryToOpen',
       successToast: 'toast.historyOpened',
     });
+  });
+  handle('history:copyJson', (entries = null) => {
+    const list = (Array.isArray(entries) ? entries : (history.getAll() || [])).filter((e) => e?.url);
+    if (!list.length) {
+      surface.send('toast', { message: 'toast.noHistoryToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(JSON.stringify(list, null, 2));
+    surface.send('toast', { message: 'toast.historyJsonCopied', kind: 'success', data: { count: list.length } });
+    return { ok: true, count: list.length };
   });
   handle('history:exportJson', async () => {
     const list = history.getAll();
@@ -2244,6 +2359,38 @@ export function installIpc() {
     return { ok: true, added: newTabs.length, total: existing.length };
   });
 
+  handle('bookmarks:addFromClipboard', () => {
+    const urls = extractValidatedUrlsFromClipboard(30);
+    if (!urls.length) {
+      surface.send('toast', { message: 'toast.noUrlsInClipboard', kind: 'warning' });
+      return { ok: false, added: 0 };
+    }
+    const existing = [...(settings.value('data.bookmarks') ?? [])];
+    const normalizeUrl = (raw) => String(raw || '').trim().replace(/\/+$/, '').toLowerCase();
+    const seen = new Set(existing.map((item) => normalizeUrl(item?.url)).filter(Boolean));
+    const folder = `Clipboard ${new Date().toLocaleDateString('en-CA')}`;
+    let added = 0;
+    for (const url of urls) {
+      const key = normalizeUrl(url);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      existing.push({
+        url,
+        title: normalizeDomain(url) || url,
+        addedAt: Date.now(),
+        folder,
+      });
+      added += 1;
+    }
+    if (!added) {
+      surface.send('toast', { message: 'toast.bookmarksNoNew', kind: 'info' });
+      return { ok: false, added: 0, total: existing.length };
+    }
+    settings.set('data.bookmarks', existing);
+    surface.send('toast', { message: 'toast.bookmarksAddedFromClipboard', kind: 'success', data: { count: added } });
+    return { ok: true, added, total: existing.length };
+  });
+
   /* ------------------------------------------------------------- reading list */
   handle('readingList:get', () => {
     return settings.value('data.readingList') || [];
@@ -2786,6 +2933,27 @@ ${renderItemsHtml(read)}
     return { ok: true, count: notes.length };
   });
 
+  handle('notes:copyJson', (noteId = null) => {
+    const notes = settings.value('data.notes') || [];
+    if (noteId) {
+      const note = notes.find((n) => n.id === noteId);
+      if (!note) {
+        surface.send('toast', { message: 'toast.noNotesToCopy', kind: 'warning' });
+        return { ok: false, count: 0 };
+      }
+      clipboard.writeText(JSON.stringify(note, null, 2));
+      surface.send('toast', { message: 'toast.noteJsonCopied', kind: 'success', data: { count: 1 } });
+      return { ok: true, count: 1 };
+    }
+    if (!notes.length) {
+      surface.send('toast', { message: 'toast.noNotesToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(JSON.stringify(notes, null, 2));
+    surface.send('toast', { message: 'toast.noteJsonCopied', kind: 'success', data: { count: notes.length } });
+    return { ok: true, count: notes.length };
+  });
+
   handle('notes:exportHtml', async () => {
     const notes = settings.value('data.notes') || [];
     const dateStr = new Date().toISOString().split('T')[0];
@@ -3070,6 +3238,28 @@ ${renderNotesHtml(notes)}
     });
   });
 
+  handle('notes:createFromClipboard', () => {
+    const text = String(clipboard.readText() || '').trim();
+    if (!text) {
+      surface.send('toast', { message: 'toast.clipboardEmptyForNote', kind: 'warning' });
+      return { ok: false, error: 'emptyClipboard' };
+    }
+    const firstLine = text.split(/\r?\n/).map((line) => line.trim()).find(Boolean) || '';
+    const derivedTitle = firstLine.replace(/^#+\s*/, '').slice(0, 80) || `Clipboard (${new Date().toLocaleDateString('en-CA')})`;
+    const fresh = {
+      id: `n${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+      title: derivedTitle,
+      content: text,
+      pinned: false,
+      updatedAt: Date.now(),
+    };
+    const notes = [...(settings.value('data.notes') || [])];
+    notes.unshift(fresh);
+    settings.set('data.notes', notes);
+    surface.send('toast', { message: 'toast.noteCreatedFromClipboard', kind: 'success' });
+    return { ok: true, note: fresh };
+  });
+
   /* ------------------------------------------------------------- tab stashes */
   handle('stashes:get', () => {
     return settings.value('data.tabStashes') || [];
@@ -3317,6 +3507,70 @@ ${renderNotesHtml(notes)}
     const stashes = settings.value('data.tabStashes') || [];
     const urls = stashes.flatMap((stash) => (Array.isArray(stash?.tabs) ? stash.tabs : []).map((t) => t?.url));
     return copyUniqueUrls(urls, 'toast.noTabsInStashToCopy', 'toast.stashAllUrlsCopied');
+  });
+
+  handle('stashes:copyJson', (stashId = null) => {
+    const stashes = settings.value('data.tabStashes') || [];
+    const target = stashId ? stashes.filter((s) => s.id === stashId) : stashes;
+    if (!target.length) {
+      surface.send('toast', { message: 'toast.noTabsInStashToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    const payload = stashId && target.length === 1 ? target[0] : target;
+    clipboard.writeText(JSON.stringify(payload, null, 2));
+    surface.send('toast', { message: 'toast.stashJsonCopied', kind: 'success', data: { count: target.length } });
+    return { ok: true, count: target.length };
+  });
+
+  handle('stashes:createFromClipboard', () => {
+    const urls = extractValidatedUrlsFromClipboard(30);
+    if (!urls.length) {
+      surface.send('toast', { message: 'toast.noUrlsInClipboard', kind: 'warning' });
+      return { ok: false, error: 'no_urls', count: 0 };
+    }
+    const dateStr = new Date().toLocaleDateString('en-CA');
+    const newStash = {
+      id: `stash_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+      title: `Clipboard (${dateStr})`,
+      createdAt: Date.now(),
+      tabs: urls.map((url) => ({
+        url,
+        title: normalizeDomain(url) || url,
+        favicon: '',
+      })),
+    };
+    const stashes = [...(settings.value('data.tabStashes') || [])];
+    stashes.unshift(newStash);
+    settings.set('data.tabStashes', stashes);
+    surface.send('toast', { message: 'toast.stashCreatedFromClipboard', kind: 'success', data: { count: urls.length } });
+    return { ok: true, stash: newStash, count: urls.length };
+  });
+
+  handle('stashes:deduplicate', () => {
+    const stashes = [...(settings.value('data.tabStashes') || [])];
+    let removed = 0;
+    const normalizeUrl = (raw) => String(raw || '').trim().replace(/\/+$/, '').toLowerCase();
+    const updated = stashes.map((stash) => {
+      const seen = new Set();
+      const uniqueTabs = [];
+      for (const tab of stash.tabs || []) {
+        const key = normalizeUrl(tab?.url);
+        if (!key || seen.has(key)) {
+          if (key) removed += 1;
+          continue;
+        }
+        seen.add(key);
+        uniqueTabs.push(tab);
+      }
+      return { ...stash, tabs: uniqueTabs };
+    });
+    if (removed > 0) {
+      settings.set('data.tabStashes', updated);
+      surface.send('toast', { message: 'toast.stashesDeduplicated', kind: 'success', data: { count: removed } });
+    } else {
+      surface.send('toast', { message: 'toast.stashesNoDuplicates', kind: 'info' });
+    }
+    return { ok: true, removed };
   });
 
   handle('stashes:addTab', (stashId, tabId = null) => {

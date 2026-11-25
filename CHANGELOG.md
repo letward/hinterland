@@ -4,6 +4,31 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.42.0] - 2026-11-25
+
+### Added
+- **Tab Management, Audio Switching & Tab Groups (`src/main/tabs.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/menu.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `TabManager.focusAudible()` and `tabs:focusAudible` IPC handler to jump straight to the next tab actively playing audio, wired in **Media Controller** (**Jump to playing**), **Main/Tabstrip Menu**, and Command Palette (`commandPalette.tabsFocusAudible`).
+  - Added `tabs:copyAllJson` IPC handler to copy all open non-internal tabs with metadata (`id`, `title`, `url`, `pinned`, `sleeping`, `groupId`, `audible`, `muted`) as formatted JSON, wired in **Tab Groups Studio**, menus, and Command Palette (`commandPalette.tabsCopyAllJson`).
+  - Extracted shared `extractValidatedUrlsFromClipboard` helper and added `tabs:groupOpenFromClipboard` to launch clipboard HTTP/HTTPS URLs directly inside a newly created color-coded tab group (**Clipboard as Group** in Tab Groups Studio and Command Palette `commandPalette.tabsGroupOpenFromClipboard`).
+  - Added `tabs:copyRecentlyClosedMarkdown` IPC handler and **Copy as Markdown** button in **Recently Closed Tabs** (filtering supported) plus Command Palette action `commandPalette.tabsCopyRecentlyClosedMarkdown`.
+- **Tab Stash: Clipboard Import, Copy JSON & Deduplication (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `stashes:createFromClipboard` IPC handler and **Stash from Clipboard** button to create a new stash directly from clipboard URLs without opening tabs first.
+  - Added `stashes:copyJson` IPC handler supporting both single-stash and full-vault JSON clipboard export.
+  - Added `stashes:deduplicate` IPC handler and **Deduplicate** button to remove duplicate URLs across saved stashes, plus Command Palette actions `commandPalette.stashesCreateFromClipboard`, `commandPalette.stashesCopyJson`, and `commandPalette.stashesDeduplicate`.
+- **Quick Notes: Clipboard Capture, Copy JSON & Sort Toggle (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `notes:createFromClipboard` IPC handler and **Note from Clipboard** button to turn clipboard text into a titled note in 1 click.
+  - Added `notes:copyJson` IPC handler supporting single-note (**Copy as JSON**) and full-vault (**Copy All (JSON)**) clipboard copy.
+  - Added sidebar **Sort A-Z / Sort Recent** toggle to switch note ordering while keeping pinned notes at the top, plus Command Palette actions `commandPalette.notesCreateFromClipboard` and `commandPalette.notesCopyJson`.
+- **Bookmarks & History QoL (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `bookmarks:addFromClipboard` IPC handler and **Add from Clipboard** button to batch-save deduplicated HTTP/HTTPS URLs from the clipboard into Bookmarks, plus Command Palette action `commandPalette.bookmarksAddFromClipboard`.
+  - Added `history:copyJson` IPC handler and **Copy JSON** button in History Manager (supporting filtered views) plus Command Palette action `commandPalette.historyCopyJson`.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`, `website/api/sync.js`)**:
+  - Documented Jump to playing, Copy All (JSON), Clipboard as Group, Recently Closed Copy as Markdown, Tab Stash Clipboard/JSON/Deduplicate, Quick Notes Clipboard/JSON/Sorting, Bookmarks Add from Clipboard, and History Copy JSON in the User Guide.
+  - Updated website hero badge, standalone Windows installer download link, and sync service version to v1.42.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v142Features.test.mjs`)**:
+  - Added 54 automated tests covering all v1.42.0 helpers, IPC handlers, preload bindings, UI/menu/Command Palette wiring, documentation/website updates, and 100% EN/DE locale parity.
+
 ## [1.41.0] - 2026-11-24
 
 ### Added

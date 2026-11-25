@@ -194,6 +194,27 @@ export function openCommandPalette() {
             run: () => api().tabs.copyAllUrls(),
           },
           {
+            id: 'tabsCopyAllJson',
+            title: t('commandPalette.tabsCopyAllJson'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'download',
+            run: () => api().tabs.copyAllJson(),
+          },
+          {
+            id: 'tabsFocusAudible',
+            title: t('commandPalette.tabsFocusAudible'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'volume',
+            run: () => api().tabs.focusAudible(),
+          },
+          {
+            id: 'tabsGroupOpenFromClipboard',
+            title: t('commandPalette.tabsGroupOpenFromClipboard'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'tabs',
+            run: () => api().tabs.groupOpenFromClipboard(),
+          },
+          {
             id: 'tabsOpenClipboardUrls',
             title: t('commandPalette.tabsOpenClipboardUrls'),
             category: t('commandPalette.categoryCommand'),
@@ -680,6 +701,27 @@ export function openCommandPalette() {
             run: () => api().stashes.copyAllUrls(),
           },
           {
+            id: 'stashesCopyJson',
+            title: t('commandPalette.stashesCopyJson'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'download',
+            run: () => api().stashes.copyJson(),
+          },
+          {
+            id: 'stashesCreateFromClipboard',
+            title: t('commandPalette.stashesCreateFromClipboard'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'plus',
+            run: () => api().stashes.createFromClipboard(),
+          },
+          {
+            id: 'stashesDeduplicate',
+            title: t('commandPalette.stashesDeduplicate'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'check',
+            run: () => api().stashes.deduplicate(),
+          },
+          {
             id: 'storeThemes',
             title: t('commandPalette.browseThemes'),
             category: t('commandPalette.categoryCommand'),
@@ -979,6 +1021,13 @@ export function openCommandPalette() {
             run: () => api().history.openUrls(),
           },
           {
+            id: 'historyCopyJson',
+            title: t('commandPalette.historyCopyJson'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'download',
+            run: () => api().history.copyJson(),
+          },
+          {
             id: 'bookmarksExportJson',
             title: t('commandPalette.bookmarksExportJson'),
             category: t('commandPalette.categoryCommand'),
@@ -1042,6 +1091,13 @@ export function openCommandPalette() {
             run: () => api().bookmarks.bookmarkAllTabs(),
           },
           {
+            id: 'bookmarksAddFromClipboard',
+            title: t('commandPalette.bookmarksAddFromClipboard'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'plus',
+            run: () => api().bookmarks.addFromClipboard(),
+          },
+          {
             id: 'downloadsClearCompleted',
             title: t('commandPalette.downloadsClearCompleted'),
             category: t('commandPalette.categoryCommand'),
@@ -1101,6 +1157,13 @@ export function openCommandPalette() {
             run: () => api().tabs.copyRecentlyClosedUrls(),
           },
           {
+            id: 'tabsCopyRecentlyClosedMarkdown',
+            title: t('commandPalette.tabsCopyRecentlyClosedMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().tabs.copyRecentlyClosedMarkdown(),
+          },
+          {
             id: 'notesExportAll',
             title: t('commandPalette.notesExportAll'),
             category: t('commandPalette.categoryCommand'),
@@ -1148,6 +1211,20 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'external',
             run: () => api().notes.openLinks(),
+          },
+          {
+            id: 'notesCreateFromClipboard',
+            title: t('commandPalette.notesCreateFromClipboard'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'plus',
+            run: () => api().notes.createFromClipboard(),
+          },
+          {
+            id: 'notesCopyJson',
+            title: t('commandPalette.notesCopyJson'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'download',
+            run: () => api().notes.copyJson(),
           },
           {
             id: 'closeDuplicates',
