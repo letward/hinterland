@@ -311,7 +311,11 @@
     "readingListOpenMatching": "Reading List: Open unread items in background tabs",
     "tabsCopyRecentlyClosedJson": "Recently Closed: Copy as JSON",
     "notesCreateFromAllTabs": "Quick Notes: Save all open tabs as note",
-    "notesPruneEmpty": "Quick Notes: Remove empty notes"
+    "notesPruneEmpty": "Quick Notes: Remove empty notes",
+    "tabsStashRecentlyClosed": "Recently Closed: Save as Tab Stash",
+    "bookmarksToNote": "Bookmarks: Save all as Quick Note",
+    "notesToStash": "Quick Notes: Save links as Tab Stash",
+    "downloadsRetryFailed": "Downloads: Retry failed downloads"
   },
   "confirm": {
     "closeTitle": "Close tab",
@@ -347,6 +351,8 @@
     "copyUrls": "Copy URLs",
     "copyJson": "Copy JSON",
     "openMatching": "Open Matching",
+    "removeMatching": "Remove Matching",
+    "toNote": "Save as Note",
     "countBadge": "{count} bookmarks",
     "importHtml": "Import bookmarks (HTML)",
     "importJson": "Import bookmarks (JSON)",
@@ -389,6 +395,7 @@
     "recentlyClosedNoMatch": "No recently closed tabs match your search.",
     "recentlyClosedCount": "{count} closed tabs",
     "restoreAll": "Restore all",
+    "stashRecentlyClosed": "Save as Stash",
     "clearRecentlyClosed": "Clear closed tabs"
   },
   "downloads": {
@@ -414,6 +421,7 @@
     "copyJson": "Copy JSON",
     "exportJson": "Export JSON",
     "retryDownload": "Download again",
+    "retryFailed": "Retry failed",
     "summaryCount": "{count} files ({size})"
   },
   "shortcuts": {
@@ -761,7 +769,23 @@
     "noteCreatedFromAllTabs": "Saved {count} open tab(s) as a new Quick Note",
     "notesPruned": "Removed {count} empty note(s)",
     "noEmptyNotes": "No empty unpinned notes to remove",
-    "stashAllMarkdownCopied": "Copied {count} stash(es) as Markdown"
+    "stashAllMarkdownCopied": "Copied {count} stash(es) as Markdown",
+    "recentlyClosedStashed": "Saved {count} recently closed tab(s) to a new stash",
+    "noRecentlyClosedToStash": "No recently closed HTTP/HTTPS tabs to stash",
+    "groupWokeTabs": "Woke {count} sleeping tab(s) in this group",
+    "noSleepingTabsInGroup": "No sleeping tabs in this group to wake",
+    "groupMutedTabs": "Muted {count} tab(s) in this group",
+    "groupUnmutedTabs": "Unmuted {count} tab(s) in this group",
+    "noTabsInGroupToMute": "No open tabs in this group to mute",
+    "groupDuplicated": "Duplicated group \"{name}\" with {count} tab(s)",
+    "noTabsInGroupToDuplicate": "No open web tabs in this group to duplicate",
+    "bookmarksRemovedMatching": "Removed {count} matching bookmark(s)",
+    "bookmarksNoMatchingToRemove": "No matching bookmarks to remove",
+    "bookmarksSavedAsNote": "Saved {count} bookmark(s) as a Quick Note",
+    "noteSavedAsStash": "Saved {count} link(s) from \"{title}\" to a new stash",
+    "stashBookmarked": "Bookmarked {count} tab(s) in folder \"{name}\"",
+    "downloadsRetriedFailed": "Re-queued {count} failed download(s)",
+    "noFailedDownloadsToRetry": "No failed HTTP/HTTPS downloads to retry"
   },
   "welcome": {
     "title": "Welcome to Hinterland",
@@ -1532,6 +1556,7 @@
     "clipCurrentTab": "Save Tab as Note",
     "saveAllTabs": "Save Open Tabs",
     "pruneEmpty": "Prune Empty",
+    "toStash": "Save links as Tab Stash",
     "wordCount": "{count} words",
     "charCount": "{count} chars",
     "readingTime": "~{minutes} min read",
@@ -1562,6 +1587,7 @@
     "sortAlpha": "Sort A-Z",
     "sortRecent": "Sort Recent",
     "toNote": "Save as Note",
+    "toBookmarks": "Save to Bookmarks",
     "addCurrentTab": "Add current tab to this stash",
     "summaryCount": "{stashes} stashes · {tabs} tabs",
     "duplicate": "Duplicate Stash",
@@ -1634,6 +1660,13 @@
     "copyJsonDesc": "Copy this tab group and its member tabs as JSON",
     "sleepGroup": "Sleep Group",
     "sleepGroupDesc": "Put inactive tabs in this group to sleep to save memory",
+    "wakeGroup": "Wake Group",
+    "wakeGroupDesc": "Wake all sleeping tabs in this group",
+    "muteGroup": "Mute Group",
+    "unmuteGroup": "Unmute Group",
+    "muteGroupDesc": "Mute or unmute all tabs in this group",
+    "duplicateGroup": "Duplicate",
+    "duplicateGroupDesc": "Create a duplicate of this tab group and its web tabs",
     "openClipboardUrls": "Open URLs from Clipboard",
     "openClipboardUrlsDesc": "Open all HTTP/HTTPS URLs from the clipboard in background tabs",
     "openClipboardAsGroup": "Clipboard as Group",

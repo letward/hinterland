@@ -1147,6 +1147,13 @@ export function openCommandPalette() {
             run: () => api().bookmarks.addFromClipboard(),
           },
           {
+            id: 'bookmarksToNote',
+            title: t('commandPalette.bookmarksToNote'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'notes',
+            run: () => api().bookmarks.toNote(),
+          },
+          {
             id: 'downloadsClearCompleted',
             title: t('commandPalette.downloadsClearCompleted'),
             category: t('commandPalette.categoryCommand'),
@@ -1199,6 +1206,13 @@ export function openCommandPalette() {
             run: () => api().downloads.exportJson(),
           },
           {
+            id: 'downloadsRetryFailed',
+            title: t('commandPalette.downloadsRetryFailed'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'reload',
+            run: () => api().downloads.retryFailed(),
+          },
+          {
             id: 'clearRecentlyClosed',
             title: t('commandPalette.clearRecentlyClosed'),
             category: t('commandPalette.categoryCommand'),
@@ -1225,6 +1239,13 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'download',
             run: () => api().tabs.copyRecentlyClosedJson(),
+          },
+          {
+            id: 'tabsStashRecentlyClosed',
+            title: t('commandPalette.tabsStashRecentlyClosed'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'archive',
+            run: () => api().tabs.stashRecentlyClosed(),
           },
           {
             id: 'notesExportAll',
@@ -1309,6 +1330,13 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'trash',
             run: () => api().notes.pruneEmpty(),
+          },
+          {
+            id: 'notesToStash',
+            title: t('commandPalette.notesToStash'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'archive',
+            run: () => api().notes.toStash(),
           },
           {
             id: 'closeDuplicates',

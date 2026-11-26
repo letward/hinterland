@@ -96,29 +96,7 @@ export function installIpc() {
     return { ok: true, count: uniqueUrls.length };
   };
 
-  const extractValidatedUrlsFromClipboard = (limit = 30) => {
-    const raw = clipboard.readText() || '';
-    const matches = raw.match(/https?:\/\/[^\s<>"')\]]+/gi) || [];
-    const seen = new Set();
-    const urls = [];
-    for (const candidate of matches) {
-      const cleaned = String(candidate || '').trim().replace(/[.,;:!?]+$/, '');
-      if (!cleaned) continue;
-      try {
-        const parsed = new URL(cleaned);
-        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') continue;
-        const normalized = parsed.href;
-        if (!seen.has(normalized)) {
-          seen.add(normalized);
-          urls.push(normalized);
-        }
-      } catch {}
-      if (urls.length >= limit) break;
-    }
-    return urls;
-  };
-
-  const openValidatedUrlsInTabs = (candidates, { limit = 30, emptyToast, successToast } = {}) => {
+  const validateHttpUrls = (candidates, limit = 30) => {
     const seen = new Set();
     const urls = [];
     for (const candidate of candidates || []) {
@@ -135,6 +113,17 @@ export function installIpc() {
       } catch {}
       if (urls.length >= limit) break;
     }
+    return urls;
+  };
+
+  const extractValidatedUrlsFromClipboard = (limit = 30) => {
+    const raw = clipboard.readText() || '';
+    const matches = raw.match(/https?:\/\/[^\s<>"')\]]+/gi) || [];
+    return validateHttpUrls(matches, limit);
+  };
+
+  const openValidatedUrlsInTabs = (candidates, { limit = 30, emptyToast, successToast } = {}) => {
+    const urls = validateHttpUrls(candidates, limit);
     if (!urls.length) {
       if (emptyToast) surface.send('toast', { message: emptyToast, kind: 'warning' });
       return { ok: false, count: 0, urls: [] };
@@ -463,6 +452,31 @@ export function installIpc() {
     clipboard.writeText(JSON.stringify(source, null, 2));
     surface.send('toast', { message: 'toast.recentlyClosedJsonCopied', kind: 'success', data: { count: source.length } });
     return { ok: true, count: source.length };
+  });
+  handle('tabs:stashRecentlyClosed', (entries = null) => {
+    const source = (Array.isArray(entries) ? entries : (tabs.recentlyClosed() || [])).filter(
+      (entry) => entry?.url && (entry.url.startsWith('http://') || entry.url.startsWith('https://')),
+    );
+    if (!source.length) {
+      surface.send('toast', { message: 'toast.noRecentlyClosedToStash', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    const dateStr = new Date().toLocaleDateString('en-CA');
+    const newStash = {
+      id: `stash_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+      title: `Recently Closed (${dateStr})`,
+      createdAt: Date.now(),
+      tabs: source.map((entry) => ({
+        url: entry.url,
+        title: entry.title || entry.url,
+        favicon: entry.favicon || '',
+      })),
+    };
+    const stashes = [...(settings.value('data.tabStashes') || [])];
+    stashes.unshift(newStash);
+    settings.set('data.tabStashes', stashes);
+    surface.send('toast', { message: 'toast.recentlyClosedStashed', kind: 'success', data: { count: source.length } });
+    return { ok: true, stash: newStash, count: source.length };
   });
   handle('tabs:restoreClosed', (index) => tabs.reopenClosed(index));
   handle('tabs:clearRecentlyClosed', () => tabs.clearRecentlyClosed());
@@ -916,37 +930,46 @@ export function installIpc() {
     return { ok: true, count: groups.length };
   });
 
-  handle('tabs:groupBookmark', (groupId) => {
-    const groups = sortedGroups();
-    const group = groups.find((g) => g.id === groupId);
-    const tabsInGroup = tabs.list.filter((t) => t.groupId === groupId && t.url && (t.url.startsWith('http://') || t.url.startsWith('https://')));
-    if (!tabsInGroup.length) {
-      surface.send('toast', { message: 'toast.noTabsInGroupToBookmark', kind: 'warning' });
+  const bookmarkTabEntries = (entries, folderName, { emptyToast, alreadyToast, successToast }) => {
+    const webEntries = (entries || []).filter((t) => t?.url && (t.url.startsWith('http://') || t.url.startsWith('https://')));
+    if (!webEntries.length) {
+      surface.send('toast', { message: emptyToast, kind: 'warning' });
       return { ok: false, added: 0 };
     }
     const existing = [...(settings.value('data.bookmarks') ?? [])];
     const seen = new Set(existing.map((item) => normalizeComparableUrl(item?.url)).filter(Boolean));
-    const folder = String(group?.name || 'Tab Group').trim() || 'Tab Group';
+    const folder = String(folderName || 'Tab Group').trim() || 'Tab Group';
     let added = 0;
-    for (const tab of tabsInGroup) {
-      const key = normalizeComparableUrl(tab.url);
+    for (const entry of webEntries) {
+      const key = normalizeComparableUrl(entry.url);
       if (!key || seen.has(key)) continue;
       seen.add(key);
       existing.push({
-        url: tab.url,
-        title: (tab.title || tab.url).trim(),
+        url: entry.url,
+        title: (entry.title || entry.url).trim(),
         addedAt: Date.now(),
         folder,
       });
       added += 1;
     }
     if (!added) {
-      surface.send('toast', { message: 'toast.allTabsAlreadyBookmarked', kind: 'info' });
+      surface.send('toast', { message: alreadyToast, kind: 'info' });
       return { ok: false, added: 0, total: existing.length };
     }
     settings.set('data.bookmarks', existing);
-    surface.send('toast', { message: 'toast.groupBookmarked', kind: 'success', data: { count: added, name: folder } });
+    surface.send('toast', { message: successToast, kind: 'success', data: { count: added, name: folder } });
     return { ok: true, added, total: existing.length };
+  };
+
+  handle('tabs:groupBookmark', (groupId) => {
+    const groups = sortedGroups();
+    const group = groups.find((g) => g.id === groupId);
+    const tabsInGroup = tabs.list.filter((t) => t.groupId === groupId);
+    return bookmarkTabEntries(tabsInGroup, group?.name || 'Tab Group', {
+      emptyToast: 'toast.noTabsInGroupToBookmark',
+      alreadyToast: 'toast.allTabsAlreadyBookmarked',
+      successToast: 'toast.groupBookmarked',
+    });
   });
 
   handle('tabs:groupFocus', (groupId) => {
@@ -966,6 +989,64 @@ export function installIpc() {
       data: { count },
     });
     return { ok: count > 0, count };
+  });
+
+  handle('tabs:groupWake', (groupId) => {
+    const count = tabs.wakeGroup(groupId);
+    surface.send('toast', {
+      message: count > 0 ? 'toast.groupWokeTabs' : 'toast.noSleepingTabsInGroup',
+      kind: count > 0 ? 'success' : 'info',
+      data: { count },
+    });
+    return { ok: count > 0, count };
+  });
+
+  handle('tabs:groupMute', (groupId, muted = null) => {
+    const res = tabs.muteGroup(groupId, muted);
+    if (!res.ok) {
+      surface.send('toast', { message: 'toast.noTabsInGroupToMute', kind: 'info' });
+      return { ok: false, count: 0 };
+    }
+    surface.send('toast', {
+      message: res.muted ? 'toast.groupMutedTabs' : 'toast.groupUnmutedTabs',
+      kind: 'info',
+      data: { count: res.count },
+    });
+    return res;
+  });
+
+  handle('tabs:groupDuplicate', (groupId) => {
+    const groups = sortedGroups();
+    const source = groups.find((g) => g.id === groupId);
+    const tabsInGroup = tabs.list.filter((t) => t.groupId === groupId && t.url && !isInternalUrl(t.url));
+    if (!source || !tabsInGroup.length) {
+      surface.send('toast', { message: 'toast.noTabsInGroupToDuplicate', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    const newGroupId = `g${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 5)}`;
+    const newName = `${String(source.name || 'Tab Group').trim()} (Copy)`.slice(0, 40);
+    groups.push({
+      id: newGroupId,
+      name: newName,
+      color: source.color || '#4f7cff',
+      collapsed: false,
+    });
+    persistGroups(groups);
+    for (const tab of tabsInGroup) {
+      const created = tabs.create({ url: tab.url, background: true, title: tab.title });
+      if (created) {
+        created.groupId = newGroupId;
+        surface.send('tab:update', created.snapshot());
+      }
+    }
+    tabs.scheduleSave();
+    surface.send('tabs:sync', tabs.snapshot());
+    surface.send('toast', {
+      message: 'toast.groupDuplicated',
+      kind: 'success',
+      data: { count: tabsInGroup.length, name: newName },
+    });
+    return { ok: true, groupId: newGroupId, count: tabsInGroup.length };
   });
 
   handle('tabs:groupCopyJson', (groupId) => {
@@ -2030,25 +2111,50 @@ export function installIpc() {
     return { ok: true, count: list.length };
   });
 
-  handle('downloads:retry', (rawUrl) => {
+  const triggerDownloadUrl = (rawUrl) => {
     try {
       const parsed = new URL(String(rawUrl || '').trim());
-      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-        surface.send('toast', { message: 'toast.downloadRetryInvalid', kind: 'warning' });
-        return { ok: false };
-      }
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return null;
       const tab = tabs.active;
       if (tab?.contents && !tab.contents.isDestroyed()) {
         tab.contents.downloadURL(parsed.href);
       } else {
         tabs.create({ url: parsed.href, background: true });
       }
-      surface.send('toast', { message: 'toast.downloadRetried', kind: 'info' });
-      return { ok: true, url: parsed.href };
+      return parsed.href;
     } catch {
+      return null;
+    }
+  };
+
+  handle('downloads:retry', (rawUrl) => {
+    const href = triggerDownloadUrl(rawUrl);
+    if (!href) {
       surface.send('toast', { message: 'toast.downloadRetryInvalid', kind: 'warning' });
       return { ok: false };
     }
+    surface.send('toast', { message: 'toast.downloadRetried', kind: 'info' });
+    return { ok: true, url: href };
+  });
+
+  handle('downloads:retryFailed', () => {
+    const list = getDownloadHistory() || [];
+    const failed = list.filter((item) => item?.state === 'interrupted' || item?.state === 'cancelled' || item?.ok === false);
+    const urls = validateHttpUrls(failed.map((item) => item.url), 15);
+    if (!urls.length) {
+      surface.send('toast', { message: 'toast.noFailedDownloadsToRetry', kind: 'info' });
+      return { ok: false, count: 0 };
+    }
+    let count = 0;
+    for (const url of urls) {
+      if (triggerDownloadUrl(url)) count += 1;
+    }
+    surface.send('toast', {
+      message: count > 0 ? 'toast.downloadsRetriedFailed' : 'toast.noFailedDownloadsToRetry',
+      kind: count > 0 ? 'success' : 'info',
+      data: { count },
+    });
+    return { ok: count > 0, count };
   });
 
   handle('downloads:copyUrls', () => {
@@ -2313,6 +2419,51 @@ export function installIpc() {
       emptyToast: 'toast.noBookmarksToOpen',
       successToast: 'toast.bookmarksOpened',
     });
+  });
+
+  handle('bookmarks:removeUrls', (urls = []) => {
+    const targets = new Set(
+      (Array.isArray(urls) ? urls : [])
+        .map((u) => normalizeComparableUrl(u))
+        .filter(Boolean),
+    );
+    if (!targets.size) {
+      surface.send('toast', { message: 'toast.bookmarksNoMatchingToRemove', kind: 'info' });
+      return { ok: false, removed: 0 };
+    }
+    const existing = [...(settings.value('data.bookmarks') ?? [])];
+    const kept = existing.filter((item) => !targets.has(normalizeComparableUrl(item?.url)));
+    const removed = existing.length - kept.length;
+    if (removed > 0) {
+      settings.set('data.bookmarks', kept);
+      surface.send('toast', { message: 'toast.bookmarksRemovedMatching', kind: 'success', data: { count: removed } });
+    } else {
+      surface.send('toast', { message: 'toast.bookmarksNoMatchingToRemove', kind: 'info' });
+    }
+    return { ok: removed > 0, removed, total: kept.length };
+  });
+
+  handle('bookmarks:toNote', (items = null) => {
+    const list = (Array.isArray(items) && items.length ? items : (settings.value('data.bookmarks') ?? []))
+      .filter((item) => item?.url);
+    if (!list.length) {
+      surface.send('toast', { message: 'toast.noBookmarksToCopy', kind: 'warning' });
+      return { ok: false };
+    }
+    const dateStr = new Date().toLocaleDateString('en-CA');
+    const title = `Bookmarks (${dateStr})`;
+    const fresh = {
+      id: `n${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+      title,
+      content: formatBookmarksMarkdown(list),
+      pinned: false,
+      updatedAt: Date.now(),
+    };
+    const notes = [...(settings.value('data.notes') || [])];
+    notes.unshift(fresh);
+    settings.set('data.notes', notes);
+    surface.send('toast', { message: 'toast.bookmarksSavedAsNote', kind: 'success', data: { count: list.length } });
+    return { ok: true, note: fresh, count: list.length };
   });
 
   handle('bookmarks:importHtml', async () => {
@@ -3449,14 +3600,35 @@ ${renderNotesHtml(notes)}
 
   handle('notes:copyLinks', (noteId = null) => {
     const candidates = extractUrlsFromNotes(noteId);
-    const cleaned = [];
-    for (const raw of candidates) {
-      try {
-        const parsed = new URL(String(raw || '').trim().replace(/[.,;:!?]+$/, ''));
-        if (parsed.protocol === 'http:' || parsed.protocol === 'https:') cleaned.push(parsed.href);
-      } catch {}
-    }
+    const cleaned = validateHttpUrls(candidates, 100);
     return copyUniqueUrls(cleaned, 'toast.noLinksInNote', 'toast.noteLinksCopied');
+  });
+
+  handle('notes:toStash', (noteId = null) => {
+    const notes = settings.value('data.notes') || [];
+    const targetNote = noteId ? notes.find((n) => n.id === noteId) : null;
+    const urls = validateHttpUrls(extractUrlsFromNotes(noteId), 30);
+    if (!urls.length) {
+      surface.send('toast', { message: 'toast.noLinksInNote', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    const dateStr = new Date().toLocaleDateString('en-CA');
+    const title = String(targetNote?.title || `Notes Links (${dateStr})`).trim().slice(0, 150) || `Notes Links (${dateStr})`;
+    const newStash = {
+      id: `stash_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+      title,
+      createdAt: Date.now(),
+      tabs: urls.map((url) => ({
+        url,
+        title: normalizeDomain(url) || url,
+        favicon: '',
+      })),
+    };
+    const stashes = [...(settings.value('data.tabStashes') || [])];
+    stashes.unshift(newStash);
+    settings.set('data.tabStashes', stashes);
+    surface.send('toast', { message: 'toast.noteSavedAsStash', kind: 'success', data: { count: urls.length, title } });
+    return { ok: true, stash: newStash, count: urls.length };
   });
 
   handle('notes:createFromClipboard', () => {
@@ -3870,6 +4042,16 @@ ${renderNotesHtml(notes)}
     settings.set('data.notes', notes);
     surface.send('toast', { message: 'toast.stashSavedAsNote', kind: 'success', data: { title } });
     return { ok: true, note: fresh };
+  });
+
+  handle('stashes:toBookmarks', (stashId) => {
+    const stashes = settings.value('data.tabStashes') || [];
+    const stash = stashes.find((s) => s.id === stashId);
+    return bookmarkTabEntries(stash?.tabs, stash?.title || 'Tab Stash', {
+      emptyToast: 'toast.noTabsInStashToCopy',
+      alreadyToast: 'toast.allTabsAlreadyBookmarked',
+      successToast: 'toast.stashBookmarked',
+    });
   });
 
   handle('stashes:pruneEmpty', () => {

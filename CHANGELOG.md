@@ -4,6 +4,27 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.45.0] - 2026-11-26
+
+### Added
+- **Tab Groups Studio: Wake Group, Mute Group & Duplicate Group (`src/main/tabs.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`)**:
+  - Added `TabManager.wakeGroup(groupId)` and `TabManager.muteGroup(groupId, muted)` along with `tabs:groupWake`, `tabs:groupMute`, and `tabs:groupDuplicate` IPC handlers and preload bindings.
+  - Added **Wake Group**, **Mute Group / Unmute Group**, and **Duplicate** buttons on every group card in Tab Groups Studio.
+- **Bookmarks Manager: Remove Matching & Save as Note (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `bookmarks:removeUrls` and `bookmarks:toNote` IPC handlers (reusing `normalizeComparableUrl` and `formatBookmarksMarkdown`).
+  - Wired **Remove Matching** and **Save as Note** toolbar buttons in Bookmarks Manager and Command Palette action `commandPalette.bookmarksToNote`.
+- **Quick Notes & Tab Stash Symmetry: Save Note Links as Stash & Bookmark Stash (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `validateHttpUrls` and `bookmarkTabEntries` helpers and added `notes:toStash` and `stashes:toBookmarks` IPC handlers.
+  - Added **Save links as Tab Stash** button in Quick Notes toolbar (plus Command Palette `commandPalette.notesToStash`) and **Save to Bookmarks** button on every Tab Stash card.
+- **Downloads & Recently Closed QoL: Retry Failed & Stash Recently Closed (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `triggerDownloadUrl` helper and added `downloads:retryFailed` IPC handler with **Retry failed** toolbar button in Downloads Manager and Command Palette action `commandPalette.downloadsRetryFailed`.
+  - Added `tabs:stashRecentlyClosed` IPC handler, **Save as Stash** button in Recently Closed Tabs, and Command Palette action `commandPalette.tabsStashRecentlyClosed`.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`, `website/api/sync.js`)**:
+  - Documented Wake Group, Mute Group, Duplicate Group, Bookmarks Remove Matching & Save as Note, Quick Notes Save links as Tab Stash, Tab Stash Save to Bookmarks, Downloads Retry failed, and Recently Closed Save as Stash in the User Guide.
+  - Updated website hero badge, standalone Windows installer download link, and sync service version to v1.45.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v145Features.test.mjs`)**:
+  - Added automated unit and integration tests covering all v1.45.0 `TabManager` methods, IPC handlers, preload bindings, UI/Command Palette wiring, documentation/website updates, and 100% EN/DE locale parity.
+
 ## [1.44.0] - 2026-11-26
 
 ### Added

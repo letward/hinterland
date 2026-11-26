@@ -510,6 +510,11 @@ function recentlyClosedPage() {
           el('button', {
             class: 'button',
             type: 'button',
+            onclick: () => api().tabs.stashRecentlyClosed(lastFilteredEntries),
+          }, [el('span', { html: icon('archive') }), ` ${t('history.stashRecentlyClosed')}`]),
+          el('button', {
+            class: 'button',
+            type: 'button',
             onclick: async () => {
               await api().tabs.clearRecentlyClosed();
               toast(t('toast.recentlyClosedCleared'), 'info');
@@ -546,6 +551,7 @@ function bookmarksPage() {
       const countBadge = el('span', { class: 'rowAside', style: { fontWeight: '500', marginLeft: 'auto' } });
       let currentFilter = '';
       let lastFilteredUrls = [];
+      let lastFilteredItems = [];
 
       const save = async (items) => {
         await api().settings.set('data.bookmarks', items);
@@ -558,6 +564,7 @@ function bookmarksPage() {
         clear(list);
         if (!items.length) {
           lastFilteredUrls = [];
+          lastFilteredItems = [];
           countBadge.textContent = t('bookmarks.countBadge', { count: 0 });
           list.append(el('div', { class: 'empty', text: t('bookmarks.empty') }));
           return;
@@ -569,6 +576,7 @@ function bookmarksPage() {
           const url = (item.url || '').toLowerCase();
           return title.includes(currentFilter) || url.includes(currentFilter);
         });
+        lastFilteredItems = filtered;
         lastFilteredUrls = filtered.map((item) => item.url).filter(Boolean);
         countBadge.textContent = t('bookmarks.countBadge', { count: filtered.length });
 
@@ -673,6 +681,13 @@ function bookmarksPage() {
         el('button', { class: 'button', type: 'button', onclick: async () => {
           await api().bookmarks.openUrls(lastFilteredUrls);
         } }, [el('span', { html: icon('external') }), ` ${t('bookmarks.openMatching')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
+          const res = await api().bookmarks.removeUrls(lastFilteredUrls);
+          if (res?.ok) paint(currentFilter);
+        } }, [el('span', { html: icon('trash') }), ` ${t('bookmarks.removeMatching')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
+          await api().bookmarks.toNote(lastFilteredItems);
+        } }, [el('span', { html: icon('notes') }), ` ${t('bookmarks.toNote')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
           const result = await api().bookmarks.importHtml();
           if (result?.ok && typeof result.count === 'number') {
@@ -837,6 +852,12 @@ function downloadsPage() {
           paint();
         },
       });
+      const retryFailedBtn = el('button', {
+        class: 'button small',
+        type: 'button',
+        html: `${icon('reload')} <span>${t('downloads.retryFailed')}</span>`,
+        onclick: () => api().downloads.retryFailed(),
+      });
       const clearFailedBtn = el('button', {
         class: 'button small',
         type: 'button',
@@ -862,7 +883,7 @@ function downloadsPage() {
         },
       });
       const summaryBadge = el('span', { class: 'rowAside', style: { fontWeight: '500', marginLeft: 'auto' } });
-      actionsGroup.append(openFolderBtn, exportMarkdownBtn, exportJsonBtn, copyMarkdownBtn, copyUrlsBtn, copyJsonBtn, clearCompletedBtn, clearFailedBtn, clearHistoryBtn);
+      actionsGroup.append(openFolderBtn, exportMarkdownBtn, exportJsonBtn, copyMarkdownBtn, copyUrlsBtn, copyJsonBtn, retryFailedBtn, clearCompletedBtn, clearFailedBtn, clearHistoryBtn);
 
       toolbar.append(searchInput, filtersGroup, summaryBadge, actionsGroup);
       container.append(toolbar);
@@ -2448,6 +2469,16 @@ function notesPage() {
           },
         });
 
+        const toStashBtn = el('button', {
+          class: 'iconButton small',
+          type: 'button',
+          html: icon('archive'),
+          title: t('notes.toStash'),
+          onclick: async () => {
+            await api().notes.toStash(activeNote.id);
+          },
+        });
+
         const duplicateBtn = el('button', {
           class: 'iconButton small',
           type: 'button',
@@ -2488,7 +2519,7 @@ function notesPage() {
           },
         });
 
-        toolbar.append(clipBtn, sep1, editModeBtn, previewModeBtn, sep2, pinBtn, copyBtn, copyMarkdownBtn, copyJsonBtn, openLinksBtn, copyLinksBtn, duplicateBtn, exportBtn, deleteBtn);
+        toolbar.append(clipBtn, sep1, editModeBtn, previewModeBtn, sep2, pinBtn, copyBtn, copyMarkdownBtn, copyJsonBtn, openLinksBtn, copyLinksBtn, toStashBtn, duplicateBtn, exportBtn, deleteBtn);
 
         let bodyEl;
         const statusBar = el('div', { class: 'notesStatusBar' });
@@ -2904,6 +2935,14 @@ function tabStashPage() {
                 await api().stashes.toNote(stash.id);
               },
             }, [el('span', { html: icon('notes') })]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('stash.toBookmarks'),
+              onclick: async () => {
+                await api().stashes.toBookmarks(stash.id);
+              },
+            }, [el('span', { html: icon('bookmark') })]),
             el('button', {
               class: 'button small danger',
               type: 'button',
@@ -3446,6 +3485,36 @@ function tabGroupsPage() {
                 if (res?.ok) await refresh();
               },
             }, [el('span', { html: icon('moon') }), ` ${t('tabGroups.sleepGroup')}`]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('tabGroups.wakeGroupDesc'),
+              onclick: async () => {
+                const res = await api().tabs.groupWake(group.id);
+                if (res?.ok) await refresh();
+              },
+            }, [el('span', { html: icon('sun') }), ` ${t('tabGroups.wakeGroup')}`]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('tabGroups.muteGroupDesc'),
+              onclick: async () => {
+                const res = await api().tabs.groupMute(group.id);
+                if (res?.ok) await refresh();
+              },
+            }, [
+              el('span', { html: icon(memberTabs.length > 0 && memberTabs.every((m) => m.muted) ? 'volume' : 'volumeOff') }),
+              ` ${t(memberTabs.length > 0 && memberTabs.every((m) => m.muted) ? 'tabGroups.unmuteGroup' : 'tabGroups.muteGroup')}`,
+            ]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('tabGroups.duplicateGroupDesc'),
+              onclick: async () => {
+                const res = await api().tabs.groupDuplicate(group.id);
+                if (res?.ok) await refresh();
+              },
+            }, [el('span', { html: icon('layers') }), ` ${t('tabGroups.duplicateGroup')}`]),
             el('button', {
               class: 'button small',
               type: 'button',

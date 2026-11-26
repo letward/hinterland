@@ -311,7 +311,11 @@
     "readingListOpenMatching": "Leseliste: Ungelesene Artikel in Hintergrund-Tabs öffnen",
     "tabsCopyRecentlyClosedJson": "Kürzlich geschlossen: Als JSON kopieren",
     "notesCreateFromAllTabs": "Schnellnotizen: Alle offenen Tabs als Notiz speichern",
-    "notesPruneEmpty": "Schnellnotizen: Leere Notizen entfernen"
+    "notesPruneEmpty": "Schnellnotizen: Leere Notizen entfernen",
+    "tabsStashRecentlyClosed": "Kürzlich geschlossen: Als Tab-Stash sichern",
+    "bookmarksToNote": "Lesezeichen: Alle als Schnellnotiz speichern",
+    "notesToStash": "Schnellnotizen: Links als Tab-Stash sichern",
+    "downloadsRetryFailed": "Downloads: Fehlgeschlagene Downloads wiederholen"
   },
   "confirm": {
     "closeTitle": "Tab schließen",
@@ -347,6 +351,8 @@
     "copyUrls": "URLs kopieren",
     "copyJson": "JSON kopieren",
     "openMatching": "Treffer öffnen",
+    "removeMatching": "Treffer löschen",
+    "toNote": "Als Notiz speichern",
     "countBadge": "{count} Lesezeichen",
     "importHtml": "Lesezeichen importieren (HTML)",
     "importJson": "Lesezeichen importieren (JSON)",
@@ -389,6 +395,7 @@
     "recentlyClosedNoMatch": "Keine kürzlich geschlossenen Tabs entsprechen Ihrer Suche.",
     "recentlyClosedCount": "{count} geschlossene Tabs",
     "restoreAll": "Alle wiederherstellen",
+    "stashRecentlyClosed": "Als Stash sichern",
     "clearRecentlyClosed": "Geschlossene Tabs leeren"
   },
   "downloads": {
@@ -414,6 +421,7 @@
     "copyJson": "JSON kopieren",
     "exportJson": "JSON exportieren",
     "retryDownload": "Erneut herunterladen",
+    "retryFailed": "Fehlgeschlagene wiederholen",
     "summaryCount": "{count} Dateien ({size})"
   },
   "shortcuts": {
@@ -761,7 +769,23 @@
     "noteCreatedFromAllTabs": "{count} offene(n) Tab(s) als neue Schnellnotiz gespeichert",
     "notesPruned": "{count} leere Notiz(en) entfernt",
     "noEmptyNotes": "Keine leeren, nicht angehefteten Notizen zum Entfernen vorhanden",
-    "stashAllMarkdownCopied": "{count} Stash(es) als Markdown kopiert"
+    "stashAllMarkdownCopied": "{count} Stash(es) als Markdown kopiert",
+    "recentlyClosedStashed": "{count} kürzlich geschlossene(n) Tab(s) als neuen Stash gesichert",
+    "noRecentlyClosedToStash": "Keine kürzlich geschlossenen HTTP/HTTPS-Tabs zum Sichern vorhanden",
+    "groupWokeTabs": "{count} schlafende(n) Tab(s) dieser Gruppe aufgeweckt",
+    "noSleepingTabsInGroup": "Keine schlafenden Tabs in dieser Gruppe zum Aufwecken",
+    "groupMutedTabs": "{count} Tab(s) dieser Gruppe stummgeschaltet",
+    "groupUnmutedTabs": "Stummschaltung für {count} Tab(s) dieser Gruppe aufgehoben",
+    "noTabsInGroupToMute": "Keine offenen Tabs in dieser Gruppe zum Stummschalten vorhanden",
+    "groupDuplicated": "Gruppe „{name}“ mit {count} Tab(s) dupliziert",
+    "noTabsInGroupToDuplicate": "Keine offenen Web-Tabs in dieser Gruppe zum Duplizieren vorhanden",
+    "bookmarksRemovedMatching": "{count} passende(s) Lesezeichen entfernt",
+    "bookmarksNoMatchingToRemove": "Keine passenden Lesezeichen zum Entfernen",
+    "bookmarksSavedAsNote": "{count} Lesezeichen als Schnellnotiz gespeichert",
+    "noteSavedAsStash": "{count} Link(s) aus „{title}“ als neuen Stash gesichert",
+    "stashBookmarked": "{count} Tab(s) im Ordner „{name}“ als Lesezeichen gespeichert",
+    "downloadsRetriedFailed": "{count} fehlgeschlagene(n) Download(s) erneut gestartet",
+    "noFailedDownloadsToRetry": "Keine fehlgeschlagenen HTTP/HTTPS-Downloads zum Wiederholen vorhanden"
   },
   "welcome": {
     "title": "Willkommen bei Hinterland",
@@ -1532,6 +1556,7 @@
     "clipCurrentTab": "Tab als Notiz erfassen",
     "saveAllTabs": "Offene Tabs speichern",
     "pruneEmpty": "Leere entfernen",
+    "toStash": "Links als Tab-Stash sichern",
     "wordCount": "{count} Wörter",
     "charCount": "{count} Zeichen",
     "readingTime": "~{minutes} Min. Lesezeit",
@@ -1562,6 +1587,7 @@
     "sortAlpha": "Sortieren A-Z",
     "sortRecent": "Zuletzt erstellt",
     "toNote": "Als Notiz speichern",
+    "toBookmarks": "Als Lesezeichen speichern",
     "addCurrentTab": "Aktuellen Tab zu diesem Stash hinzufügen",
     "summaryCount": "{stashes} Stashes · {tabs} Tabs",
     "duplicate": "Stash duplizieren",
@@ -1634,6 +1660,13 @@
     "copyJsonDesc": "Diese Tab-Gruppe und ihre Tabs als JSON kopieren",
     "sleepGroup": "Gruppe pausieren",
     "sleepGroupDesc": "Inaktive Tabs dieser Gruppe schlafen legen, um Arbeitsspeicher zu sparen",
+    "wakeGroup": "Gruppe wecken",
+    "wakeGroupDesc": "Alle schlafenden Tabs dieser Gruppe aufwecken",
+    "muteGroup": "Stummschalten",
+    "unmuteGroup": "Ton aktivieren",
+    "muteGroupDesc": "Alle Tabs dieser Gruppe stummschalten oder Ton wieder aktivieren",
+    "duplicateGroup": "Duplizieren",
+    "duplicateGroupDesc": "Diese Tab-Gruppe samt Web-Tabs duplizieren",
     "openClipboardUrls": "URLs aus Zwischenablage öffnen",
     "openClipboardUrlsDesc": "Alle HTTP/HTTPS-URLs aus der Zwischenablage in Hintergrund-Tabs öffnen",
     "openClipboardAsGroup": "Zwischenablage als Gruppe",

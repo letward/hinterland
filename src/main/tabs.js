@@ -540,6 +540,39 @@ export class TabManager extends EventEmitter {
     return count;
   }
 
+  wakeGroup(groupId) {
+    if (!groupId) return 0;
+    let count = 0;
+    for (const tab of this.tabs) {
+      if (tab.groupId !== groupId || !tab.sleeping) continue;
+      if (tab.wake()) count += 1;
+    }
+    if (count > 0) {
+      this.emit('list', this.snapshot());
+    }
+    return count;
+  }
+
+  muteGroup(groupId, muted = null) {
+    if (!groupId) return { ok: false, count: 0, muted: false };
+    const members = this.tabs.filter((tab) => tab.groupId === groupId);
+    if (!members.length) return { ok: false, count: 0, muted: false };
+    const targetMuted = typeof muted === 'boolean' ? muted : members.some((tab) => !tab.muted);
+    let count = 0;
+    for (const tab of members) {
+      if (tab.muted !== targetMuted) {
+        tab.muted = targetMuted;
+        tab.contents?.setAudioMuted(targetMuted);
+        this.emit('update', tab.snapshot());
+        count += 1;
+      }
+    }
+    if (count > 0) {
+      this.emit('list', this.snapshot());
+    }
+    return { ok: true, count, muted: targetMuted };
+  }
+
   muteAll(muted = true) {
     let count = 0;
     for (const tab of this.tabs) {
