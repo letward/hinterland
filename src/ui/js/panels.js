@@ -348,6 +348,11 @@ function historyPage() {
           await api().history.openUrls(urls);
         } }, [el('span', { html: icon('external') }), ` ${t('history.openMatching')}`]),
         el('button', { class: 'button', type: 'button', onclick: async () => {
+          const urls = getFilteredEntries().map((e) => e.url).filter(Boolean);
+          const res = await api().history.removeUrls(urls);
+          if (res?.ok) await reload();
+        } }, [el('span', { html: icon('trash') }), ` ${t('history.removeMatching')}`]),
+        el('button', { class: 'button', type: 'button', onclick: async () => {
           const res = await api().history.importJson();
           if (res?.ok) await reload();
         } }, [el('span', { html: icon('upload') }), ` ${t('history.importJson')}`]),
@@ -497,6 +502,11 @@ function recentlyClosedPage() {
             type: 'button',
             onclick: () => api().tabs.copyRecentlyClosedMarkdown(lastFilteredEntries),
           }, [el('span', { html: icon('copy') }), ` ${t('history.copyMarkdown')}`]),
+          el('button', {
+            class: 'button',
+            type: 'button',
+            onclick: () => api().tabs.copyRecentlyClosedJson(lastFilteredEntries),
+          }, [el('span', { html: icon('copy') }), ` ${t('history.copyJson')}`]),
           el('button', {
             class: 'button',
             type: 'button',
@@ -1670,6 +1680,7 @@ function readingListPage(mode = 'unread') {
       const list = el('div', { class: 'card' });
       const countBadge = el('span', { class: 'rowAside', style: { marginLeft: 'auto', fontWeight: '500' } });
       let currentFilter = '';
+      let lastFilteredUrls = [];
       const language = currentLanguage();
 
       const refresh = async () => {
@@ -1685,6 +1696,7 @@ function readingListPage(mode = 'unread') {
           );
         }
 
+        lastFilteredUrls = items.map((i) => i.url).filter(Boolean);
         countBadge.textContent = t('readingList.countBadge', { count: items.length });
         clear(list);
         if (!items.length) {
@@ -1875,6 +1887,13 @@ function readingListPage(mode = 'unread') {
             await api().readingList.copyJson(mode);
           },
         }, [el('span', { html: icon('copy') }), ` ${t('readingList.copyJson')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: async () => {
+            await api().readingList.openUrls(lastFilteredUrls);
+          },
+        }, [el('span', { html: icon('external') }), ` ${t('readingList.openMatching')}`]),
         el('button', {
           class: 'button',
           type: 'button',
@@ -2154,6 +2173,17 @@ function notesPage() {
         },
       }, [el('span', { html: icon('link') }), ` ${t('notes.clipCurrentTab')}`]);
 
+      const saveAllTabsBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        onclick: async () => {
+          const res = await api().notes.createFromAllTabs();
+          if (res?.ok && res.note) {
+            await loadNotes(res.note.id);
+          }
+        },
+      }, [el('span', { html: icon('tabs') }), ` ${t('notes.saveAllTabs')}`]);
+
       const fromClipboardBtn = el('button', {
         class: 'button',
         type: 'button',
@@ -2252,13 +2282,23 @@ function notesPage() {
         },
       });
 
+      const pruneNotesBtn = el('button', {
+        class: 'button small',
+        type: 'button',
+        text: t('notes.pruneEmpty'),
+        onclick: async () => {
+          const res = await api().notes.pruneEmpty();
+          if (res?.ok) await loadNotes();
+        },
+      });
+
       const listMetaRow = el('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '4px' } }, [
         notesCountBadge,
-        sortToggleBtn,
+        el('div', { style: { display: 'flex', gap: '4px' } }, [pruneNotesBtn, sortToggleBtn]),
       ]);
 
       const listCard = el('div', { class: 'notesList card' });
-      sidebar.append(newBtn, clipTabBtn, fromClipboardBtn, backupRow, exportRow, searchInput, listMetaRow, listCard);
+      sidebar.append(newBtn, clipTabBtn, saveAllTabsBtn, fromClipboardBtn, backupRow, exportRow, searchInput, listMetaRow, listCard);
 
       const scheduleSave = () => {
         if (!activeNote) return;
@@ -2662,6 +2702,11 @@ function tabStashPage() {
             await api().stashes.exportMarkdown();
           },
         }, [el('span', { html: icon('copy') }), ` ${t('stash.exportMarkdown')}`]),
+        el('button', {
+          class: 'button',
+          type: 'button',
+          onclick: () => api().stashes.copyMarkdown(),
+        }, [el('span', { html: icon('copy') }), ` ${t('stash.copyAllMarkdown')}`]),
         el('button', {
           class: 'button',
           type: 'button',
@@ -3089,6 +3134,15 @@ function tabGroupsPage() {
         },
       }, [el('span', { html: icon('copy') }), ` ${t('tabGroups.copyAllJson')}`]);
 
+      const saveTabsAsNoteBtn = el('button', {
+        class: 'button',
+        type: 'button',
+        title: t('tabGroups.saveTabsAsNoteDesc'),
+        onclick: async () => {
+          await api().notes.createFromAllTabs();
+        },
+      }, [el('span', { html: icon('notes') }), ` ${t('tabGroups.saveTabsAsNote')}`]);
+
       const openClipboardUrlsBtn = el('button', {
         class: 'button',
         type: 'button',
@@ -3229,6 +3283,7 @@ function tabGroupsPage() {
           copyAllLinksBtn,
           copyAllUrlsBtn,
           copyAllJsonBtn,
+          saveTabsAsNoteBtn,
           copyDomainUrlsBtn,
           copyPinnedUrlsBtn,
           openClipboardUrlsBtn,
@@ -3336,7 +3391,16 @@ function tabGroupsPage() {
           left.append(colorPill, titleEl, countBadge);
 
           // Group actions
-          const actions = el('div', { style: { display: 'flex', gap: '6px', alignItems: 'center' } }, [
+          const actions = el('div', { style: { display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' } }, [
+            el('button', {
+              class: 'button small primary',
+              type: 'button',
+              title: t('tabGroups.focusGroupDesc'),
+              onclick: async () => {
+                const res = await api().tabs.groupFocus(group.id);
+                if (res?.ok) closeModal();
+              },
+            }, [el('span', { html: icon('external') }), ` ${t('tabGroups.focusGroup')}`]),
             el('button', {
               class: 'button small',
               type: 'button',
@@ -3365,6 +3429,23 @@ function tabGroupsPage() {
                 await api().tabs.groupCopyUrls(group.id);
               },
             }, [el('span', { html: icon('link') }), ` ${t('tabGroups.copyUrls')}`]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('tabGroups.copyJsonDesc'),
+              onclick: async () => {
+                await api().tabs.groupCopyJson(group.id);
+              },
+            }, [el('span', { html: icon('copy') }), ` ${t('tabGroups.copyJson')}`]),
+            el('button', {
+              class: 'button small',
+              type: 'button',
+              title: t('tabGroups.sleepGroupDesc'),
+              onclick: async () => {
+                const res = await api().tabs.groupSleep(group.id);
+                if (res?.ok) await refresh();
+              },
+            }, [el('span', { html: icon('moon') }), ` ${t('tabGroups.sleepGroup')}`]),
             el('button', {
               class: 'button small',
               type: 'button',

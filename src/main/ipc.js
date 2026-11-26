@@ -454,6 +454,16 @@ export function installIpc() {
     surface.send('toast', { message: 'toast.recentlyClosedMarkdownCopied', kind: 'success', data: { count: source.length } });
     return { ok: true, count: source.length };
   });
+  handle('tabs:copyRecentlyClosedJson', (entries = null) => {
+    const source = (Array.isArray(entries) ? entries : (tabs.recentlyClosed() || [])).filter((entry) => entry?.url);
+    if (!source.length) {
+      surface.send('toast', { message: 'toast.noRecentlyClosedToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(JSON.stringify(source, null, 2));
+    surface.send('toast', { message: 'toast.recentlyClosedJsonCopied', kind: 'success', data: { count: source.length } });
+    return { ok: true, count: source.length };
+  });
   handle('tabs:restoreClosed', (index) => tabs.reopenClosed(index));
   handle('tabs:clearRecentlyClosed', () => tabs.clearRecentlyClosed());
   handle('tabs:restoreAllClosed', () => tabs.restoreAllClosed());
@@ -939,12 +949,52 @@ export function installIpc() {
     return { ok: true, added, total: existing.length };
   });
 
-  handle('tabs:copyAllMarkdown', () => {
-    const webTabs = tabs.list.filter((t) => t.url && !isInternalUrl(t.url));
-    if (!webTabs.length) {
-      surface.send('toast', { message: 'toast.noTabsToCopy', kind: 'warning' });
+  handle('tabs:groupFocus', (groupId) => {
+    const res = tabs.focusGroup(groupId);
+    if (!res.ok) {
+      surface.send('toast', { message: 'toast.noTabsInGroupToFocus', kind: 'info' });
+      return { ok: false };
+    }
+    return res;
+  });
+
+  handle('tabs:groupSleep', (groupId) => {
+    const count = tabs.sleepGroup(groupId);
+    surface.send('toast', {
+      message: count > 0 ? 'toast.groupSleptTabs' : 'toast.noTabsInGroupToSleep',
+      kind: count > 0 ? 'success' : 'info',
+      data: { count },
+    });
+    return { ok: count > 0, count };
+  });
+
+  handle('tabs:groupCopyJson', (groupId) => {
+    const groups = sortedGroups();
+    const group = groups.find((g) => g.id === groupId);
+    const tabsInGroup = tabs.list.filter((t) => t.groupId === groupId && !isInternalUrl(t.url));
+    if (!tabsInGroup.length) {
+      surface.send('toast', { message: 'toast.noTabsInGroupToCopy', kind: 'warning' });
       return { ok: false, count: 0 };
     }
+    const payload = {
+      id: group?.id || groupId,
+      name: group?.name || 'Tab Group',
+      color: group?.color || '#4f7cff',
+      tabs: tabsInGroup.map((t) => ({
+        title: t.title || t.url,
+        url: t.url,
+        pinned: Boolean(t.pinned),
+        sleeping: Boolean(t.sleeping),
+      })),
+    };
+    clipboard.writeText(JSON.stringify(payload, null, 2));
+    surface.send('toast', { message: 'toast.groupJsonCopied', kind: 'success', data: { count: tabsInGroup.length } });
+    return { ok: true, count: tabsInGroup.length };
+  });
+
+  const formatOpenTabsMarkdown = () => {
+    const webTabs = tabs.list.filter((t) => t.url && !isInternalUrl(t.url));
+    if (!webTabs.length) return { count: 0, markdown: '' };
     const groups = sortedGroups();
     const dateStr = new Date().toLocaleDateString('en-CA');
     const lines = [`# Hinterland Open Tabs (${dateStr})`, ''];
@@ -974,9 +1024,18 @@ export function installIpc() {
       lines.push('');
     }
 
-    clipboard.writeText(lines.join('\n').trim());
-    surface.send('toast', { message: 'toast.allTabsCopied', kind: 'success', data: { count: webTabs.length } });
-    return { ok: true, count: webTabs.length };
+    return { count: webTabs.length, markdown: lines.join('\n').trim() };
+  };
+
+  handle('tabs:copyAllMarkdown', () => {
+    const { count, markdown } = formatOpenTabsMarkdown();
+    if (!count) {
+      surface.send('toast', { message: 'toast.noTabsToCopy', kind: 'warning' });
+      return { ok: false, count: 0 };
+    }
+    clipboard.writeText(markdown);
+    surface.send('toast', { message: 'toast.allTabsCopied', kind: 'success', data: { count } });
+    return { ok: true, count };
   });
 
   handle('tabs:copyAllUrls', () => {
@@ -1676,6 +1735,15 @@ export function installIpc() {
       data: { count: removed, domain: target },
     });
     return { ok: removed > 0, removed, domain: target };
+  });
+  handle('history:removeUrls', (urls = []) => {
+    const removed = history.removeUrls(urls);
+    surface.send('toast', {
+      message: removed > 0 ? 'toast.historyRemovedMatching' : 'toast.historyNoMatchingToRemove',
+      kind: removed > 0 ? 'success' : 'info',
+      data: { count: removed },
+    });
+    return { ok: removed > 0, removed };
   });
   handle('history:copyUrls', (urls = null) => {
     const source = Array.isArray(urls) ? urls : (history.getAll() || []).map((entry) => entry?.url);
@@ -2677,6 +2745,17 @@ export function installIpc() {
     return { ok: true, count: list.length };
   });
 
+  handle('readingList:openUrls', (urls = null) => {
+    const source = Array.isArray(urls)
+      ? urls
+      : filterReadingListByMode('unread').map((item) => item?.url);
+    return openValidatedUrlsInTabs(source, {
+      limit: 15,
+      emptyToast: 'toast.readingListEmptyToOpen',
+      successToast: 'toast.readingListOpenedMatching',
+    });
+  });
+
   handle('readingList:sort', (mode = 'alpha') => {
     const list = [...(settings.value('data.readingList') || [])];
     if (mode === 'domain') {
@@ -3402,6 +3481,44 @@ ${renderNotesHtml(notes)}
     return { ok: true, note: fresh };
   });
 
+  handle('notes:createFromAllTabs', () => {
+    const { count, markdown } = formatOpenTabsMarkdown();
+    if (!count) {
+      surface.send('toast', { message: 'toast.noTabsToCopy', kind: 'warning' });
+      return { ok: false, error: 'noTabs', count: 0 };
+    }
+    const dateStr = new Date().toLocaleDateString('en-CA');
+    const title = `Session Tabs (${dateStr})`;
+    const fresh = {
+      id: `n${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+      title,
+      content: markdown,
+      pinned: false,
+      updatedAt: Date.now(),
+    };
+    const notes = [...(settings.value('data.notes') || [])];
+    notes.unshift(fresh);
+    settings.set('data.notes', notes);
+    surface.send('toast', { message: 'toast.noteCreatedFromAllTabs', kind: 'success', data: { count } });
+    return { ok: true, note: fresh, count };
+  });
+
+  handle('notes:pruneEmpty', () => {
+    const existing = [...(settings.value('data.notes') || [])];
+    const kept = existing.filter((note) => {
+      if (note?.pinned) return true;
+      return Boolean(String(note?.content || '').trim());
+    });
+    const removed = existing.length - kept.length;
+    if (removed > 0) {
+      settings.set('data.notes', kept);
+      surface.send('toast', { message: 'toast.notesPruned', kind: 'success', data: { count: removed } });
+    } else {
+      surface.send('toast', { message: 'toast.noEmptyNotes', kind: 'info' });
+    }
+    return { ok: removed > 0, removed, count: kept.length };
+  });
+
   /* ------------------------------------------------------------- tab stashes */
   handle('stashes:get', () => {
     return settings.value('data.tabStashes') || [];
@@ -3568,11 +3685,8 @@ ${renderNotesHtml(notes)}
     return { ok: true, filePath: result.filePath };
   });
 
-  handle('stashes:exportMarkdown', async (stashId = null) => {
-    const stashes = settings.value('data.tabStashes') || [];
-    const exportData = stashId ? stashes.filter((s) => s.id === stashId) : stashes;
+  const formatStashesMarkdown = (exportData) => {
     const dateStr = new Date().toISOString().split('T')[0];
-
     const lines = [
       '# Hinterland Tab Stashes',
       '',
@@ -3600,8 +3714,13 @@ ${renderNotesHtml(notes)}
         lines.push('');
       }
     }
+    return lines.join('\n');
+  };
 
-    const md = lines.join('\n');
+  handle('stashes:exportMarkdown', async (stashId = null) => {
+    const stashes = settings.value('data.tabStashes') || [];
+    const exportData = stashId ? stashes.filter((s) => s.id === stashId) : stashes;
+    const md = formatStashesMarkdown(exportData);
     const result = await dialog.showSaveDialog(chromeWindow(), {
       title: 'Hinterland',
       defaultPath: `hinterland-stashes-${Date.now()}.md`,
@@ -3613,8 +3732,17 @@ ${renderNotesHtml(notes)}
     return { ok: true, filePath: result.filePath };
   });
 
-  handle('stashes:copyMarkdown', (stashId) => {
+  handle('stashes:copyMarkdown', (stashId = null) => {
     const stashes = settings.value('data.tabStashes') || [];
+    if (!stashId) {
+      if (!stashes.length) {
+        surface.send('toast', { message: 'toast.noTabsInStashToCopy', kind: 'warning' });
+        return { ok: false, count: 0 };
+      }
+      clipboard.writeText(formatStashesMarkdown(stashes));
+      surface.send('toast', { message: 'toast.stashAllMarkdownCopied', kind: 'success', data: { count: stashes.length } });
+      return { ok: true, count: stashes.length };
+    }
     const stash = stashes.find((s) => s.id === stashId);
     const stashTabs = Array.isArray(stash?.tabs) ? stash.tabs : [];
     if (!stash || !stashTabs.length) {

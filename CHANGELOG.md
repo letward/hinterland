@@ -4,6 +4,28 @@ All notable changes to Hinterland are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.44.0] - 2026-11-26
+
+### Added
+- **Tab Groups Studio: Focus Group, Sleep Group & Copy JSON (`src/main/tabs.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`)**:
+  - Added `TabManager.focusGroup(groupId)` and `TabManager.sleepGroup(groupId)` along with `tabs:groupFocus`, `tabs:groupSleep`, and `tabs:groupCopyJson` IPC handlers and preload bindings.
+  - Added **Focus**, **Sleep Group**, and **Copy JSON** buttons on every group card in Tab Groups Studio, plus **Save Tabs as Note** in the Tab Groups Studio toolbar.
+- **Quick Notes: Save All Open Tabs & Prune Empty Notes (`src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `formatOpenTabsMarkdown` helper (reused by `tabs:copyAllMarkdown`) and added `notes:createFromAllTabs` to save all open web tabs grouped by tab group directly into a Markdown Quick Note.
+  - Added `notes:pruneEmpty` IPC handler and **Prune Empty** cleanup button in the Quick Notes sidebar to remove blank unpinned scratchpad notes, plus Command Palette actions `commandPalette.notesCreateFromAllTabs` and `commandPalette.notesPruneEmpty`.
+- **Tab Stash: Copy All Stashes as Markdown (`src/main/ipc.js`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Extracted shared `formatStashesMarkdown` helper (reused by `stashes:exportMarkdown`) and extended `stashes:copyMarkdown` to copy all stashes when called without a specific stash ID.
+  - Added **Copy All (MD)** toolbar button in Tab Stash and Command Palette action `commandPalette.stashesCopyAllMarkdown`.
+- **History, Recently Closed & Reading List QoL (`src/main/history.js`, `src/main/ipc.js`, `src/preload/chrome.cjs`, `src/ui/js/panels.js`, `src/ui/js/commandPalette.js`)**:
+  - Added `HistoryStore.removeUrls(urls)`, `history:removeUrls` IPC handler, and **Remove Matching** toolbar button in History Manager to selectively delete filtered search results.
+  - Added `tabs:copyRecentlyClosedJson` IPC handler, **Copy JSON** button in Recently Closed Tabs, and Command Palette action `commandPalette.tabsCopyRecentlyClosedJson`.
+  - Added `readingList:openUrls` IPC handler, **Open Matching** button in Reading List, and Command Palette action `commandPalette.readingListOpenMatching`.
+- **Official Documentation & Website Updates (`website/docs/user-guide.html`, `website/index.html`, `website/api/sync.js`)**:
+  - Documented Focus, Sleep Group, Copy JSON, Save Tabs as Note / Save Open Tabs, Prune Empty notes, Tab Stash Copy All (MD), History Remove Matching, Recently Closed Copy JSON, and Reading List Open Matching in the User Guide.
+  - Updated website hero badge, standalone Windows installer download link, and sync service version to v1.44.0.
+- **Automated Regression & Feature Test Suite (`sdk/test/v144Features.test.mjs`)**:
+  - Added automated unit and integration tests covering `TabManager`, `HistoryStore.removeUrls`, all v1.44.0 IPC handlers, preload bindings, UI/Command Palette wiring, documentation/website updates, and 100% EN/DE locale parity.
+
 ## [1.43.0] - 2026-11-25
 
 ### Added

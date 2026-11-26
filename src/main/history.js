@@ -112,6 +112,20 @@ export class HistoryStore {
     this.schedule();
   }
 
+  removeUrls(urls = []) {
+    const targets = new Set(
+      (Array.isArray(urls) ? urls : [])
+        .map((u) => (typeof u === 'string' ? u.trim() : ''))
+        .filter(Boolean),
+    );
+    if (!targets.size) return 0;
+    const before = this.entries.length;
+    this.entries = this.entries.filter((entry) => !targets.has(String(entry?.url || '').trim()));
+    const removed = before - this.entries.length;
+    if (removed > 0) this.saveNow();
+    return removed;
+  }
+
   removeByDomain(domain) {
     const normalize = (value) => String(value || '').trim().replace(/^www\./i, '').toLowerCase();
     const target = normalize(domain);

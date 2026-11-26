@@ -743,6 +743,13 @@ export function openCommandPalette() {
             run: () => api().stashes.pruneEmpty(),
           },
           {
+            id: 'stashesCopyAllMarkdown',
+            title: t('commandPalette.stashesCopyAllMarkdown'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'copy',
+            run: () => api().stashes.copyMarkdown(),
+          },
+          {
             id: 'storeThemes',
             title: t('commandPalette.browseThemes'),
             category: t('commandPalette.categoryCommand'),
@@ -996,6 +1003,13 @@ export function openCommandPalette() {
             run: () => api().readingList.deduplicate(),
           },
           {
+            id: 'readingListOpenMatching',
+            title: t('commandPalette.readingListOpenMatching'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'external',
+            run: () => api().readingList.openUrls(),
+          },
+          {
             id: 'historyExport',
             title: t('commandPalette.historyExport'),
             category: t('commandPalette.categoryCommand'),
@@ -1206,6 +1220,13 @@ export function openCommandPalette() {
             run: () => api().tabs.copyRecentlyClosedMarkdown(),
           },
           {
+            id: 'tabsCopyRecentlyClosedJson',
+            title: t('commandPalette.tabsCopyRecentlyClosedJson'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'download',
+            run: () => api().tabs.copyRecentlyClosedJson(),
+          },
+          {
             id: 'notesExportAll',
             title: t('commandPalette.notesExportAll'),
             category: t('commandPalette.categoryCommand'),
@@ -1274,6 +1295,20 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'download',
             run: () => api().notes.copyJson(),
+          },
+          {
+            id: 'notesCreateFromAllTabs',
+            title: t('commandPalette.notesCreateFromAllTabs'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'tabs',
+            run: () => api().notes.createFromAllTabs(),
+          },
+          {
+            id: 'notesPruneEmpty',
+            title: t('commandPalette.notesPruneEmpty'),
+            category: t('commandPalette.categoryCommand'),
+            icon: 'trash',
+            run: () => api().notes.pruneEmpty(),
           },
           {
             id: 'closeDuplicates',

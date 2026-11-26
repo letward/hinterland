@@ -517,6 +517,29 @@ export class TabManager extends EventEmitter {
     return count;
   }
 
+  focusGroup(groupId) {
+    if (!groupId) return { ok: false, tab: null };
+    const member = this.tabs.find((tab) => tab.groupId === groupId);
+    if (!member) return { ok: false, tab: null };
+    this.activate(member.id);
+    return { ok: true, tab: member.snapshot() };
+  }
+
+  sleepGroup(groupId) {
+    if (!groupId) return 0;
+    let count = 0;
+    for (const tab of this.tabs) {
+      if (tab.groupId !== groupId || tab.id === this.activeId || tab.pinned || tab.audible || tab.sleeping) continue;
+      if (!tab.url || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) continue;
+      if (this.isDomainExempt(tab.url)) continue;
+      if (tab.sleep()) count += 1;
+    }
+    if (count > 0) {
+      this.emit('list', this.snapshot());
+    }
+    return count;
+  }
+
   muteAll(muted = true) {
     let count = 0;
     for (const tab of this.tabs) {
