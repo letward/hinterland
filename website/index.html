@@ -460,6 +460,19 @@
     }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
+    // Keep the Windows download on the latest published installer.
+    fetch('https://api.github.com/repos/neocrom-team/neocrom-horizon/releases/latest')
+      .then(response => response.ok ? response.json() : null)
+      .then(release => {
+        if (!/^v\d+\.\d+\.\d+$/.test(release?.tag_name ?? '')) return;
+        const version = release.tag_name.slice(1);
+        const url = `https://github.com/neocrom-team/neocrom-horizon/releases/download/v${version}/Hinterland-Setup-${version}.exe`;
+        if (!release.assets?.some(asset => asset.browser_download_url === url)) return;
+        document.getElementById('dlBtn').href = url;
+        document.querySelector('.badge').textContent = `v${version} · Latest Release`;
+      })
+      .catch(() => {});
+
     // ---------- Changelog ----------
     (async () => {
       const url = "https://raw.githubusercontent.com/neocrom-team/neocrom-horizon/main/CHANGELOG.md";
@@ -472,23 +485,10 @@
         if (!versions.length) throw new Error("no versions");
         el.classList.remove("cl-loading");
         el.innerHTML = versions.map(renderVersion).join("");
-        const latest = versions[0].version;
-        const badge = document.querySelector('.badge');
-        if (badge) badge.textContent = 'v' + latest + ' · Latest Release';
-        const btn = document.getElementById("dlBtn");
-        if (btn) btn.href = `https://github.com/neocrom-team/neocrom-horizon/releases/download/v${latest}/Hinterland-Setup-${latest}.exe`;
       } catch (e) {
         el.classList.remove("cl-loading");
         el.classList.add("cl-error");
         el.textContent = "Changelog could not be loaded. See GitHub for the full history.";
-        // Do not leave a stale download link as a silent failure state.
-        const btn = document.getElementById("dlBtn");
-        if (btn) {
-          btn.href = "https://github.com/neocrom-team/neocrom-horizon/releases/latest";
-          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> View latest release';
-        }
-        const badge = document.querySelector('.badge');
-        if (badge) badge.textContent = 'Latest Release';
       }
     })();
 

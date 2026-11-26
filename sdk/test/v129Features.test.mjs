@@ -159,7 +159,7 @@ describe('Hinterland v1.29.0 Features & Polish', () => {
       };
       await syncApi({ method: 'GET', headers: {} }, fakeRes);
       assert.equal(statusCode, 200);
-      assert.ok(jsonPayload?.version === '1.29.0' || jsonPayload?.version === '1.30.0' || jsonPayload?.version === '1.31.0' || jsonPayload?.version === '1.32.0' || jsonPayload?.version === '1.33.0' || jsonPayload?.version === '1.34.0' || jsonPayload?.version === '1.35.0' || jsonPayload?.version === '1.36.0' || jsonPayload?.version === '1.37.0' || jsonPayload?.version === '1.38.0' || jsonPayload?.version === '1.39.0' || jsonPayload?.version === '1.40.0' || jsonPayload?.version === '1.41.0' || jsonPayload?.version === '1.42.0' || jsonPayload?.version === '1.43.0' || jsonPayload?.version === '1.44.0' || jsonPayload?.version === '1.45.0');
+      assert.equal(jsonPayload?.version, JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).version);
     });
 
     it('reports readingListCount and notesCount in getSyncStats()', async () => {

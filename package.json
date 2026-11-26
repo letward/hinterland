@@ -1,7 +1,7 @@
 {
   "name": "hinterland",
   "productName": "Hinterland",
-  "version": "1.45.0",
+  "version": "1.46.0",
   "description": "Ein schneller, sicherer und frei anpassbarer Browser. A fast, secure and freely customisable browser.",
   "main": "src/main/main.js",
   "type": "module",
@@ -34,8 +34,8 @@
     "artifactName": "${productName}-Setup-${version}.${ext}",
     "publish": {
       "provider": "github",
-      "owner": "letward",
-      "repo": "Hinterland",
+      "owner": "neocrom-team",
+      "repo": "neocrom-horizon",
       "releaseType": "release"
     },
     "asarUnpack": [

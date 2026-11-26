@@ -205,7 +205,8 @@ describe('Hinterland v1.34.0 Features & Polish', () => {
 
     it('updates website/api/sync.js to v1.34.0', () => {
       const syncJs = readFileSync(join(ROOT, 'website', 'api', 'sync.js'), 'utf8');
-      assert.ok(syncJs.includes("version: '1.34.0'") || syncJs.includes("version: '1.35.0'") || syncJs.includes("version: '1.36.0'") || syncJs.includes("version: '1.37.0'") || syncJs.includes("version: '1.38.0'") || syncJs.includes("version: '1.39.0'") || syncJs.includes("version: '1.40.0'") || syncJs.includes("version: '1.41.0'") || syncJs.includes("version: '1.42.0'") || syncJs.includes("version: '1.43.0'") || syncJs.includes("version: '1.44.0'") || syncJs.includes("version: '1.45.0'"));
+      const release = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).version;
+      assert.ok(syncJs.includes("version: '" + release + "'"));
     });
   });
 });

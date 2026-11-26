@@ -1,8 +1,20 @@
 # Changelog
 
-All notable changes to Hinterland are documented here.
+All notable changes to Neocrom Horizon are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
+
+## [1.46.0] - 2026-11-26
+
+### Added
+- Open Marketplace, Community, Library, and Pulse from the new tab page and the Neocrom toolbar menu.
+
+### Changed
+- Introduced the Horizon sunrise logo and the shared Neocrom palette across the browser and download site.
+- Kept custom themes and existing profiles when adopting the new default palette.
+
+### Fixed
+- The internal new tab page loads in private windows, and Neocrom links keep the current tab's privacy mode.
 
 ## [1.45.0] - 2026-11-26
 
