@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Hinterland Chrome Stylesheet — Modern, High-Performance Browser Shell
+   Neocrom Horizon browser shell
    ========================================================================== */
 
 /* ------------------------------------------------------------------- shell */
@@ -148,7 +148,7 @@ html[data-tabbar="bottom"] .tabstrip {
   padding: 0 8px 0 10px;
   border: 1px solid transparent;
   border-bottom: 0;
-  border-radius: 0;
+  border-radius: var(--radius) var(--radius) 0 0;
   color: var(--textDim);
   cursor: pointer;
   overflow: hidden;
@@ -174,11 +174,9 @@ html[data-tabbar="bottom"] .tabstrip {
   content: "";
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--accent);
-  border-radius: 0;
+  inset-inline: 12px;
+  height: 1px;
+  background: color-mix(in srgb, var(--accent) 68%, transparent);
 }
 
 .tabPrivate::after {
@@ -757,10 +755,14 @@ html[data-closeButton="always"] .tabClose {
   height: calc(var(--toolbarHeight) - 12px);
   padding: 0 8px 0 10px;
   border: 1px solid var(--border);
-  border-radius: 0;
+  border-radius: var(--radiusPill);
   background: var(--bg);
   transition: background var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
 }
+
+.ecosystemButton { border-radius: var(--radiusSmall); }
+.ecosystemButton img { width: 23px; height: 23px; flex: none; }
+html[data-theme="light"] :is(.ecosystemButton img, .ecosystemMenuMark) { filter: invert(1); }
 
 .omni:hover {
   border-color: color-mix(in srgb, var(--accent) 50%, var(--border));

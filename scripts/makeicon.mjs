@@ -4,7 +4,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const logo = join(ROOT, 'build', 'icons', 'Hinterland_Logo.jpg');
+const logo = join(ROOT, 'build', 'icons', 'horizon.png');
 const script = join(ROOT, 'scripts', 'generate_icons.ps1');
 
 if (!existsSync(logo)) {
@@ -17,7 +17,7 @@ if (!existsSync(script)) {
   process.exit(1);
 }
 
-console.log('Generating build icons from Hinterland_Logo.jpg...');
+console.log('Generating build icons from horizon.png...');
 const ps = process.platform === 'win32' ? 'powershell.exe' : 'pwsh';
 const result = spawnSync(ps, ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', script], {
   stdio: 'inherit',

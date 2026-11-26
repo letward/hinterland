@@ -1,9 +1,10 @@
 Add-Type -AssemblyName System.Drawing
 
 $root = (Resolve-Path ".").Path
-$logoPath = Join-Path $root "build\icons\Hinterland_Logo.jpg"
+$logoPath = Join-Path $root "build\icons\horizon.png"
 $outPng = Join-Path $root "build\icons\icon.png"
 $outAssetsPng = Join-Path $root "src\ui\assets\icon.png"
+$outWebsitePng = Join-Path $root "website\assets\icon.png"
 $outIco = Join-Path $root "build\icons\icon.ico"
 
 if (-not (Test-Path $logoPath)) {
@@ -13,16 +14,7 @@ if (-not (Test-Path $logoPath)) {
 
 $src = [System.Drawing.Bitmap]::FromFile($logoPath)
 
-# Content bounds: center of bird is at (766, 574)
-$cx = 766
-$cy = 574
-$canvasSize = 1680
-$half = $canvasSize / 2
-$srcX = [int]($cx - $half)
-$srcY = [int]($cy - $half)
-$srcRect = New-Object System.Drawing.Rectangle($srcX, $srcY, $canvasSize, $canvasSize)
-
-function CreateCircularBadge([int]$targetSize) {
+function ResizeIcon([int]$targetSize) {
     $bmp = New-Object System.Drawing.Bitmap($targetSize, $targetSize, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
     $g = [System.Drawing.Graphics]::FromImage($bmp)
     $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
@@ -30,35 +22,22 @@ function CreateCircularBadge([int]$targetSize) {
     $g.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
     $g.Clear([System.Drawing.Color]::Transparent)
 
-    $margin = [Math]::Max(1.0, $targetSize * 0.015)
-    $diameter = $targetSize - (2 * $margin)
-    $circlePath = New-Object System.Drawing.Drawing2D.GraphicsPath
-    $circlePath.AddEllipse([float]$margin, [float]$margin, [float]$diameter, [float]$diameter)
-
-    $g.SetClip($circlePath)
-    $g.Clear([System.Drawing.Color]::FromArgb(255, 33, 33, 33))
-
     $destRect = New-Object System.Drawing.Rectangle(0, 0, $targetSize, $targetSize)
-    $g.DrawImage($src, $destRect, $srcRect, [System.Drawing.GraphicsUnit]::Pixel)
-    $g.ResetClip()
-
-    $penWidth = [Math]::Max(1.0, [float]($targetSize * 0.003))
-    $pen = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(60, 255, 255, 255), $penWidth)
-    $g.DrawEllipse($pen, [float]($margin + 0.5), [float]($margin + 0.5), [float]($diameter - 1.0), [float]($diameter - 1.0))
-    $pen.Dispose()
-
-    $circlePath.Dispose()
+    $g.DrawImage($src, $destRect)
     $g.Dispose()
     return $bmp
 }
 
 # 1. Save 512x512 icon.png
-$bmp512 = CreateCircularBadge 512
+$bmp512 = ResizeIcon 512
 $bmp512.Save($outPng, [System.Drawing.Imaging.ImageFormat]::Png)
 Write-Host "Created $outPng"
 if (Test-Path (Split-Path $outAssetsPng)) {
     $bmp512.Save($outAssetsPng, [System.Drawing.Imaging.ImageFormat]::Png)
     Write-Host "Created $outAssetsPng"
+}
+if (Test-Path (Split-Path $outWebsitePng)) {
+    $bmp512.Save($outWebsitePng, [System.Drawing.Imaging.ImageFormat]::Png)
 }
 
 # 2. Build multi-resolution ICO (256, 128, 64, 48, 32, 16)
@@ -66,7 +45,7 @@ $sizes = @(256, 128, 64, 48, 32, 16)
 $pngStreams = @()
 
 foreach ($sz in $sizes) {
-    $bmpSz = CreateCircularBadge $sz
+    $bmpSz = ResizeIcon $sz
     $ms = New-Object System.IO.MemoryStream
     $bmpSz.Save($ms, [System.Drawing.Imaging.ImageFormat]::Png)
     $bmpSz.Dispose()

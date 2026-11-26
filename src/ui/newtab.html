@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Hinterland</title>
+    <title>Neocrom Horizon</title>
+    <link rel="icon" href="hinterland://assets/icon.png" />
     <link rel="stylesheet" href="css/tokens.css" />
     <link rel="stylesheet" href="css/newtab.css" />
   </head>
@@ -12,7 +13,6 @@
     <main class="stage" id="stage">
       <section class="welcomeCard" id="welcomeCard" hidden>
         <button class="welcomeClose" id="welcomeClose" type="button" aria-label="Close">&times;</button>
-        <div class="welcomeBadge">Hinterland Setup</div>
         <h2 class="welcomeTitle" id="welcomeTitle"></h2>
         <p class="welcomeSubtitle" id="welcomeSubtitle"></p>
         <div class="welcomePillars">
@@ -46,10 +46,11 @@
       </section>
 
       <section class="hero">
-        <img class="heroLogo" id="heroLogo" src="hinterland://assets/icon.png" alt="Hinterland" />
-        <div class="greeting" id="greeting"></div>
-        <div class="clock" id="clock" hidden></div>
-        <form class="searchBox" id="searchBox">
+        <div class="heroCopy">
+          <h1 class="heroTitle"><img class="heroLogo" id="heroLogo" src="hinterland://assets/horizon-wordmark-dark.svg" alt="Neocrom Horizon" width="437" height="64" /></h1>
+          <div class="greeting" id="greeting"></div>
+          <div class="clock" id="clock" hidden></div>
+          <form class="searchBox" id="searchBox">
           <span class="searchIcon" id="searchIcon"></span>
           <input
             class="searchInput"
@@ -60,9 +61,18 @@
             placeholder=""
           />
           <button class="searchGo" id="searchGo" type="submit"></button>
-        </form>
+          </form>
+        </div>
+        <div class="horizonArt" aria-hidden="true">
+          <span></span>
+          <img id="horizonMark" src="hinterland://assets/horizon-mark-dark.svg" alt="" width="64" height="64" />
+        </div>
       </section>
 
+      <section class="ecosystem" aria-labelledby="ecosystemTitle">
+        <h2 id="ecosystemTitle"></h2>
+        <div class="ecosystemGrid" id="ecosystemLinks"></div>
+      </section>
       <section class="links" id="links" hidden></section>
 
       <footer class="foot" id="foot"></footer>

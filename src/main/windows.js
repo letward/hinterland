@@ -56,7 +56,7 @@ export class BrowserSurface {
       show: false,
       frame: false,
       backgroundColor: '#00000000',
-      title: app.getName(),
+      title: 'Neocrom Horizon',
       icon: appIconPath() || undefined,
       autoHideMenuBar: true,
       webPreferences: {

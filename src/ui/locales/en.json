@@ -1,6 +1,17 @@
 {
   "app": {
-    "name": "Hinterland"
+    "name": "Neocrom Horizon"
+  },
+  "ecosystem": {
+    "title": "Neocrom",
+    "marketplace": "Marketplace",
+    "marketplaceDescription": "Discover apps and games",
+    "community": "Community",
+    "communityDescription": "Share posts and projects",
+    "library": "Library",
+    "libraryDescription": "Find your saved items",
+    "pulse": "Pulse",
+    "pulseDescription": "Explore game analytics"
   },
   "action": {
     "ok": "OK",
@@ -17,7 +28,7 @@
     "dismiss": "Dismiss",
     "export": "Export settings",
     "import": "Import settings",
-    "about": "About Hinterland",
+    "about": "About Neocrom Horizon",
     "resetSection": "Reset this section",
     "stop": "Stop",
     "reloadPage": "Reload",
@@ -56,10 +67,10 @@
     "history": "History",
     "bookmarks": "Bookmarks",
     "extensions": "Extensions",
-    "store": "Hinter Store",
+    "store": "Horizon Store",
     "storeDesc": "Themes, extensions & creator",
-    "openStore": "Open Hinter Store",
-    "account": "Hinterland Account & Sync",
+    "openStore": "Open Horizon Store",
+    "account": "Neocrom Horizon Account & Sync",
     "downloads": "Downloads",
     "shortcuts": "Shortcuts",
     "settings": "Settings",
@@ -191,7 +202,7 @@
     "capturePageClipboard": "Take screenshot (Copy to clipboard)",
     "capturePageFile": "Take screenshot (Save to file…)",
     "openReadingList": "Open Reading List",
-    "openStore": "Open Hinter Store",
+    "openStore": "Open Horizon Store",
     "browseThemes": "Store: Browse themes",
     "browseExtensions": "Store: Browse extensions",
     "themeCreator": "Store: Open theme creator studio",
@@ -479,7 +490,7 @@
       "tabStash": "Open Tab Stash",
       "togglePiP": "Toggle Picture-in-Picture",
       "mediaControls": "Media controller",
-      "account": "Hinterland Account & Sync"
+      "account": "Neocrom Horizon Account & Sync"
     }
   },
   "extensions": {
@@ -509,7 +520,7 @@
     "hint": "An extension folder needs a manifest.json. Only unpacked folders are supported, and everything runs with a strict policy."
   },
   "about": {
-    "title": "About Hinterland",
+    "title": "About Neocrom Horizon",
     "tagline": "A fast, secure and freely customisable browser.",
     "version": "Version",
     "language": "Language",
@@ -608,7 +619,7 @@
     "notesExportedAll": "All notes exported successfully",
     "notesImported": "Notes imported successfully",
     "noteCreatedFromTab": "Note created from active tab",
-    "defaultBrowserSet": "Hinterland registered as default browser",
+    "defaultBrowserSet": "Neocrom Horizon registered as default browser",
     "allPermissionsReset": "All site permissions have been reset",
     "originPermissionsCleared": "Permissions revoked for site",
     "shieldExceptionRemoved": "Shield protection re-enabled for site",
@@ -788,14 +799,14 @@
     "noFailedDownloadsToRetry": "No failed HTTP/HTTPS downloads to retry"
   },
   "welcome": {
-    "title": "Welcome to Hinterland",
+    "title": "Welcome to Neocrom Horizon",
     "subtitle": "Your fast, private, and freely customizable browser is ready.",
     "featPrivacyTitle": "Privacy by Default",
     "featPrivacyDesc": "Tracker blocking & HTTPS-first are always active out of the box.",
     "featSpeedTitle": "Speed & Focus",
     "featSpeedDesc": "Distraction-free Reader Mode, Tab Stashes, and built-in Notes vault.",
     "featCustomTitle": "Your Browser, Your Way",
-    "featCustomDesc": "Custom shortcuts, Hinter Store themes, and total control over your browsing.",
+    "featCustomDesc": "Custom shortcuts, Horizon Store themes, and total control over your browsing.",
     "btnDefault": "Set as Default Browser",
     "btnGuide": "User Guide",
     "btnDismiss": "Get Started",
@@ -866,6 +877,7 @@
     "promptSaveTitle": "Save password for {domain}?"
   },
   "start": {
+    "searchAction": "Search",
     "searchPlaceholder": "Search or enter address",
     "noEngine": "No search engine is configured yet. Please add one in the settings.",
     "editLinks": "Edit links",
@@ -1008,7 +1020,7 @@
       "showBookmarksBar": "Show bookmarks bar",
       "showBookmarksBarDesc": "Displays a quick-access bar with your saved bookmarks below the address bar.",
       "setDefaultBrowser": "Set as default browser",
-      "setDefaultBrowserDesc": "Make Hinterland the default application for opening web links."
+      "setDefaultBrowserDesc": "Make Neocrom Horizon the default application for opening web links."
     },
     "search": {
       "engines": "Search engines",
@@ -1221,9 +1233,9 @@
     },
     "store": {
       "activeTheme": "Active theme",
-      "activeThemeDesc": "The theme currently applied across all Hinterland browser surfaces.",
+      "activeThemeDesc": "The theme currently applied across all Neocrom Horizon browser surfaces.",
       "installedThemes": "Installed themes",
-      "installedThemesDesc": "Community and customized theme presets saved in Hinterland.",
+      "installedThemesDesc": "Community and customized theme presets saved in Neocrom Horizon.",
       "themeItem": "Theme preset",
       "extensionConfigs": "Extension configurations",
       "extensionConfigsDesc": "Persisted preferences and configuration values for installed extensions.",
@@ -1237,7 +1249,7 @@
       "autoSyncDesc": "Automatically synchronize bookmarks and settings when changes occur.",
       "provider": "Sync provider",
       "providerDesc": "Choose your cloud sync service provider.",
-      "providerHinterland": "Hinterland Cloud (Free, Zero Setup)",
+      "providerHinterland": "Horizon Cloud (Free, Zero Setup)",
       "providerSupabase": "Personal Supabase (Free Forever)",
       "providerCustom": "Custom Serverless API",
       "syncBookmarks": "Sync bookmarks",
@@ -1300,8 +1312,8 @@
     "connectionSecureDesc": "Information you share with this site (e.g. passwords or payment details) is encrypted and private.",
     "connectionInsecure": "Connection is not secure",
     "connectionInsecureDesc": "Your connection to this site is not encrypted. Sensitive information could be seen by others.",
-    "internalPage": "Hinterland internal page",
-    "internalPageDesc": "This is a built-in and secure internal Hinterland browser page.",
+    "internalPage": "Neocrom Horizon internal page",
+    "internalPageDesc": "This is a built-in and secure internal Neocrom Horizon browser page.",
     "protectionsHeader": "Active privacy protections",
     "shieldTracking": "Tracker & ad blocking",
     "shieldHttps": "HTTPS connection protection",
@@ -1317,7 +1329,7 @@
     "permDefault": "Default",
     "permAllow": "Allow",
     "permBlock": "Block",
-    "shieldTitle": "Hinterland Shield",
+    "shieldTitle": "Neocrom Horizon Shield",
     "shieldEnabled": "Protection active",
     "shieldDisabled": "Protection paused",
     "trackersBlocked": "{count} trackers blocked on this site",
@@ -1349,7 +1361,7 @@
     "tabShields": "Shield Exceptions",
     "searchPlaceholder": "Search domain or origin...",
     "noPermissions": "No custom site permissions configured. Standard security policies apply.",
-    "noShields": "All sites are currently protected by Hinterland Shield.",
+    "noShields": "All sites are currently protected by Neocrom Horizon Shield.",
     "resetAllPerms": "Reset All Permissions",
     "resetAllShields": "Reset All Exceptions",
     "revokeOrigin": "Revoke",
@@ -1399,7 +1411,7 @@
     "wakeAll": "Wake sleeping tabs",
     "copyReport": "Copy Report",
     "empty": "No matching processes found.",
-    "processBrowser": "Hinterland Browser",
+    "processBrowser": "Neocrom Horizon Browser",
     "processGPU": "GPU Process",
     "processTab": "Tab",
     "processUtility": "Utility Process",
@@ -1418,8 +1430,8 @@
     "sortByName": "Name"
   },
   "store": {
-    "title": "Hinter Store",
-    "subtitle": "Official extensions, community themes, custom styles and curated add-ons for Hinterland.",
+    "title": "Horizon Store",
+    "subtitle": "Official extensions, community themes, custom styles and curated add-ons for Neocrom Horizon.",
     "weeklyPickBadge": "Weekly Pick",
     "whatIsIt": "What it is",
     "whyInFocus": "Why it's in focus",
@@ -1467,7 +1479,7 @@
     "saveConfig": "Save settings",
     "configSaved": "Settings saved for {name}",
     "creatorTitle": "Theme Studio & Creator",
-    "creatorDesc": "Design your own custom Hinterland theme, customize colors, borders and font, and export or share with the community.",
+    "creatorDesc": "Design your own custom Neocrom Horizon theme, customize colors, borders and font, and export or share with the community.",
     "designName": "Theme name",
     "authorName": "Author name",
     "description": "Description",
@@ -1475,7 +1487,7 @@
     "importTheme": "Import community theme",
     "importSuccess": "Community theme successfully imported and activated",
     "uploadExtension": "Upload extension",
-    "uploadExtensionDesc": "Upload your own extension to the community Hinter Store. An account is required.",
+    "uploadExtensionDesc": "Upload your own extension to the community Horizon Store. An account is required.",
     "extensionId": "Extension ID",
     "extensionName": "Name",
     "extensionAuthor": "Author",
@@ -1485,9 +1497,9 @@
     "extensionIcon": "Icon",
     "extensionVersion": "Version",
     "publishToStore": "Publish to Store",
-    "extensionUploaded": "Extension published to Hinter Store!",
+    "extensionUploaded": "Extension published to Horizon Store!",
     "loginRequired": "Account required",
-    "loginRequiredDesc": "Sign in to publish designs and upload extensions to the Hinter Store.",
+    "loginRequiredDesc": "Sign in to publish designs and upload extensions to the Horizon Store.",
     "signInOrRegister": "Register now"
   },
   "clearData": {
@@ -1562,8 +1574,8 @@
     "readingTime": "~{minutes} min read",
     "countBadge": "{count} notes",
     "importInvalid": "No valid notes found in file.",
-    "welcomeTitle": "Welcome to Hinterland Notes",
-    "welcomeContent": "# Welcome to Hinterland Notes\n\nA fast, distraction-free scratchpad built directly into your browser.\n\n### Features:\n- **Markdown formatting**: Supports headings, **bold**, *italics*, `code`, and checklists.\n- **1-Click Web Clipping**: Use the 'Clip Tab Link' button to instantly insert links from active tabs.\n- **Checklists**:\n  - [x] Create first note\n  - [ ] Research next project\n- **Export**: Export any note to `.md` for Obsidian, Notion, or GitHub."
+    "welcomeTitle": "Welcome to Neocrom Horizon Notes",
+    "welcomeContent": "# Welcome to Neocrom Horizon Notes\n\nA fast, distraction-free scratchpad built directly into your browser.\n\n### Features:\n- **Markdown formatting**: Supports headings, **bold**, *italics*, `code`, and checklists.\n- **1-Click Web Clipping**: Use the 'Clip Tab Link' button to instantly insert links from active tabs.\n- **Checklists**:\n  - [x] Create first note\n  - [ ] Research next project\n- **Export**: Export any note to `.md` for Obsidian, Notion, or GitHub."
   },
   "stash": {
     "title": "Tab Stash & Workspaces",
@@ -1697,7 +1709,7 @@
     "tabStatus": "Account & Status",
     "tabSettings": "Sync Preferences",
     "tabProviders": "Cloud Provider",
-    "heroTitle": "Hinterland Cloud Account",
+    "heroTitle": "Horizon Cloud Account",
     "heroSubtitle": "Sync your bookmarks and browser settings seamlessly across all devices using free serverless tools (Vercel & Supabase).",
     "signIn": "Sign in",
     "signUp": "Create free account",
@@ -1707,7 +1719,7 @@
     "syncPassphraseHint": "Optional passphrase for zero-knowledge client-side encryption",
     "e2eeActive": "E2EE Active",
     "connected": "Connected",
-    "providerHinterland": "Hinterland Cloud (Free)",
+    "providerHinterland": "Horizon Cloud (Free)",
     "providerSupabase": "Supabase (Direct)",
     "providerCustom": "Custom Backend",
     "lastSynced": "Last synced",
@@ -1737,7 +1749,7 @@
     "supabaseAnonKey": "Supabase Anon Key",
     "supabaseAnonKeyDesc": "The anon public API key for your Supabase project",
     "saveProviderSettings": "Save Provider Settings",
-    "providerInfo": "Connect Hinterland to free cloud backends like Supabase or Vercel serverless functions with zero maintenance.",
+    "providerInfo": "Connect Neocrom Horizon to free cloud backends like Supabase or Vercel serverless functions with zero maintenance.",
     "bookmarksSynced": "Bookmarks",
     "historySynced": "Search History",
     "readingListSynced": "Reading List",
@@ -1745,7 +1757,7 @@
     "settingsSynced": "Browser Settings & Themes",
     "openPanel": "Open Account Panel",
     "tabDevices": "Connected Devices",
-    "devicesDesc": "Manage all devices synchronized with this Hinterland account.",
+    "devicesDesc": "Manage all devices synchronized with this Neocrom Horizon account.",
     "thisDevice": "This device",
     "pairNewDevice": "Pair new device",
     "pairCode": "Pairing code",
@@ -1756,7 +1768,7 @@
     "displayName": "Display name",
     "saveProfile": "Save profile",
     "notLoggedIn": "Not signed in",
-    "accountTooltip": "Hinterland Account & Sync",
+    "accountTooltip": "Neocrom Horizon Account & Sync",
     "activeDevice": "Active",
     "lastActive": "Last active",
     "copyCode": "Copy code",

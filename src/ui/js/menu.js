@@ -6,8 +6,37 @@ import { currentTab, currentSettings } from './state.js';
 import { allTabs } from './tabs.js';
 import { toast } from './toast.js';
 import { openQrCode, openTabGroups } from './panels.js';
+import { ecosystem } from './ecosystem.js';
 
 const api = () => window.hinterland;
+
+export function openEcosystem() {
+  const trigger = document.getElementById('ecosystemButton');
+  const menu = openPopup({
+    key: 'ecosystem',
+    align: 'left',
+    onClose: () => trigger.setAttribute('aria-expanded', 'false'),
+    render: (card) => {
+      const privateMode = Boolean(currentTab()?.privateMode);
+      card.append(section('ecosystem.title'));
+      for (const { id, icon: glyph, url } of ecosystem) {
+        const brandMark = glyph.endsWith('.svg');
+        card.append(row({
+          iconName: brandMark ? null : glyph,
+          iconHtml: brandMark ? `<img class="ecosystemMenuMark" src="hinterland://assets/${glyph}" width="20" height="20" alt="" />` : null,
+          title: t(`ecosystem.${id}`),
+          subtitle: t(`ecosystem.${id}Description`),
+          onSelect: () => {
+            closePopup();
+            api().tabs.create({ url, privateMode });
+          },
+        }));
+      }
+    },
+  });
+  trigger.setAttribute('aria-expanded', String(Boolean(menu)));
+  menu?.querySelector('button')?.focus();
+}
 
 function zoomRow() {
   const cur = currentTab();

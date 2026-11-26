@@ -1,8 +1,8 @@
-# Hinterland
+# Neocrom Horizon
 
 Ein schneller, sicherer und frei anpassbarer Browser (Electron/Chromium).
 
-[![Release](https://img.shields.io/github/v/release/letward/Hinterland)](https://github.com/letward/Hinterland/releases)
+[![Release](https://img.shields.io/github/v/release/neocrom-team/neocrom-horizon)](https://github.com/neocrom-team/neocrom-horizon/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 **Download:** https://hinterland-browser.vercel.app/
@@ -15,6 +15,7 @@ Ein schneller, sicherer und frei anpassbarer Browser (Electron/Chromium).
 - Passwort-Manager (Zero-Knowledge AES-GCM Vault)
 - Extension-Support (MV3) + eigenes Extension SDK (`@hinterland/extension-sdk`)
 - Automatische Updates über GitHub Releases
+- Direktzugriff auf Marketplace, Community, Bibliothek und Pulse von der Startseite und aus dem Neocrom-Menü neben der Adressleiste
 
 ## Repository-Struktur
 

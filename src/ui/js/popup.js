@@ -48,7 +48,7 @@ export function openPopup({ key = '', align = 'stretch', onClose, render }) {
 
   host.hidden = false;
   card = el('div', {
-    class: align === 'right' ? 'popupCard menuCard' : align === 'center' ? 'popupCard paletteCard' : 'popupCard',
+    class: align === 'right' ? 'popupCard menuCard' : align === 'left' ? 'popupCard menuCard menuCardLeft' : align === 'center' ? 'popupCard paletteCard' : 'popupCard',
   });
   host.append(card);
   currentKey = key;

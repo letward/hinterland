@@ -1,9 +1,9 @@
-# Hinterland Website (Vercel)
+# Neocrom Horizon Website (Vercel)
 
-This folder is the dedicated root directory for the Hinterland marketing/download website deployed on Vercel.
+This folder is the dedicated root directory for the Neocrom Horizon marketing/download website deployed on Vercel.
 
 - Shows the latest changelogs (loaded from `CHANGELOG.md` on `main`).
-- Main call-to-action: download the latest Hinterland browser build for Windows.
+- Main call-to-action: download the latest Neocrom Horizon browser build for Windows.
 
 ## Vercel setup
 

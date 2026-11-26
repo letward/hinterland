@@ -24,7 +24,7 @@ export function openSiteInfo() {
       const url = tab.url;
       const isInternal = url.startsWith('hinterland://');
       const isSecure = url.startsWith('https://');
-      const host = isInternal ? 'Hinterland' : (hostOf(url) || url);
+      const host = isInternal ? 'Neocrom Horizon' : (hostOf(url) || url);
 
       const badgeType = isSecure ? 'secure' : isInternal ? 'internal' : 'insecure';
       const badgeIcon = isSecure ? 'shield' : isInternal ? 'compass' : 'warning';

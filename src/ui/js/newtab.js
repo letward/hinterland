@@ -1,5 +1,6 @@
 import { el, clear } from '../js/util.js';
 import { icon } from '../js/icons.js';
+import { ecosystem } from './ecosystem.js';
 
 const page = window.hinterlandPage;
 
@@ -49,23 +50,33 @@ async function saveSettings() {
 }
 
 function applyTheme() {
-  const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const selected = value('appearance.theme', 'system');
+  const dark = selected === 'system' ? window.matchMedia('(prefers-color-scheme: dark)').matches : selected === 'dark';
   const prefix = dark ? 'dark' : 'light';
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  document.documentElement.dataset.animations = value('appearance.animations', true) ? 'on' : 'off';
+  document.getElementById('heroLogo').src = `hinterland://assets/horizon-wordmark-${prefix}.svg`;
+  document.getElementById('horizonMark').src = `hinterland://assets/horizon-mark-${prefix}.svg`;
 
   const root = document.documentElement.style;
-  root.setProperty('--accent', value('appearance.accent', '#388bfd'));
-  root.setProperty('--onAccent', value('appearance.accentContrast', '#ffffff'));
-  root.setProperty('--bg', value(`appearance.${prefix}Background`, dark ? '#090b0e' : '#f4f5f7'));
-  root.setProperty('--surface', value(`appearance.${prefix}Surface`, dark ? '#101319' : '#ffffff'));
-  root.setProperty('--text', value(`appearance.${prefix}Text`, dark ? '#f0f3f6' : '#0e1117'));
-  root.setProperty('--textDim', dark ? '#8b949e' : '#57606a');
-  root.setProperty('--border', dark ? '#22293a' : '#cfd4e0');
-  root.setProperty('--borderSoft', dark ? '#151a26' : '#e2e5ee');
-  root.setProperty('--radius', `${Number(value('appearance.radius', 0))}px`);
+  const accent = value('appearance.accent', '#bdbdbd');
+  const onAccent = value('appearance.accentContrast', '#ffffff');
+  if (accent === '#bdbdbd' && onAccent === '#ffffff') {
+    root.removeProperty('--accent');
+    root.removeProperty('--onAccent');
+  } else {
+    root.setProperty('--accent', accent);
+    root.setProperty('--onAccent', onAccent);
+  }
+  root.setProperty('--bg', value(`appearance.${prefix}Background`, dark ? '#090909' : '#f4f4f4'));
+  root.setProperty('--surface', value(`appearance.${prefix}Surface`, dark ? '#141414' : '#ffffff'));
+  root.setProperty('--text', value(`appearance.${prefix}Text`, dark ? '#f8f8f8' : '#111111'));
+  root.setProperty('--radius', `${Number(value('appearance.radius', 10))}px`);
   root.setProperty('--fontSize', `${Number(value('appearance.fontSize', 14))}px`);
   root.setProperty('--blur', `${Number(value('appearance.blur', 18))}px`);
-  root.setProperty('--font', String(value('appearance.customFont', '')).trim() || 'system, sans-serif');
+  const font = String(value('appearance.customFont', '')).trim();
+  if (font) root.setProperty('--font', `${font}, system-ui, sans-serif`);
+  else root.removeProperty('--font');
 }
 
 function paintBackdrop() {
@@ -120,8 +131,11 @@ function paintSearch() {
   if (box.hidden) return;
 
   document.getElementById('searchIcon').innerHTML = icon('search');
-  document.getElementById('searchGo').innerHTML = icon('forward');
+  const submit = document.getElementById('searchGo');
+  submit.innerHTML = icon('forward');
+  submit.setAttribute('aria-label', t('start.searchAction'));
   input.placeholder = hasEngine ? t('start.searchPlaceholder') : t('start.noEngine');
+  input.setAttribute('aria-label', input.placeholder);
 
   box.onsubmit = (event) => {
     event.preventDefault();
@@ -136,7 +150,7 @@ function paintSearch() {
     location.assign(target);
   };
 
-  input.focus();
+  if (document.getElementById('welcomeCard').hidden) input.focus({ preventScroll: true });
 }
 
 function looksLikeScheme(text) {
@@ -166,6 +180,23 @@ function paintLinks() {
 
   clear(host);
   for (const entry of entries) host.append(linkNode(entry));
+}
+
+function paintEcosystem() {
+  document.getElementById('ecosystemTitle').textContent = t('ecosystem.title');
+  const host = document.getElementById('ecosystemLinks');
+  for (const { id, url, icon: glyph } of ecosystem) {
+    const name = el('strong', { text: t(`ecosystem.${id}`) });
+    const description = el('span', { text: t(`ecosystem.${id}Description`) });
+    const mark = glyph.endsWith('.svg')
+      ? el('img', { src: `hinterland://assets/${glyph}`, alt: '', width: 22, height: 22 })
+      : el('span', { html: icon(glyph), 'aria-hidden': 'true' });
+    host.append(el('a', { class: 'ecosystemTile', href: url }, [
+      el('span', { class: 'ecosystemIcon' }, mark),
+      el('span', { class: 'ecosystemLabel' }, [name, description]),
+      el('span', { class: 'ecosystemArrow', html: icon('forward'), 'aria-hidden': 'true' }),
+    ]));
+  }
 }
 
 function paintFoot() {
@@ -204,7 +235,7 @@ function openEditor() {
             class: 'iconButton',
             type: 'button',
             html: icon('trash'),
-            title: strings.start.done,
+            title: t('start.done'),
             onclick: () => {
               entries.splice(index, 1);
               settings['start.links'] = entries;
@@ -240,7 +271,9 @@ function flatten(source, prefix = '', target = {}) {
 }
 
 async function loadStrings() {
-  const code = String(navigator.language || 'en').toLowerCase().startsWith('de') ? 'de' : 'en';
+  const preferred = value('general.language', 'system');
+  const locale = preferred === 'system' ? navigator.language : preferred;
+  const code = String(locale || 'en').toLowerCase().startsWith('de') ? 'de' : 'en';
   document.documentElement.lang = code;
   try {
     const response = await fetch(`locales/${code}.json`);
@@ -283,7 +316,7 @@ function paintWelcomeCard() {
   document.getElementById('welcomeClose').onclick = dismiss;
   document.getElementById('welcomeDismiss').onclick = dismiss;
   document.getElementById('welcomeOpenGuide').onclick = () => {
-    page?.open?.('https://github.com/letward/Hinterland/blob/main/website/docs/user-guide.html');
+    page?.open?.('https://github.com/neocrom-team/neocrom-horizon/blob/main/website/docs/user-guide.html');
   };
   document.getElementById('welcomeSetDefault').onclick = async () => {
     await page?.app?.setDefaultBrowser?.();
@@ -293,18 +326,20 @@ function paintWelcomeCard() {
 }
 
 async function boot() {
-  strings = await loadStrings();
   await loadSettings();
+  strings = await loadStrings();
   const engines = (await page?.search?.engines?.()) ?? [];
   engine = engines[0] ?? null;
 
   applyTheme();
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
   paintBackdrop();
   paintWelcomeCard();
   paintGreeting();
   paintClock();
   paintSearch();
   paintLinks();
+  paintEcosystem();
   paintFoot();
 }
 

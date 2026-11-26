@@ -7,7 +7,7 @@ import { bindShell, openPopup, closePopup, isOpen } from './popup.js';
 import { closeModal, isModalOpen } from './modal.js';
 import { bindTabs, renderTabs, updateTab, setActive, activeTab, allTabs } from './tabs.js';
 import { bindOmnibox, syncOmni, focusOmnibox } from './omnibox.js';
-import { openMainMenu, openTabMenu, openOmniMenu, openTabstripMenu, openExtensionsButton, closeMenus, openMediaControls } from './menu.js';
+import { openMainMenu, openTabMenu, openOmniMenu, openTabstripMenu, openExtensionsButton, closeMenus, openMediaControls, openEcosystem } from './menu.js';
 import { setSchema, openSettings, setShortcutDefaults } from './settingspanel.js';
 import { openStore, openExtensions, openHistory, openBookmarks, openDownloads, openAbout, openShortcuts, openTaskManager, openReadingList, openClearData, openNotes, openTabStash, openTabGroups, openPasswords, openAccount, openSitePermissions } from './panels.js';
 import { openExtensionPopup, closeExtensionPopup } from './extensionPopup.js';
@@ -163,6 +163,7 @@ function bind() {
   $('#downloadsButton').addEventListener('click', () => openDownloads());
   $('#extensionsButton').addEventListener('click', () => openExtensionsButton());
   $('#menuButton').addEventListener('click', () => openMainMenu());
+  $('#ecosystemButton').addEventListener('click', openEcosystem);
 
   $('#omni').addEventListener('contextmenu', (event) => {
     event.preventDefault();

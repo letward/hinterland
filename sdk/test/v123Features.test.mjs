@@ -35,7 +35,7 @@ describe('Hinterland v1.23.0 Features & Polish', () => {
     it('includes safety guidelines and responsible browsing notices', () => {
       const html = readFileSync(guidePath, 'utf8');
       assert.ok(html.includes('Safety rule:'), 'user guide must contain safety instructions');
-      assert.ok(html.includes('Back to Hinterland'), 'user guide must have a back link');
+      assert.match(html, /<a[^>]+href="\.\.\/"[^>]*>[^<]*Neocrom Horizon/, 'user guide must link back to the download page');
     });
   });
 

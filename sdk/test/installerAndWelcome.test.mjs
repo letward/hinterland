@@ -94,7 +94,7 @@ describe('Hand-Tailored 1-Click Installer & Welcome Onboarding', () => {
 
     it('declares welcomeCard DOM elements in newtab.html', () => {
       assert.ok(newtabHtml.includes('id="welcomeCard"'));
-      assert.ok(newtabHtml.includes('welcomeBadge'));
+      assert.ok(newtabHtml.includes('id="welcomeTitle"'));
       assert.ok(newtabHtml.includes('id="welcomeSetDefault"'));
       assert.ok(newtabHtml.includes('id="welcomeOpenGuide"'));
       assert.ok(newtabHtml.includes('id="welcomeDismiss"'));
@@ -110,7 +110,7 @@ describe('Hand-Tailored 1-Click Installer & Welcome Onboarding', () => {
 
     it('styles welcomeCard with smooth animations and responsive grid', () => {
       assert.ok(newtabCss.includes('.welcomeCard'));
-      assert.ok(newtabCss.includes('.welcomeBadge'));
+      assert.ok(newtabCss.includes('.welcomeTitle'));
       assert.ok(newtabCss.includes('.welcomePillars'));
       assert.ok(newtabCss.includes('.welcomePillar'));
       assert.ok(newtabCss.includes('.welcomeActions'));

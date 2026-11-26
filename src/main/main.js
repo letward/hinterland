@@ -80,10 +80,10 @@ async function start() {
   settings.load();
   history.load();
 
-  registerHandler();
   installShortcuts();
 
   for (const ses of [defaultSession(), incognitoSession()]) {
+    registerHandler(ses.protocol);
     applySettings();
     installPermissionPolicy(ses, { requestPermission: askPermission });
     installRequestFilters(ses);

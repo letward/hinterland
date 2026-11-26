@@ -10,6 +10,11 @@ const getUserDataPath = () => (typeof app?.getPath === 'function' ? app.getPath(
 
 const FILE_NAME = 'settings.json';
 const FORBIDDEN_KEYS = new Set(['__proto__', 'prototype', 'constructor']);
+const previousPalette = {
+  accent: '#4f7cff', accentContrast: '#ffffff',
+  darkBackground: '#12141a', darkSurface: '#1a1d26', darkText: '#e6e9f2',
+  lightBackground: '#f2f3f7', lightSurface: '#ffffff', lightText: '#161923',
+};
 
 function deepGet(object, path) {
   if (!object || typeof path !== 'string') return undefined;
@@ -90,6 +95,12 @@ export class Settings extends EventEmitter {
     if (!existsSync(this.filePath)) return;
     try {
       const parsed = JSON.parse(readFileSync(this.filePath, 'utf8'));
+      if (parsed && typeof parsed === 'object' && deepGet(parsed, 'general.hasRunBefore') === undefined) {
+        deepSet(parsed, 'general.hasRunBefore', true);
+      }
+      if (Object.entries(previousPalette).every(([key, color]) => parsed.appearance?.[key] === color)) {
+        for (const key of Object.keys(previousPalette)) delete parsed.appearance[key];
+      }
       for (const definition of this.schema) {
         const value = coerce(definition, deepGet(parsed, definition.key));
         if (value !== undefined) deepSet(this.data, definition.key, value);

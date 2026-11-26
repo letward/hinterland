@@ -78,7 +78,7 @@ export function renderHinterStore(initialTab = 'all') {
     el('div', { class: 'storeHeroHeader' }, [
       el('span', { class: 'storeHeroBadge' }, [
         el('span', { html: icon('sparkles') }),
-        'Hinter Store',
+        'Horizon Store',
       ]),
       el('div', { class: 'storeHeroStats', id: 'storeStats' }, [
         el('span', { class: 'storeStatItem', id: 'statThemes' }, '... Designs'),
@@ -86,7 +86,7 @@ export function renderHinterStore(initialTab = 'all') {
       ]),
     ]),
     el('h1', { class: 'storeHeroTitle' }, [
-      el('img', { class: 'storeHeroLogo', src: 'hinterland://assets/icon.png', alt: 'Hinterland' }),
+      el('img', { class: 'storeHeroLogo', src: 'hinterland://assets/icon.png', alt: 'Neocrom Horizon' }),
       t('store.title'),
     ]),
     el('p', { class: 'storeHeroDesc', text: t('store.subtitle') }),
@@ -1116,7 +1116,7 @@ function renderStudio(catalogData, onRefresh) {
     id: `custom-${Date.now()}`,
     name: 'Mein Community Design',
     author: 'Community Gestalter',
-    description: 'Selbst erstelltes individuelles Hinterland-Farbschema.',
+    description: 'Selbst erstelltes individuelles Neocrom Horizon-Farbschema.',
     theme: 'dark',
     accent: '#4f7cff',
     accentContrast: '#ffffff',
@@ -1257,7 +1257,7 @@ function renderStudio(catalogData, onRefresh) {
       onclick: async () => {
         const res = await uploadTheme(themeState);
         if (res?.ok) {
-          toast('Design an den Hinter Store veröffentlicht.', 'success');
+          toast('Design an den Horizon Store veröffentlicht.', 'success');
           onRefresh?.();
         } else if (res?.error === 'notLoggedIn') {
           toast('Bitte zuerst anmelden.', 'error');

@@ -1,6 +1,6 @@
-# Hinterland Design
+# Neocrom Horizon Design
 
-Das **Hinterland Design** ist die einheitliche Design-Philosophie für Browser, Website, SDK und Dokumentation.
+Horizon übernimmt Schwarz, Silber und die abgerundete Raute von Neocrom. Der Sonnenaufgang in der Mitte kennzeichnet den Browser.
 
 ## Prinzipien
 
@@ -14,8 +14,8 @@ Das **Hinterland Design** ist die einheitliche Design-Philosophie für Browser, 
 
 Alle Werte sind in `design/tokens.css` definiert und werden von `src/ui/css/tokens.css` und `website/tokens.css` gespiegelt.
 
-- **Farben:** `--accent` (#4f7cff), `--bg`, `--surface`, `--surfaceAlt`, `--surfaceHover`, `--text`, `--textDim`, `--border`, `--borderSoft`, `--onAccent`.
-- **Radien:** `--radius` (10px), `--radiusSmall` (6px), `--radiusLarge` (16px).
+- **Farben** auf dunklem Grund. Hintergrund `#090909`, Flächen `#141414`, Sekundärtext `#bdbdbd` und Akzent `#f8f8f8`.
+- **Radien** für Bedienelemente (10px), kleine Flächen (7px) und Karten (16px).
 - **Schatten:** `--shadow`, `--shadowSmall`.
 - **Bewegung:** `--anim` (140ms). Reduziert auf 0ms bei `data-animations="off"`.
 - **Typografie:** `--font` (System-Stack), `--fontMono`.
@@ -26,6 +26,8 @@ Alle Werte sind in `design/tokens.css` definiert und werden von `src/ui/css/toke
 - Dark (default): `color-scheme: dark`
 - Light: `html[data-theme="light"]`
 - Animationen aus: `html[data-animations="off"]`
+
+Beim Aktualisieren übernimmt ein Profil mit den bisherigen Standardfarben die Neocrom-Palette. Individuelle Farben und andere Einstellungen bleiben erhalten. Der Browser öffnet Marketplace, Community, Bibliothek und Pulse auf `neocrom.pro`. Die Horizon-Synchronisierung hat ihren eigenen Zugang.
 
 ## Komponenten
 

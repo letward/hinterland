@@ -1,6 +1,17 @@
 {
   "app": {
-    "name": "Hinterland"
+    "name": "Neocrom Horizon"
+  },
+  "ecosystem": {
+    "title": "Neocrom",
+    "marketplace": "Marketplace",
+    "marketplaceDescription": "Apps und Spiele entdecken",
+    "community": "Community",
+    "communityDescription": "Beiträge und Projekte teilen",
+    "library": "Bibliothek",
+    "libraryDescription": "Gespeicherte Inhalte finden",
+    "pulse": "Pulse",
+    "pulseDescription": "Spielanalysen entdecken"
   },
   "action": {
     "ok": "OK",
@@ -17,7 +28,7 @@
     "dismiss": "Ausblenden",
     "export": "Einstellungen exportieren",
     "import": "Einstellungen importieren",
-    "about": "Über Hinterland",
+    "about": "Über Neocrom Horizon",
     "resetSection": "Diesen Bereich zurücksetzen",
     "stop": "Anhalten",
     "reloadPage": "Neu laden",
@@ -31,7 +42,7 @@
   },
   "language": {
     "changedTitle": "Sprache geändert",
-    "changedBody": "Für die neue Sprache muss Hinterland neu gestartet werden."
+    "changedBody": "Für die neue Sprache muss Neocrom Horizon neu gestartet werden."
   },
   "omni": {
     "placeholder": "Suchen oder Adresse eingeben",
@@ -56,10 +67,10 @@
     "history": "Verlauf",
     "bookmarks": "Lesezeichen",
     "extensions": "Erweiterungen",
-    "store": "Hinter Store",
+    "store": "Horizon Store",
     "storeDesc": "Designs, Erweiterungen & Studio",
-    "openStore": "Hinter Store öffnen",
-    "account": "Hinterland Konto & Synchronisierung",
+    "openStore": "Horizon Store öffnen",
+    "account": "Neocrom Horizon Konto & Synchronisierung",
     "downloads": "Downloads",
     "shortcuts": "Tastenkürzel",
     "settings": "Einstellungen",
@@ -194,7 +205,7 @@
     "muteAll": "Alle Tabs stummschalten",
     "unmuteAll": "Stummschaltung aller Tabs aufheben",
     "openReadingList": "Leseliste öffnen",
-    "openStore": "Hinter Store öffnen",
+    "openStore": "Horizon Store öffnen",
     "browseThemes": "Store: Designs durchsuchen",
     "browseExtensions": "Store: Erweiterungen durchsuchen",
     "themeCreator": "Store: Theme Studio öffnen",
@@ -479,7 +490,7 @@
       "tabStash": "Tab-Stash öffnen",
       "togglePiP": "Bild-in-Bild umschalten",
       "mediaControls": "Mediensteuerung",
-      "account": "Hinterland Konto & Synchronisierung"
+      "account": "Neocrom Horizon Konto & Synchronisierung"
     }
   },
   "extensions": {
@@ -509,7 +520,7 @@
     "hint": "Ein Erweiterungsordner benötigt eine manifest.json. Es werden ausschließlich entpackte Ordner unterstützt, und alles läuft unter einer strengen Regel."
   },
   "about": {
-    "title": "Über Hinterland",
+    "title": "Über Neocrom Horizon",
     "tagline": "Ein schneller, sicherer und frei anpassbarer Browser.",
     "version": "Version",
     "language": "Sprache",
@@ -608,7 +619,7 @@
     "notesExportedAll": "Alle Notizen erfolgreich exportiert",
     "notesImported": "Notizen erfolgreich importiert",
     "noteCreatedFromTab": "Notiz aus aktivem Tab erstellt",
-    "defaultBrowserSet": "Hinterland als Standardbrowser registriert",
+    "defaultBrowserSet": "Neocrom Horizon als Standardbrowser registriert",
     "allPermissionsReset": "Alle Website-Berechtigungen wurden zurückgesetzt",
     "originPermissionsCleared": "Berechtigungen für Website widerrufen",
     "shieldExceptionRemoved": "Shield-Schutz für Website wieder aktiviert",
@@ -788,14 +799,14 @@
     "noFailedDownloadsToRetry": "Keine fehlgeschlagenen HTTP/HTTPS-Downloads zum Wiederholen vorhanden"
   },
   "welcome": {
-    "title": "Willkommen bei Hinterland",
+    "title": "Willkommen bei Neocrom Horizon",
     "subtitle": "Dein schneller, privater und frei anpassbarer Browser ist startklar.",
     "featPrivacyTitle": "Privatsphäre standardmäßig",
     "featPrivacyDesc": "Tracker-Blocker & HTTPS-First sind sofort standardmäßig aktiv.",
     "featSpeedTitle": "Schnell & fokussiert",
     "featSpeedDesc": "Ablenkungsfreier Lesemodus, Tab-Stashes und integrierter Notizen-Tresor.",
     "featCustomTitle": "Dein Browser, deine Regeln",
-    "featCustomDesc": "Eigene Tastenkürzel, Hinter Store Themes und volle Kontrolle über dein Surfen.",
+    "featCustomDesc": "Eigene Tastenkürzel, Horizon Store Themes und volle Kontrolle über dein Surfen.",
     "btnDefault": "Als Standardbrowser festlegen",
     "btnGuide": "Benutzerhandbuch",
     "btnDismiss": "Loslegen",
@@ -866,6 +877,7 @@
     "promptSaveTitle": "Passwort für {domain} speichern?"
   },
   "start": {
+    "searchAction": "Suchen",
     "searchPlaceholder": "Suchen oder Adresse eingeben",
     "noEngine": "Es ist noch keine Suchmaschine eingerichtet. Bitte füge eine in den Einstellungen hinzu.",
     "editLinks": "Links bearbeiten",
@@ -1008,7 +1020,7 @@
       "showBookmarksBar": "Lesezeichenleiste anzeigen",
       "showBookmarksBarDesc": "Zeigt eine Schnellzugriffsleiste mit deinen Lesezeichen unter der Adressleiste an.",
       "setDefaultBrowser": "Als Standardbrowser festlegen",
-      "setDefaultBrowserDesc": "Hinterland als Standard-App zum Öffnen von Weblinks verwenden."
+      "setDefaultBrowserDesc": "Neocrom Horizon als Standard-App zum Öffnen von Weblinks verwenden."
     },
     "search": {
       "engines": "Suchmaschinen",
@@ -1221,9 +1233,9 @@
     },
     "store": {
       "activeTheme": "Aktives Design",
-      "activeThemeDesc": "Das aktuell auf allen Hinterland-Oberflächen aktive Design.",
+      "activeThemeDesc": "Das aktuell auf allen Neocrom Horizon-Oberflächen aktive Design.",
       "installedThemes": "Installierte Designs",
-      "installedThemesDesc": "In Hinterland gespeicherte Community- und eigene Theme-Presets.",
+      "installedThemesDesc": "In Neocrom Horizon gespeicherte Community- und eigene Theme-Presets.",
       "themeItem": "Theme-Voreinstellung",
       "extensionConfigs": "Erweiterungs-Konfigurationen",
       "extensionConfigsDesc": "Gespeicherte Einstellungen und Werte für installierte Erweiterungen.",
@@ -1237,7 +1249,7 @@
       "autoSyncDesc": "Lesezeichen und Einstellungen bei Änderungen automatisch synchronisieren.",
       "provider": "Sync-Anbieter",
       "providerDesc": "Wähle deinen Cloud-Synchronisierungsanbieter.",
-      "providerHinterland": "Hinterland Cloud (Kostenlos, ohne Einrichtung)",
+      "providerHinterland": "Horizon Cloud (Kostenlos, ohne Einrichtung)",
       "providerSupabase": "Eigenes Supabase (Dauerhaft kostenlos)",
       "providerCustom": "Benutzerdefinierte Serverless-API",
       "syncBookmarks": "Lesezeichen synchronisieren",
@@ -1300,8 +1312,8 @@
     "connectionSecureDesc": "Informationen, die Sie mit dieser Website teilen (z. B. Passwörter oder Zahlungsdaten), werden verschlüsselt übertragen.",
     "connectionInsecure": "Verbindung ist nicht sicher",
     "connectionInsecureDesc": "Die Verbindung zu dieser Website ist nicht verschlüsselt. Vertrauliche Daten könnten von Dritten eingesehen werden.",
-    "internalPage": "Interne Hinterland-Seite",
-    "internalPageDesc": "Dies ist eine integrierte und geschützte interne Seite von Hinterland.",
+    "internalPage": "Interne Neocrom Horizon-Seite",
+    "internalPageDesc": "Dies ist eine integrierte und geschützte interne Seite von Neocrom Horizon.",
     "protectionsHeader": "Aktive Schutzmechanismen",
     "shieldTracking": "Tracker- & Werbeblocker",
     "shieldHttps": "HTTPS-Verbindungsschutz",
@@ -1317,7 +1329,7 @@
     "permDefault": "Standard",
     "permAllow": "Zulassen",
     "permBlock": "Blockieren",
-    "shieldTitle": "Hinterland Schutzschild",
+    "shieldTitle": "Neocrom Horizon Schutzschild",
     "shieldEnabled": "Schutz aktiv",
     "shieldDisabled": "Schutz pausiert",
     "trackersBlocked": "{count} Tracker auf dieser Website blockiert",
@@ -1344,12 +1356,12 @@
   },
   "sitePermissions": {
     "title": "Website-Berechtigungen & Shields",
-    "description": "Verwalten Sie Website-Berechtigungen, Hardwarezugriffe und Ausnahmen des Hinterland-Shields.",
+    "description": "Verwalten Sie Website-Berechtigungen, Hardwarezugriffe und Ausnahmen des Neocrom Horizon-Shields.",
     "tabPermissions": "Berechtigungen",
     "tabShields": "Shield-Ausnahmen",
     "searchPlaceholder": "Domain oder Origin durchsuchen...",
     "noPermissions": "Keine benutzerdefinierten Berechtigungen konfiguriert. Standard-Sicherheitsrichtlinien gelten.",
-    "noShields": "Alle Websites werden derzeit durch Hinterland Shield geschützt.",
+    "noShields": "Alle Websites werden derzeit durch Neocrom Horizon Shield geschützt.",
     "resetAllPerms": "Alle Berechtigungen zurücksetzen",
     "resetAllShields": "Alle Ausnahmen zurücksetzen",
     "revokeOrigin": "Widerrufen",
@@ -1399,7 +1411,7 @@
     "wakeAll": "Schlafende Tabs aufwecken",
     "copyReport": "Bericht kopieren",
     "empty": "Keine passenden Prozesse gefunden.",
-    "processBrowser": "Hinterland Browser",
+    "processBrowser": "Neocrom Horizon Browser",
     "processGPU": "GPU-Prozess",
     "processTab": "Tab",
     "processUtility": "Dienstprozess",
@@ -1418,8 +1430,8 @@
     "sortByName": "Name"
   },
   "store": {
-    "title": "Hinter Store",
-    "subtitle": "Offizielle Erweiterungen, Community-Designs, individuelle Stile und Add-ons für Hinterland.",
+    "title": "Horizon Store",
+    "subtitle": "Offizielle Erweiterungen, Community-Designs, individuelle Stile und Add-ons für Neocrom Horizon.",
     "weeklyPickBadge": "Fokus der Woche",
     "whatIsIt": "Was es ist",
     "whyInFocus": "Wieso im Fokus",
@@ -1467,7 +1479,7 @@
     "saveConfig": "Einstellungen speichern",
     "configSaved": "Einstellungen für {name} gespeichert",
     "creatorTitle": "Theme Studio & Gestalter",
-    "creatorDesc": "Erstelle dein eigenes Hinterland-Design, passe Farben, Rundungen und Typografie an und exportiere oder teile es.",
+    "creatorDesc": "Erstelle dein eigenes Neocrom Horizon-Design, passe Farben, Rundungen und Typografie an und exportiere oder teile es.",
     "designName": "Name des Designs",
     "authorName": "Name des Erstellers",
     "description": "Beschreibung",
@@ -1475,7 +1487,7 @@
     "importTheme": "Community-Design importieren",
     "importSuccess": "Community-Design erfolgreich importiert und aktiviert",
     "uploadExtension": "Erweiterung hochladen",
-    "uploadExtensionDesc": "Lade deine eigene Erweiterung in den Community Hinter Store hoch. Ein Konto ist erforderlich.",
+    "uploadExtensionDesc": "Lade deine eigene Erweiterung in den Community Horizon Store hoch. Ein Konto ist erforderlich.",
     "extensionId": "Erweiterungs-ID",
     "extensionName": "Name",
     "extensionAuthor": "Autor",
@@ -1485,9 +1497,9 @@
     "extensionIcon": "Symbol",
     "extensionVersion": "Version",
     "publishToStore": "Im Store veröffentlichen",
-    "extensionUploaded": "Erweiterung an den Hinter Store veröffentlicht!",
+    "extensionUploaded": "Erweiterung an den Horizon Store veröffentlicht!",
     "loginRequired": "Konto erforderlich",
-    "loginRequiredDesc": "Melde dich an, um Designs zu veröffentlichen und Erweiterungen in den Hinter Store hochzuladen.",
+    "loginRequiredDesc": "Melde dich an, um Designs zu veröffentlichen und Erweiterungen in den Horizon Store hochzuladen.",
     "signInOrRegister": "Jetzt registrieren"
   },
   "clearData": {
@@ -1562,8 +1574,8 @@
     "readingTime": "~{minutes} Min. Lesezeit",
     "countBadge": "{count} Notizen",
     "importInvalid": "Keine gültigen Notizen in der Datei gefunden.",
-    "welcomeTitle": "Willkommen bei Hinterland Notizen",
-    "welcomeContent": "# Willkommen bei Hinterland Notizen\n\nEin schneller, ablenkungsfreier Notizzettel direkt in Ihrem Browser.\n\n### Funktionen:\n- **Markdown-Formatierung**: Unterstützt Überschriften, **fett**, *kursiv*, `Code` und Checklisten.\n- **1-Klick Web-Clipping**: Nutzen Sie die Schaltfläche 'Tab-Link einfügen', um Links aktiver Tabs einzufügen.\n- **Checklisten**:\n  - [x] Erste Notiz ansehen\n  - [ ] Nächstes Projekt recherchieren\n- **Export**: Exportieren Sie jede Notiz als `.md` für Obsidian, Notion oder GitHub."
+    "welcomeTitle": "Willkommen bei Neocrom Horizon Notizen",
+    "welcomeContent": "# Willkommen bei Neocrom Horizon Notizen\n\nEin schneller, ablenkungsfreier Notizzettel direkt in Ihrem Browser.\n\n### Funktionen:\n- **Markdown-Formatierung**: Unterstützt Überschriften, **fett**, *kursiv*, `Code` und Checklisten.\n- **1-Klick Web-Clipping**: Nutzen Sie die Schaltfläche 'Tab-Link einfügen', um Links aktiver Tabs einzufügen.\n- **Checklisten**:\n  - [x] Erste Notiz ansehen\n  - [ ] Nächstes Projekt recherchieren\n- **Export**: Exportieren Sie jede Notiz als `.md` für Obsidian, Notion oder GitHub."
   },
   "stash": {
     "title": "Tab-Stash & Arbeitsbereiche",
@@ -1697,7 +1709,7 @@
     "tabStatus": "Konto & Status",
     "tabSettings": "Synchronisierungs-Einstellungen",
     "tabProviders": "Cloud-Anbieter",
-    "heroTitle": "Hinterland Cloud-Konto",
+    "heroTitle": "Horizon Cloud-Konto",
     "heroSubtitle": "Synchronisiere Lesezeichen und Browsereinstellungen nahtlos auf allen Geräten mit kostenlosen serverlosen Tools (Vercel & Supabase).",
     "signIn": "Anmelden",
     "signUp": "Kostenloses Konto erstellen",
@@ -1707,7 +1719,7 @@
     "syncPassphraseHint": "Optionale Passphrase für clientseitige Zero-Knowledge-Verschlüsselung",
     "e2eeActive": "E2EE Aktiv",
     "connected": "Verbunden",
-    "providerHinterland": "Hinterland Cloud (Kostenlos)",
+    "providerHinterland": "Horizon Cloud (Kostenlos)",
     "providerSupabase": "Supabase (Direkt)",
     "providerCustom": "Benutzerdefiniertes Backend",
     "lastSynced": "Zuletzt synchronisiert",
@@ -1737,7 +1749,7 @@
     "supabaseAnonKey": "Öffentlicher Supabase Anon-Schlüssel",
     "supabaseAnonKeyDesc": "Der öffentliche Anon-API-Schlüssel deines Supabase-Projekts",
     "saveProviderSettings": "Anbieter-Einstellungen speichern",
-    "providerInfo": "Verbinde Hinterland mit kostenlosen Cloud-Diensten wie Supabase oder Vercel Serverless ohne Wartungsaufwand.",
+    "providerInfo": "Verbinde Neocrom Horizon mit kostenlosen Cloud-Diensten wie Supabase oder Vercel Serverless ohne Wartungsaufwand.",
     "bookmarksSynced": "Lesezeichen",
     "historySynced": "Suchverlauf",
     "readingListSynced": "Leseliste",
@@ -1745,7 +1757,7 @@
     "settingsSynced": "Browsereinstellungen & Designs",
     "openPanel": "Konto-Bereich öffnen",
     "tabDevices": "Verbundene Geräte",
-    "devicesDesc": "Verwalte alle mit diesem Hinterland-Konto synchronisierten Geräte.",
+    "devicesDesc": "Verwalte alle mit diesem Neocrom Horizon-Konto synchronisierten Geräte.",
     "thisDevice": "Dieses Gerät",
     "pairNewDevice": "Neues Gerät verbinden",
     "pairCode": "Kopplungscode",
@@ -1756,7 +1768,7 @@
     "displayName": "Anzeigename",
     "saveProfile": "Profil speichern",
     "notLoggedIn": "Nicht angemeldet",
-    "accountTooltip": "Hinterland Konto & Synchronisierung",
+    "accountTooltip": "Neocrom Horizon Konto & Synchronisierung",
     "activeDevice": "Aktiv",
     "lastActive": "Zuletzt aktiv",
     "copyCode": "Code kopieren",

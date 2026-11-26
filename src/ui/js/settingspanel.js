@@ -431,7 +431,7 @@ function sectionFooter(definition) {
       } }, [t('settings.general.setDefaultBrowser')]),
       el('button', { class: 'button', type: 'button', onclick: () => {
         closeModal();
-        api().tabs.create({ url: 'https://github.com/letward/Hinterland/blob/main/website/docs/user-guide.html' });
+        api().tabs.create({ url: 'https://github.com/neocrom-team/neocrom-horizon/blob/main/website/docs/user-guide.html' });
       } }, [t('menu.userGuide')]),
     );
   }

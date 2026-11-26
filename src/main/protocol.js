@@ -86,8 +86,8 @@ function resolveRequest(url) {
   return target;
 }
 
-export function registerHandler() {
-  protocol.handle(SCHEME, async (request) => {
+export function registerHandler(sessionProtocol) {
+  sessionProtocol.handle(SCHEME, async (request) => {
     const url = new URL(request.url);
     const file = resolveRequest(url);
     if (!file) {

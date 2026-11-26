@@ -4179,6 +4179,7 @@ handle('permission:resolve', (requestId, answer) => {
   });
 
   const PAGE_KEYS = [
+    'general.hasRunBefore',
     'start.layout',
     'start.background',
     'start.backgroundOverlay',
@@ -4200,6 +4201,7 @@ handle('permission:resolve', (requestId, answer) => {
     'appearance.customFont',
     'appearance.blur',
     'appearance.theme',
+    'appearance.animations',
   ];
 
   handle('page:settings', (patch) => {
@@ -4210,10 +4212,10 @@ handle('permission:resolve', (requestId, answer) => {
       }
       if (Object.keys(allowed).length) settings.merge(allowed);
     }
-    const values = settings.all();
-    const result = {};
-    for (const key of PAGE_KEYS) result[key] = values[key] ?? values[key.split('.').slice(1).join('.')];
-    return result;
+    return {
+      ...Object.fromEntries(PAGE_KEYS.map(key => [key, settings.value(key)])),
+      'general.language': settings.value('general.language'),
+    };
   });
 
 handle('dialog:confirm', async ({ title, message, detail, confirmLabel, cancelLabel }) => {

@@ -41,6 +41,7 @@
   box-shadow: var(--shadow);
   animation: menuIn var(--anim) var(--easeOut);
 }
+.menuCardLeft { margin-left: 4px; margin-right: auto; }
 
 .paletteCard {
   width: min(640px, 92vw);

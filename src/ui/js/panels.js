@@ -102,7 +102,7 @@ function extensionsPage() {
           class: 'button primary',
           type: 'button',
           onclick: () => openStore('extensions'),
-        }, [el('span', { html: icon('store') }), ' Hinter Store']),
+        }, [el('span', { html: icon('store') }), ' Horizon Store']),
         el('button', {
           class: 'button',
           type: 'button',
@@ -4451,7 +4451,7 @@ function renderAccountConnected(container, status, refresh) {
 
   let avatarElement;
   if (currentAvatar === 'logo') {
-    avatarElement = el('img', { class: 'accountAvatarLogo', src: 'hinterland://assets/icon.png', alt: 'Hinterland' });
+    avatarElement = el('img', { class: 'accountAvatarLogo', src: 'hinterland://assets/icon.png', alt: 'Neocrom Horizon' });
   } else if (currentAvatar === 'initials') {
     avatarElement = el('div', { class: 'accountAvatar', text: initial });
   } else {

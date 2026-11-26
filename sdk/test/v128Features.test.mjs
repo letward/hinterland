@@ -8,31 +8,33 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
 
 describe('Hinterland v1.28.0 Features & Polish', () => {
-  describe('Rebellious Angular Geometric UI/UX Overhaul', () => {
+  describe('Neocrom Horizon design tokens', () => {
     const tokensDesign = readFileSync(join(ROOT, 'design', 'tokens.css'), 'utf8');
     const tokensUi = readFileSync(join(ROOT, 'src', 'ui', 'css', 'tokens.css'), 'utf8');
     const tokensWeb = readFileSync(join(ROOT, 'website', 'tokens.css'), 'utf8');
 
-    it('enforces sharp geometric tokens across design, UI, and website tokens', () => {
+    it('uses the same Neocrom palette and radii in the app and on the website', () => {
       for (const tokens of [tokensDesign, tokensUi, tokensWeb]) {
-        assert.ok(tokens.includes('--radius: 0px'));
-        assert.ok(tokens.includes('--radiusSmall: 0px'));
-        assert.ok(tokens.includes('--bg: #090b0e'));
-        assert.ok(tokens.includes('--accent: #388bfd'));
+        assert.ok(tokens.includes('--radius: 10px'));
+        assert.ok(tokens.includes('--radiusSmall: 7px'));
+        assert.ok(tokens.includes('--bg: #090909'));
+        assert.ok(tokens.includes('--accent: #f8f8f8'));
       }
     });
 
-    it('verifies sharp chrome styling in chrome.css', () => {
+    it('uses shared radii in tabs and in the address bar', () => {
       const chromeCss = readFileSync(join(ROOT, 'src', 'ui', 'css', 'chrome.css'), 'utf8');
       assert.ok(chromeCss.includes('.tab {'));
-      assert.ok(chromeCss.includes('border-radius: 0;'));
+      assert.ok(chromeCss.includes('border-radius: var(--radius) var(--radius) 0 0;'));
       assert.ok(chromeCss.includes('.omni {'));
+      assert.ok(chromeCss.includes('border-radius: var(--radiusPill);'));
     });
 
-    it('verifies sharp new tab page elements in newtab.css', () => {
+    it('uses shared radii in the new tab search box and ecosystem cards', () => {
       const newtabCss = readFileSync(join(ROOT, 'src', 'ui', 'css', 'newtab.css'), 'utf8');
       assert.ok(newtabCss.includes('.heroLogo {'));
-      assert.ok(newtabCss.includes('border-radius: 0;'));
+      assert.match(newtabCss, /\.searchBox \{[^}]+border-radius: var\(--radius\)/);
+      assert.match(newtabCss, /\.ecosystemTile \{[^}]+border-radius: var\(--radiusLarge\)/);
       assert.ok(newtabCss.includes('.link {'));
       assert.ok(newtabCss.includes('.linkIcon {'));
     });

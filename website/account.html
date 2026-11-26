@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Account · Hinterland</title>
-  <meta name="description" content="Hinterland account: sign in, sync bookmarks & settings, and upload to the Hinter Store." />
-  <link rel="icon" href="assets/icon.png" />
+  <title>Horizon Sync · Neocrom</title>
+  <meta name="description" content="Sign in to Horizon to sync browser data and manage Horizon Store submissions." />
+  <link rel="icon" href="assets/horizon-favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="tokens.css" />
   <style>
     * { box-sizing: border-box; }
@@ -25,7 +25,7 @@
       border-bottom: 1px solid transparent;
     }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px; letter-spacing: -0.2px; }
-    .brand img { width: 30px; height: 30px; border-radius: 50%; }
+    .brand img { width: auto; height: 29px; }
     .nav-links { display: flex; align-items: center; gap: 6px; list-style: none; margin: 0; padding: 0; }
     .nav-links a { padding: 8px 14px; border-radius: var(--radiusSmall); color: var(--textDim); font-size: 14px; font-weight: 500; }
     .nav-links a:hover { color: var(--text); background: var(--surfaceAlt); }
@@ -71,19 +71,24 @@
     .small { font-size: 12px; color: var(--textDim); }
     .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--borderSoft); font-size: 12px; background: var(--surfaceAlt); }
     @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } .nav-links { display: none; } .codes { grid-template-columns: repeat(4, 40px); } }
+    @media (max-width: 480px) {
+      .nav { padding-inline: 16px; }
+      .brand img { height: 22px; }
+      .nav-actions .ghost { display: none; }
+    }
   </style>
 </head>
 <body>
 
   <nav class="nav">
-    <a class="brand" href="/"><img src="assets/icon.png" alt="Hinterland" /><span>Hinterland</span></a>
+    <a class="brand" href="/"><img src="assets/horizon-wordmark-dark.svg" alt="Neocrom Horizon" width="437" height="64" /></a>
     <ul class="nav-links">
       <li><a href="/">Download</a></li>
       <li><a href="/#features">Features</a></li>
-      <li><a href="/account.html" class="active">Account</a></li>
+      <li><a href="/account.html" class="active">Horizon Sync</a></li>
     </ul>
     <div class="nav-actions">
-      <a class="btn ghost" href="https://github.com/letward/Hinterland" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn ghost" href="https://github.com/neocrom-team/neocrom-horizon" target="_blank" rel="noopener">GitHub</a>
       <button class="btn primary" id="btnSyncStatus" disabled title="Not signed in">Sync: off</button>
     </div>
   </nav>
@@ -91,7 +96,7 @@
   <div class="section">
     <div class="section-head">
       <h1>Account</h1>
-      <p>Sign in to sync bookmarks and settings across devices and upload extensions &amp; designs to the Hinter Store.</p>
+      <p>Sign in to sync bookmarks and settings across devices and upload extensions &amp; designs to the Horizon Store.</p>
     </div>
 
     <!-- Sign in / sign up -->
@@ -217,7 +222,7 @@
 
       <!-- Download entitlement -->
       <div class="toggle" style="margin-top:18px;">
-        <span>Hinter Store downloads</span>
+        <span>Horizon Store downloads</span>
         <span id="downloadEntitlement" class="badge">—</span>
       </div>
       <p class="small" style="margin-top:6px;">Downloads require a verified email. Limit: 50 per account.</p>
@@ -227,9 +232,9 @@
   </div>
 
   <footer class="site-foot">
-    Hinterland Browser &middot; MIT License &middot;
+    Neocrom Horizon &middot; MIT License &middot;
     <a href="/" style="color:var(--accent);">Download</a> &middot;
-    <a href="https://github.com/letward/Hinterland" target="_blank" rel="noopener">Source</a>
+    <a href="https://github.com/neocrom-team/neocrom-horizon" target="_blank" rel="noopener">Source</a>
   </footer>
 
   <script>

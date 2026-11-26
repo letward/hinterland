@@ -29,20 +29,24 @@ export function applyTheme() {
   root.dataset.theme = theme;
 
   const prefix = theme === 'light' ? 'light' : 'dark';
-  const background = safeColor(get(`appearance.${prefix}Background`), theme === 'light' ? '#f4f5f7' : '#090b0e');
-  const surface = safeColor(get(`appearance.${prefix}Surface`), theme === 'light' ? '#ffffff' : '#101319');
-  const text = safeColor(get(`appearance.${prefix}Text`), theme === 'light' ? '#0e1117' : '#f0f3f6');
+  const background = safeColor(get(`appearance.${prefix}Background`), theme === 'light' ? '#f4f4f4' : '#090909');
+  const surface = safeColor(get(`appearance.${prefix}Surface`), theme === 'light' ? '#ffffff' : '#141414');
+  const text = safeColor(get(`appearance.${prefix}Text`), theme === 'light' ? '#111111' : '#f8f8f8');
+  const accent = safeColor(get('appearance.accent'), '#bdbdbd');
+  const onAccent = safeColor(get('appearance.accentContrast'), '#ffffff');
 
-  setVar('--accent', safeColor(get('appearance.accent'), '#388bfd'));
-  setVar('--onAccent', safeColor(get('appearance.accentContrast'), '#ffffff'));
+  if (accent === '#bdbdbd' && onAccent === '#ffffff') {
+    root.style.removeProperty('--accent');
+    root.style.removeProperty('--onAccent');
+  } else {
+    setVar('--accent', accent);
+    setVar('--onAccent', relativeLuminance(accent) > 0.55 ? '#111318' : onAccent);
+  }
   setVar('--bg', background);
   setVar('--surface', surface);
   setVar('--text', text);
 
-  const luminance = relativeLuminance(get('appearance.accent'));
-  setVar('--onAccent', luminance > 0.55 ? '#111318' : safeColor(get('appearance.accentContrast'), '#ffffff'));
-
-  const radius = Math.max(0, Math.min(24, Number(get('appearance.radius', 0))));
+  const radius = Math.max(0, Math.min(24, Number(get('appearance.radius', 10))));
   setVar('--radius', `${radius}px`);
 
   const fontSize = Math.max(10, Math.min(20, Number(get('appearance.fontSize', 14))));
@@ -69,7 +73,7 @@ export function applyTheme() {
 
   document.body.style.background = 'transparent';
   const current = settings();
-  if (current) document.title = 'Hinterland';
+  if (current) document.title = 'Neocrom Horizon';
 }
 
 function relativeLuminance(color) {
@@ -86,7 +90,7 @@ function relativeLuminance(color) {
 }
 
 export function accentPresets() {
-  return ['#4f7cff', '#7a5cff', '#c04cff', '#ff4c8b', '#ff6b4a', '#ffb020', '#22c08a', '#12b8b0', '#5b8def', '#8b93a8'];
+  return ['#bdbdbd', '#4f7cff', '#7a5cff', '#c04cff', '#ff4c8b', '#ff6b4a', '#ffb020', '#22c08a', '#12b8b0', '#5b8def'];
 }
 
 export function watchSystemTheme(callback) {

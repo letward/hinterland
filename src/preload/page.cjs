@@ -8,7 +8,7 @@ const internal = String(location.protocol) === 'hinterland:';
  */
 if (internal) {
   contextBridge.exposeInMainWorld('hinterlandPage', {
-    name: 'Hinterland',
+    name: 'Neocrom Horizon',
     page: location.hostname,
     settings: {
       get: () => ipcRenderer.invoke('page:settings'),

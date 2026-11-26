@@ -81,6 +81,7 @@ const option = (key, type, fallback, extra = {}) => ({
 
 export const SCHEMA = [
   /* ---------------------------------------------------------------- general */
+  option('general.hasRunBefore', 'bool', false),
   option('general.language', 'select', 'system', {
     labelKey: 'settings.general.language',
     descKey: 'settings.general.languageDesc',
@@ -139,7 +140,7 @@ export const SCHEMA = [
     section: 'appearance',
     options: themes,
   }),
-  option('appearance.accent', 'color', '#4f7cff', {
+  option('appearance.accent', 'color', '#bdbdbd', {
     labelKey: 'settings.appearance.accent',
     descKey: 'settings.appearance.accentDesc',
     section: 'appearance',
@@ -149,22 +150,22 @@ export const SCHEMA = [
     descKey: 'settings.appearance.accentContrastDesc',
     section: 'appearance',
   }),
-  option('appearance.darkBackground', 'color', '#12141a', {
+  option('appearance.darkBackground', 'color', '#090909', {
     labelKey: 'settings.appearance.darkBackground',
     descKey: 'settings.appearance.darkBackgroundDesc',
     section: 'appearance',
   }),
-  option('appearance.darkSurface', 'color', '#1a1d26', {
+  option('appearance.darkSurface', 'color', '#141414', {
     labelKey: 'settings.appearance.darkSurface',
     descKey: 'settings.appearance.darkSurfaceDesc',
     section: 'appearance',
   }),
-  option('appearance.darkText', 'color', '#e6e9f2', {
+  option('appearance.darkText', 'color', '#f8f8f8', {
     labelKey: 'settings.appearance.darkText',
     descKey: 'settings.appearance.darkTextDesc',
     section: 'appearance',
   }),
-  option('appearance.lightBackground', 'color', '#f2f3f7', {
+  option('appearance.lightBackground', 'color', '#f4f4f4', {
     labelKey: 'settings.appearance.lightBackground',
     descKey: 'settings.appearance.lightBackgroundDesc',
     section: 'appearance',
@@ -174,7 +175,7 @@ export const SCHEMA = [
     descKey: 'settings.appearance.lightSurfaceDesc',
     section: 'appearance',
   }),
-  option('appearance.lightText', 'color', '#161923', {
+  option('appearance.lightText', 'color', '#111111', {
     labelKey: 'settings.appearance.lightText',
     descKey: 'settings.appearance.lightTextDesc',
     section: 'appearance',
