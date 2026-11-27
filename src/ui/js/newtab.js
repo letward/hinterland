@@ -2,7 +2,7 @@ import { el, clear } from '../js/util.js';
 import { icon } from '../js/icons.js';
 import { ecosystem } from './ecosystem.js';
 
-const page = window.hinterlandPage;
+const page = window.horizonPage;
 
 const settings = {};
 let strings = {};
@@ -55,8 +55,8 @@ function applyTheme() {
   const prefix = dark ? 'dark' : 'light';
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
   document.documentElement.dataset.animations = value('appearance.animations', true) ? 'on' : 'off';
-  document.getElementById('heroLogo').src = `hinterland://assets/horizon-wordmark-${prefix}.svg`;
-  document.getElementById('horizonMark').src = `hinterland://assets/horizon-mark-${prefix}.svg`;
+  document.getElementById('heroLogo').src = `horizon://assets/horizon-wordmark-${prefix}.svg`;
+  document.getElementById('horizonMark').src = `horizon://assets/horizon-mark-${prefix}.svg`;
 
   const root = document.documentElement.style;
   const accent = value('appearance.accent', '#bdbdbd');
@@ -154,7 +154,7 @@ function paintSearch() {
 }
 
 function looksLikeScheme(text) {
-  return /^(https?|hinterland|file|data|about|view-source):/i.test(text);
+  return /^(https?|horizon|file|data|about|view-source):/i.test(text);
 }
 
 function linkNode(entry) {
@@ -189,7 +189,7 @@ function paintEcosystem() {
     const name = el('strong', { text: t(`ecosystem.${id}`) });
     const description = el('span', { text: t(`ecosystem.${id}Description`) });
     const mark = glyph.endsWith('.svg')
-      ? el('img', { src: `hinterland://assets/${glyph}`, alt: '', width: 22, height: 22 })
+      ? el('img', { src: `horizon://assets/${glyph}`, alt: '', width: 22, height: 22 })
       : el('span', { html: icon(glyph), 'aria-hidden': 'true' });
     host.append(el('a', { class: 'ecosystemTile', href: url }, [
       el('span', { class: 'ecosystemIcon' }, mark),

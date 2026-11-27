@@ -51,7 +51,7 @@ function mockRes() {
   return res;
 }
 
-describe('Hinterland v1.22.0 Account & Security Architecture', () => {
+describe('Neocrom Horizon v1.22.0 Account & Security Architecture', () => {
   describe('Core Cryptography & Validation Utilities (_account.js)', () => {
     it('validates email addresses accurately', () => {
       assert.equal(isEmail('user@example.com'), true);
@@ -83,7 +83,7 @@ describe('Hinterland v1.22.0 Account & Security Architecture', () => {
 
     it('generates single-use verification codes with TTL and purpose gating', () => {
       const code = createVerificationCode({
-        identifier: 'test@hinterland.local',
+        identifier: 'test@horizon.local',
         purpose: 'email',
         ttlMs: 5000,
       });
@@ -92,7 +92,7 @@ describe('Hinterland v1.22.0 Account & Security Architecture', () => {
 
       // Mismatch purpose
       const badPurpose = consumeVerificationCode(code, {
-        identifier: 'test@hinterland.local',
+        identifier: 'test@horizon.local',
         purpose: 'phone',
       });
       assert.equal(badPurpose.ok, false);
@@ -100,14 +100,14 @@ describe('Hinterland v1.22.0 Account & Security Architecture', () => {
 
       // Successful consumption
       const success = consumeVerificationCode(code, {
-        identifier: 'test@hinterland.local',
+        identifier: 'test@horizon.local',
         purpose: 'email',
       });
       assert.equal(success.ok, true);
 
       // Re-use rejected
       const reused = consumeVerificationCode(code, {
-        identifier: 'test@hinterland.local',
+        identifier: 'test@horizon.local',
         purpose: 'email',
       });
       assert.equal(reused.ok, false);
@@ -140,7 +140,7 @@ describe('Hinterland v1.22.0 Account & Security Architecture', () => {
   });
 
   describe('Account API Endpoints (website/api/account.js)', () => {
-    const testEmail = `agent-${Date.now()}@hinterland.local`;
+    const testEmail = `agent-${Date.now()}@horizon.local`;
     let sessionToken = '';
     let verificationCode = '';
 

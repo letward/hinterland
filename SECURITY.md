@@ -16,9 +16,9 @@ Security-Hinweise bitte über GitHub Private Vulnerability Reporting einreichen 
 
 ## Erweiterungssicherheit & Schutz von Nutzerdaten (Extension Sandboxing)
 
-Hinterland isoliert Browser-Erweiterungen nach dem Zero-Trust-Prinzip:
-- **Preload-Isolation:** Erweiterungs-Popups erhalten niemals Zugriff auf die interne Browser-IPC (`window.hinterland`). Popups laufen in einer isolierten Sandbox mit `EXTENSION_PRELOAD`.
+Neocrom Horizon isoliert Browser-Erweiterungen nach dem Zero-Trust-Prinzip:
+- **Preload-Isolation:** Erweiterungs-Popups erhalten niemals Zugriff auf die interne Browser-IPC (`window.horizon`). Popups laufen in einer isolierten Sandbox mit `EXTENSION_PRELOAD`.
 - **Rechte-Governance:** Gefährliche Berechtigungen (`debugger`, `nativeMessaging`, `management`, `privacy`, `proxy`) sind bei Drittanbieter-Erweiterungen gesperrt.
-- **Speicher- und Ursprungstrennung:** Daten werden über den Hinterland Extension SDK (`@hinterland/extension-sdk`) partitions- und schlüsselsicher gekapselt, mit nativer AES-GCM-Verschlüsselung für vertrauliche Inhalte.
+- **Speicher- und Ursprungstrennung:** Daten werden über den Neocrom Horizon SDK (`@neocrom/horizon-sdk`) partitions- und schlüsselsicher gekapselt, mit nativer AES-GCM-Verschlüsselung für vertrauliche Inhalte.
 - **CSP-Erzwingung:** Dynamische Code-Ausführung (`unsafe-eval`) und unverschlüsselte HTTP-Quellen werden im Extension-Runtime blockiert.
 - Ausführliche Sicherheitsarchitektur: siehe `docs/extensions-security.md`.

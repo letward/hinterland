@@ -39,7 +39,7 @@ test('Password Manager Core Service & Security Engine', async (t) => {
       if (!this.cachedMasterPassword || !Array.isArray(this.cachedVaultItems)) {
         throw new Error('Cannot persist locked vault.');
       }
-      const { encryptVault } = await import('../../src/extensions/hinterlandPass/crypto.js');
+      const { encryptVault } = await import('../../src/extensions/horizonPass/crypto.js');
       const pkg = await encryptVault(this.cachedVaultItems, this.cachedMasterPassword);
       this.storage['data.passwordsVault'] = pkg;
     }
@@ -55,7 +55,7 @@ test('Password Manager Core Service & Security Engine', async (t) => {
     async unlock(masterPassword) {
       const pkg = this.storage['data.passwordsVault'];
       if (!pkg) throw new Error('Vault has not been initialized yet.');
-      const { verifyMasterPassword, decryptVault } = await import('../../src/extensions/hinterlandPass/crypto.js');
+      const { verifyMasterPassword, decryptVault } = await import('../../src/extensions/horizonPass/crypto.js');
       const valid = await verifyMasterPassword(pkg, masterPassword);
       if (!valid) return { ok: false, error: 'Incorrect master password. Please try again.' };
       this.cachedMasterPassword = masterPassword;
@@ -67,7 +67,7 @@ test('Password Manager Core Service & Security Engine', async (t) => {
         throw new Error('New master password must be at least 8 characters long.');
       }
       const pkg = this.storage['data.passwordsVault'];
-      const { verifyMasterPassword, decryptVault, encryptVault } = await import('../../src/extensions/hinterlandPass/crypto.js');
+      const { verifyMasterPassword, decryptVault, encryptVault } = await import('../../src/extensions/horizonPass/crypto.js');
       const valid = await verifyMasterPassword(pkg, currentPassword);
       if (!valid) throw new Error('Current master password does not match.');
       const items = this.cachedVaultItems || (await decryptVault(pkg, currentPassword));
@@ -212,7 +212,7 @@ test('Password Manager Core Service & Security Engine', async (t) => {
     const exported = pm.exportVault();
     assert.equal(exported.ok, true);
     assert.equal(exported.data.count, 2);
-    assert.equal(exported.data.format, 'hinterland-pass-export-v1');
+    assert.equal(exported.data.format, 'horizon-pass-export-v1');
 
     // Import a new third credential
     const importPayload = [

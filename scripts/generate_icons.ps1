@@ -5,6 +5,7 @@ $logoPath = Join-Path $root "build\icons\horizon.png"
 $outPng = Join-Path $root "build\icons\icon.png"
 $outAssetsPng = Join-Path $root "src\ui\assets\icon.png"
 $outWebsitePng = Join-Path $root "website\assets\icon.png"
+$outAppleTouchPng = Join-Path $root "website\assets\apple-touch-icon.png"
 $outIco = Join-Path $root "build\icons\icon.ico"
 
 if (-not (Test-Path $logoPath)) {
@@ -38,6 +39,15 @@ if (Test-Path (Split-Path $outAssetsPng)) {
 }
 if (Test-Path (Split-Path $outWebsitePng)) {
     $bmp512.Save($outWebsitePng, [System.Drawing.Imaging.ImageFormat]::Png)
+    $appleBmp = New-Object System.Drawing.Bitmap(180, 180, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+    $ag = [System.Drawing.Graphics]::FromImage($appleBmp)
+    $ag.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+    $ag.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
+    $ag.Clear([System.Drawing.Color]::FromArgb(255, 9, 9, 9))
+    $ag.DrawImage($src, 18, 18, 144, 144)
+    $appleBmp.Save($outAppleTouchPng, [System.Drawing.Imaging.ImageFormat]::Png)
+    $ag.Dispose()
+    $appleBmp.Dispose()
 }
 
 # 2. Build multi-resolution ICO (256, 128, 64, 48, 32, 16)

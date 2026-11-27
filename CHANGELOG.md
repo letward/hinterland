@@ -4,6 +4,12 @@ All notable changes to Neocrom Horizon are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.47.0] - 2026-11-27
+
+### Changed
+- Complete **Neocrom Horizon** unification across the browser, bundled extensions (`horizonFocus`, `horizonPanel`, `horizonPass`), `@neocrom/horizon-sdk` (`horizon-sdk`), `horizon://` protocol, NSIS Windows installer, obsidian monochrome UI/Horizon Store theme (`neocrom`), and redesigned download & Horizon Sync portal (`website/`).
+- Automatic migration for existing Hinterland profiles (`general.homepage`, `account.provider`, legacy bundled extension IDs, default theme, and NSIS Windows registry cleanup).
+
 ## [1.46.0] - 2026-11-26
 
 ### Added

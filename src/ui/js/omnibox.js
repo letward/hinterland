@@ -7,7 +7,7 @@ import { activeTab } from './tabs.js';
 import { toast } from './toast.js';
 import { openQrCode } from './qrcode.js';
 
-const api = () => window.hinterland;
+const api = () => window.horizon;
 
 let input = null;
 let form = null;
@@ -92,12 +92,12 @@ export function bindOmnibox(nodes) {
     input.focus();
   });
 
-  starButton.addEventListener('click', () => window.dispatchEvent(new CustomEvent('hinterland:bookmark')));
+  starButton.addEventListener('click', () => window.dispatchEvent(new CustomEvent('horizon:bookmark')));
 
   if (iconSlot) {
     iconSlot.addEventListener('click', (event) => {
       event.stopPropagation();
-      window.dispatchEvent(new CustomEvent('hinterland:siteinfo'));
+      window.dispatchEvent(new CustomEvent('horizon:siteinfo'));
     });
   }
 
@@ -221,7 +221,7 @@ async function render(value, suggestions) {
           type: 'button',
           onclick: () => {
             closePopup();
-            window.dispatchEvent(new CustomEvent('hinterland:opensettings', { detail: { section: 'general' } }));
+            window.dispatchEvent(new CustomEvent('horizon:opensettings', { detail: { section: 'general' } }));
           },
         }, [
           el('span', { class: 'rowIcon', html: icon('gear') }),
@@ -323,7 +323,7 @@ function entry(item, index, labelKey, aside, onSelect) {
 export function syncOmni(tab) {
   if (!input) return;
   const url = tab?.url ?? '';
-  const shown = url === 'hinterland://newtab/' || url === 'about:blank' ? '' : url;
+  const shown = url === 'horizon://newtab/' || url === 'about:blank' ? '' : url;
 
   iconSlot.innerHTML = icon(iconFor(url));
   iconSlot.classList.toggle('secure', url.startsWith('https://'));

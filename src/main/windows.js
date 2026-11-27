@@ -23,8 +23,8 @@ function chromePreferences() {
     spellcheck: false,
     devTools: app.isPackaged === false,
     additionalArguments: [
-      '--hinterland-view=chrome',
-      `--hinterland-lang=${resolveLanguage(settings.value('general.language'))}`,
+      '--horizon-view=chrome',
+      `--horizon-lang=${resolveLanguage(settings.value('general.language'))}`,
     ],
   };
 }

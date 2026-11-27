@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { validateManifest, defineManifest } from '../src/manifest.js';
 import { ContentHelper } from '../src/content.js';
 
-describe('Hinterland v1.17.3 Features', () => {
+describe('Neocrom Horizon v1.17.3 Features', () => {
   describe('Extension Service Worker ES Module Support (background.type)', () => {
     it('accepts manifest with valid service_worker and type module', () => {
       const manifest = {
@@ -57,7 +57,7 @@ describe('Hinterland v1.17.3 Features', () => {
   });
 
   describe('ContentHelper.onExtensionAction', () => {
-    it('subscribes to hinterland:extension-action and dispatches for matching ID', () => {
+    it('subscribes to horizon:extension-action and dispatches for matching ID', () => {
       const mockEvents = [];
       const listeners = new Map();
 
@@ -80,7 +80,7 @@ describe('Hinterland v1.17.3 Features', () => {
       });
 
       // Dispatch matching event
-      const handlers = listeners.get('hinterland:extension-action') || [];
+      const handlers = listeners.get('horizon:extension-action') || [];
       handlers.forEach((h) => h({ detail: { extensionId: 'testextension', action: 'toggle' } }));
 
       // Dispatch non-matching event
@@ -142,7 +142,7 @@ describe('Hinterland v1.17.3 Features', () => {
     ];
 
     it('matches engine shortcuts case-insensitively', () => {
-      const query = '@gh hinterland browser';
+      const query = '@gh horizon browser';
       const parts = query.trim().split(/\s+/);
       const prefix = parts[0].toLowerCase();
       const searchTerm = parts.slice(1).join(' ');
@@ -150,10 +150,10 @@ describe('Hinterland v1.17.3 Features', () => {
       const matched = engines.find((e) => e.shortcut.toLowerCase() === prefix);
       assert.ok(matched);
       assert.equal(matched.id, 'github');
-      assert.equal(searchTerm, 'hinterland browser');
+      assert.equal(searchTerm, 'horizon browser');
 
       const targetUrl = matched.url.replace('{q}', encodeURIComponent(searchTerm));
-      assert.equal(targetUrl, 'https://github.com/search?q=hinterland%20browser');
+      assert.equal(targetUrl, 'https://github.com/search?q=horizon%20browser');
     });
 
     it('supports chip shortcut prepending or replacement', () => {

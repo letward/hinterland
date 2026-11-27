@@ -1,4 +1,4 @@
-"""Hinterland Agent-Workers — Basis-Klasse für isolierte Arbeitsbereiche."""
+"""Neocrom Horizon Agent-Workers — Basis-Klasse für isolierte Arbeitsbereiche."""
 
 from __future__ import annotations
 

@@ -49,3 +49,46 @@ test('the ecosystem opens the official Neocrom routes with localized labels', as
     }
   }
 });
+
+test('legacy Hinterland settings migrate cleanly into Neocrom Horizon defaults', async () => {
+  const folder = await mkdtemp(join(tmpdir(), 'horizon-legacy-migration-'));
+  const file = join(folder, 'settings.json');
+  try {
+    await writeFile(file, JSON.stringify({
+      general: { homepage: 'hinterland://store' },
+      account: { provider: 'hinterland', serverUrl: 'https://hinterland-browser.vercel.app/api/sync' },
+      extensions: { enabled: ['hinterlandfocus', 'hinterlandpanel', 'hinterlandpass'] },
+      store: { activeThemeId: 'midnight' },
+    }));
+    const settings = new Settings(file);
+    settings.load();
+    assert.equal(settings.value('general.homepage'), 'horizon://store');
+    assert.equal(settings.value('account.provider'), 'horizon');
+    assert.equal(settings.value('account.serverUrl'), '');
+    assert.deepEqual(settings.value('extensions.enabled'), ['horizonfocus', 'horizonpanel', 'horizonpass']);
+    assert.equal(settings.value('store.activeThemeId'), 'neocrom');
+  } finally {
+    await rm(folder, { recursive: true, force: true });
+  }
+});
+
+test('design tokens stay synchronized between design/ and website/ and brand assets exist', async () => {
+  const rootUrl = new URL('../../', import.meta.url);
+  const designTokens = await readFile(new URL('design/tokens.css', rootUrl), 'utf8');
+  const websiteTokens = await readFile(new URL('website/tokens.css', rootUrl), 'utf8');
+  assert.equal(websiteTokens, designTokens);
+
+  const requiredAssets = [
+    'website/site.css',
+    'website/assets/horizon-favicon.svg',
+    'website/assets/horizon-wordmark-dark.svg',
+    'website/assets/horizon-wordmark-light.svg',
+    'website/assets/horizon-mark-light.svg',
+    'website/assets/horizon-social-cover.svg',
+    'website/assets/apple-touch-icon.png',
+  ];
+  for (const rel of requiredAssets) {
+    const data = await readFile(new URL(rel, rootUrl));
+    assert.ok(data.length > 0, `${rel} should exist and be non-empty`);
+  }
+});

@@ -1,4 +1,4 @@
-"""Hinterland Agent-Orchestrator — Audit-Trail.
+"""Neocrom Horizon Agent-Orchestrator — Audit-Trail.
 
 Append-only-Protokoll aller Zustandsänderungen und wichtigen Aktionen.
 Wird als JSONL-Datei geführt, um nachträgliche Manipulation sichtbar zu machen.

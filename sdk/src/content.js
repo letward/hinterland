@@ -1,5 +1,5 @@
 /**
- * @fileoverview Hinterland Extension SDK - Safe Content Script Toolkit
+ * @fileoverview Neocrom Horizon Extension SDK - Safe Content Script Toolkit
  * Shadow DOM encapsulation, safe text extraction, and isolated DOM manipulation.
  */
 
@@ -31,7 +31,7 @@ export class ContentHelper {
   static injectStyles(cssText, target = document.head) {
     if (!target) return () => {};
     const style = document.createElement('style');
-    style.setAttribute('data-hinterland-ext', 'true');
+    style.setAttribute('data-horizon-ext', 'true');
     style.textContent = cssText;
     target.appendChild(style);
     return () => style.remove();
@@ -126,7 +126,7 @@ export class ContentHelper {
   }
 
   /**
-   * Registers a handler for the Hinterland extension action toolbar trigger.
+   * Registers a handler for the Neocrom Horizon extension action toolbar trigger.
    *
    * @param {string} [extensionId] - Optional extension ID to filter events
    * @param {(detail: object) => void} callback - Handler called when action button is triggered
@@ -140,7 +140,7 @@ export class ContentHelper {
         callback(detail);
       }
     };
-    window.addEventListener('hinterland:extension-action', handler);
-    return () => window.removeEventListener('hinterland:extension-action', handler);
+    window.addEventListener('horizon:extension-action', handler);
+    return () => window.removeEventListener('horizon:extension-action', handler);
   }
 }

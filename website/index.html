@@ -1,608 +1,514 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Neocrom Horizon · Download</title>
-  <meta name="description" content="Neocrom Horizon is a customizable Windows browser with tab groups, workspaces, and direct access to Neocrom." />
+  <title>Neocrom Horizon — Fast, Private, Minimal Browser</title>
+  <meta name="description" content="Neocrom Horizon is a fast, private, customizable Chromium browser integrated seamlessly into the Neocrom ecosystem." />
   <meta name="theme-color" content="#090909" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Neocrom Horizon" />
+  <meta property="og:description" content="Fast, private, customizable Chromium browser built for the Neocrom ecosystem." />
+  <meta property="og:image" content="assets/horizon-social-cover.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Neocrom Horizon" />
+  <meta name="twitter:description" content="Fast, private, customizable Chromium browser built for the Neocrom ecosystem." />
+  <meta name="twitter:image" content="assets/horizon-social-cover.svg" />
   <link rel="icon" href="assets/horizon-favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
   <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="site.css" />
   <style>
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
+    .install-banner {
+      margin-top: 22px;
+      padding: 14px 16px;
+      border: 1px solid var(--borderSoft);
+      border-radius: var(--radiusLarge);
       background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 15px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-      top: 0 !important;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
     }
-    a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; }
-
-    /* Hide Google Translate chrome */
-    .goog-te-banner-frame, .goog-te-menu-frame, #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
-    .goog-text-highlight { background: none !important; box-shadow: none !important; }
-    body { top: 0 !important; }
-
-    /* ---------- Navbar ---------- */
-    .nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 50;
+    .install-step {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 14px 28px;
-      background: color-mix(in srgb, var(--bg) 72%, transparent);
-      backdrop-filter: blur(var(--blur));
-      -webkit-backdrop-filter: blur(var(--blur));
-      border-bottom: 1px solid transparent;
-      transition: border-color var(--anim) ease, padding var(--anim) ease;
+      align-items: flex-start;
+      gap: 10px;
     }
-    .nav.scrolled { border-bottom-color: var(--borderSoft); padding: 10px 28px; }
-    .brand {
-      display: flex; align-items: center; gap: 10px;
-      font-weight: 600; font-size: 17px; letter-spacing: -0.2px;
-    }
-    .brand img { width: auto; height: 29px; }
-    .brand img.wordmark-light,
-    html[data-theme="light"] .brand img.wordmark-dark { display: none; }
-    html[data-theme="light"] .brand img.wordmark-light { display: block; }
-    .nav-links { display: flex; align-items: center; gap: 6px; list-style: none; margin: 0; padding: 0; }
-    .nav-links a { padding: 8px 14px; border-radius: var(--radiusSmall); color: var(--textDim); font-size: 14px; font-weight: 500; transition: color var(--anim) ease, background var(--anim) ease; }
-    .nav-links a:hover { color: var(--text); background: var(--surfaceAlt); }
-    .nav-actions { display: flex; align-items: center; gap: 10px; }
-    .select {
-      padding: 8px 12px;
+    .install-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
       border: 1px solid var(--border);
-      border-radius: var(--radiusSmall);
       background: var(--surface);
       color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      flex: none;
+    }
+    .install-step strong {
+      display: block;
       font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background var(--anim) ease, border-color var(--anim) ease;
+      color: var(--text);
     }
-    .select:hover { background: var(--surfaceHover); border-color: var(--borderSoft); }
-    .theme-toggle {
-      display: grid; place-items: center; width: 36px; height: 36px;
-      border: 1px solid var(--border); border-radius: var(--radiusSmall);
-      background: var(--surface); color: var(--textDim); cursor: pointer;
-      transition: background var(--anim) ease, color var(--anim) ease, transform var(--anim) ease;
+    .install-step span {
+      display: block;
+      font-size: 12px;
+      color: var(--textDim);
+      line-height: 1.4;
     }
-    .theme-toggle:hover { color: var(--text); background: var(--surfaceHover); transform: rotate(20deg); }
-    .theme-toggle svg { width: 16px; height: 16px; }
-    .btn-nav {
-      padding: 8px 16px; border-radius: var(--radiusSmall);
-      background: var(--accent); color: var(--onAccent);
-      font-size: 14px; font-weight: 600;
-      transition: filter var(--anim) ease, transform var(--anim) ease;
-    }
-    .btn-nav:hover { filter: brightness(1.08); transform: translateY(-1px); }
-
-    /* ---------- Hero ---------- */
-    .hero {
-      position: relative; min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      padding: 120px 24px 80px; overflow: hidden;
-    }
-    .hero-bg {
-      position: absolute; inset: -20%;
-      background: radial-gradient(ellipse at 50% 42%, var(--surfaceHover), transparent 43%);
-      pointer-events: none;
-    }
-    .hero-grid {
-      position: absolute; inset: 0;
-      background-image: linear-gradient(var(--borderSoft) 1px, transparent 1px), linear-gradient(90deg, var(--borderSoft) 1px, transparent 1px);
-      background-size: 48px 48px;
-      mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 75%);
-      opacity: 0.35; pointer-events: none;
-    }
-    .hero-inner { position: relative; max-width: 820px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 24px; }
-    .hero-orbit { position: relative; display: grid; place-items: center; width: 150px; height: 150px; border: 1px dashed var(--textMuted); border-radius: 50%; }
-    .hero-orbit::before { position: absolute; inset: 12px; border: 1px solid var(--border); border-radius: 50%; content: ""; }
-    .hero-logo { width: 84px; height: 84px; filter: drop-shadow(0 0 16px var(--accentGlow)); }
-    html[data-theme="light"] .hero-logo { filter: invert(1); }
-    .badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 6px 14px; border: 1px solid var(--border); border-radius: 999px;
-      background: color-mix(in srgb, var(--surface) 70%, transparent); backdrop-filter: blur(8px);
-      font-size: 13px; color: var(--textDim);
-    }
-    .hero h1 { margin: 0; font-size: clamp(40px, 7vw, 72px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.05; background: linear-gradient(135deg, var(--text) 0%, color-mix(in srgb, var(--accent) 60%, var(--text)) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .hero h1 em { color: var(--textDim); font-family: Baskerville, Georgia, serif; font-weight: 400; }
-    .hero .tagline { margin: 0; font-size: clamp(16px, 2vw, 20px); color: var(--textDim); max-width: 560px; }
-    .hero-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
-    .btn-primary {
-      position: relative; display: inline-flex; align-items: center; gap: 12px;
-      padding: 16px 30px; border-radius: var(--radiusLarge);
-      background: var(--accent); color: var(--onAccent); font-weight: 600; font-size: 16px;
-      box-shadow: 0 10px 30px color-mix(in srgb, var(--accent) 40%, transparent);
-      overflow: hidden; transition: transform 200ms cubic-bezier(.2,0,0,1), box-shadow 200ms ease;
-    }
-    .btn-primary::before { content: ""; position: absolute; top: 0; left: -100%; width: 60%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); transform: skewX(-20deg); transition: left 700ms ease; }
-    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 16px 40px color-mix(in srgb, var(--accent) 50%, transparent); }
-    .btn-primary:hover::before { left: 140%; }
-    .btn-primary svg { width: 20px; height: 20px; }
-    .btn-ghost {
-      display: inline-flex; align-items: center; gap: 8px; padding: 16px 24px;
-      border-radius: var(--radiusLarge); border: 1px solid var(--border);
-      background: color-mix(in srgb, var(--surface) 60%, transparent); backdrop-filter: blur(8px);
-      color: var(--text); font-weight: 500; font-size: 16px;
-      transition: background var(--anim) ease, border-color var(--anim) ease, transform var(--anim) ease;
-    }
-    .btn-ghost:hover { background: var(--surface); border-color: var(--borderSoft); transform: translateY(-2px); }
-    .hero-meta { font-size: 13px; color: var(--textDim); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
-    .install-banner {
-      display: flex; align-items: center; justify-content: center; gap: 14px;
-      margin-top: 14px; padding: 12px 20px;
-      background: color-mix(in srgb, var(--surface) 75%, transparent);
-      border: 1px solid var(--borderSoft); border-radius: var(--radiusLarge);
-      backdrop-filter: blur(10px); max-width: 760px; width: 100%;
-    }
-    .install-step { display: flex; align-items: center; gap: 10px; text-align: left; }
-    .step-num {
-      width: 26px; height: 26px; border-radius: 50%;
-      background: color-mix(in srgb, var(--accent) 18%, var(--surfaceAlt));
-      color: var(--accent); font-weight: 700; font-size: 13px;
-      display: grid; place-items: center; flex-shrink: 0;
-    }
-    .step-body { display: flex; flex-direction: column; }
-    .step-body strong { font-size: 13px; color: var(--text); font-weight: 600; }
-    .step-body span { font-size: 11.5px; color: var(--textDim); }
-    .step-arrow { color: var(--borderSoft); font-size: 16px; font-weight: bold; }
-    @media (max-width: 680px) {
-      .install-banner { flex-direction: column; align-items: flex-start; gap: 12px; }
-      .step-arrow { display: none; }
-    }
-
-    /* ---------- Sections ---------- */
-    section { padding: 96px 24px; }
-    .container { max-width: 1080px; margin: 0 auto; }
-    .section-head { text-align: center; margin-bottom: 56px; }
-    .section-head .eyebrow { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
-    .section-head h2 { margin: 0 0 12px; font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -0.8px; }
-    .section-head p { margin: 0; color: var(--textDim); font-size: 17px; max-width: 600px; margin-inline: auto; }
-
-    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-    .feature-card { padding: 28px; border-radius: var(--radiusLarge); background: var(--surface); border: 1px solid var(--borderSoft); transition: transform 240ms cubic-bezier(.2,0,0,1), border-color var(--anim) ease, box-shadow var(--anim) ease; position: relative; overflow: hidden; }
-    .feature-card::after { content: ""; position: absolute; inset: 0; background: radial-gradient(300px 200px at var(--mx,50%) var(--my,50%), color-mix(in srgb, var(--accent) 12%, transparent), transparent 60%); opacity: 0; transition: opacity 300ms ease; pointer-events: none; }
-    .feature-card:hover { transform: translateY(-4px); border-color: var(--border); box-shadow: var(--shadowSmall); }
-    .feature-card:hover::after { opacity: 1; }
-    .feature-icon { width: 44px; height: 44px; border-radius: var(--radius); background: color-mix(in srgb, var(--accent) 14%, var(--surfaceAlt)); color: var(--accent); display: grid; place-items: center; margin-bottom: 16px; transition: transform 240ms cubic-bezier(.2,0,0,1); }
-    .feature-card:hover .feature-icon { transform: scale(1.1) rotate(-4deg); }
-    .feature-icon svg { width: 22px; height: 22px; }
-    .feature-card h3 { margin: 0 0 8px; font-size: 17px; font-weight: 600; }
-    .feature-card p { margin: 0; color: var(--textDim); font-size: 14px; line-height: 1.55; }
-
-    .changelog-wrap { max-width: 820px; margin: 0 auto; }
-    .cl-card { background: var(--surface); border: 1px solid var(--borderSoft); border-radius: var(--radiusLarge); padding: 32px 36px; box-shadow: var(--shadowSmall); }
-    .cl-version { padding: 24px 0; border-top: 1px solid var(--borderSoft); }
-    .cl-version:first-child { border-top: none; padding-top: 0; }
-    .cl-version h3 { margin: 0 0 14px; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 12px; }
-    .cl-version h3 .ver-pill { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); letter-spacing: 0.4px; }
-    .cl-version h4 { margin: 16px 0 8px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--textDim); }
-    .cl-version ul { margin: 0; padding-left: 20px; }
-    .cl-version li { margin: 6px 0; font-size: 14px; line-height: 1.55; color: var(--text); }
-    .cl-version code { font-family: var(--fontMono); font-size: 0.88em; padding: 1px 6px; border-radius: 4px; background: var(--surfaceAlt); color: var(--accent); }
-    .cl-loading, .cl-error { color: var(--textDim); font-style: italic; padding: 12px 0; }
-    .cl-error { color: #ff8a8a; }
-
-    footer.site-foot { padding: 48px 24px 32px; border-top: 1px solid var(--borderSoft); text-align: center; color: var(--textDim); font-size: 13px; }
-    footer.site-foot a { color: var(--accent); transition: opacity var(--anim) ease; }
-    footer.site-foot a:hover { opacity: 0.8; }
-    footer.site-foot .foot-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
-
-    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 700ms cubic-bezier(.2,0,0,1), transform 700ms cubic-bezier(.2,0,0,1); }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    .reveal-delay-1 { transition-delay: 80ms; }
-    .reveal-delay-2 { transition-delay: 160ms; }
-    .reveal-delay-3 { transition-delay: 240ms; }
-
     @media (max-width: 720px) {
-      .nav { padding: 12px 16px; }
-      .nav-links { display: none; }
-      section { padding: 72px 20px; }
-      .cl-card { padding: 24px 20px; }
-    }
-    @media (max-width: 480px) {
-      .brand img { height: 22px; }
-      .nav-actions .btn-nav { display: none; }
-      .nav-actions .select { max-width: 82px; padding-inline: 6px; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation: none !important; transition: none !important; }
-      html { scroll-behavior: auto; }
+      .install-banner {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-
-  <div id="google_translate_element" style="display:none"></div>
-
-  <!-- Navbar -->
-  <nav class="nav" id="nav">
-    <a class="brand" href="#top">
-      <img class="wordmark-dark" src="assets/horizon-wordmark-dark.svg" alt="Neocrom Horizon" width="437" height="64" />
-      <img class="wordmark-light" src="assets/horizon-wordmark-light.svg" alt="Neocrom Horizon" width="437" height="64" />
-    </a>
-    <ul class="nav-links">
-      <li><a href="#download">Download</a></li>
-      <li><a href="#features">Features</a></li>
-      <li><a href="#changelog">Changelog</a></li>
-      <li><a href="/account.html">Horizon Sync</a></li>
-    </ul>
-    <div class="nav-actions">
-      <a class="btn-nav" href="https://github.com/neocrom-team/neocrom-horizon" target="_blank" rel="noopener">GitHub</a>
-      <select class="select" id="langSelect" aria-label="Language">
-        <option value="auto">Auto</option>
-        <option value="en">English</option>
-        <option value="de">Deutsch</option>
-        <option value="fr">Français</option>
-        <option value="es">Español</option>
-        <option value="it">Italiano</option>
-        <option value="pt">Português</option>
-        <option value="nl">Nederlands</option>
-        <option value="pl">Polski</option>
-        <option value="ru">Русский</option>
-        <option value="ja">日本語</option>
-        <option value="zh-CN">中文</option>
-        <option value="ko">한국어</option>
-        <option value="tr">Türkçe</option>
-        <option value="ar">العربية</option>
-      </select>
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
-        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-    </div>
-  </nav>
-
-  <!-- Hero -->
-  <section class="hero" id="top">
-    <div class="hero-bg"></div>
-    <div class="hero-grid"></div>
-    <div class="hero-inner">
-      <div class="hero-orbit" aria-hidden="true"><img class="hero-logo" src="assets/horizon-mark-dark.svg" alt="" width="64" height="64" /></div>
-      <span class="badge reveal reveal-delay-1">v1.45.0 · Latest Release</span>
-      <h1 class="reveal reveal-delay-2">Neocrom <em>Horizon</em></h1>
-      <p class="tagline reveal reveal-delay-3">A fast, secure and freely customisable browser.</p>
-      <div class="hero-actions reveal reveal-delay-3" id="download">
-        <a id="dlBtn" class="btn-primary" href="https://github.com/neocrom-team/neocrom-horizon/releases/download/v1.45.0/Hinterland-Setup-1.45.0.exe" download>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download for Windows
-        </a>
-        <a class="btn-ghost" href="https://github.com/neocrom-team/neocrom-horizon/releases" target="_blank" rel="noopener">
-          All releases
-        </a>
-      </div>
-      <div class="hero-meta reveal reveal-delay-3">
-        <span>Windows 10/11 (64-bit)</span>
-        <span>·</span>
-        <span>~110 MB installer</span>
-        <span>·</span>
-        <span>Automatic updates</span>
-      </div>
-      <div class="install-banner reveal reveal-delay-3">
-        <div class="install-step">
-          <div class="step-num">1</div>
-          <div class="step-body">
-            <strong>1-Click Download</strong>
-            <span>Zero UAC admin prompts needed</span>
-          </div>
+  <header class="masthead">
+    <div class="nav-wrap">
+      <a class="brand" href="#top" aria-label="Neocrom Horizon">
+        <img class="wordmark-dark" src="assets/horizon-wordmark-dark.svg" alt="Neocrom Horizon" height="28" />
+        <img class="wordmark-light" src="assets/horizon-wordmark-light.svg" alt="Neocrom Horizon" height="28" />
+      </a>
+      <nav class="nav-pill" aria-label="Primary navigation">
+        <a href="#download" aria-current="page" data-i18n="navOverview">Overview</a>
+        <a href="#features" data-i18n="navFeatures">Features</a>
+        <a href="#ecosystem" data-i18n="navEcosystem">Ecosystem</a>
+        <a href="#changelog" data-i18n="navReleases">Changelog</a>
+        <a href="docs/user-guide.html" data-i18n="navGuide">User Guide</a>
+        <a href="account.html" data-i18n="navAccount">Horizon Sync</a>
+      </nav>
+      <div class="header-actions">
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-btn is-active" data-lang="en">EN</button>
+          <button type="button" class="lang-btn" data-lang="de">DE</button>
         </div>
-        <div class="step-arrow" aria-hidden="true">→</div>
-        <div class="install-step">
-          <div class="step-num">2</div>
-          <div class="step-body">
-            <strong>Instant Setup</strong>
-            <span>Installed to your user profile in seconds</span>
-          </div>
-        </div>
-        <div class="step-arrow" aria-hidden="true">→</div>
-        <div class="install-step">
-          <div class="step-num">3</div>
-          <div class="step-body">
-            <strong>Ready to Browse</strong>
-            <span>Launches automatically with native browser integration</span>
-          </div>
-        </div>
+        <button type="button" class="icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+          <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+        <a class="button small" href="https://github.com/neocrom-team/neocrom-horizon" target="_blank" rel="noopener">GitHub</a>
       </div>
     </div>
-  </section>
+  </header>
 
-  <!-- Features -->
-  <section id="features">
-    <div class="container">
-      <div class="section-head reveal">
-        <span class="eyebrow">Features</span>
-        <h2>What is Horizon?</h2>
-        <p>A browser that adapts to you — fast, private and extensible.</p>
-      </div>
-      <div class="features-grid">
-        <div class="feature-card reveal">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-          <h3>Fast & light</h3>
-          <p>Optimised Chromium core with tab snoozing and memory saver.</p>
+  <main class="wrap" id="top">
+    <section class="hero-card" id="download">
+      <div class="hero-copy">
+        <span class="pill">
+          <span class="pill-dot"></span>
+          <span id="versionTag">v1.47.0 · Windows 10/11 (x64)</span>
+        </span>
+        <h1>Neocrom <em>Horizon</em></h1>
+        <p class="hero-lead" data-i18n="heroLead">
+          A fast, privacy-first Chromium browser engineered to feel effortless, minimal, and unified with the entire Neocrom platform.
+        </p>
+        <div class="hero-actions">
+          <a id="dlBtn" class="button primary" href="https://github.com/neocrom-team/neocrom-horizon/releases/download/v1.47.0/Neocrom-Horizon-Setup-1.47.0.exe" download>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span data-i18n="downloadCta">Download for Windows</span>
+          </a>
+          <a class="button" href="account.html" data-i18n="syncCta">Horizon Sync</a>
+          <a class="button" href="docs/user-guide.html" data-i18n="guideCta">User Guide</a>
         </div>
-        <div class="feature-card reveal reveal-delay-1">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-          <h3>Private & secure</h3>
-          <p>Tracker blocking, HTTPS-first, private tabs and granular site permissions.</p>
+        <div class="hero-meta">
+          <span data-i18n="metaAutoUpdate">Signed auto-updates via GitHub Releases</span>
+          <span aria-hidden="true">·</span>
+          <span><code>horizon://</code> <span data-i18n="metaProtocol">native workspace</span></span>
         </div>
-        <div class="feature-card reveal reveal-delay-2">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/></svg></div>
-          <h3>Extensible</h3>
-          <p>MV3 extensions with a strict security policy and its own Extension SDK.</p>
-        </div>
-        <div class="feature-card reveal">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
-          <h3>Reader Mode</h3>
-          <p>Distraction-free reading with colour schemes, typography and column width.</p>
-        </div>
-        <div class="feature-card reveal reveal-delay-1">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-          <h3>Tab Stash</h3>
-          <p>Save, organise and restore sessions — with JSON backup.</p>
-        </div>
-        <div class="feature-card reveal reveal-delay-2">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 0 10h-3m-6 0H6A5 5 0 0 1 6 7h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
-          <h3>Password manager</h3>
-          <p>Zero-knowledge AES-GCM vault with autofill and generator.</p>
-        </div>
-        <div class="feature-card reveal reveal-delay-3">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><polyline points="8.5 13.5 11 16 15.5 11.5"/></svg></div>
-          <h3>Account & Cloud Sync</h3>
-          <p>Sync bookmarks and settings across devices via free tools (Vercel & Supabase) with zero-knowledge E2EE.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Changelog -->
-  <section id="changelog">
-    <div class="container">
-      <div class="section-head reveal">
-        <span class="eyebrow">Changelog</span>
-        <h2>Latest changes</h2>
-        <p>The most recent updates to Horizon. Full history on GitHub.</p>
-      </div>
-      <div class="changelog-wrap reveal">
-        <div class="cl-card">
-          <div id="clContent" class="cl-loading">Loading changelog…</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Feedback -->
-  <section id="feedback">
-    <div class="container">
-      <div class="section-head reveal">
-        <span class="eyebrow">Feedback</span>
-        <h2>Share your feedback</h2>
-        <p>Help us improve Horizon. Your message becomes a GitHub issue.</p>
-      </div>
-      <div class="changelog-wrap reveal">
-        <div class="cl-card">
-          <form id="feedbackForm" style="display:flex;flex-direction:column;gap:12px;">
-            <input class="select" type="email" id="fbEmail" placeholder="Email (optional)" style="width:100%;" />
-            <textarea id="fbMsg" rows="4" placeholder="Your feedback…" required style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radiusSmall);background:var(--surfaceAlt);color:var(--text);font:inherit;resize:vertical;"></textarea>
-            <div style="display:flex;justify-content:flex-end;">
-              <button type="submit" class="btn-primary" style="padding:10px 22px;font-size:14px;">Send feedback</button>
+        <div class="install-banner" id="installBanner">
+          <div class="install-step">
+            <span class="install-num">1</span>
+            <div>
+              <strong>1-Click Download</strong>
+              <span data-i18n="step1Desc">No bundleware, direct Windows NSIS installer.</span>
             </div>
-            <div id="fbStatus" style="font-size:13px;color:var(--textDim);min-height:18px;"></div>
-          </form>
+          </div>
+          <div class="install-step">
+            <span class="install-num">2</span>
+            <div>
+              <strong>Instant Setup</strong>
+              <span data-i18n="step2Desc">Silent per-profile installation without UAC prompts.</span>
+            </div>
+          </div>
+          <div class="install-step">
+            <span class="install-num">3</span>
+            <div>
+              <strong>Ready to Browse</strong>
+              <span data-i18n="step3Desc">Shields, Horizon Pass, and Neocrom tools preloaded.</span>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <footer class="site-foot">
-    <div class="foot-links">
-      <a href="https://github.com/neocrom-team/neocrom-horizon" target="_blank" rel="noopener">Source code</a>
-      <a href="https://github.com/neocrom-team/neocrom-horizon/releases" target="_blank" rel="noopener">All releases</a>
-      <a href="https://github.com/neocrom-team/neocrom-horizon/issues" target="_blank" rel="noopener">Issues</a>
-      <a href="/docs/user-guide.html">User guide</a>
-      <a href="https://neocrom.pro/#store">Neocrom Marketplace</a>
-      <a href="https://neocrom.pro/#pulse">Neocrom Pulse</a>
+      <div class="hero-graphic" aria-hidden="true">
+        <div class="orbit-stage">
+          <span class="orbit-ring r1"></span>
+          <span class="orbit-ring r2"></span>
+          <span class="orbit-ring r3"></span>
+          <span class="orbit-ring r4"></span>
+          <span class="orbit-star s1"></span>
+          <span class="orbit-star s2"></span>
+          <span class="orbit-star s3"></span>
+          <div class="orbit-core">
+            <img class="mark-dark" src="assets/horizon-mark-dark.svg" alt="" width="60" height="60" />
+            <img class="mark-light" src="assets/horizon-mark-light.svg" alt="" width="60" height="60" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="section-head">
+        <div>
+          <p class="section-eyebrow" data-i18n="featuresEyebrow">Built for Focus</p>
+          <h2 data-i18n="featuresTitle">Monochrome precision, everyday speed</h2>
+        </div>
+        <p class="section-sub" data-i18n="featuresSub">
+          Designed around restraint, high-contrast typography, and complete local control over your browsing workflow.
+        </p>
+      </div>
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 data-i18n="feat1Title">Shield &amp; HTTPS-First</h3>
+          <p data-i18n="feat1Desc">Blocks trackers cleanly, enforces encrypted connections, strips referrer clutter, and manages per-site hardware grants in one panel.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M3 10h6"/></svg>
+          </div>
+          <h3 data-i18n="feat2Title">Tab Groups &amp; Tab Stash</h3>
+          <p data-i18n="feat2Desc">Sleep idle background tabs automatically, organize sessions into color-coded groups, and archive tab sets to Markdown.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          </div>
+          <h3 data-i18n="feat3Title">Horizon Pass &amp; Cloud Sync</h3>
+          <p data-i18n="feat3Desc">AES-256-GCM zero-knowledge password vault paired with encrypted cross-device bookmark, note, and settings sync.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3 data-i18n="feat4Title">Horizon Store &amp; MV3 SDK</h3>
+          <p data-i18n="feat4Desc">Install curated obsidian and custom themes or build sandboxed Manifest V3 extensions with @neocrom/horizon-sdk.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <h3 data-i18n="feat5Title">Reader Mode &amp; Quick Notes</h3>
+          <p data-i18n="feat5Desc">Distill cluttered pages into serif or mono reading canvases, capture web clippings, and export offline HTML notebooks.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+          </div>
+          <h3 data-i18n="feat6Title">Command Palette</h3>
+          <p data-i18n="feat6Desc">Navigate tabs, stashes, notes, themes, and custom search shortcuts effortlessly from one keyboard shortcut.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="ecosystem">
+      <div class="section-head">
+        <div>
+          <p class="section-eyebrow" data-i18n="ecoEyebrow">Unified Ecosystem</p>
+          <h2 data-i18n="ecoTitle">Part of Neocrom from day one</h2>
+        </div>
+        <p class="section-sub" data-i18n="ecoSub">
+          Open the Neocrom menu beside the address bar or directly on your New Tab page to move across every Neocrom product seamlessly.
+        </p>
+      </div>
+      <div class="grid-4">
+        <a class="card card-link" href="https://neocrom.pro/#store" target="_blank" rel="noopener">
+          <h3>Marketplace</h3>
+          <p data-i18n="ecoStoreDesc">Discover tools, themes, and software crafted inside the Neocrom platform.</p>
+          <span class="card-foot">neocrom.pro/#store →</span>
+        </a>
+        <a class="card card-link" href="https://neocrom.pro/#community" target="_blank" rel="noopener">
+          <h3>Community</h3>
+          <p data-i18n="ecoCommDesc">Connect with builders sharing extensions, themes, and feedback.</p>
+          <span class="card-foot">neocrom.pro/#community →</span>
+        </a>
+        <a class="card card-link" href="https://neocrom.pro/#library" target="_blank" rel="noopener">
+          <h3>Library</h3>
+          <p data-i18n="ecoLibDesc">Access documentation, releases, and curated Neocrom resources.</p>
+          <span class="card-foot">neocrom.pro/#library →</span>
+        </a>
+        <a class="card card-link" href="https://neocrom.pro/#pulse" target="_blank" rel="noopener">
+          <h3>Neocrom Pulse</h3>
+          <p data-i18n="ecoPulseDesc">Monitor performance, system signals, and development telemetry alongside Horizon.</p>
+          <span class="card-foot">neocrom.pro/#pulse →</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section grid-2">
+      <article class="card" id="changelog">
+        <p class="section-eyebrow" data-i18n="relEyebrow">Release Notes</p>
+        <h2 style="margin: 0 0 14px;" data-i18n="relTitle">Latest Changelog</h2>
+        <div id="changelogBody" class="changelog-body">
+          <div class="changelog-entry">
+            <h3>v1.47.0</h3>
+            <ul>
+              <li>Unified Neocrom Horizon identity, obsidian monochrome palette, and Neocrom ecosystem integration.</li>
+              <li>Synced design tokens, Horizon Store, Horizon Pass, and Horizon Sync endpoints.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="feedback">
+        <p class="section-eyebrow" data-i18n="fbEyebrow">Direct Feedback</p>
+        <h2 style="margin: 0 0 8px;" data-i18n="fbTitle">Help shape Neocrom Horizon</h2>
+        <p style="margin-bottom: 16px;" data-i18n="fbLead">Share ideas or bug reports. Submissions open a triaged feedback issue on GitHub.</p>
+        <form id="fbForm">
+          <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true" />
+          <div class="field">
+            <label for="fbMessage" data-i18n="fbMsgLabel">Message</label>
+            <textarea id="fbMessage" class="textarea" name="message" required minlength="5" maxlength="2000" placeholder="What would make Neocrom Horizon better for you?"></textarea>
+          </div>
+          <div class="field">
+            <label for="fbEmail" data-i18n="fbEmailLabel">Email (optional)</label>
+            <input id="fbEmail" class="input" name="email" type="email" maxlength="200" placeholder="you@example.com" />
+          </div>
+          <button type="submit" class="button primary" id="fbBtn" data-i18n="fbSubmit">Send Feedback</button>
+          <div id="fbMsg" class="msg" role="status" aria-live="polite"></div>
+        </form>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-wrap">
+      <a class="brand" href="#top" aria-label="Neocrom Horizon">
+        <img class="wordmark-dark" src="assets/horizon-wordmark-dark.svg" alt="Neocrom Horizon" height="24" />
+        <img class="wordmark-light" src="assets/horizon-wordmark-light.svg" alt="Neocrom Horizon" height="24" />
+      </a>
+      <div class="footer-links">
+        <a href="docs/user-guide.html" data-i18n="navGuide">User Guide</a>
+        <a href="account.html" data-i18n="navAccount">Horizon Sync</a>
+        <a href="https://neocrom.pro" target="_blank" rel="noopener">Neocrom</a>
+        <a href="https://github.com/neocrom-team/neocrom-horizon" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/neocrom-team/neocrom-horizon/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
     </div>
-    <div>Neocrom Horizon · MIT License</div>
   </footer>
 
   <script>
-    // ---------- Theme toggle ----------
-    const root = document.documentElement;
-    const toggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    const saved = localStorage.getItem('hl-theme');
-    if (saved) root.setAttribute('data-theme', saved);
-    function updateIcon() {
-      const dark = root.getAttribute('data-theme') !== 'light';
-      themeIcon.innerHTML = dark
-        ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
-        : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
-    }
-    updateIcon();
-    toggle.addEventListener('click', () => {
-      const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-      root.setAttribute('data-theme', next);
-      localStorage.setItem('hl-theme', next);
-      updateIcon();
-    });
+    (function () {
+      const TRANSLATIONS = {
+        en: {
+          navOverview: 'Overview',
+          navFeatures: 'Features',
+          navEcosystem: 'Ecosystem',
+          navReleases: 'Changelog',
+          navGuide: 'User Guide',
+          navAccount: 'Horizon Sync',
+          heroLead: 'A fast, privacy-first Chromium browser engineered to feel effortless, minimal, and unified with the entire Neocrom platform.',
+          downloadCta: 'Download for Windows',
+          syncCta: 'Horizon Sync',
+          guideCta: 'User Guide',
+          metaAutoUpdate: 'Signed auto-updates via GitHub Releases',
+          metaProtocol: 'native workspace',
+          step1Desc: 'No bundleware, direct Windows NSIS installer.',
+          step2Desc: 'Silent per-profile installation without UAC prompts.',
+          step3Desc: 'Shields, Horizon Pass, and Neocrom tools preloaded.',
+          featuresEyebrow: 'Built for Focus',
+          featuresTitle: 'Monochrome precision, everyday speed',
+          featuresSub: 'Designed around restraint, high-contrast typography, and complete local control over your browsing workflow.',
+          ecoEyebrow: 'Unified Ecosystem',
+          ecoTitle: 'Part of Neocrom from day one',
+          ecoSub: 'Open the Neocrom menu beside the address bar or directly on your New Tab page to move across every Neocrom product seamlessly.',
+          relEyebrow: 'Release Notes',
+          relTitle: 'Latest Changelog',
+          fbEyebrow: 'Direct Feedback',
+          fbTitle: 'Help shape Neocrom Horizon',
+          fbLead: 'Share ideas or bug reports. Submissions open a triaged feedback issue on GitHub.',
+          fbMsgLabel: 'Message',
+          fbEmailLabel: 'Email (optional)',
+          fbSubmit: 'Send Feedback',
+        },
+        de: {
+          navOverview: 'Übersicht',
+          navFeatures: 'Funktionen',
+          navEcosystem: 'Ökosystem',
+          navReleases: 'Changelog',
+          navGuide: 'Handbuch',
+          navAccount: 'Horizon Sync',
+          heroLead: 'Ein schneller, datenschutzorientierter Chromium-Browser mit ruhigem Monochrom-Design und nahtloser Integration ins Neocrom-Ökosystem.',
+          downloadCta: 'Für Windows herunterladen',
+          syncCta: 'Horizon Sync',
+          guideCta: 'Benutzerhandbuch',
+          metaAutoUpdate: 'Signierte Auto-Updates über GitHub Releases',
+          metaProtocol: 'nativer Arbeitsbereich',
+          step1Desc: 'Ohne Zusatzsoftware, direkter Windows-NSIS-Installer.',
+          step2Desc: 'Schnelle Installation im Benutzerprofil ohne Admin-Abfrage.',
+          step3Desc: 'Shields, Horizon Pass und Neocrom direkt startklar.',
+          featuresEyebrow: 'Fokus auf das Wesentliche',
+          featuresTitle: 'Klare Kontraste, hohe Geschwindigkeit',
+          featuresSub: 'Entwickelt für ruhiges Arbeiten, präzise Typografie und volle lokale Kontrolle über alle Browserdaten.',
+          ecoEyebrow: 'Nahtloses Ökosystem',
+          ecoTitle: 'Direkt verbunden mit Neocrom',
+          ecoSub: 'Öffne das Neocrom-Menü neben der Adressleiste oder direkt auf dem Neuen Tab für alle Neocrom-Dienste.',
+          relEyebrow: 'Versionshinweise',
+          relTitle: 'Aktueller Changelog',
+          fbEyebrow: 'Direktes Feedback',
+          fbTitle: 'Neocrom Horizon mitgestalten',
+          fbLead: 'Teile Ideen oder Fehlerberichte direkt mit dem Entwicklerteam über GitHub Issues.',
+          fbMsgLabel: 'Nachricht',
+          fbEmailLabel: 'E-Mail (optional)',
+          fbSubmit: 'Feedback senden',
+        },
+      };
 
-    // ---------- Navbar scroll ----------
-    const nav = document.getElementById('nav');
-    const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 20);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-
-    // ---------- Mouse parallax on feature cards ----------
-    document.querySelectorAll('.feature-card').forEach(card => {
-      card.addEventListener('mousemove', e => {
-        const r = card.getBoundingClientRect();
-        card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-        card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      const root = document.documentElement;
+      const savedTheme = localStorage.getItem('nh-theme') || localStorage.getItem('hl-theme') || 'dark';
+      root.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
+      document.getElementById('themeToggle').addEventListener('click', () => {
+        const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        localStorage.setItem('nh-theme', next);
       });
-    });
 
-    // ---------- Reveal on scroll ----------
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+      function setLang(lang) {
+        const table = TRANSLATIONS[lang] || TRANSLATIONS.en;
+        root.lang = lang;
+        localStorage.setItem('nh-lang', lang);
+        document.querySelectorAll('.lang-btn').forEach((btn) => {
+          btn.classList.toggle('is-active', btn.dataset.lang === lang);
+        });
+        document.querySelectorAll('[data-i18n]').forEach((node) => {
+          const key = node.getAttribute('data-i18n');
+          if (table[key]) node.textContent = table[key];
+        });
+      }
+
+      const savedLang = localStorage.getItem('nh-lang') || (navigator.language.startsWith('de') ? 'de' : 'en');
+      setLang(savedLang);
+      document.querySelectorAll('.lang-btn').forEach((btn) => {
+        btn.addEventListener('click', () => setLang(btn.dataset.lang));
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-    // Keep the Windows download on the latest published installer.
-    fetch('https://api.github.com/repos/neocrom-team/neocrom-horizon/releases/latest')
-      .then(response => response.ok ? response.json() : null)
-      .then(release => {
-        if (!/^v\d+\.\d+\.\d+$/.test(release?.tag_name ?? '')) return;
-        const version = release.tag_name.slice(1);
-        const url = `https://github.com/neocrom-team/neocrom-horizon/releases/download/v${version}/Hinterland-Setup-${version}.exe`;
-        if (!release.assets?.some(asset => asset.browser_download_url === url)) return;
-        document.getElementById('dlBtn').href = url;
-        document.querySelector('.badge').textContent = `v${version} · Latest Release`;
-      })
-      .catch(() => {});
+      const REPO = 'neocrom-team/neocrom-horizon';
+      const dlBtn = document.getElementById('dlBtn');
+      const versionTag = document.getElementById('versionTag');
 
-    // ---------- Changelog ----------
-    (async () => {
-      const url = "https://raw.githubusercontent.com/neocrom-team/neocrom-horizon/main/CHANGELOG.md";
-      const el = document.getElementById("clContent");
-      try {
-        const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        const md = await res.text();
-        const versions = parseChangelog(md).slice(0, 4);
-        if (!versions.length) throw new Error("no versions");
-        el.classList.remove("cl-loading");
-        el.innerHTML = versions.map(renderVersion).join("");
-      } catch (e) {
-        el.classList.remove("cl-loading");
-        el.classList.add("cl-error");
-        el.textContent = "Changelog could not be loaded. See GitHub for the full history.";
-      }
-    })();
+      fetch(`https://raw.githubusercontent.com/${REPO}/main/package.json`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((pkg) => {
+          if (!pkg?.version) return;
+          const v = pkg.version;
+          const tag = `v${v}`;
+          const url = `https://github.com/${REPO}/releases/download/${tag}/Neocrom-Horizon-Setup-${v}.exe`;
+          dlBtn.href = url;
+          versionTag.textContent = `${tag} · Windows 10/11 (x64)`;
+        })
+        .catch(() => {});
 
-    function parseChangelog(md) {
-      const lines = md.split(/\r?\n/);
-      const versions = [];
-      let cur = null, section = null;
-      for (const raw of lines) {
-        const m = raw.match(/^## \[([^\]]+)\]/);
-        if (m) { if (cur) versions.push(cur); cur = { version: m[1], sections: [] }; section = null; continue; }
-        if (!cur) continue;
-        const h = raw.match(/^### (.+)/);
-        if (h) { section = { title: h[1], items: [] }; cur.sections.push(section); continue; }
-        const li = raw.match(/^- (.+)/);
-        if (li && section) { section.items.push(li[1]); continue; }
-      }
-      if (cur) versions.push(cur);
-      return versions;
-    }
-    function renderInline(s) {
-      return s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`([^`]+)`/g, "<code>$1</code>");
-    }
-    function renderVersion(v) {
-      let html = `<div class="cl-version"><h3>v${esc(v.version)} <span class="ver-pill">Release</span></h3>`;
-      for (const sec of v.sections) {
-        html += `<h4>${esc(sec.title)}</h4><ul>`;
-        for (const it of sec.items) html += `<li>${renderInline(esc(it))}</li>`;
-        html += `</ul>`;
-      }
-      html += `</div>`;
-      return html;
-    }
-    function esc(s) { return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+      fetch(`https://raw.githubusercontent.com/${REPO}/main/CHANGELOG.md`)
+        .then((r) => (r.ok ? r.text() : null))
+        .then((md) => {
+          if (!md) return;
+          const entries = [];
+          let current = null;
+          let sectionList = null;
+          for (const rawLine of md.split(/\r?\n/)) {
+            const h2 = rawLine.match(/^##\s+\[?([^\]\s]+)\]?/);
+            if (h2) {
+              if (current) entries.push(current);
+              if (entries.length >= 3) { current = null; break; }
+              current = { title: h2[1], sections: [] };
+              sectionList = null;
+              continue;
+            }
+            if (!current) continue;
+            const h3 = rawLine.match(/^###\s+(.+)/);
+            if (h3) {
+              sectionList = { name: h3[1], items: [] };
+              current.sections.push(sectionList);
+              continue;
+            }
+            const li = rawLine.match(/^-\s+(.+)/);
+            if (li) {
+              if (!sectionList) {
+                sectionList = { name: 'Changes', items: [] };
+                current.sections.push(sectionList);
+              }
+              sectionList.items.push(li[1]);
+            }
+          }
+          if (current) entries.push(current);
+          if (!entries.length) return;
+          const container = document.getElementById('changelogBody');
+          container.textContent = '';
+          for (const entry of entries) {
+            const block = document.createElement('div');
+            block.className = 'changelog-entry';
+            const title = document.createElement('h3');
+            title.textContent = entry.title;
+            block.appendChild(title);
+            for (const sec of entry.sections) {
+              const sh = document.createElement('h4');
+              sh.textContent = sec.name;
+              block.appendChild(sh);
+              const ul = document.createElement('ul');
+              for (const item of sec.items.slice(0, 6)) {
+                const li = document.createElement('li');
+                li.textContent = item;
+                ul.appendChild(li);
+              }
+              block.appendChild(ul);
+            }
+            container.appendChild(block);
+          }
+        })
+        .catch(() => {});
 
-    // ---------- Feedback form ----------
-    const fbForm = document.getElementById('feedbackForm');
-    if (fbForm) {
-      fbForm.addEventListener('submit', async (e) => {
+      const form = document.getElementById('fbForm');
+      const msgEl = document.getElementById('fbMsg');
+      const fbBtn = document.getElementById('fbBtn');
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const status = document.getElementById('fbStatus');
-        const msg = document.getElementById('fbMsg').value.trim();
-        const email = document.getElementById('fbEmail').value.trim();
-        status.textContent = 'Sending…';
+        fbBtn.disabled = true;
+        msgEl.className = 'msg';
+        msgEl.textContent = 'Sending...';
         try {
+          const payload = {
+            message: document.getElementById('fbMessage').value,
+            email: document.getElementById('fbEmail').value,
+            website: form.querySelector('[name="website"]').value,
+          };
           const r = await fetch('/api/feedback', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: msg, email }),
+            body: JSON.stringify(payload),
           });
-          const data = await r.json();
-          if (!r.ok) throw new Error(data.error || 'Failed');
-          status.textContent = 'Thanks! Issue #' + data.number + ' created.';
-          fbForm.reset();
-        } catch (err) {
-          status.textContent = 'Error: ' + err.message;
+          if (r.ok) {
+            msgEl.className = 'msg ok';
+            msgEl.textContent = 'Thank you. Your feedback was submitted.';
+            form.reset();
+          } else {
+            msgEl.className = 'msg err';
+            msgEl.textContent = 'Could not submit feedback right now.';
+          }
+        } catch {
+          msgEl.className = 'msg err';
+          msgEl.textContent = 'Network error. Please try again.';
+        } finally {
+          fbBtn.disabled = false;
         }
       });
-    }
-
-    // ---------- Google Translate: auto-detect system language + manual switch ----------
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: 'de,en,fr,es,it,pt,nl,pl,ru,ja,zh-CN,ko,tr,ar,hi,sv,da,fi,no,cs,hu,ro,el,he,th,vi,id,ms',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-        autoDisplay: false
-      }, 'google_translate_element');
-    }
-
-    function setGoogleLang(lang) {
-      const select = document.querySelector('.goog-te-combo');
-      if (!select) return false;
-      select.value = lang;
-      select.dispatchEvent(new Event('change'));
-      return true;
-    }
-
-    let attempts = 0;
-    const tryInitLang = setInterval(() => {
-      attempts++;
-      const select = document.querySelector('.goog-te-combo');
-      if (select) {
-        clearInterval(tryInitLang);
-        const stored = localStorage.getItem('hl-lang');
-        let target = stored || (navigator.language || navigator.userLanguage || 'en');
-        // normalize
-        target = target.replace('_', '-');
-        const base = target.split('-')[0].toLowerCase();
-        const supported = ['de','en','fr','es','it','pt','nl','pl','ru','ja','zh-cn','ko','tr','ar','hi','sv','da','fi','no','cs','hu','ro','el','he','th','vi','id','ms'];
-        let code = target.toLowerCase();
-        if (!supported.includes(code)) code = base;
-        if (code === 'zh') code = 'zh-cn';
-        if (!supported.includes(code)) code = 'en';
-        if (code !== 'en') setGoogleLang(code);
-        // reflect in dropdown
-        const dd = document.getElementById('langSelect');
-        dd.value = (code === 'en' ? 'en' : code);
-      }
-      if (attempts > 40) clearInterval(tryInitLang);
-    }, 250);
-
-    document.getElementById('langSelect').addEventListener('change', (e) => {
-      const v = e.target.value;
-      if (v === 'auto') {
-        localStorage.removeItem('hl-lang');
-        const sys = (navigator.language || 'en').split('-')[0].toLowerCase();
-        setGoogleLang(sys === 'en' ? 'en' : sys);
-      } else {
-        localStorage.setItem('hl-lang', v);
-        setGoogleLang(v);
-      }
-    });
+    })();
   </script>
-  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   <script defer data-domain="hinterland-browser.vercel.app" src="https://va.vercel.app/script.js"></script>
 </body>
 </html>

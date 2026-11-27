@@ -1,18 +1,18 @@
-# Hinterland Extension SDK — Developer Guide & API Reference
+# Neocrom Horizon Extension SDK — Developer Guide & API Reference
 
-Welcome to the official developer guide for creating extensions for the **Hinterland Browser**.
+Welcome to the official developer guide for creating extensions for **Neocrom Horizon**.
 
-Hinterland extensions are built on the modern **WebExtensions Manifest V3** standard, coupled with an ergonomic, secure JavaScript/TypeScript SDK (`@hinterland/extension-sdk`) and runtime sandboxing designed from the ground up to protect user data from being exploited.
+Neocrom Horizon extensions are built on the modern **WebExtensions Manifest V3** standard, coupled with an ergonomic, secure JavaScript/TypeScript SDK (`@neocrom/horizon-sdk`) and runtime sandboxing designed from the ground up to protect user data from being exploited.
 
 ---
 
 ## 1. Architecture Overview
 
-Hinterland extensions operate across three distinct environments:
+Neocrom Horizon extensions operate across three distinct environments:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                           HINTERLAND BROWSER                            │
+│                             NEOCROM HORIZON                             │
 │                                                                         │
 │  ┌────────────────────────┐                   ┌───────────────────────┐ │
 │  │   Background Worker    │  MessageBus (IPC) │     Action Popup      │ │
@@ -24,7 +24,7 @@ Hinterland extensions operate across three distinct environments:
 │  ┌────────────────────────┐                   ┌────┴──────────────────┐ │
 │  │     Content Script     │                   │  Preload Isolation    │ │
 │  │(content.js / Shadow DOM│                   │  (NO window.          │ │
-│  └───────────┬────────────┘                   │      hinterland)      │ │
+│  └───────────┬────────────┘                   │      horizon)         │ │
 │              │                                └───────────────────────┘ │
 │              ▼                                                          │
 │  ┌────────────────────────┐                                             │
@@ -37,7 +37,7 @@ Hinterland extensions operate across three distinct environments:
 1. **Background Service Worker (`background.js`)**:
    Event-driven background script managing state, long-running processes, alarms, and cross-tab coordination.
 2. **Action Popup (`popup.html`)**:
-   Interactive dialog rendered when clicking the extension's toolbar puzzle button. Runs in a dedicated sandboxed window using Hinterland's isolated extension preload without any access to privileged browser internal IPCs.
+   Interactive dialog rendered when clicking the extension's toolbar puzzle button. Runs in a dedicated sandboxed window using Neocrom Horizon's isolated extension preload without any access to privileged browser internal IPCs.
 3. **Content Scripts (`content.js`)**:
    Scripts injected into web pages matching defined URL patterns. Run in an **isolated world** with access to the DOM but isolated JavaScript scopes, preventing host pages from accessing extension variables.
 
@@ -47,10 +47,10 @@ Hinterland extensions operate across three distinct environments:
 
 ### Step 1: Initialize the Extension
 
-Run the Hinterland SDK CLI to scaffold a new extension:
+Run the Horizon SDK CLI to scaffold a new extension:
 
 ```bash
-npx hinterland-sdk init reading-ruler
+npx horizon-sdk init reading-ruler
 cd reading-ruler
 ```
 
@@ -58,7 +58,7 @@ This generates:
 - `manifest.json`: Manifest V3 configuration with secure defaults
 - `background.js`: Background service worker with lifecycle hooks
 - `content.js` & `content.css`: Content script with DOM isolation
-- `popup.html`, `popup.js`, `popup.css`: Action popup matching Hinterland's dark/light design tokens
+- `popup.html`, `popup.js`, `popup.css`: Action popup matching Neocrom Horizon's dark/light design tokens
 - `README.md`: Local documentation
 
 ### Step 2: Validate Security & Manifest Compliance
@@ -66,7 +66,7 @@ This generates:
 Audit the extension using the built-in security linter:
 
 ```bash
-npx hinterland-sdk validate .
+npx horizon-sdk validate .
 ```
 
 The validator verifies:
@@ -75,9 +75,9 @@ The validator verifies:
 - Absence of dangerous functions (`eval()`, `new Function()`, `document.write()`)
 - Safe file path boundaries (preventing directory traversal)
 
-### Step 3: Load into Hinterland Browser
+### Step 3: Load into Neocrom Horizon
 
-1. Open **Hinterland Browser**.
+1. Open **Neocrom Horizon**.
 2. Open **Settings** (or press `Ctrl+,`).
 3. Scroll down or click **Extensions** in the sidebar.
 4. Toggle on **Allow Unpacked Extensions**.
@@ -88,15 +88,15 @@ The validator verifies:
 
 ## 3. Core SDK API Reference
 
-### 3.1. Manifest Builder (`@hinterland/extension-sdk/manifest`)
+### 3.1. Manifest Builder (`@neocrom/horizon-sdk/manifest`)
 
 ```javascript
-import { defineManifest, PERMISSION_LEVELS } from '@hinterland/extension-sdk/manifest';
+import { defineManifest, PERMISSION_LEVELS } from '@neocrom/horizon-sdk/manifest';
 
 export default defineManifest({
   name: 'Clean Reading',
   version: '1.0.0',
-  description: 'A distraction-free reading assistant for Hinterland.',
+  description: 'A distraction-free reading assistant for Neocrom Horizon.',
   permissions: ['activeTab', 'storage'],
   action: {
     default_title: 'Toggle Clean Reading',
@@ -127,16 +127,16 @@ export default defineManifest({
 |---|---|---|
 | **Safe** | `storage`, `activeTab`, `alarms`, `scripting`, `contextMenus`, `action`, `declarativeNetRequest` | Standard functional permissions with minimal privacy exposure. |
 | **Sensitive** | `cookies`, `tabs`, `history`, `bookmarks`, `downloads`, `webRequest`, `<all_urls>` | Elevated access; flagged with security warnings during audit. Requires explicit user intent. |
-| **Forbidden** | `debugger`, `nativeMessaging`, `management`, `privacy`, `proxy`, `vpnProvider` | Blocked by Hinterland runtime. Prohibited to prevent system exploitation. |
+| **Forbidden** | `debugger`, `nativeMessaging`, `management`, `privacy`, `proxy`, `vpnProvider` | Blocked by Neocrom Horizon runtime. Prohibited to prevent system exploitation. |
 
 ---
 
-### 3.2. Secure Storage (`@hinterland/extension-sdk/security`)
+### 3.2. Secure Storage (`@neocrom/horizon-sdk/security`)
 
 Extensions often store user preferences or API credentials. `createSecureStorage` guarantees data isolation and hardware-accelerated AES-GCM encryption.
 
 ```javascript
-import { createSecureStorage } from '@hinterland/extension-sdk/security';
+import { createSecureStorage } from '@neocrom/horizon-sdk/security';
 
 const storage = createSecureStorage({
   namespace: 'reader_extension',
@@ -164,12 +164,12 @@ await storage.clear(); // Clears only keys under 'reader_extension' namespace
 
 ---
 
-### 3.3. HTML Sanitization & Safe DOM (`@hinterland/extension-sdk/security`)
+### 3.3. HTML Sanitization & Safe DOM (`@neocrom/horizon-sdk/security`)
 
 Prevent Cross-Site Scripting (XSS) when displaying user content or remote data in extension popups:
 
 ```javascript
-import { escapeHtml, sanitizeHtml, safeHtml } from '@hinterland/extension-sdk/security';
+import { escapeHtml, sanitizeHtml, safeHtml } from '@neocrom/horizon-sdk/security';
 
 // 1. Tagged template literal with auto-escaping
 const userName = '<script>stealCredentials()</script>';
@@ -184,12 +184,12 @@ const cleanHtml = sanitizeHtml(dirtyInput);
 
 ---
 
-### 3.4. Safe Message Bus (`@hinterland/extension-sdk/messaging`)
+### 3.4. Safe Message Bus (`@neocrom/horizon-sdk/messaging`)
 
 Communicate between content scripts, background workers, and popups with origin and sender verification:
 
 ```javascript
-import { createMessageBus } from '@hinterland/extension-sdk/messaging';
+import { createMessageBus } from '@neocrom/horizon-sdk/messaging';
 
 const bus = createMessageBus({
   defaultTimeoutMs: 5000
@@ -215,12 +215,12 @@ try {
 
 ---
 
-### 3.5. Content Script Helper (`@hinterland/extension-sdk/content`)
+### 3.5. Content Script Helper (`@neocrom/horizon-sdk/content`)
 
 `ContentHelper` provides DOM encapsulation and safe text extraction:
 
 ```javascript
-import { ContentHelper } from '@hinterland/extension-sdk/content';
+import { ContentHelper } from '@neocrom/horizon-sdk/content';
 
 // 1. Mount isolated Shadow DOM for extension UI
 const host = document.createElement('div');
@@ -238,15 +238,15 @@ console.log(`Reading time for "${title}": ${readingTimeMinutes} min (${wordCount
 
 ---
 
-### 3.6. Hinterland UI Kit (`@hinterland/extension-sdk/ui`)
+### 3.6. Horizon UI Kit (`@neocrom/horizon-sdk/ui`)
 
-Popups and options pages can use Hinterland design tokens and pre-styled UI controls:
+Popups and options pages can use Neocrom Horizon design tokens and pre-styled UI controls:
 
 ```javascript
-import { UIHelper, createStore, injectHinterlandTheme } from '@hinterland/extension-sdk/ui';
+import { UIHelper, createStore, injectHorizonTheme } from '@neocrom/horizon-sdk/ui';
 
 // Automatically inject dark/light CSS variables
-injectHinterlandTheme(document);
+injectHorizonTheme(document);
 
 // Create reactive state store
 const store = createStore({ enabled: true, wordCount: 0 });
@@ -272,19 +272,19 @@ document.body.appendChild(card);
 
 ## 4. Security & User Data Protection Principles
 
-To protect users against malicious extensions or data exfiltration, every Hinterland extension must follow these core security practices:
+To protect users against malicious extensions or data exfiltration, every Neocrom Horizon extension must follow these core security practices:
 
 ### 1. Principle of Least Privilege (PoLP)
 Only request the permissions your extension actually needs. Prefer `activeTab` over `<all_urls>`. `activeTab` grants temporary access only to the tab the user is actively viewing when invoking your extension.
 
 ### 2. Never Access Browser Internal Files
 Extensions run in sandboxed contexts. They cannot read or modify:
-- Hinterland profile databases (`history.sqlite`, `bookmarks.json`, `settings.json`)
+- Neocrom Horizon profile databases (`history.sqlite`, `bookmarks.json`, `settings.json`)
 - System files or user directories
 - Passwords stored in the operating system credential manager
 
 ### 3. Popup Sandbox Guarantee
-Hinterland renders extension popups with:
+Neocrom Horizon renders extension popups with:
 ```javascript
 webPreferences: {
   preload: EXTENSION_PRELOAD, // Isolated extension bridge
@@ -294,7 +294,7 @@ webPreferences: {
   webSecurity: true,
 }
 ```
-The internal `window.hinterland` IPC bridge is **never** provided to extension popups.
+The internal `window.horizon` IPC bridge is **never** provided to extension popups.
 
 ### 4. Shadow DOM Encapsulation
 Always mount in-page UI inside a `closed` Shadow DOM:
@@ -307,25 +307,25 @@ This guarantees:
 
 ---
 
-## 5. CLI Tool Reference (`hinterland-sdk`)
+## 5. CLI Tool Reference (`horizon-sdk`)
 
 | Command | Usage | Description |
 |---|---|---|
-| `init` | `hinterland-sdk init <name> [--dir <path>]` | Scaffolds a new extension with compliant Manifest V3 structure. |
-| `validate` | `hinterland-sdk validate [dir] [--strict]` | Runs deep security audit and schema validation on the extension. |
-| `pack` | `hinterland-sdk pack [dir] [out.zip]` | Audits and packages extension into a `.zip` file for distribution. |
-| `version` | `hinterland-sdk version` | Prints the SDK version. |
-| `help` | `hinterland-sdk help` | Displays the help menu. |
+| `init` | `horizon-sdk init <name> [--dir <path>]` | Scaffolds a new extension with compliant Manifest V3 structure. |
+| `validate` | `horizon-sdk validate [dir] [--strict]` | Runs deep security audit and schema validation on the extension. |
+| `pack` | `horizon-sdk pack [dir] [out.zip]` | Audits and packages extension into a `.zip` file for distribution. |
+| `version` | `horizon-sdk version` | Prints the SDK version. |
+| `help` | `horizon-sdk help` | Displays the help menu. |
 
 ---
 
 ## 6. Complete Example Extension
 
 A full, production-ready example extension demonstrating the SDK can be found in the repository at:
-[`examples/smart-reader`](file:///C:/Dev/Projects/Hinterland/examples/smart-reader)
+[`examples/smart-reader`](file:///c:/Dev/Projects/Neocrom%20Horizon/examples/smart-reader)
 
 To test it:
 ```bash
-npx hinterland-sdk validate examples/smart-reader --strict
+npx horizon-sdk validate examples/smart-reader --strict
 ```
-Then load it as an unpacked extension in Hinterland!
+Then load it as an unpacked extension in Neocrom Horizon!

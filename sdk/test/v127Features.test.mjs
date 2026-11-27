@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
 
-describe('Hinterland v1.27.0 Features & Polish', () => {
+describe('Neocrom Horizon v1.27.0 Features & Polish', () => {
   describe('Preload Bridge API Completeness (chrome.cjs)', () => {
     const chromeCjsPath = join(ROOT, 'src', 'preload', 'chrome.cjs');
     const source = readFileSync(chromeCjsPath, 'utf8');
@@ -212,9 +212,9 @@ describe('Hinterland v1.27.0 Features & Polish', () => {
       assert.ok(userGuide.includes('Tab Sound &amp; Audio Management'));
     });
 
-    it('updates website/index.html to v1.27.0 release', () => {
-      assert.ok(websiteIndex.includes('v1.27.0') || websiteIndex.includes('v1.28.0') || websiteIndex.includes('v1.29.0') || websiteIndex.includes('v1.30.0') || websiteIndex.includes('v1.31.0') || websiteIndex.includes('v1.32.0') || websiteIndex.includes('v1.33.0') || websiteIndex.includes('v1.34.0') || websiteIndex.includes('v1.35.0') || websiteIndex.includes('v1.36.0') || websiteIndex.includes('v1.37.0') || websiteIndex.includes('v1.38.0') || websiteIndex.includes('v1.39.0') || websiteIndex.includes('v1.40.0') || websiteIndex.includes('v1.41.0') || websiteIndex.includes('v1.42.0') || websiteIndex.includes('v1.43.0') || websiteIndex.includes('v1.44.0') || websiteIndex.includes('v1.45.0'));
-      assert.ok(websiteIndex.includes('Hinterland-Setup-1.27.0.exe') || websiteIndex.includes('Hinterland-Setup-1.28.0.exe') || websiteIndex.includes('Hinterland-Setup-1.29.0.exe') || websiteIndex.includes('Hinterland-Setup-1.30.0.exe') || websiteIndex.includes('Hinterland-Setup-1.31.0.exe') || websiteIndex.includes('Hinterland-Setup-1.32.0.exe') || websiteIndex.includes('Hinterland-Setup-1.33.0.exe') || websiteIndex.includes('Hinterland-Setup-1.34.0.exe') || websiteIndex.includes('Hinterland-Setup-1.35.0.exe') || websiteIndex.includes('Hinterland-Setup-1.36.0.exe') || websiteIndex.includes('Hinterland-Setup-1.37.0.exe') || websiteIndex.includes('Hinterland-Setup-1.38.0.exe') || websiteIndex.includes('Hinterland-Setup-1.39.0.exe') || websiteIndex.includes('Hinterland-Setup-1.40.0.exe') || websiteIndex.includes('Hinterland-Setup-1.41.0.exe') || websiteIndex.includes('Hinterland-Setup-1.42.0.exe') || websiteIndex.includes('Hinterland-Setup-1.43.0.exe') || websiteIndex.includes('Hinterland-Setup-1.44.0.exe') || websiteIndex.includes('Hinterland-Setup-1.45.0.exe'));
+    it('updates website/index.html to latest Neocrom Horizon release', () => {
+      assert.ok(websiteIndex.includes('v1.47.0 ·'));
+      assert.ok(websiteIndex.includes('Neocrom-Horizon-Setup-1.47.0.exe'));
     });
   });
 });

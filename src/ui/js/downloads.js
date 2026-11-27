@@ -3,7 +3,7 @@ import { icon } from './icons.js';
 import { t } from './i18n.js';
 import { openDownloads, trackDownload } from './panels.js';
 
-const api = () => window.hinterland;
+const api = () => window.horizon;
 
 let shelf = null;
 let timer = null;

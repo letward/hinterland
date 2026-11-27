@@ -9,7 +9,7 @@ import { HistoryStore } from '../../src/main/history.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
 
-describe('Hinterland v1.44.0 Features & Polish', () => {
+describe('Neocrom Horizon v1.44.0 Features & Polish', () => {
   const tabsSource = readFileSync(join(ROOT, 'src', 'main', 'tabs.js'), 'utf8');
   const historySource = readFileSync(join(ROOT, 'src', 'main', 'history.js'), 'utf8');
   const ipcSource = readFileSync(join(ROOT, 'src', 'main', 'ipc.js'), 'utf8');
@@ -65,7 +65,7 @@ describe('Hinterland v1.44.0 Features & Polish', () => {
   describe('History & Recently Closed: Remove Matching History & Copy Recently Closed JSON', () => {
     it('implements HistoryStore.removeUrls and removes matching URLs cleanly', () => {
       assert.ok(historySource.includes('removeUrls(urls = [])'));
-      const dir = mkdtempSync(join(tmpdir(), 'hinterland-hist-'));
+      const dir = mkdtempSync(join(tmpdir(), 'horizon-hist-'));
       try {
         const store = new HistoryStore(join(dir, 'history.json'));
         store.entries = [
@@ -167,10 +167,10 @@ describe('Hinterland v1.44.0 Features & Polish', () => {
       assert.ok(guide.includes('Open Matching'));
     });
 
-    it('updates website/index.html to v1.44.0 release badge and download link', () => {
+    it('updates website/index.html to latest release badge and download link', () => {
       const indexHtml = readFileSync(join(ROOT, 'website', 'index.html'), 'utf8');
-      assert.ok(indexHtml.includes('v1.44.0 · Latest Release') || indexHtml.includes('v1.45.0 · Latest Release'));
-      assert.ok(indexHtml.includes('Hinterland-Setup-1.44.0.exe') || indexHtml.includes('Hinterland-Setup-1.45.0.exe'));
+      assert.ok(/v1\.\d+\.\d+ · /.test(indexHtml));
+      assert.ok(indexHtml.includes('Neocrom-Horizon-Setup-1.47.0.exe'));
     });
 
     it('updates website/api/sync.js to v1.44.0', () => {

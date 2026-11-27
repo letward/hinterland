@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const EXTENSIONS_DIR = join(ROOT, 'src', 'extensions');
-const BUNDLED_DIRS = ['hinterlandFocus', 'hinterlandPanel', 'hinterlandPass'];
+const BUNDLED_DIRS = ['horizonFocus', 'horizonPanel', 'horizonPass'];
 
 const PNG_HEADER = Buffer.from([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]);
 
@@ -61,7 +61,7 @@ function resolveIcons(directory, manifest) {
 }
 
 test('Bundled Extensions & Icon Assets', async (t) => {
-  const bundledDirs = ['hinterlandFocus', 'hinterlandPanel', 'hinterlandPass'];
+  const bundledDirs = ['horizonFocus', 'horizonPanel', 'horizonPass'];
 
   await t.test('all bundled extensions exist and have valid manifests', () => {
     for (const dirName of bundledDirs) {
@@ -121,14 +121,14 @@ test('Bundled Extensions & Icon Assets', async (t) => {
 });
 
 test('Extension Default Enablement & Lifecycle Logic', async (t) => {
-  const bundledIds = ['hinterlandfocus', 'hinterlandpanel', 'hinterlandpass'];
+  const bundledIds = ['horizonfocus', 'horizonpanel', 'horizonpass'];
 
   await t.test('schema defaults bundled extensions to enabled', () => {
     const schemaFile = join(ROOT, 'src', 'main', 'schema.js');
     const content = readFileSync(schemaFile, 'utf8');
 
     assert.ok(
-      content.includes("option('extensions.enabled', 'multiselect', ['hinterlandfocus', 'hinterlandpanel', 'hinterlandpass']"),
+      content.includes("option('extensions.enabled', 'multiselect', ['horizonfocus', 'horizonpanel', 'horizonpass']"),
       'schema.js sets extensions.enabled default to all 3 bundled extensions'
     );
     assert.ok(
@@ -156,8 +156,8 @@ test('Extension Default Enablement & Lifecycle Logic', async (t) => {
     assert.equal(firstRun.initialized, true);
 
     // User disables one extension: should remain disabled on next start
-    const afterUserDisabledOne = simulateEnableBundled(bundledIds, ['hinterlandfocus'], true);
-    assert.deepEqual(afterUserDisabledOne.enabled, ['hinterlandfocus']);
+    const afterUserDisabledOne = simulateEnableBundled(bundledIds, ['horizonfocus'], true);
+    assert.deepEqual(afterUserDisabledOne.enabled, ['horizonfocus']);
 
     // Stale empty array from older versions should re-seed
     const recoverStaleEmpty = simulateEnableBundled(bundledIds, [], true);
@@ -165,16 +165,16 @@ test('Extension Default Enablement & Lifecycle Logic', async (t) => {
   });
 
   await t.test('toggling extensions maintains clean set membership', () => {
-    const enabled = new Set(['hinterlandfocus', 'hinterlandpanel', 'hinterlandpass']);
+    const enabled = new Set(['horizonfocus', 'horizonpanel', 'horizonpass']);
 
-    // Disable hinterlandpanel
-    enabled.delete('hinterlandpanel');
-    assert.equal(enabled.has('hinterlandpanel'), false);
+    // Disable horizonpanel
+    enabled.delete('horizonpanel');
+    assert.equal(enabled.has('horizonpanel'), false);
     assert.equal(enabled.size, 2);
 
-    // Re-enable hinterlandpanel
-    enabled.add('hinterlandpanel');
-    assert.equal(enabled.has('hinterlandpanel'), true);
+    // Re-enable horizonpanel
+    enabled.add('horizonpanel');
+    assert.equal(enabled.has('horizonpanel'), true);
     assert.equal(enabled.size, 3);
   });
 
@@ -195,17 +195,17 @@ test('Extension Default Enablement & Lifecycle Logic', async (t) => {
     }
   });
 
-  await t.test('action content scripts declare listeners for hinterland:extension-action', () => {
-    const focusContent = readFileSync(join(EXTENSIONS_DIR, 'hinterlandFocus', 'content.js'), 'utf8');
+  await t.test('action content scripts declare listeners for horizon:extension-action', () => {
+    const focusContent = readFileSync(join(EXTENSIONS_DIR, 'horizonFocus', 'content.js'), 'utf8');
     assert.ok(
-      focusContent.includes("hinterland:extension-action") && focusContent.includes('hinterlandfocus'),
-      'hinterlandFocus content.js must listen for hinterland:extension-action',
+      focusContent.includes("horizon:extension-action") && focusContent.includes('horizonfocus'),
+      'horizonFocus content.js must listen for horizon:extension-action',
     );
 
-    const panelContent = readFileSync(join(EXTENSIONS_DIR, 'hinterlandPanel', 'content.js'), 'utf8');
+    const panelContent = readFileSync(join(EXTENSIONS_DIR, 'horizonPanel', 'content.js'), 'utf8');
     assert.ok(
-      panelContent.includes("hinterland:extension-action") && panelContent.includes('hinterlandpanel'),
-      'hinterlandPanel content.js must listen for hinterland:extension-action',
+      panelContent.includes("horizon:extension-action") && panelContent.includes('horizonpanel'),
+      'horizonPanel content.js must listen for horizon:extension-action',
     );
   });
 

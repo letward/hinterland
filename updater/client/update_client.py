@@ -1,4 +1,4 @@
-"""Hinterland Updater-Client — kryptografische Update-Sicherheit.
+"""Neocrom Horizon Updater-Client — kryptografische Update-Sicherheit.
 
 Prüft signierte Update-Metadaten, validiert Paket-Hashes nach dem Download,
 schützt den Vertrauensanker unabhängig vom Manifest und lehnt ungültige,

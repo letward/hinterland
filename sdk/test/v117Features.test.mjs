@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..');
 
-describe('Hinterland v1.17.0 Features', () => {
+describe('Neocrom Horizon v1.17.0 Features', () => {
   describe('Unified Design Tokens (design/tokens.css)', () => {
     const tokensPath = join(ROOT, 'design', 'tokens.css');
     it('design/tokens.css exists and has valid css rules', () => {
@@ -61,7 +61,7 @@ describe('Hinterland v1.17.0 Features', () => {
     });
 
     it('enforces message length constraints', () => {
-      const validMsg = 'This is great feedback for Hinterland browser.';
+      const validMsg = 'This is great feedback for Neocrom Horizon browser.';
       const shortMsg = 'Hi!';
       const emptyMsg = '';
 

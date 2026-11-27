@@ -2,7 +2,7 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { DEFAULT_SHORTCUTS } from '../../src/main/constants.js';
 
-describe('Hinterland v1.13.0 Features', () => {
+describe('Neocrom Horizon v1.13.0 Features', () => {
   describe('Shortcuts Registry', () => {
     test('registers shortcuts for clearData, notes, togglePiP, and mediaControls', () => {
       assert.equal(DEFAULT_SHORTCUTS.clearData, 'Ctrl+Shift+Delete');
@@ -80,12 +80,12 @@ describe('Hinterland v1.13.0 Features', () => {
     }
 
     test('renders headings, bold, inline code and links safely', () => {
-      const markdown = '# Main Heading\n\n**Bold Text** and `inline code` with a [link](https://hinterland.io)';
+      const markdown = '# Main Heading\n\n**Bold Text** and `inline code` with a [link](https://neocrom.pro)';
       const output = renderNoteMarkdown(markdown);
       assert.ok(output.includes('<h1>Main Heading</h1>'));
       assert.ok(output.includes('<strong>Bold Text</strong>'));
       assert.ok(output.includes('<code>inline code</code>'));
-      assert.ok(output.includes('<a href="https://hinterland.io" class="noteLink" data-url="https://hinterland.io">link</a>'));
+      assert.ok(output.includes('<a href="https://neocrom.pro" class="noteLink" data-url="https://neocrom.pro">link</a>'));
     });
 
     test('escapes HTML tags and script injections inside notes', () => {

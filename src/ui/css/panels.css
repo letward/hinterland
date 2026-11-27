@@ -528,7 +528,7 @@
   width: 40px;
   height: 22px;
   border: 1px solid var(--border);
-  border-radius: 0;
+  border-radius: var(--radiusPill);
   background: var(--surfaceAlt);
   cursor: pointer;
   transition: background var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut);
@@ -542,7 +542,7 @@
   left: 2px;
   width: 16px;
   height: 16px;
-  border-radius: 0;
+  border-radius: var(--radiusPill);
   background: var(--textDim);
   box-shadow: 0 1px 2px rgb(0 0 0 / 30%);
   transition: transform var(--anim) var(--easeOut), background var(--anim) var(--easeOut);
@@ -2083,8 +2083,9 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), #7a5cff);
-  color: var(--onAccent, #fff);
+  background: linear-gradient(135deg, var(--surfaceHover), var(--accentSubtle));
+  border: 1px solid var(--border);
+  color: var(--text);
   font-size: 18px;
   font-weight: 700;
   display: flex;

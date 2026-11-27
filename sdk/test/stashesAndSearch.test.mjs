@@ -7,7 +7,7 @@ function buildSearchUrl(template, query) {
   return String(template).includes('{q}') ? String(template).replaceAll('{q}', encoded) : `${template}${encoded}`;
 }
 
-describe('Hinterland v1.14.0 Features', () => {
+describe('Neocrom Horizon v1.14.0 Features', () => {
   describe('Shortcuts Registry', () => {
     test('registers default shortcut for tabStash', () => {
       assert.equal(DEFAULT_SHORTCUTS.tabStash, 'Ctrl+Shift+U');
@@ -110,7 +110,7 @@ describe('Hinterland v1.14.0 Features', () => {
   describe('Tab Stash Data Engine', () => {
     test('creates and serializes tab stash with metadata', () => {
       const tabList = [
-        { url: 'https://github.com/hinterland', title: 'Hinterland GitHub', favicon: 'https://github.com/favicon.ico' },
+        { url: 'https://github.com/neocrom-team/neocrom-horizon', title: 'Neocrom Horizon GitHub', favicon: 'https://github.com/favicon.ico' },
         { url: 'https://electronjs.org', title: 'Electron Framework', favicon: 'https://electronjs.org/favicon.ico' },
       ];
 
@@ -123,7 +123,7 @@ describe('Hinterland v1.14.0 Features', () => {
 
       assert.equal(stash.id, 'stash_123');
       assert.equal(stash.tabs.length, 2);
-      assert.equal(stash.tabs[0].title, 'Hinterland GitHub');
+      assert.equal(stash.tabs[0].title, 'Neocrom Horizon GitHub');
     });
 
     test('removes tab from stash and cleans up empty stash', () => {
@@ -198,7 +198,7 @@ describe('Hinterland v1.14.0 Features', () => {
         }
       }
 
-      saveZoom('https://github.com/letward/Hinterland', 1.2);
+      saveZoom('https://github.com/neocrom-team/neocrom-horizon', 1.2);
       assert.equal(levels['github.com'], 1.2);
 
       saveZoom('https://en.wikipedia.org/wiki/Main_Page', 0.9);

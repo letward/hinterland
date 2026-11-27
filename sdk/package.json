@@ -1,13 +1,13 @@
 {
-  "name": "@hinterland/extension-sdk",
+  "name": "@neocrom/horizon-sdk",
   "version": "1.0.0",
-  "description": "Official SDK for creating secure, modern extensions for the Hinterland browser.",
+  "description": "Official SDK for creating secure, modern extensions for the Neocrom Horizon browser.",
   "type": "module",
   "main": "./src/index.js",
   "types": "./types/index.d.ts",
   "bin": {
-    "hinterland-sdk": "./bin/hinterland-sdk.mjs",
-    "hinterland-ext": "./bin/hinterland-sdk.mjs"
+    "horizon-sdk": "./bin/horizon-sdk.mjs",
+    "horizon-ext": "./bin/horizon-sdk.mjs"
   },
   "exports": {
     ".": "./src/index.js",
@@ -22,7 +22,8 @@
     "node": ">=20"
   },
   "keywords": [
-    "hinterland",
+    "neocrom",
+    "horizon",
     "browser",
     "extensions",
     "sdk",
@@ -31,6 +32,6 @@
     "webextension",
     "manifest-v3"
   ],
-  "author": "Hinterland",
+  "author": "Neocrom",
   "license": "MIT"
 }

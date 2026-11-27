@@ -20,7 +20,7 @@ describe('Hand-Tailored 1-Click Installer & Welcome Onboarding', () => {
       assert.strictEqual(pkg.build.nsis.allowToChangeInstallationDirectory, false);
       assert.strictEqual(pkg.build.nsis.createDesktopShortcut, 'always');
       assert.strictEqual(pkg.build.nsis.createStartMenuShortcut, true);
-      assert.strictEqual(pkg.build.nsis.runAfterFinish, true, 'must launch Hinterland right after install');
+      assert.strictEqual(pkg.build.nsis.runAfterFinish, true, 'must launch Neocrom Horizon right after install');
       assert.strictEqual(pkg.build.nsis.include, 'build/installer.nsh');
     });
 
@@ -29,7 +29,7 @@ describe('Hand-Tailored 1-Click Installer & Welcome Onboarding', () => {
       const schemes = protocols.flatMap(p => p.schemes || []);
       assert.ok(schemes.includes('http'), 'must register http scheme');
       assert.ok(schemes.includes('https'), 'must register https scheme');
-      assert.ok(schemes.includes('hinterland'), 'must register hinterland scheme');
+      assert.ok(schemes.includes('horizon'), 'must register horizon scheme');
 
       const fileAssoc = pkg.build.fileAssociations || [];
       const exts = fileAssoc.flatMap(f => f.ext || []);
@@ -45,10 +45,10 @@ describe('Hand-Tailored 1-Click Installer & Welcome Onboarding', () => {
       assert.ok(existsSync(nshPath), 'build/installer.nsh must exist');
     });
 
-    it('contains customInstall macro registering Hinterland as a full Windows internet browser', () => {
+    it('contains customInstall macro registering Neocrom Horizon as a full Windows internet browser', () => {
       const script = readFileSync(nshPath, 'utf8');
       assert.ok(script.includes('!macro customInstall'));
-      assert.ok(script.includes('Software\\Clients\\StartMenuInternet\\Hinterland'));
+      assert.ok(script.includes('Software\\Clients\\StartMenuInternet\\Neocrom Horizon'));
       assert.ok(script.includes('Capabilities'));
       assert.ok(script.includes('URLAssociations'));
       assert.ok(script.includes('FileAssociations'));
@@ -58,8 +58,8 @@ describe('Hand-Tailored 1-Click Installer & Welcome Onboarding', () => {
     it('contains customUnInstall macro cleaning up Windows registry associations', () => {
       const script = readFileSync(nshPath, 'utf8');
       assert.ok(script.includes('!macro customUnInstall'));
-      assert.ok(script.includes('DeleteRegKey HKCU "Software\\Clients\\StartMenuInternet\\Hinterland"'));
-      assert.ok(script.includes('DeleteRegValue HKCU "Software\\RegisteredApplications" "Hinterland"'));
+      assert.ok(script.includes('DeleteRegKey HKCU "Software\\Clients\\StartMenuInternet\\Neocrom Horizon"'));
+      assert.ok(script.includes('DeleteRegValue HKCU "Software\\RegisteredApplications" "Neocrom Horizon"'));
     });
   });
 
@@ -81,7 +81,7 @@ describe('Hand-Tailored 1-Click Installer & Welcome Onboarding', () => {
       assert.ok(chromePreload.includes("setDefaultBrowser: () => ipcRenderer.invoke('app:setDefaultBrowser')"));
     });
 
-    it('exposes default browser methods on page.cjs hinterlandPage bridge', () => {
+    it('exposes default browser methods on page.cjs horizonPage bridge', () => {
       assert.ok(pagePreload.includes("isDefaultBrowser: () => ipcRenderer.invoke('app:isDefaultBrowser')"));
       assert.ok(pagePreload.includes("setDefaultBrowser: () => ipcRenderer.invoke('app:setDefaultBrowser')"));
     });
@@ -176,7 +176,7 @@ describe('Hand-Tailored 1-Click Installer & Welcome Onboarding', () => {
     it('documents zero-prompt install & default browser setup in user-guide.html', () => {
       assert.ok(userGuide.includes('Streamlined 1-click installation'));
       assert.ok(userGuide.includes('First run &amp; Default Browser') || userGuide.includes('First run & Default Browser'));
-      assert.ok(userGuide.includes('Hinterland-Setup.exe'));
+      assert.ok(userGuide.includes('Neocrom-Horizon-Setup.exe'));
     });
   });
 });

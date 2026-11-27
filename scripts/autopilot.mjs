@@ -6,7 +6,7 @@ import { execSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
-const REPO = process.env.GITHUB_REPOSITORY || 'letward/Hinterland';
+const REPO = process.env.GITHUB_REPOSITORY || 'neocrom-team/neocrom-horizon';
 const TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
 const OR_KEY = process.env.OPENROUTER_API_KEY;
 const MAX_TOKENS = 40000;
@@ -20,7 +20,7 @@ async function gh(path, opts = {}) {
       Authorization: `Bearer ${TOKEN}`,
       Accept: 'application/vnd.github+json',
       'X-GitHub-Api-Version': '2022-11-28',
-      'User-Agent': 'hinterland-autopilot',
+      'User-Agent': 'neocrom-horizon-autopilot',
       ...(opts.headers || {}),
     },
   });
@@ -61,7 +61,7 @@ async function main() {
 
   const feedbackText = feedback.map(i => `#${i.number}: ${i.title}\n${i.body || ''}`).join('\n\n---\n\n');
 
-  const prompt = `You are an autonomous maintainer of the Hinterland browser repo.
+  const prompt = `You are an autonomous maintainer of the Neocrom Horizon browser repo.
 
 Open user feedback issues:
 ${feedbackText}
@@ -94,8 +94,8 @@ Rules:
     headers: {
       Authorization: `Bearer ${OR_KEY}`,
       'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://github.com/letward/Hinterland',
-      'X-Title': 'Hinterland Autopilot',
+      'HTTP-Referer': 'https://github.com/neocrom-team/neocrom-horizon',
+      'X-Title': 'Neocrom Horizon Autopilot',
     },
     body: JSON.stringify({
       model: 'openrouter/free',
@@ -147,8 +147,8 @@ Rules:
   // 7. Git branch + PR
   const branch = `autopilot/${Date.now()}`;
   sh(`git checkout -b ${branch}`);
-  sh('git config user.email "autopilot@hinterland.bot"');
-  sh('git config user.name "Hinterland Autopilot"');
+  sh('git config user.email "autopilot@neocrom.pro"');
+  sh('git config user.name "Neocrom Horizon Autopilot"');
   sh('git add -A');
   sh(`git commit -m "autopilot: ${plan.summary}"`);
   sh(`git push origin ${branch}`);

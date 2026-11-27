@@ -1,4 +1,4 @@
-"""Hinterland Agent-Policies — zentrale Berechtigungsregeln.
+"""Neocrom Horizon Agent-Policies — zentrale Berechtigungsregeln.
 
 Dieses Paket enthält alle Regeln, die Agenten nicht selbst verändern dürfen.
 """

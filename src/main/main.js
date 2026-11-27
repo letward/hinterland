@@ -198,7 +198,7 @@ function setupAutoUpdater() {
           type: 'question',
           title: app.getName(),
           message: `Version ${info.version} has been downloaded.`,
-          detail: 'Restart now to install the update, or it will be installed when you close Hinterland.',
+          detail: 'Restart now to install the update, or it will be installed when you close Neocrom Horizon.',
           buttons: ['Restart now', 'Later'],
           defaultId: 0,
           cancelId: 1,
@@ -210,17 +210,17 @@ function setupAutoUpdater() {
     });
 
     autoUpdater.on('error', (error) => {
-      console.warn('[Hinterland] Auto-update error.', error?.message ?? error);
+      console.warn('[Neocrom Horizon] Auto-update error.', error?.message ?? error);
     });
 
     autoUpdater.checkForUpdates().catch((error) => {
-      console.warn('[Hinterland] Update check failed.', error?.message ?? error);
+      console.warn('[Neocrom Horizon] Update check failed.', error?.message ?? error);
     });
   } catch (error) {
-    console.warn('[Hinterland] Auto-updater could not be initialised.', error?.message ?? error);
+    console.warn('[Neocrom Horizon] Auto-updater could not be initialised.', error?.message ?? error);
   }
 }
 
 process.on('uncaughtException', (error) => {
-  console.error('[Hinterland] Unexpected error.', error);
+  console.error('[Neocrom Horizon] Unexpected error.', error);
 });

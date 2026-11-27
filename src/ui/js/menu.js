@@ -8,7 +8,7 @@ import { toast } from './toast.js';
 import { openQrCode, openTabGroups } from './panels.js';
 import { ecosystem } from './ecosystem.js';
 
-const api = () => window.hinterland;
+const api = () => window.horizon;
 
 export function openEcosystem() {
   const trigger = document.getElementById('ecosystemButton');
@@ -23,7 +23,7 @@ export function openEcosystem() {
         const brandMark = glyph.endsWith('.svg');
         card.append(row({
           iconName: brandMark ? null : glyph,
-          iconHtml: brandMark ? `<img class="ecosystemMenuMark" src="hinterland://assets/${glyph}" width="20" height="20" alt="" />` : null,
+          iconHtml: brandMark ? `<img class="ecosystemMenuMark" src="horizon://assets/${glyph}" width="20" height="20" alt="" />` : null,
           title: t(`ecosystem.${id}`),
           subtitle: t(`ecosystem.${id}Description`),
           onSelect: () => {
@@ -103,7 +103,7 @@ function isDomainExempted(rawUrl) {
 }
 
 export function openMainMenu() {
-  const tab = window.hinterlandTab;
+  const tab = window.horizonTab;
   openPopup({
     key: 'main',
     align: 'right',
@@ -112,53 +112,53 @@ export function openMainMenu() {
         row({
           iconName: 'plus',
           title: t('menu.newTab'),
-          onSelect: () => api().tabs.create({ url: 'hinterland://newtab/' }),
+          onSelect: () => api().tabs.create({ url: 'horizon://newtab/' }),
         }),
         row({
           iconName: 'shield',
           title: t('menu.privateTab'),
           subtitle: t('menu.privateTabDesc'),
-          onSelect: () => api().tabs.create({ url: 'hinterland://newtab/', privateMode: true }),
+          onSelect: () => api().tabs.create({ url: 'horizon://newtab/', privateMode: true }),
         }),
         separator(),
         row({
           iconName: 'clock',
           title: t('menu.history'),
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'history' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'history' } })),
         }),
         row({
           iconName: 'bookmark',
           title: t('menu.bookmarks'),
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'bookmarks' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'bookmarks' } })),
         }),
         row({
           iconName: 'archive',
           title: t('menu.showBookmarksBar'),
           subtitle: 'Ctrl+Shift+B',
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:togglebookmarksbar')),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:togglebookmarksbar')),
         }),
         row({
           iconName: 'bookmark',
           title: t('menu.readingList'),
           subtitle: 'Ctrl+Shift+L',
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'readingList' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'readingList' } })),
         }),
         row({
           iconName: 'notes',
           title: t('menu.notes'),
           subtitle: 'Ctrl+Shift+Y',
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'notes' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'notes' } })),
         }),
         row({
           iconName: 'archive',
           title: t('menu.tabStash'),
           subtitle: 'Ctrl+Shift+U',
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openstash')),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openstash')),
         }),
         row({
           iconName: 'tabs',
           title: t('menu.tabGroups'),
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:opentabgroups')),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:opentabgroups')),
         }),
         row({
           iconName: 'layers',
@@ -217,24 +217,24 @@ export function openMainMenu() {
           iconName: 'key',
           title: t('menu.passwords'),
           subtitle: 'Ctrl+Alt+P',
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'passwords' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'passwords' } })),
         }),
         row({
           iconName: 'user',
           title: t('menu.account'),
           subtitle: 'Ctrl+Shift+A',
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'account' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'account' } })),
         }),
         row({
           iconName: 'trash',
           title: t('menu.clearBrowsingData'),
           subtitle: 'Ctrl+Shift+Del',
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'clearData' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'clearData' } })),
         }),
         row({
           iconName: 'shield',
           title: t('menu.sitePermissions'),
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'sitePermissions' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'sitePermissions' } })),
         }),
         row({
           iconName: 'volume',
@@ -246,17 +246,17 @@ export function openMainMenu() {
           iconName: 'store',
           title: t('menu.store'),
           subtitle: t('menu.storeDesc'),
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'store' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'store' } })),
         }),
         row({
           iconName: 'puzzle',
           title: t('menu.extensions'),
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'extensions' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'extensions' } })),
         }),
         row({
           iconName: 'download',
           title: t('menu.downloads'),
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'downloads' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'downloads' } })),
         }),
         separator(),
         zoomRow(),
@@ -281,18 +281,18 @@ export function openMainMenu() {
           iconName: 'cpu',
           title: t('menu.taskManager'),
           subtitle: 'Shift+Esc',
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'taskManager' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'taskManager' } })),
         }),
         row({
           iconName: 'keyboard',
           title: t('menu.shortcuts'),
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'shortcuts' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'shortcuts' } })),
         }),
         row({
           iconName: 'search',
           title: t('menu.commandPalette'),
           subtitle: 'Ctrl+Shift+P',
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:commandpalette')),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:commandpalette')),
         }),
         row({
           iconName: 'refresh',
@@ -311,12 +311,12 @@ export function openMainMenu() {
         row({
           iconName: 'info',
           title: t('menu.about'),
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'about' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'about' } })),
         }),
         row({
           iconName: 'gear',
           title: t('menu.settings'),
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:opensettings', {})),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:opensettings', {})),
         }),
       );
     },
@@ -439,7 +439,7 @@ export function openTabMenu(tab, x, y) {
           onSelect: async () => {
             const name = prompt(t('menu.groupNamePrompt'), '');
             if (!name) return;
-            const result = await api().tabs.groupCreate({ name, color: '#4f7cff' });
+            const result = await api().tabs.groupCreate({ name, color: '#bdbdbd' });
             if (result) toast(t('menu.groupCreated'), 'success');
           },
         }),
@@ -624,7 +624,7 @@ export function openOmniMenu() {
         row({
           iconName: 'bookmark',
           title: bookmarked ? t('menu.removeBookmark') : t('menu.addBookmark'),
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:bookmark')),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:bookmark')),
         }),
         row({
           iconName: 'bookmark',
@@ -649,14 +649,14 @@ export function openOmniMenu() {
         row({
           iconName: 'shield',
           title: t('menu.openPrivate'),
-          onSelect: () => api().tabs.create({ url: url || 'hinterland://newtab/', privateMode: true }),
+          onSelect: () => api().tabs.create({ url: url || 'horizon://newtab/', privateMode: true }),
         }),
         separator(),
         section('menu.tools'),
         row({
           iconName: 'find',
           title: t('menu.find'),
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:find')),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:find')),
         }),
         row({
           iconName: 'print',
@@ -741,14 +741,14 @@ export function openExtensionsButton() {
           row({
             iconName: 'store',
             title: t('menu.openStore'),
-            onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'store' } })),
+            onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'store' } })),
           }),
         );
         card.append(
           row({
             iconName: 'gear',
             title: t('menu.manageExtensions'),
-            onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'extensions' } })),
+            onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'extensions' } })),
           }),
         );
       });
@@ -765,7 +765,7 @@ export function openTabstripMenu() {
         row({
           iconName: 'plus',
           title: t('menu.newTab'),
-          onSelect: () => api().tabs.create({ url: 'hinterland://newtab/' }),
+          onSelect: () => api().tabs.create({ url: 'horizon://newtab/' }),
         }),
         row({
           iconName: 'clock',
@@ -776,12 +776,12 @@ export function openTabstripMenu() {
           iconName: 'archive',
           title: t('menu.tabStash'),
           subtitle: 'Ctrl+Shift+U',
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openstash')),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openstash')),
         }),
         row({
           iconName: 'tabs',
           title: t('menu.tabGroups'),
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:opentabgroups')),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:opentabgroups')),
         }),
         row({
           iconName: 'layers',
@@ -835,13 +835,13 @@ export function openTabstripMenu() {
           iconName: 'key',
           title: t('menu.passwords'),
           subtitle: 'Ctrl+Alt+P',
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'passwords' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'passwords' } })),
         }),
         row({
           iconName: 'user',
           title: t('menu.account'),
           subtitle: 'Ctrl+Shift+A',
-          onSelect: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'account' } })),
+          onSelect: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'account' } })),
         }),
         row({
           iconName: 'archive',

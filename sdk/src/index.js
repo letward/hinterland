@@ -1,6 +1,6 @@
 /**
- * @fileoverview Hinterland Extension SDK
- * Official SDK for building secure, modern extensions for the Hinterland browser.
+ * @fileoverview Neocrom Horizon Extension SDK
+ * Official SDK for building secure, modern extensions for the Neocrom Horizon browser.
  */
 
 export {
@@ -33,14 +33,14 @@ export {
 } from './content.js';
 
 export {
-  HINTERLAND_CSS_VARS,
-  injectHinterlandTheme,
+  HORIZON_CSS_VARS,
+  injectHorizonTheme,
   Store,
   createStore,
   UIHelper,
 } from './ui.js';
 
 export {
-  HinterlandExtension,
+  HorizonExtension,
   createExtension,
 } from './extension.js';

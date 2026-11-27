@@ -1,13 +1,13 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-const internal = String(location.protocol) === 'hinterland:';
+const internal = String(location.protocol) === 'horizon:';
 
 /**
  * Web pages receive no bridge at all. Only the browser's own pages get a small
  * settings channel, so nothing privileged can be reached from the open web.
  */
 if (internal) {
-  contextBridge.exposeInMainWorld('hinterlandPage', {
+  contextBridge.exposeInMainWorld('horizonPage', {
     name: 'Neocrom Horizon',
     page: location.hostname,
     settings: {

@@ -5,9 +5,9 @@ import { openModal, closeModal } from './modal.js';
 import { toast } from './toast.js';
 import { get } from './store.js';
 import { currentTab } from './state.js';
-import { renderHinterStore } from './hinterStore.js';
+import { renderHorizonStore } from './horizonStore.js';
 
-const api = () => window.hinterland;
+const api = () => window.horizon;
 
 function head(title, description) {
   return el('div', {}, [
@@ -26,7 +26,7 @@ function searchBox(onInput) {
   return { field, input };
 }
 
-/* ------------------------------------------------------------- hinter store */
+/* ------------------------------------------------------------- horizon store */
 
 export function openStore(initialTab = 'all') {
   const activeId = initialTab.startsWith('store-') ? initialTab : `store-${initialTab}`;
@@ -35,11 +35,11 @@ export function openStore(initialTab = 'all') {
     iconName: 'store',
     activeId,
     nav: [
-      { id: 'store-all', labelKey: 'store.all', icon: 'sparkles', render: () => renderHinterStore('all') },
-      { id: 'store-themes', labelKey: 'store.themes', icon: 'palette', render: () => renderHinterStore('themes') },
-      { id: 'store-extensions', labelKey: 'store.extensions', icon: 'puzzle', render: () => renderHinterStore('extensions') },
-      { id: 'store-installed', labelKey: 'store.installed', icon: 'check', render: () => renderHinterStore('installed') },
-      { id: 'store-studio', labelKey: 'store.studio', icon: 'brush', render: () => renderHinterStore('studio') },
+      { id: 'store-all', labelKey: 'store.all', icon: 'sparkles', render: () => renderHorizonStore('all') },
+      { id: 'store-themes', labelKey: 'store.themes', icon: 'palette', render: () => renderHorizonStore('themes') },
+      { id: 'store-extensions', labelKey: 'store.extensions', icon: 'puzzle', render: () => renderHorizonStore('extensions') },
+      { id: 'store-installed', labelKey: 'store.installed', icon: 'check', render: () => renderHorizonStore('installed') },
+      { id: 'store-studio', labelKey: 'store.studio', icon: 'brush', render: () => renderHorizonStore('studio') },
     ],
   });
 }
@@ -638,7 +638,7 @@ function bookmarksPage() {
         el('button', { class: 'button primary', type: 'button', onclick: async () => {
           const tab = currentTab();
           const url = tab?.url ?? '';
-          if (!url || url.startsWith('hinterland://')) {
+          if (!url || url.startsWith('horizon://')) {
             toast(t('bookmarks.noPage'), 'warning');
             return;
           }
@@ -1324,7 +1324,7 @@ function shortcutsPage() {
             type: 'button',
             onclick: () => {
               closeModal();
-              window.dispatchEvent(new CustomEvent('hinterland:opensettings', { detail: { section: 'shortcuts' } }));
+              window.dispatchEvent(new CustomEvent('horizon:opensettings', { detail: { section: 'shortcuts' } }));
             },
           }, [el('span', { html: icon('gear') }), ` ${t('shortcuts.edit')}`]),
           el('button', {
@@ -1379,7 +1379,7 @@ function aboutPage() {
       api().app.info().then((info) => {
         const logo = el('img', {
           class: 'aboutLogo',
-          src: 'hinterland://assets/icon.png',
+          src: 'horizon://assets/icon.png',
           alt: info.name,
         });
         container.replaceChildren(
@@ -1808,7 +1808,7 @@ function readingListPage(mode = 'unread') {
           type: 'button',
           onclick: async () => {
             const cur = currentTab();
-            if (cur && cur.url && !cur.url.startsWith('hinterland://')) {
+            if (cur && cur.url && !cur.url.startsWith('horizon://')) {
               await api().readingList.add({ url: cur.url, title: cur.title, favicon: cur.favicon });
               refresh();
             } else {
@@ -2365,7 +2365,7 @@ function notesPage() {
           title: t('notes.insertTabLink'),
           onclick: () => {
             const cur = currentTab();
-            if (cur && cur.url && !cur.url.startsWith('hinterland://')) {
+            if (cur && cur.url && !cur.url.startsWith('horizon://')) {
               const link = `\n[${cur.title || cur.url}](${cur.url})\n`;
               activeNote.content = (activeNote.content ? activeNote.content + '\n' : '') + link;
               scheduleSave();
@@ -3039,7 +3039,7 @@ function tabGroupsPage() {
       container.append(head(t('tabGroups.title'), t('tabGroups.description')));
 
       const presetColors = [
-        '#388bfd', // sapphire
+        '#bdbdbd', // sapphire
         '#2ea043', // emerald
         '#d29922', // amber
         '#f85149', // ruby
@@ -3383,7 +3383,7 @@ function tabGroupsPage() {
             class: 'groupColorIndicator',
             type: 'button',
             title: t('tabGroups.recolorHint'),
-            style: { width: '14px', height: '14px', background: group.color || '#4f7cff', display: 'inline-block', border: '1px solid rgba(255,255,255,0.25)', padding: '0', cursor: 'pointer' },
+            style: { width: '14px', height: '14px', background: group.color || '#bdbdbd', display: 'inline-block', border: '1px solid rgba(255,255,255,0.25)', padding: '0', cursor: 'pointer' },
             onclick: async () => {
               const currentIdx = presetColors.indexOf((group.color || '').toLowerCase());
               const nextColor = presetColors[(currentIdx + 1) % presetColors.length];
@@ -4447,11 +4447,11 @@ function renderAccountConnected(container, status, refresh) {
 
   const providerLabel = status.provider === 'supabase'
     ? t('account.providerSupabase')
-    : t('account.providerHinterland');
+    : t('account.providerHorizon');
 
   let avatarElement;
   if (currentAvatar === 'logo') {
-    avatarElement = el('img', { class: 'accountAvatarLogo', src: 'hinterland://assets/icon.png', alt: 'Neocrom Horizon' });
+    avatarElement = el('img', { class: 'accountAvatarLogo', src: 'horizon://assets/icon.png', alt: 'Neocrom Horizon' });
   } else if (currentAvatar === 'initials') {
     avatarElement = el('div', { class: 'accountAvatar', text: initial });
   } else {
@@ -4491,7 +4491,7 @@ function renderAccountConnected(container, status, refresh) {
   ]);
   const avatarGrid = el('div', { class: 'accountAvatarGrid' });
   const avatarChoices = [
-    { id: 'logo', node: el('img', { src: 'hinterland://assets/icon.png', alt: 'Logo' }) },
+    { id: 'logo', node: el('img', { src: 'horizon://assets/icon.png', alt: 'Logo' }) },
     { id: 'initials', node: el('span', { text: initial }) },
     { id: 'robot', node: el('span', { text: '🤖' }) },
     { id: 'shield', node: el('span', { text: '🛡️' }) },
@@ -4892,10 +4892,10 @@ function accountProvidersPage() {
         const status = await api().account.getStatus();
 
         const providerSelect = el('select', { class: 'select' }, [
-          el('option', { value: 'hinterland', text: t('account.providerHinterland') }),
+          el('option', { value: 'horizon', text: t('account.providerHorizon') }),
           el('option', { value: 'supabase', text: t('account.providerSupabase') }),
         ]);
-        providerSelect.value = status.provider || 'hinterland';
+        providerSelect.value = status.provider || 'horizon';
 
         const supabaseUrlInput = el('input', {
           class: 'textInput wide',

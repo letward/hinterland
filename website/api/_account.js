@@ -1,5 +1,5 @@
 /**
- * @fileoverview Shared account logic for Hinterland Vercel account system.
+ * @fileoverview Shared account logic for Neocrom Horizon Vercel account system.
  * Single source of truth: accounts (email + password hash), verification state
  * (email, phone, TOTP/2FA), sessions, and entitlements (store downloads).
  *
@@ -196,7 +196,7 @@ function mapAccountToProfile(account) {
   return {
     id: account.id,
     email: account.email,
-    provider: HAS_SUPABASE ? 'supabase' : 'hinterland',
+    provider: HAS_SUPABASE ? 'supabase' : 'horizon',
     displayName: account.displayName || undefined,
     emailVerified: Boolean(account.emailVerified),
     phone: account.phone || null,
@@ -316,7 +316,7 @@ function getDownloadCount(userId) {
 
 function providersStatus() {
   return {
-    sync: { server: HAS_SUPABASE ? 'supabase' : 'hinterland-serverless', supabaseConfigured: HAS_SUPABASE },
+    sync: { server: HAS_SUPABASE ? 'supabase' : 'horizon-serverless', supabaseConfigured: HAS_SUPABASE },
     store: { supabaseConfigured: HAS_SUPABASE },
     analytics: { vercelAnalytics: true },
     account: {

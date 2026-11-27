@@ -1,9 +1,9 @@
-import { NAVIGABLE_SCHEMES, SCHEME, NEVER_UPGRADE } from './constants.js';
+import { NAVIGABLE_SCHEMES, SCHEME, LEGACY_SCHEME, NEVER_UPGRADE } from './constants.js';
 import { settings } from './settings.js';
 import { history } from './history.js';
 import { isInternalUrl } from './protocol.js';
 
-const KNOWN_SCHEMES = new Set([...NAVIGABLE_SCHEMES, 'view-source:', 'mailto:', 'tel:', 'magnet:', 'sms:']);
+const KNOWN_SCHEMES = new Set([...NAVIGABLE_SCHEMES, `${LEGACY_SCHEME}:`, 'view-source:', 'mailto:', 'tel:', 'magnet:', 'sms:']);
 
 function hostLooksReal(input) {
   if (!input || /\s/.test(input)) return false;
@@ -24,11 +24,15 @@ function hostLooksReal(input) {
 function normalise(input) {
   const value = input.trim();
   if (!value) return null;
+  if (value.toLowerCase().startsWith(`${LEGACY_SCHEME}://`)) {
+    const upgraded = `${SCHEME}://${value.slice(LEGACY_SCHEME.length + 3)}`;
+    return upgraded.startsWith(`${SCHEME}://newtab`) ? `${SCHEME}://newtab/` : upgraded;
+  }
   if (isInternalUrl(value)) return value.startsWith(`${SCHEME}://newtab`) ? `${SCHEME}://newtab/` : value;
   const colon = value.indexOf(':');
   if (colon > 0) {
     const scheme = value.slice(0, colon + 1).toLowerCase();
-    if (KNOWN_SCHEMES.has(scheme)) return scheme === 'hinterland:' ? value : value;
+    if (KNOWN_SCHEMES.has(scheme)) return value;
   }
   if (value.startsWith('about:') || value.startsWith('view-source:')) return value;
   if (hostLooksReal(value)) {

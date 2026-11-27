@@ -8,11 +8,11 @@ import { stripTracking, escapeHtml, sanitizeHtml } from '../src/security.js';
 import { resolveTarget, buildSearchUrl, activeEngines } from '../../src/main/navigation.js';
 import { Settings } from '../../src/main/settings.js';
 import { SCHEMA } from '../../src/main/schema.js';
-import { encryptVault, decryptVault, verifyMasterPassword, generatePassword, calculateStrength } from '../../src/extensions/hinterlandPass/crypto.js';
+import { encryptVault, decryptVault, verifyMasterPassword, generatePassword, calculateStrength } from '../../src/extensions/horizonPass/crypto.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..');
 
-describe('Hinterland Comprehensive Stress & Robustness Suite', () => {
+describe('Neocrom Horizon Comprehensive Stress & Robustness Suite', () => {
 
   /* ------------------------------------------------------------- 1. SETTINGS & PROTOTYPE POLLUTION */
   describe('Settings Store Robustness & Prototype Pollution Protection', () => {
@@ -68,16 +68,16 @@ describe('Hinterland Comprehensive Stress & Robustness Suite', () => {
       assert.equal(settings.value('appearance.theme'), 'system', 'invalid select option must fall back to default');
 
       // Multiselect setting (extensions.enabled)
-      settings.set('extensions.enabled', ['hinterlandfocus', 'custom_ext', 'hinterlandfocus']);
+      settings.set('extensions.enabled', ['horizonfocus', 'custom_ext', 'horizonfocus']);
       const enabledExts = settings.value('extensions.enabled');
       assert.ok(Array.isArray(enabledExts));
-      assert.ok(enabledExts.includes('hinterlandfocus'));
+      assert.ok(enabledExts.includes('horizonfocus'));
       assert.ok(enabledExts.includes('custom_ext'));
-      assert.equal(enabledExts.filter((e) => e === 'hinterlandfocus').length, 1, 'duplicates must be deduplicated');
+      assert.equal(enabledExts.filter((e) => e === 'horizonfocus').length, 1, 'duplicates must be deduplicated');
 
       // Invalid multiselect input falls back to default
       settings.set('extensions.enabled', 'invalid-string-not-array');
-      assert.deepEqual(settings.value('extensions.enabled'), ['hinterlandfocus', 'hinterlandpanel', 'hinterlandpass']);
+      assert.deepEqual(settings.value('extensions.enabled'), ['horizonfocus', 'horizonpanel', 'horizonpass']);
     });
   });
 
@@ -88,12 +88,12 @@ describe('Hinterland Comprehensive Stress & Robustness Suite', () => {
         { input: 'https://example.com', expectedKind: 'url', expectedUrl: 'https://example.com' },
         { input: 'http://localhost:3000/app', expectedKind: 'url', expectedUrl: 'http://localhost:3000/app' },
         { input: '127.0.0.1:8080', expectedKind: 'url', expectedUrl: 'https://127.0.0.1:8080/' },
-        { input: 'hinterland://newtab', expectedKind: 'url', expectedUrl: 'hinterland://newtab/' },
-        { input: 'hinterland://settings', expectedKind: 'url', expectedUrl: 'hinterland://settings' },
+        { input: 'horizon://newtab', expectedKind: 'url', expectedUrl: 'horizon://newtab/' },
+        { input: 'horizon://settings', expectedKind: 'url', expectedUrl: 'horizon://settings' },
         { input: 'about:blank', expectedKind: 'url', expectedUrl: 'about:blank' },
         { input: 'view-source:https://example.org', expectedKind: 'url', expectedUrl: 'view-source:https://example.org' },
-        { input: '', expectedKind: 'empty', expectedUrl: 'hinterland://newtab/' },
-        { input: '   ', expectedKind: 'empty', expectedUrl: 'hinterland://newtab/' },
+        { input: '', expectedKind: 'empty', expectedUrl: 'horizon://newtab/' },
+        { input: '   ', expectedKind: 'empty', expectedUrl: 'horizon://newtab/' },
       ];
 
       for (const { input, expectedKind, expectedUrl } of cases) {
@@ -196,12 +196,12 @@ describe('Hinterland Comprehensive Stress & Robustness Suite', () => {
     });
   });
 
-  /* ------------------------------------------------------------- 5. HINTERLAND PASS CRYPTOGRAPHY STRESS */
-  describe('Hinterland Pass Cryptography & Vault Security', () => {
+  /* ------------------------------------------------------------- 5. HORIZON PASS CRYPTOGRAPHY STRESS */
+  describe('Horizon Pass Cryptography & Vault Security', () => {
     const password = 'SuperSecretMasterPassword!2026';
     const vaultData = {
       items: [
-        { id: 'p1', title: 'GitHub', username: 'dev@hinterland.de', password: 'P@ssw0rd123!', url: 'https://github.com' },
+        { id: 'p1', title: 'GitHub', username: 'dev@neocrom.pro', password: 'P@ssw0rd123!', url: 'https://github.com' },
         { id: 'p2', title: 'Banking', username: 'user99', password: 'Vault#Secret#2026', url: 'https://bank.de' },
       ],
       updatedAt: Date.now(),

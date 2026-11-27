@@ -1,4 +1,4 @@
-"""Hinterland Agent-Workers — Paket."""
+"""Neocrom Horizon Agent-Workers — Paket."""
 
 from .base import BaseWorker
 

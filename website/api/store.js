@@ -1,7 +1,7 @@
 /**
- * @fileoverview Hinterland Store Upload API - Vercel Serverless Endpoint
+ * @fileoverview Neocrom Horizon Store Upload API - Vercel Serverless Endpoint
  * Allows logged-in users to post designs (themes) and upload extensions to
- * the Hinter Store. Uses Supabase as the backing store with an in-memory
+ * the Horizon Store. Uses Supabase as the backing store with an in-memory
  * fallback for local dev/preview. Auth state is shared with /api/account via
  * the shared _account.js module.
  *
@@ -136,14 +136,14 @@ module.exports = async function handler(req, res) {
       source: 'community',
       version: data.version || '1.0.0',
       theme: data.theme || 'dark',
-      accent: data.accent || '#4f7cff',
-      accentContrast: data.accentContrast || '#ffffff',
-      darkBackground: data.darkBackground || '#12141a',
-      darkSurface: data.darkSurface || '#1a1d26',
-      darkText: data.darkText || '#e6e9f2',
-      lightBackground: data.lightBackground || '#f2f3f7',
+      accent: data.accent || '#f8f8f8',
+      accentContrast: data.accentContrast || '#090909',
+      darkBackground: data.darkBackground || '#090909',
+      darkSurface: data.darkSurface || '#141414',
+      darkText: data.darkText || '#f8f8f8',
+      lightBackground: data.lightBackground || '#f4f4f4',
       lightSurface: data.lightSurface || '#ffffff',
-      lightText: data.lightText || '#161923',
+      lightText: data.lightText || '#111111',
       radius: data.radius ?? 10,
       density: data.density || 'cosy',
       fontStack: data.fontStack || 'system',

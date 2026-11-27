@@ -1,11 +1,11 @@
 {
-  "name": "hinterland",
-  "productName": "Hinterland",
-  "version": "1.46.0",
-  "description": "Ein schneller, sicherer und frei anpassbarer Browser. A fast, secure and freely customisable browser.",
+  "name": "neocrom-horizon",
+  "productName": "Neocrom Horizon",
+  "version": "1.47.0",
+  "description": "Neocrom Horizon — a fast, private, customisable Chromium browser built for the Neocrom ecosystem.",
   "main": "src/main/main.js",
   "type": "module",
-  "author": "Hinterland",
+  "author": "Neocrom",
   "license": "MIT",
   "private": true,
   "engines": {
@@ -17,7 +17,7 @@
     "check": "node scripts/check.mjs",
     "test:sdk": "node --test sdk/test/*.test.mjs",
     "test": "node scripts/check.mjs && node --test sdk/test/*.test.mjs",
-    "sdk": "node sdk/bin/hinterland-sdk.mjs",
+    "sdk": "node sdk/bin/horizon-sdk.mjs",
     "icons": "node scripts/makeicon.mjs",
     "dist": "electron-builder"
   },
@@ -29,9 +29,9 @@
     "electron-builder": "^25.1.8"
   },
   "build": {
-    "appId": "de.hinterland",
-    "productName": "Hinterland",
-    "artifactName": "${productName}-Setup-${version}.${ext}",
+    "appId": "pro.neocrom.horizon",
+    "productName": "Neocrom Horizon",
+    "artifactName": "Neocrom-Horizon-Setup-${version}.${ext}",
     "publish": {
       "provider": "github",
       "owner": "neocrom-team",
@@ -43,11 +43,11 @@
     ],
     "protocols": [
       {
-        "name": "Hinterland Web URL",
+        "name": "Neocrom Horizon Web URL",
         "schemes": [
           "http",
           "https",
-          "hinterland"
+          "horizon"
         ]
       }
     ],
@@ -78,8 +78,8 @@
       "allowToChangeInstallationDirectory": false,
       "createDesktopShortcut": "always",
       "createStartMenuShortcut": true,
-      "shortcutName": "Hinterland",
-      "uninstallDisplayName": "Hinterland Browser",
+      "shortcutName": "Neocrom Horizon",
+      "uninstallDisplayName": "Neocrom Horizon",
       "deleteAppDataOnUninstall": false,
       "runAfterFinish": true,
       "installerIcon": "build/icons/icon.ico",

@@ -36,7 +36,7 @@ function mockRes() {
   return res;
 }
 
-describe('Hinterland v1.21.0 Account & Store Community Features', () => {
+describe('Neocrom Horizon v1.21.0 Account & Store Community Features', () => {
   describe('Community Store Uploads & Authentication Gating (website/api/store.js)', () => {
     it('rejects unauthenticated upload on POST with 401 notLoggedIn', async () => {
       const req = {
@@ -180,7 +180,7 @@ describe('Hinterland v1.21.0 Account & Store Community Features', () => {
       const sync = new SyncService();
       const res = sync.pairDevice();
       assert.equal(res.ok, true);
-      assert.ok(res.code.startsWith('HL-'));
+      assert.ok(res.code.startsWith('NH-'));
       assert.ok(res.expiresAt);
       sync.destroy();
     });
@@ -193,22 +193,22 @@ describe('Hinterland v1.21.0 Account & Store Community Features', () => {
       sync.destroy();
     });
 
-    it('successfully pairs device with valid HL-XXXX-XXXX pairing code', async () => {
+    it('successfully pairs device with valid NH-XXXX-XXXX pairing code', async () => {
       const sync = new SyncService();
-      const res = await sync.pairDevice({ code: 'HL-A7B2-C9D4', name: 'MacBook Pro' });
+      const res = await sync.pairDevice({ code: 'NH-A7B2-C9D4', name: 'MacBook Pro' });
       assert.equal(res.ok, true);
       assert.equal(res.device.name, 'MacBook Pro');
-      assert.equal(res.device.pairedCode, 'HL-A7B2-C9D4');
+      assert.equal(res.device.pairedCode, 'NH-A7B2-C9D4');
 
       const devices = sync.getDevices();
-      assert.ok(devices.some((d) => d.pairedCode === 'HL-A7B2-C9D4'));
+      assert.ok(devices.some((d) => d.pairedCode === 'NH-A7B2-C9D4'));
       sync.destroy();
     });
 
     it('calculates comprehensive sync statistics', () => {
       settings.set('data.bookmarks', [
         { title: 'GitHub', url: 'https://github.com' },
-        { title: 'Hinterland', url: 'https://hinterland.de' },
+        { title: 'Neocrom Horizon', url: 'https://neocrom.pro' },
       ]);
       const sync = new SyncService();
       const stats = sync.getSyncStats();

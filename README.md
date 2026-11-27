@@ -13,14 +13,14 @@ Ein schneller, sicherer und frei anpassbarer Browser (Electron/Chromium).
 - Privacy: Tracker-Blocking, HTTPS-First, DNT, Referrer-Stripping, Site-Permissions
 - Reader Mode, Quick Notes, Reading List, Media Controller / PiP
 - Passwort-Manager (Zero-Knowledge AES-GCM Vault)
-- Extension-Support (MV3) + eigenes Extension SDK (`@hinterland/extension-sdk`)
+- Extension-Support (MV3) + eigenes Extension SDK (`@neocrom/horizon-sdk`)
 - Automatische Updates über GitHub Releases
 - Direktzugriff auf Marketplace, Community, Bibliothek und Pulse von der Startseite und aus dem Neocrom-Menü neben der Adressleiste
 
 ## Repository-Struktur
 
 ```
-Hinterland/
+Neocrom Horizon/
 ├── src/            # Browser-Quellcode (main, preload, ui, extensions)
 ├── sdk/            # Extension SDK + Tests
 ├── examples/       # Beispiel-Extensions

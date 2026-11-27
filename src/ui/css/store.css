@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Hinter Store — Stylesheet
+   Horizon Store — Stylesheet
    ========================================================================== */
 
 .storeRoot {
@@ -16,10 +16,10 @@
   position: relative;
   overflow: hidden;
   padding: 28px 32px;
-  background: linear-gradient(135deg, rgba(79, 124, 255, 0.14) 0%, rgba(122, 92, 255, 0.08) 50%, rgba(16, 185, 129, 0.06) 100%), var(--surface);
-  border: 1px solid var(--borderHighlight, var(--borderSoft));
+  background: linear-gradient(150deg, var(--surfaceHover) 0%, var(--surface) 66%);
+  border: 1px solid var(--border);
   border-radius: var(--radiusLarge);
-  box-shadow: 0 12px 32px rgb(0 0 0 / 20%);
+  box-shadow: var(--shadowSmall);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -33,7 +33,7 @@
   width: 240px;
   height: 240px;
   background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-  opacity: 0.18;
+  opacity: 0.1;
   pointer-events: none;
   filter: blur(44px);
 }
@@ -58,7 +58,7 @@
   border-radius: var(--radiusPill);
   background: var(--accentSubtle);
   color: var(--accent);
-  border: 1px solid rgba(79, 124, 255, 0.3);
+  border: 1px solid var(--border);
 }
 
 .storeHeroTitle {
@@ -370,9 +370,9 @@
 }
 
 .badgeOfficial {
-  background: rgba(79, 124, 255, 0.15);
+  background: var(--accentSubtle);
   color: var(--accent);
-  border: 1px solid rgba(79, 124, 255, 0.3);
+  border: 1px solid var(--border);
 }
 
 .badgeCommunity {
@@ -431,14 +431,14 @@
 }
 
 .mockupTabActive {
-  box-shadow: 0 -2px 0 0 var(--accentPreview, #4f7cff) inset;
+  box-shadow: 0 -2px 0 0 var(--accentPreview, var(--accent)) inset;
 }
 
 .mockupTabDot {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--accentPreview, #4f7cff);
+  background: var(--accentPreview, var(--accent));
 }
 
 .mockupToolbar {
@@ -553,8 +553,8 @@
 }
 
 .btnPrimary:hover {
-  filter: brightness(1.1);
-  box-shadow: 0 4px 14px rgba(79, 124, 255, 0.3);
+  filter: brightness(0.92);
+  box-shadow: 0 4px 14px var(--accentSubtle);
 }
 
 .btnSecondary {
@@ -912,10 +912,10 @@
   position: relative;
   overflow: hidden;
   padding: 24px;
-  background: linear-gradient(135deg, rgba(79, 124, 255, 0.12) 0%, rgba(122, 92, 255, 0.08) 50%, rgba(254, 128, 25, 0.07) 100%), var(--surface);
-  border: 1px solid rgba(79, 124, 255, 0.28);
-  border-radius: var(--radius);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  background: linear-gradient(150deg, var(--surfaceHover) 0%, var(--surface) 66%);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLarge);
+  box-shadow: var(--shadowSmall);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -929,8 +929,8 @@
   right: -40px;
   width: 180px;
   height: 180px;
-  background: radial-gradient(circle, #fe8019 0%, transparent 70%);
-  opacity: 0.12;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+  opacity: 0.08;
   pointer-events: none;
   filter: blur(35px);
 }
@@ -947,15 +947,14 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: linear-gradient(135deg, #fe8019 0%, #ff6b4a 100%);
-  color: #ffffff;
+  background: var(--accent);
+  color: var(--onAccent);
   font-size: 0.74rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   padding: 4px 11px;
-  border-radius: 999px;
-  box-shadow: 0 2px 8px rgba(254, 128, 25, 0.35);
+  border-radius: var(--radiusPill);
 }
 
 .weeklyPickPill svg {
@@ -1005,9 +1004,9 @@
 }
 
 .weeklyPickSection {
-  background: rgba(0, 0, 0, 0.15);
+  background: var(--surfaceAlt);
   border: 1px solid var(--borderSoft);
-  border-radius: var(--radiusSmall);
+  border-radius: var(--radius);
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
@@ -1015,8 +1014,8 @@
 }
 
 .weeklyPickHighlight {
-  border-left: 3px solid #fe8019;
-  background: linear-gradient(90deg, rgba(254, 128, 25, 0.08) 0%, rgba(0, 0, 0, 0.15) 100%);
+  border-left: 3px solid var(--accent);
+  background: linear-gradient(90deg, var(--accentSubtle) 0%, var(--surfaceAlt) 100%);
 }
 
 .weeklyPickSectionHeader {
@@ -1032,7 +1031,7 @@
 }
 
 .weeklyPickHighlight .weeklyPickSectionHeader {
-  color: #fe8019;
+  color: var(--text);
 }
 
 .weeklyPickSectionHeader svg {

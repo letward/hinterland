@@ -1,4 +1,4 @@
-const REPO = process.env.GITHUB_REPO || 'letward/Hinterland';
+const REPO = process.env.GITHUB_REPO || 'neocrom-team/neocrom-horizon';
 const TOKEN = process.env.GITHUB_TOKEN;
 
 // Shared-ish rate limit. Vercel serverless instances are ephemeral, so this is
@@ -62,7 +62,7 @@ module.exports = async function handler(req, res) {
 
   const title = 'Website feedback: ' + message.slice(0, 60) + (message.length > 60 ? '…' : '');
   const issueBody = [
-    '**Source:** Hinterland website feedback form',
+    '**Source:** Neocrom Horizon website feedback form',
     email ? `**Contact:** ${email}` : '',
     '',
     '**Message:**',
@@ -77,7 +77,7 @@ module.exports = async function handler(req, res) {
         Accept: 'application/vnd.github+json',
         'X-GitHub-Api-Version': '2022-11-28',
         'Content-Type': 'application/json',
-        'User-Agent': 'hinterland-feedback',
+        'User-Agent': 'neocrom-horizon-feedback',
       },
       body: JSON.stringify({ title, body: issueBody, labels: ['feedback', 'from-website'] }),
     });

@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { categorizeTracker, normalizeSiteDomain } from '../../src/main/security.js';
 
-describe('Hinterland v1.18.0 Features', () => {
+describe('Neocrom Horizon v1.18.0 Features', () => {
   describe('Privacy Shield & Tracker Categorization Engine', () => {
     it('categorizes tracking and telemetry URLs accurately', () => {
       assert.equal(categorizeTracker('https://www.google-analytics.com/analytics.js'), 'analytics');
@@ -16,7 +16,7 @@ describe('Hinterland v1.18.0 Features', () => {
       assert.equal(normalizeSiteDomain('https://www.example.com/page?query=1'), 'example.com');
       assert.equal(normalizeSiteDomain('http://sub.domain.org:8080/path'), 'sub.domain.org');
       assert.equal(normalizeSiteDomain('WWW.GITHUB.COM'), 'github.com');
-      assert.equal(normalizeSiteDomain('   hinterland.de   '), 'hinterland.de');
+      assert.equal(normalizeSiteDomain('   neocrom.pro   '), 'neocrom.pro');
       assert.equal(normalizeSiteDomain(''), '');
     });
 

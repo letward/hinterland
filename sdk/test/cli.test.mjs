@@ -5,10 +5,10 @@ import { existsSync, rmSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const CLI_PATH = fileURLToPath(new URL('../bin/hinterland-sdk.mjs', import.meta.url));
+const CLI_PATH = fileURLToPath(new URL('../bin/horizon-sdk.mjs', import.meta.url));
 const TEMP_DIR = fileURLToPath(new URL('./tmp-test-ext', import.meta.url));
 
-describe('Hinterland SDK CLI', () => {
+describe('Neocrom Horizon SDK CLI', () => {
   before(() => {
     if (existsSync(TEMP_DIR)) rmSync(TEMP_DIR, { recursive: true, force: true });
   });

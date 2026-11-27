@@ -16,7 +16,7 @@ import {
 } from '../../src/main/sync.js';
 import handler from '../../website/api/sync.js';
 
-describe('Hinterland Account & Cloud Sync Engine', () => {
+describe('Neocrom Horizon Account & Cloud Sync Engine', () => {
   describe('Bookmark Normalization & Intelligent Merge', () => {
     it('normalizes bookmark URLs with trailing slashes consistently', () => {
       assert.equal(normalizeBookmarkUrl('https://example.com/'), 'https://example.com');
@@ -57,13 +57,13 @@ describe('Hinterland Account & Cloud Sync Engine', () => {
   describe('Search History Normalization & Merge', () => {
     it('normalizes history URLs consistently', () => {
       assert.equal(normalizeHistoryUrl('https://example.com/search/'), 'https://example.com/search');
-      assert.equal(normalizeHistoryUrl('https://hinterland.de/'), 'https://hinterland.de');
+      assert.equal(normalizeHistoryUrl('https://neocrom.pro/'), 'https://neocrom.pro');
     });
 
     it('merges local and remote search history without duplicates and keeps latest metadata', () => {
       const local = [
         { url: 'https://example.com/search?q=freedom', title: 'Freedom Search', time: 1000, visits: 2 },
-        { url: 'https://hinterland.de', title: 'Hinterland', time: 500, visits: 1 },
+        { url: 'https://neocrom.pro', title: 'Neocrom Horizon', time: 500, visits: 1 },
       ];
       const remote = [
         { url: 'https://example.com/search?q=freedom/', title: 'Freedom Search Updated', time: 2000, visits: 4 },
@@ -177,7 +177,7 @@ describe('Hinterland Account & Cloud Sync Engine', () => {
 
       assert.equal(res.statusCode, 200);
       assert.equal(res.data.ok, true);
-      assert.equal(res.data.service, 'hinterland-sync');
+      assert.equal(res.data.service, 'horizon-sync');
       const pkg = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8'));
       assert.equal(res.data.version, pkg.version);
     });
@@ -192,7 +192,7 @@ describe('Hinterland Account & Cloud Sync Engine', () => {
     });
 
     it('registers a new user and returns authentication token', async () => {
-      const email = `test-${Date.now()}@hinterland.de`;
+      const email = `test-${Date.now()}@neocrom.pro`;
       const req = {
         method: 'POST',
         headers: { 'x-forwarded-for': '127.0.0.1' },
@@ -208,7 +208,7 @@ describe('Hinterland Account & Cloud Sync Engine', () => {
     });
 
     it('authenticates user and syncs bookmarks & settings', async () => {
-      const email = `syncuser-${Date.now()}@hinterland.de`;
+      const email = `syncuser-${Date.now()}@neocrom.pro`;
       const password = 'SyncPassword2026!';
 
       // Signup

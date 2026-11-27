@@ -19,7 +19,7 @@ import { bindBookmarksBar, syncBookmarksBar } from './bookmarksBar.js';
 import { openSiteInfo } from './siteInfo.js';
 import { currentTab } from './state.js';
 
-const api = () => window.hinterland;
+const api = () => window.horizon;
 
 const PANELS = {
   store: openStore,
@@ -149,7 +149,7 @@ function bind() {
     openTabstripMenu();
   });
 
-  $('#newTab').addEventListener('click', () => api().tabs.create({ url: 'hinterland://newtab/' }));
+  $('#newTab').addEventListener('click', () => api().tabs.create({ url: 'horizon://newtab/' }));
   $('#back').addEventListener('click', () => api().tab.back(activeTab()?.id));
   $('#forward').addEventListener('click', () => api().tab.forward(activeTab()?.id));
   $('#reload').addEventListener('click', () => {
@@ -158,7 +158,7 @@ function bind() {
     if (tab.loading) api().tab.stop(tab.id);
     else api().tab.reload(tab.id);
   });
-  $('#home').addEventListener('click', () => api().tabs.create({ url: get('general.homepage') || 'hinterland://newtab/' }));
+  $('#home').addEventListener('click', () => api().tabs.create({ url: get('general.homepage') || 'horizon://newtab/' }));
   $('#findButton').addEventListener('click', () => (isFindOpen() ? closeFind() : openFind()));
   $('#downloadsButton').addEventListener('click', () => openDownloads());
   $('#extensionsButton').addEventListener('click', () => openExtensionsButton());
@@ -178,18 +178,18 @@ function bind() {
     focusOmnibox(false);
   });
 
-  window.addEventListener('hinterland:tabmenu', (event) => openTabMenu(event.detail.tab, event.detail.x, event.detail.y));
-  window.addEventListener('hinterland:openpanel', (event) => PANELS[event.detail.panel]?.());
-  window.addEventListener('hinterland:openstore', (event) => openStore(event.detail?.tab));
-  window.addEventListener('hinterland:opensettings', (event) => openSettings(event.detail?.section ?? 'general'));
-  window.addEventListener('hinterland:find', () => openFind());
-  window.addEventListener('hinterland:bookmark', () => toggleBookmark());
-  window.addEventListener('hinterland:commandpalette', () => openCommandPalette());
-  window.addEventListener('hinterland:togglebookmarksbar', () => toggleBookmarksBar());
-  window.addEventListener('hinterland:siteinfo', () => openSiteInfo());
-  window.addEventListener('hinterland:openstash', () => openTabStash());
-  window.addEventListener('hinterland:opentabgroups', () => openTabGroups());
-  window.addEventListener('hinterland:openaccount', () => openAccount());
+  window.addEventListener('horizon:tabmenu', (event) => openTabMenu(event.detail.tab, event.detail.x, event.detail.y));
+  window.addEventListener('horizon:openpanel', (event) => PANELS[event.detail.panel]?.());
+  window.addEventListener('horizon:openstore', (event) => openStore(event.detail?.tab));
+  window.addEventListener('horizon:opensettings', (event) => openSettings(event.detail?.section ?? 'general'));
+  window.addEventListener('horizon:find', () => openFind());
+  window.addEventListener('horizon:bookmark', () => toggleBookmark());
+  window.addEventListener('horizon:commandpalette', () => openCommandPalette());
+  window.addEventListener('horizon:togglebookmarksbar', () => toggleBookmarksBar());
+  window.addEventListener('horizon:siteinfo', () => openSiteInfo());
+  window.addEventListener('horizon:openstash', () => openTabStash());
+  window.addEventListener('horizon:opentabgroups', () => openTabGroups());
+  window.addEventListener('horizon:openaccount', () => openAccount());
 
   $('#extensionToolbar').addEventListener('click', async (event) => {
     const button = event.target.closest('.extensionButton');
@@ -473,13 +473,13 @@ function wireShortcuts() {
 
     if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'n') {
       event.preventDefault();
-      api().tabs.create({ url: 'hinterland://newtab/', privateMode: true });
+      api().tabs.create({ url: 'horizon://newtab/', privateMode: true });
       return;
     }
 
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 't') {
       event.preventDefault();
-      api().tabs.create({ url: 'hinterland://newtab/' });
+      api().tabs.create({ url: 'horizon://newtab/' });
       return;
     }
 
@@ -600,7 +600,7 @@ function syncAccountButton(status = null) {
 
     let avatarEl;
     if (avatar === 'logo') {
-      avatarEl = el('img', { class: 'accountToolbarAvatar', src: 'hinterland://assets/icon.png', alt: name });
+      avatarEl = el('img', { class: 'accountToolbarAvatar', src: 'horizon://assets/icon.png', alt: name });
     } else {
       avatarEl = el('span', { class: 'accountToolbarInitials', text: initial });
     }
@@ -638,13 +638,13 @@ async function toggleBookmarksBar() {
 
 async function toggleReaderMode() {
   const tab = currentTab();
-  if (!tab || !tab.url || tab.url.startsWith('hinterland://')) return;
+  if (!tab || !tab.url || tab.url.startsWith('horizon://')) return;
   await api().tab.readerMode(tab.id);
 }
 
 async function toggleBookmark() {
   const tab = currentTab();
-  if (!tab?.url || tab.url.startsWith('hinterland://')) {
+  if (!tab?.url || tab.url.startsWith('horizon://')) {
     toast(t('bookmarks.noPage'), 'warning');
     return;
   }

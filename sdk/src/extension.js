@@ -1,12 +1,12 @@
 /**
- * @fileoverview Hinterland Extension SDK - Extension Orchestrator
- * High-level lifecycle orchestrator for Hinterland background service workers.
+ * @fileoverview Neocrom Horizon Extension SDK - Extension Orchestrator
+ * High-level lifecycle orchestrator for Neocrom Horizon background service workers.
  */
 
 import { createSecureStorage } from './security.js';
 import { createMessageBus } from './messaging.js';
 
-export class HinterlandExtension {
+export class HorizonExtension {
   /**
    * @param {object} [config]
    * @param {string} [config.id] - Optional extension identifier
@@ -14,7 +14,7 @@ export class HinterlandExtension {
    * @param {object} [config.messaging] - Messaging options passed to createMessageBus
    */
   constructor(config = {}) {
-    this.id = config.id || (typeof chrome !== 'undefined' ? chrome.runtime?.id : 'hinterland_ext');
+    this.id = config.id || (typeof chrome !== 'undefined' ? chrome.runtime?.id : 'horizon_ext');
     this.storage = createSecureStorage({
       namespace: config.id || 'ext',
       ...(config.storage || {}),
@@ -84,11 +84,11 @@ export class HinterlandExtension {
 }
 
 /**
- * Creates and configures a Hinterland extension background orchestrator.
+ * Creates and configures a Neocrom Horizon extension background orchestrator.
  *
  * @param {object} [config]
- * @returns {HinterlandExtension}
+ * @returns {HorizonExtension}
  */
 export function createExtension(config = {}) {
-  return new HinterlandExtension(config);
+  return new HorizonExtension(config);
 }

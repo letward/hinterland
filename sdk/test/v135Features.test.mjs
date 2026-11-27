@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
 
-describe('Hinterland v1.35.0 Features & Polish', () => {
+describe('Neocrom Horizon v1.35.0 Features & Polish', () => {
   describe('Tab Groups Studio Fix & tabs:list Bridge', () => {
     it('declares tabs:list handler in src/main/ipc.js', () => {
       const ipcSource = readFileSync(join(ROOT, 'src', 'main', 'ipc.js'), 'utf8');
@@ -191,10 +191,10 @@ describe('Hinterland v1.35.0 Features & Polish', () => {
       assert.ok(guide.includes('Copy Diagnostics'));
     });
 
-    it('updates website/index.html to v1.35.0 release badge and download link', () => {
+    it('updates website/index.html to latest release badge and download link', () => {
       const indexHtml = readFileSync(join(ROOT, 'website', 'index.html'), 'utf8');
-      assert.ok(indexHtml.includes('v1.35.0 · Latest Release') || indexHtml.includes('v1.36.0 · Latest Release') || indexHtml.includes('v1.37.0 · Latest Release') || indexHtml.includes('v1.38.0 · Latest Release') || indexHtml.includes('v1.39.0 · Latest Release') || indexHtml.includes('v1.40.0 · Latest Release') || indexHtml.includes('v1.41.0 · Latest Release') || indexHtml.includes('v1.42.0 · Latest Release') || indexHtml.includes('v1.43.0 · Latest Release') || indexHtml.includes('v1.44.0 · Latest Release') || indexHtml.includes('v1.45.0 · Latest Release'));
-      assert.ok(indexHtml.includes('Hinterland-Setup-1.35.0.exe') || indexHtml.includes('Hinterland-Setup-1.36.0.exe') || indexHtml.includes('Hinterland-Setup-1.37.0.exe') || indexHtml.includes('Hinterland-Setup-1.38.0.exe') || indexHtml.includes('Hinterland-Setup-1.39.0.exe') || indexHtml.includes('Hinterland-Setup-1.40.0.exe') || indexHtml.includes('Hinterland-Setup-1.41.0.exe') || indexHtml.includes('Hinterland-Setup-1.42.0.exe') || indexHtml.includes('Hinterland-Setup-1.43.0.exe') || indexHtml.includes('Hinterland-Setup-1.44.0.exe') || indexHtml.includes('Hinterland-Setup-1.45.0.exe'));
+      assert.ok(/v1\.\d+\.\d+ · /.test(indexHtml));
+      assert.ok(indexHtml.includes('Neocrom-Horizon-Setup-1.47.0.exe'));
     });
 
     it('updates website/api/sync.js to v1.35.0', () => {

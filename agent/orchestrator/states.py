@@ -1,4 +1,4 @@
-"""Hinterland Agent-Orchestrator — Zustandsmaschine.
+"""Neocrom Horizon Agent-Orchestrator — Zustandsmaschine.
 
 Definiert alle zulässigen Aufgaben-Zustände und erlaubte Übergänge.
 """

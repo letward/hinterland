@@ -35,7 +35,7 @@ function applyStylesheet(contents, css) {
     injected.delete(contents);
     return;
   }
-  const key = `hinterland user style ${(sequence += 1)}`;
+  const key = `horizon user style ${(sequence += 1)}`;
   contents.insertCSS(css, key);
   injected.set(contents, { css, key });
 }

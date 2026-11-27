@@ -1,4 +1,4 @@
-"""Hinterland Agent-Orchestrator — Hauptsteuerung.
+"""Neocrom Horizon Agent-Orchestrator — Hauptsteuerung.
 
 Nimmt Aufgaben aus definierten Quellen an, validiert, priorisiert und führt
 sie in isolierten Arbeitsbereichen aus. Keine Abhängigkeit von kostenpflichten

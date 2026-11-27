@@ -1,5 +1,5 @@
 /**
- * @fileoverview Hinterland Password Manager - Core Backend Service
+ * @fileoverview Neocrom Horizon Pass - Core Password Manager Service
  * Zero-knowledge encrypted vault using AES-256-GCM and PBKDF2 (100,000 iterations).
  * Manages vault state, in-memory unlocked credentials, inactivity auto-lock, and autofill.
  */
@@ -13,7 +13,7 @@ import {
   generatePassword,
   calculateStrength,
   normalizeDomain,
-} from '../extensions/hinterlandPass/crypto.js';
+} from '../extensions/horizonPass/crypto.js';
 
 const VAULT_SETTING_KEY = 'data.passwordsVault';
 const SETTINGS_KEY = 'data.passwordsSettings';
@@ -378,7 +378,7 @@ export class PasswordManager extends EventEmitter {
     return {
       ok: true,
       data: {
-        format: 'hinterland-pass-export-v1',
+        format: 'horizon-pass-export-v1',
         exportedAt: new Date().toISOString(),
         count: this.cachedVaultItems.length,
         items: this.cachedVaultItems.map(sanitizeItem),

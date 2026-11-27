@@ -7,7 +7,7 @@ import { openMediaControls } from './menu.js';
 import { toast } from './toast.js';
 import { openQrCode, openCookieInspector, openSitePermissions, openTabGroups } from './panels.js';
 
-const api = () => window.hinterland;
+const api = () => window.horizon;
 
 export function openCommandPalette() {
   if (isOpen('palette')) {
@@ -48,7 +48,7 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             shortcut: 'Ctrl+T',
             icon: 'plus',
-            run: () => api().tabs.create({ url: 'hinterland://newtab/' }),
+            run: () => api().tabs.create({ url: 'horizon://newtab/' }),
           },
           {
             id: 'privateTab',
@@ -56,7 +56,7 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             shortcut: 'Ctrl+Shift+N',
             icon: 'shield',
-            run: () => api().tabs.create({ url: 'hinterland://newtab/', privateMode: true }),
+            run: () => api().tabs.create({ url: 'horizon://newtab/', privateMode: true }),
           },
           {
             id: 'reopenTab',
@@ -297,7 +297,7 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'shield',
             run: async () => {
-              if (!current || !current.url || current.url.startsWith('hinterland://')) {
+              if (!current || !current.url || current.url.startsWith('horizon://')) {
                 toast(t('toast.cannotExemptSpecialPage'), 'warning');
                 return;
               }
@@ -342,7 +342,7 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'shield',
             run: async () => {
-              if (current && current.url && !current.url.startsWith('hinterland://')) {
+              if (current && current.url && !current.url.startsWith('horizon://')) {
                 const host = new URL(current.url).hostname;
                 const res = await api().site.toggleShield(host);
                 toast(res.enabled ? t('toast.shieldEnabled') : t('toast.shieldDisabled'), 'info');
@@ -356,7 +356,7 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             icon: 'cookie',
             run: () => {
-              if (current && current.url && !current.url.startsWith('hinterland://')) {
+              if (current && current.url && !current.url.startsWith('horizon://')) {
                 openCookieInspector(current.url);
               }
             },
@@ -471,21 +471,21 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             shortcut: 'Ctrl+F',
             icon: 'find',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:find')),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:find')),
           },
           {
             id: 'bookmark',
             title: t('menu.addBookmark'),
             category: t('commandPalette.categoryCommand'),
             icon: 'bookmark',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:bookmark')),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:bookmark')),
           },
           {
             id: 'siteInfo',
             title: t('omni.viewSiteInfo'),
             category: t('commandPalette.categoryCommand'),
             icon: 'shield',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:siteinfo')),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:siteinfo')),
           },
           {
             id: 'copyLink',
@@ -543,7 +543,7 @@ export function openCommandPalette() {
             title: t('commandPalette.openStore'),
             category: t('commandPalette.categoryCommand'),
             icon: 'store',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'store' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'store' } })),
           },
           {
             id: 'openNotes',
@@ -551,7 +551,7 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             shortcut: 'Ctrl+Shift+Y',
             icon: 'notes',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'notes' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'notes' } })),
           },
           {
             id: 'passwords',
@@ -559,7 +559,7 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryNavigation'),
             shortcut: 'Ctrl+Alt+P',
             icon: 'key',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'passwords' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'passwords' } })),
           },
           {
             id: 'account',
@@ -567,7 +567,7 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryNavigation'),
             shortcut: 'Ctrl+Shift+A',
             icon: 'user',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'account' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'account' } })),
           },
           {
             id: 'syncNow',
@@ -586,7 +586,7 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             shortcut: 'Ctrl+Shift+Del',
             icon: 'trash',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'clearData' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'clearData' } })),
           },
           {
             id: 'togglePiP',
@@ -641,7 +641,7 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             shortcut: 'Ctrl+Shift+U',
             icon: 'archive',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openstash')),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openstash')),
           },
           {
             id: 'tabGroups',
@@ -754,21 +754,21 @@ export function openCommandPalette() {
             title: t('commandPalette.browseThemes'),
             category: t('commandPalette.categoryCommand'),
             icon: 'palette',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openstore', { detail: { tab: 'themes' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openstore', { detail: { tab: 'themes' } })),
           },
           {
             id: 'storeExtensions',
             title: t('commandPalette.browseExtensions'),
             category: t('commandPalette.categoryCommand'),
             icon: 'puzzle',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openstore', { detail: { tab: 'extensions' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openstore', { detail: { tab: 'extensions' } })),
           },
           {
             id: 'storeCreator',
             title: t('commandPalette.themeCreator'),
             category: t('commandPalette.categoryCommand'),
             icon: 'brush',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openstore', { detail: { tab: 'studio' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openstore', { detail: { tab: 'studio' } })),
           },
           {
             id: 'viewSource',
@@ -814,14 +814,14 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             shortcut: 'Ctrl+H',
             icon: 'clock',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'history' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'history' } })),
           },
           {
             id: 'bookmarks',
             title: t('menu.bookmarks'),
             category: t('commandPalette.categoryCommand'),
             icon: 'bookmark',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'bookmarks' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'bookmarks' } })),
           },
           {
             id: 'toggleBookmarksBar',
@@ -829,7 +829,7 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             shortcut: 'Ctrl+Shift+B',
             icon: 'archive',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:togglebookmarksbar')),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:togglebookmarksbar')),
           },
           {
             id: 'downloads',
@@ -837,14 +837,14 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             shortcut: 'Ctrl+J',
             icon: 'download',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'downloads' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'downloads' } })),
           },
           {
             id: 'extensions',
             title: t('menu.extensions'),
             category: t('commandPalette.categoryCommand'),
             icon: 'puzzle',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'extensions' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'extensions' } })),
           },
           {
             id: 'extensionsCopyList',
@@ -865,7 +865,7 @@ export function openCommandPalette() {
             title: t('menu.shortcuts'),
             category: t('commandPalette.categoryCommand'),
             icon: 'keyboard',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'shortcuts' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'shortcuts' } })),
           },
           {
             id: 'taskManager',
@@ -873,7 +873,7 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             shortcut: 'Shift+Esc',
             icon: 'cpu',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'taskManager' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'taskManager' } })),
           },
           {
             id: 'copyTaskReport',
@@ -902,7 +902,7 @@ export function openCommandPalette() {
             title: t('commandPalette.openReadingList'),
             category: t('commandPalette.categoryCommand'),
             icon: 'bookmark',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'readingList' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'readingList' } })),
           },
           {
             id: 'addToReadingList',
@@ -1371,14 +1371,14 @@ export function openCommandPalette() {
             category: t('commandPalette.categoryCommand'),
             shortcut: 'Ctrl+,',
             icon: 'gear',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:opensettings', {})),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:opensettings', {})),
           },
           {
             id: 'about',
             title: t('menu.about'),
             category: t('commandPalette.categoryCommand'),
             icon: 'info',
-            run: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'about' } })),
+            run: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'about' } })),
           },
           {
             id: 'copyDiagnostics',
@@ -1425,7 +1425,7 @@ export function openCommandPalette() {
         try {
           item?.run?.();
         } catch (error) {
-          console.warn('[Hinterland] Command failed.', error);
+          console.warn('[Neocrom Horizon] Command failed.', error);
         }
       };
 

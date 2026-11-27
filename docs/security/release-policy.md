@@ -1,4 +1,4 @@
-# Sicherheitsrichtlinie für Releases (Hinterland)
+# Sicherheitsrichtlinie für Releases (Neocrom Horizon)
 
 ## 1. Veröffentlichung nur nach bestandenen Gates
 

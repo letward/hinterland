@@ -1,8 +1,8 @@
-# Hinterland Extension Security & Data Protection Specification
+# Neocrom Horizon Extension Security & Data Protection Specification
 
 ## 1. Objective
 
-The Hinterland Browser extension architecture is designed to allow developers to build powerful browser extensions while guaranteeing that **user data is strictly protected against exploitation, exfiltration, and tampering**.
+The Neocrom Horizon extension architecture is designed to allow developers to build powerful browser extensions while guaranteeing that **user data is strictly protected against exploitation, exfiltration, and tampering**.
 
 ---
 
@@ -25,9 +25,9 @@ The following user assets are strictly isolated and protected from third-party e
 
 ## 3. Threat Model & Mitigations
 
-| Threat | Attack Vector | Hinterland Defense & Mitigation |
+| Threat | Attack Vector | Neocrom Horizon Defense & Mitigation |
 |---|---|---|
-| **Privilege Escalation via Popup** | Extension popup accessing internal browser IPCs | **Dedicated Preload Isolation:** Extension popups are loaded with `EXTENSION_PRELOAD` which exposes only `window.hinterlandExtension.closePopup()`. The privileged `window.hinterland` API is completely omitted. |
+| **Privilege Escalation via Popup** | Extension popup accessing internal browser IPCs | **Dedicated Preload Isolation:** Extension popups are loaded with `EXTENSION_PRELOAD` which exposes only `window.horizonExtension.closePopup()`. The privileged `window.horizon` API is completely omitted. |
 | **Data Exfiltration via History/Cookies** | Extension silently querying all visited URLs or site cookies | **Strict Permission Gating:** Permissions like `cookies` or broad host permissions (`<all_urls>`) trigger audit warnings and require unpacked developer mode. Forbidden permissions (`debugger`, `nativeMessaging`, `privacy`, `proxy`) are blocked at runtime. |
 | **Arbitrary Code Execution in Active Tabs** | Malicious extension ID injecting raw scripts into tabs via `executeJavaScript` | **Safe Serialization:** Extension actions use `JSON.stringify(id)` during event dispatch to prevent script injection escapes. |
 | **DOM XSS in Extension UI** | Unsanitized API or web data rendered via `innerHTML` in popups | **Built-in Sanitization:** SDK provides `sanitizeHtml()` and `safeHtml` tagged templates, stripping all scripts, frames, and inline `on*` event handlers. The SDK CLI flags raw `innerHTML` assignments. |
@@ -41,7 +41,7 @@ The following user assets are strictly isolated and protected from third-party e
 
 ## 4. Permission Governance
 
-Hinterland classifies WebExtension permissions into three tiers:
+Neocrom Horizon classifies WebExtension permissions into three tiers:
 
 ### Safe Tier (Allowed by default)
 - `storage`: Local and session key-value storage.
@@ -68,18 +68,18 @@ Hinterland classifies WebExtension permissions into three tiers:
 - `privacy`: Altering browser global security and privacy preferences.
 - `proxy`, `vpnProvider`: Intercepting or routing global network traffic.
 
-Any extension attempting to declare permissions from the **Forbidden Tier** is rejected during validation and blocked by the Hinterland extension manager (`validateExtension`).
+Any extension attempting to declare permissions from the **Forbidden Tier** is rejected during validation and blocked by the Neocrom Horizon extension manager (`validateExtension`).
 
 ---
 
 ## 5. Security Checklist for Extension Authors
 
-Before distributing an extension for Hinterland, ensure the following checklist passes:
+Before distributing an extension for Neocrom Horizon, ensure the following checklist passes:
 
-- [ ] Run `npx hinterland-sdk validate . --strict` and resolve all warnings.
+- [ ] Run `npx horizon-sdk validate . --strict` and resolve all warnings.
 - [ ] Use `safeHtml` or `sanitizeHtml` for all dynamic HTML rendering.
 - [ ] Ensure all network requests use HTTPS (no plaintext HTTP).
 - [ ] Mount in-page UI elements using `ContentHelper.mountShadowRoot(host, { mode: 'closed' })`.
 - [ ] Encrypt sensitive tokens or user credentials in `createSecureStorage` with `encrypt: true`.
 - [ ] Verify that no `eval()`, `new Function()`, or `document.write()` calls exist in your source code.
-- [ ] Package your extension using `npx hinterland-sdk pack .`.
+- [ ] Package your extension using `npx horizon-sdk pack .`.

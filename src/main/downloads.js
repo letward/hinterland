@@ -81,7 +81,7 @@ function recordDownload(record) {
     if (list.length > 200) list.length = 200;
     settings.set('data.downloadHistory', list);
   } catch (err) {
-    console.warn('[Hinterland] Could not save download history entry:', err?.message ?? err);
+    console.warn('[Neocrom Horizon] Could not save download history entry:', err?.message ?? err);
   }
 }
 

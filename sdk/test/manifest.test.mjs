@@ -27,7 +27,7 @@ describe('Manifest Builder & Validator', () => {
   test('validateManifest rejects non-MV3 manifests', () => {
     const res = validateManifest({ manifest_version: 2, name: 'Old Ext', version: '1.0' });
     assert.equal(res.valid, false);
-    assert.ok(res.errors.some((e) => e.includes('Hinterland requires Manifest V3')));
+    assert.ok(res.errors.some((e) => e.includes('Neocrom Horizon requires Manifest V3')));
   });
 
   test('validateManifest rejects forbidden permissions', () => {

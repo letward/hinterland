@@ -1,5 +1,5 @@
 /**
- * @fileoverview Hinterland Account API - Vercel Serverless
+ * @fileoverview Neocrom Horizon Account API - Vercel Serverless
  * Real accounts with email + password, email/phone verification, TOTP 2FA,
  * and store-download entitlements. Auth state owned by Supabase GoTrue when
  * configured; a shared in-memory layer serves as dev/preview fallback.
@@ -275,7 +275,7 @@ module.exports = async function handler(req, res) {
     if (acct.totpSecret) return json(res, 409, { ok: false, error: 'totpAlreadyEnabled' });
 
     const secret = crypto.randomBytes(10).toString('base64').replace(/[+/=]/g, '').slice(0, 32);
-    const issuer = 'Hinterland';
+    const issuer = 'Neocrom Horizon';
     const uri = `otpauth://totp/${encodeURIComponent(issuer)}:${encodeURIComponent(acct.email)}?secret=${secret}&issuer=${encodeURIComponent(issuer)}`;
     const recoveryCodes = generateRecoveryCodes();
 

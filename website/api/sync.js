@@ -1,5 +1,5 @@
 /**
- * @fileoverview Hinterland Cloud Sync API - Vercel Serverless Endpoint
+ * @fileoverview Neocrom Horizon Cloud Sync API - Vercel Serverless Endpoint
  * Encrypted bookmark/settings synchronization with conflict resolution.
  * Auth state is shared with /api/account via the shared _account.js module.
  *
@@ -193,8 +193,8 @@ module.exports = async function handler(req, res) {
   if (req.method === 'GET') {
     return json(res, 200, {
       ok: true,
-      service: 'hinterland-sync',
-      version: '1.46.0',
+      service: 'horizon-sync',
+      version: '1.47.0',
       provider: HAS_SUPABASE ? 'supabase-proxy' : 'serverless',
       time: new Date().toISOString(),
     });

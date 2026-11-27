@@ -123,7 +123,7 @@ export function hostOf(url) {
 }
 
 export function isInternal(url) {
-  return typeof url === 'string' && url.startsWith('hinterland://');
+  return typeof url === 'string' && url.startsWith('horizon://');
 }
 
 export function isSecure(url) {
@@ -171,6 +171,6 @@ export async function copyToClipboard(text, autoClearSeconds = 0) {
       }, autoClearSeconds * 1000);
     }
   } catch (e) {
-    console.warn('[Hinterland] Clipboard write failed:', e);
+    console.warn('[Neocrom Horizon] Clipboard write failed:', e);
   }
 }

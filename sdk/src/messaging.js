@@ -1,12 +1,12 @@
 /**
- * @fileoverview Hinterland Extension SDK - Safe Message Bus
+ * @fileoverview Neocrom Horizon Extension SDK - Safe Message Bus
  * Provides typed, origin-verified communication between background, content scripts, and popups.
  */
 
 import { validateOrigin } from './security.js';
 
 /**
- * Safe, promise-based MessageBus for Hinterland extensions.
+ * Safe, promise-based MessageBus for Neocrom Horizon extensions.
  */
 export class MessageBus {
   /**
@@ -29,7 +29,7 @@ export class MessageBus {
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // 1. Origin verification
       if (!validateOrigin(sender, this.allowedOrigins)) {
-        console.warn('[Hinterland MessageBus] Rejected message from unverified sender:', sender);
+        console.warn('[Horizon MessageBus] Rejected message from unverified sender:', sender);
         return false;
       }
 
@@ -100,7 +100,7 @@ export class MessageBus {
 
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
-        reject(new Error(`[Hinterland MessageBus] Request timed out after ${timeoutMs}ms (type: "${type}")`));
+        reject(new Error(`[Horizon MessageBus] Request timed out after ${timeoutMs}ms (type: "${type}")`));
       }, timeoutMs);
 
       try {
@@ -144,7 +144,7 @@ export class MessageBus {
 
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
-        reject(new Error(`[Hinterland MessageBus] Tab ${tabId} request timed out after ${timeoutMs}ms (type: "${type}")`));
+        reject(new Error(`[Horizon MessageBus] Tab ${tabId} request timed out after ${timeoutMs}ms (type: "${type}")`));
       }, timeoutMs);
 
       try {

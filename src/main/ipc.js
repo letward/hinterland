@@ -7,11 +7,11 @@ import { exportSchema } from './schema.js';
 import { translations, availableLanguages, resolveLanguage, translate } from './i18n.js';
 import { passwords } from './passwords.js';
 import { syncService } from './sync.js';
-import { normalizeDomain } from '../extensions/hinterlandPass/crypto.js';
+import { normalizeDomain } from '../extensions/horizonPass/crypto.js';
 import { tabs } from './tabs.js';
 import { surface } from './windows.js';
 import { extensions } from './extensions.js';
-import { hinterStore } from './store.js';
+import { horizonStore } from './store.js';
 import { history } from './history.js';
 import { resolveTarget, suggestionList, activeEngines } from './navigation.js';
 import { isInternalUrl } from './protocol.js';
@@ -31,7 +31,7 @@ function handle(channel, handler) {
     try {
       return await handler(...args);
     } catch (error) {
-      console.warn(`[Hinterland] ${channel} failed.`, error?.message ?? error);
+      console.warn(`[Neocrom Horizon] ${channel} failed.`, error?.message ?? error);
       return { ok: false, error: error?.message ?? 'unknown' };
     }
   });
@@ -189,7 +189,7 @@ export function installIpc() {
         return true;
       }
     } catch (e) {
-      console.warn('[Hinterland] Error copying image to clipboard:', e?.message ?? e);
+      console.warn('[Neocrom Horizon] Error copying image to clipboard:', e?.message ?? e);
     }
     return false;
   });
@@ -286,12 +286,12 @@ export function installIpc() {
     try {
       const okHttp = app.setAsDefaultProtocolClient('http');
       const okHttps = app.setAsDefaultProtocolClient('https');
-      const okHinterland = app.setAsDefaultProtocolClient('hinterland');
+      const okHorizon = app.setAsDefaultProtocolClient('horizon');
       try {
         shell.openExternal('ms-settings:defaultapps');
       } catch {}
       surface.send('toast', { message: 'toast.defaultBrowserSet', kind: 'success' });
-      return Boolean(okHttp || okHttps || okHinterland);
+      return Boolean(okHttp || okHttps || okHorizon);
     } catch {
       return false;
     }
@@ -330,8 +330,8 @@ export function installIpc() {
 
   handle('settings:saveFile', async (name, content) => {
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: name || 'hinterland.settings.json',
+      title: 'Neocrom Horizon',
+      defaultPath: name || 'horizon.settings.json',
       filters: [{ name: 'JSON', extensions: ['json'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -341,7 +341,7 @@ export function installIpc() {
 
   handle('settings:loadFile', async () => {
     const result = await dialog.showOpenDialog(chromeWindow(), {
-      title: 'Hinterland',
+      title: 'Neocrom Horizon',
       properties: ['openFile'],
       filters: [{ name: 'JSON', extensions: ['json'] }],
     });
@@ -596,7 +596,7 @@ export function installIpc() {
     const normalized = groups.map((group, index) => ({
       id: group.id,
       name: String(group.name || 'New group').trim().slice(0, 40) || 'New group',
-      color: /^#[0-9a-f]{6}$/i.test(group.color || '') ? group.color : '#4f7cff',
+      color: /^#[0-9a-f]{6}$/i.test(group.color || '') ? group.color : '#bdbdbd',
       collapsed: Boolean(group.collapsed),
       order: index,
     }));
@@ -613,7 +613,7 @@ export function installIpc() {
     groups.push({
       id,
       name: group?.name || 'New group',
-      color: group?.color || '#4f7cff',
+      color: group?.color || '#bdbdbd',
       collapsed: false,
     });
     return persistGroups(groups);
@@ -714,7 +714,7 @@ export function installIpc() {
       id: `stash_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
       title: `${groupTitle} (${dateStr})`,
       createdAt: Date.now(),
-      color: group?.color || '#4f7cff',
+      color: group?.color || '#bdbdbd',
       tabs: tabsInGroup.map((t) => ({
         url: t.url,
         title: t.title || t.url,
@@ -746,7 +746,7 @@ export function installIpc() {
     const allTabs = tabs.list;
     const groups = sortedGroups();
     const colors = [
-      '#388bfd', // sapphire
+      '#bdbdbd', // sapphire
       '#2ea043', // emerald
       '#d29922', // amber
       '#f85149', // ruby
@@ -757,7 +757,7 @@ export function installIpc() {
 
     const domainMap = new Map();
     for (const tab of allTabs) {
-      if (!tab.url || tab.url === NEW_TAB_URL || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) continue;
+      if (!tab.url || tab.url === NEW_TAB_URL || tab.url === 'about:blank' || tab.url.startsWith('horizon://')) continue;
       const domain = normalizeDomain(tab.url);
       if (!domain) continue;
       if (!domainMap.has(domain)) domainMap.set(domain, []);
@@ -893,7 +893,7 @@ export function installIpc() {
     const dateStr = new Date().toLocaleDateString('en-CA');
     const name = `Clipboard (${dateStr})`;
     const groupId = `g${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 5)}`;
-    const colors = ['#388bfd', '#2ea043', '#d29922', '#f85149', '#a371f7', '#39c5bb', '#8b949e'];
+    const colors = ['#bdbdbd', '#2ea043', '#d29922', '#f85149', '#a371f7', '#39c5bb', '#8b949e'];
     groups.push({
       id: groupId,
       name,
@@ -1028,7 +1028,7 @@ export function installIpc() {
     groups.push({
       id: newGroupId,
       name: newName,
-      color: source.color || '#4f7cff',
+      color: source.color || '#bdbdbd',
       collapsed: false,
     });
     persistGroups(groups);
@@ -1060,7 +1060,7 @@ export function installIpc() {
     const payload = {
       id: group?.id || groupId,
       name: group?.name || 'Tab Group',
-      color: group?.color || '#4f7cff',
+      color: group?.color || '#bdbdbd',
       tabs: tabsInGroup.map((t) => ({
         title: t.title || t.url,
         url: t.url,
@@ -1078,7 +1078,7 @@ export function installIpc() {
     if (!webTabs.length) return { count: 0, markdown: '' };
     const groups = sortedGroups();
     const dateStr = new Date().toLocaleDateString('en-CA');
-    const lines = [`# Hinterland Open Tabs (${dateStr})`, ''];
+    const lines = [`# Neocrom Horizon Open Tabs (${dateStr})`, ''];
     const groupedIds = new Set();
 
     for (const group of groups) {
@@ -1221,7 +1221,7 @@ export function installIpc() {
     try {
       if (!app.isPackaged) return { ok: false, error: 'notPackaged' };
       autoUpdater.checkForUpdates().catch((error) => {
-        console.warn('[Hinterland] Update check failed.', error?.message ?? error);
+        console.warn('[Neocrom Horizon] Update check failed.', error?.message ?? error);
       });
       return { ok: true };
     } catch (error) {
@@ -1311,7 +1311,7 @@ export function installIpc() {
     if (tab.readerActive) {
       tab.readerActive = false;
       try {
-        await tab.contents.executeJavaScript('if (window.__hinterland_reader_exit) { window.__hinterland_reader_exit(); } else { location.reload(); }');
+        await tab.contents.executeJavaScript('if (window.__horizon_reader_exit) { window.__horizon_reader_exit(); } else { location.reload(); }');
       } catch {
         tab.contents.reload();
       }
@@ -1333,7 +1333,7 @@ export function installIpc() {
         return true;
       }
     } catch (error) {
-      console.warn('[Hinterland] Reader mode error:', error?.message ?? error);
+      console.warn('[Neocrom Horizon] Reader mode error:', error?.message ?? error);
     }
     return false;
   });
@@ -1409,7 +1409,7 @@ export function installIpc() {
     const rawTitle = (tab.title || 'page').replace(/[\\/:*?"<>|]/g, '').trim().slice(0, 60) || 'page';
     const defaultPath = join(downloadDirectory(), `${rawTitle}.pdf`);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
+      title: 'Neocrom Horizon',
       defaultPath,
       filters: [{ name: 'PDF', extensions: ['pdf'] }],
     });
@@ -1423,7 +1423,7 @@ export function installIpc() {
       surface.send('toast', { message: 'toast.pdfSaved', kind: 'success' });
       return { ok: true, path: result.filePath };
     } catch (error) {
-      console.warn('[Hinterland] PDF generation failed:', error?.message ?? error);
+      console.warn('[Neocrom Horizon] PDF generation failed:', error?.message ?? error);
       surface.send('toast', { message: 'toast.pdfFailed', kind: 'error' });
       return { ok: false, error: error?.message };
     }
@@ -1441,7 +1441,7 @@ export function installIpc() {
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
         const defaultPath = join(downloadDirectory(), `${rawTitle}_${timestamp}.png`);
         const result = await dialog.showSaveDialog(chromeWindow(), {
-          title: 'Hinterland',
+          title: 'Neocrom Horizon',
           defaultPath,
           filters: [{ name: 'PNG Image', extensions: ['png'] }],
         });
@@ -1455,7 +1455,7 @@ export function installIpc() {
       surface.send('toast', { message: 'toast.screenshotCopied', kind: 'success' });
       return { ok: true, copied: true };
     } catch (error) {
-      console.warn('[Hinterland] Screen capture failed:', error?.message ?? error);
+      console.warn('[Neocrom Horizon] Screen capture failed:', error?.message ?? error);
       surface.send('toast', { message: 'toast.screenshotFailed', kind: 'error' });
       return { ok: false, error: error?.message };
     }
@@ -1602,8 +1602,8 @@ export function installIpc() {
     };
     const json = JSON.stringify(payload, null, 2);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-search-engines-${Date.now()}.json`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-search-engines-${Date.now()}.json`,
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -1614,7 +1614,7 @@ export function installIpc() {
 
   handle('search:importJson', async () => {
     const result = await dialog.showOpenDialog(chromeWindow(), {
-      title: 'Hinterland',
+      title: 'Neocrom Horizon',
       properties: ['openFile'],
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
@@ -1663,7 +1663,7 @@ export function installIpc() {
       surface.send('toast', { message: 'toast.searchEnginesImported', kind: 'success' });
       return { ok: true, count: importedCount, total: existing.length };
     } catch (err) {
-      console.warn('[Hinterland] Search engines import failed:', err?.message);
+      console.warn('[Neocrom Horizon] Search engines import failed:', err?.message);
       return { ok: false, error: 'invalidJson' };
     }
   });
@@ -1671,7 +1671,7 @@ export function installIpc() {
   const formatSearchEnginesMarkdown = (list, defaultId) => {
     const dateStr = new Date().toLocaleDateString('en-CA');
     const lines = [
-      '# Hinterland Search Engines',
+      '# Neocrom Horizon Search Engines',
       '',
       `Exported on ${dateStr}. Total engines: ${list.length}.`,
       '',
@@ -1709,7 +1709,7 @@ export function installIpc() {
       surface.send('toast', { message: 'toast.noExtensionsToCopy', kind: 'warning' });
       return { ok: false, count: 0 };
     }
-    const lines = ['# Hinterland Extensions', ''];
+    const lines = ['# Neocrom Horizon Extensions', ''];
     for (const ext of list) {
       const status = ext.enabled ? 'Active' : 'Paused';
       const source = ext.bundled ? 'Included' : 'Unpacked';
@@ -1733,7 +1733,7 @@ export function installIpc() {
   handle('extensions:install', async () => {
     if (!settings.value('extensions.allowUnpacked')) return { ok: false, error: 'blocked' };
     const result = await dialog.showOpenDialog(chromeWindow(), {
-      title: 'Hinterland',
+      title: 'Neocrom Horizon',
       properties: ['openDirectory'],
     });
     if (result.canceled) return { ok: false };
@@ -1784,17 +1784,17 @@ export function installIpc() {
     return extensions.manifestForUrl(url);
   });
 
-  /* ------------------------------------------------------------- hinter store */
-  handle('store:catalog', () => hinterStore.catalog());
-  handle('store:installExtension', ({ id, config } = {}) => hinterStore.installExtension(id, config));
-  handle('store:uninstallExtension', (id) => hinterStore.uninstallExtension(id));
-  handle('store:saveExtensionConfig', ({ id, config } = {}) => hinterStore.saveExtensionConfig(id, config));
-  handle('store:getExtensionConfig', (id) => hinterStore.getExtensionConfig(id));
-  handle('store:applyTheme', (theme) => hinterStore.applyTheme(theme));
-  handle('store:installTheme', ({ theme, apply } = {}) => hinterStore.installCommunityTheme(theme, apply));
-  handle('store:uninstallTheme', (id) => hinterStore.uninstallCommunityTheme(id));
-  handle('store:exportTheme', (theme) => hinterStore.exportThemeFile(theme));
-  handle('store:importThemeFile', () => hinterStore.importThemeFile());
+  /* ------------------------------------------------------------- horizon store */
+  handle('store:catalog', () => horizonStore.catalog());
+  handle('store:installExtension', ({ id, config } = {}) => horizonStore.installExtension(id, config));
+  handle('store:uninstallExtension', (id) => horizonStore.uninstallExtension(id));
+  handle('store:saveExtensionConfig', ({ id, config } = {}) => horizonStore.saveExtensionConfig(id, config));
+  handle('store:getExtensionConfig', (id) => horizonStore.getExtensionConfig(id));
+  handle('store:applyTheme', (theme) => horizonStore.applyTheme(theme));
+  handle('store:installTheme', ({ theme, apply } = {}) => horizonStore.installCommunityTheme(theme, apply));
+  handle('store:uninstallTheme', (id) => horizonStore.uninstallCommunityTheme(id));
+  handle('store:exportTheme', (theme) => horizonStore.exportThemeFile(theme));
+  handle('store:importThemeFile', () => horizonStore.importThemeFile());
 
   /* --------------------------------------------------------------- history */
   handle('history:search', (query) => history.search(query, 60));
@@ -1868,8 +1868,8 @@ export function installIpc() {
     const list = history.getAll();
     const json = JSON.stringify(list, null, 2);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-history-${Date.now()}.json`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-history-${Date.now()}.json`,
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -1881,7 +1881,7 @@ export function installIpc() {
   const formatHistoryMarkdown = (list) => {
     const dateStr = new Date().toLocaleDateString('en-CA');
     const lines = [
-      '# Hinterland Browsing History Archive',
+      '# Neocrom Horizon Browsing History Archive',
       '',
       `Exported on ${dateStr}. Total entries: ${list.length}.`,
       '',
@@ -1925,8 +1925,8 @@ export function installIpc() {
     const list = history.getAll() || [];
     const markdown = formatHistoryMarkdown(list);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-history-${Date.now()}.md`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-history-${Date.now()}.md`,
       filters: [{ name: 'Markdown Document', extensions: ['md'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -1958,8 +1958,8 @@ export function installIpc() {
     }
     const csv = rows.join('\r\n');
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-history-${Date.now()}.csv`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-history-${Date.now()}.csv`,
       filters: [{ name: 'CSV Document', extensions: ['csv'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -1969,7 +1969,7 @@ export function installIpc() {
   });
   handle('history:importJson', async () => {
     const result = await dialog.showOpenDialog(chromeWindow(), {
-      title: 'Hinterland',
+      title: 'Neocrom Horizon',
       properties: ['openFile'],
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
@@ -2026,8 +2026,8 @@ export function installIpc() {
       return { ok: false, count: 0 };
     }
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-cookies-${payload.host}-${Date.now()}.json`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-cookies-${payload.host}-${Date.now()}.json`,
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -2057,7 +2057,7 @@ export function installIpc() {
   const formatDownloadsMarkdown = (list) => {
     const dateStr = new Date().toLocaleDateString('en-CA');
     const lines = [
-      '# Hinterland Downloads Log',
+      '# Neocrom Horizon Downloads Log',
       '',
       `Exported on ${dateStr}. Total downloads: ${list.length}.`,
       '',
@@ -2090,8 +2090,8 @@ export function installIpc() {
     const list = getDownloadHistory() || [];
     const markdown = formatDownloadsMarkdown(list);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-downloads-${Date.now()}.md`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-downloads-${Date.now()}.md`,
       filters: [{ name: 'Markdown Document', extensions: ['md'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -2189,8 +2189,8 @@ export function installIpc() {
   handle('downloads:exportJson', async () => {
     const list = getDownloadHistory() || [];
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-downloads-${Date.now()}.json`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-downloads-${Date.now()}.json`,
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -2281,7 +2281,7 @@ export function installIpc() {
       surface.send('toast', { message: 'toast.noSiteRulesToCopy', kind: 'warning' });
       return { ok: false, permissionsCount: 0, shieldsCount: 0 };
     }
-    const lines = ['# Hinterland Site Permissions & Shields Summary', ''];
+    const lines = ['# Neocrom Horizon Site Permissions & Shields Summary', ''];
     lines.push(`## Site Permissions (${permOrigins.length})`);
     if (!permOrigins.length) {
       lines.push('*No custom site permissions configured.*', '');
@@ -2294,7 +2294,7 @@ export function installIpc() {
     }
     lines.push(`## Shield Exceptions (${shieldDomains.length})`);
     if (!shieldDomains.length) {
-      lines.push('*All sites protected by Hinterland Shield.*');
+      lines.push('*All sites protected by Horizon Shield.*');
     } else {
       for (const domain of shieldDomains) {
         lines.push(`- **${domain}** — Tracking Protection Paused`);
@@ -2312,8 +2312,8 @@ export function installIpc() {
   handle('bookmarks:exportHtml', async (items) => {
     const list = Array.isArray(items) ? items : (settings.value('data.bookmarks') ?? []);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: 'hinterland-bookmarks.html',
+      title: 'Neocrom Horizon',
+      defaultPath: 'horizon-bookmarks.html',
       filters: [{ name: 'HTML Bookmarks', extensions: ['html', 'htm'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -2343,7 +2343,7 @@ export function installIpc() {
   const formatBookmarksMarkdown = (list) => {
     const dateStr = new Date().toLocaleDateString('en-CA');
     const lines = [
-      '# Hinterland Bookmarks Archive',
+      '# Neocrom Horizon Bookmarks Archive',
       '',
       `Exported on ${dateStr}. Total bookmarks: ${list.length}.`,
       '',
@@ -2376,8 +2376,8 @@ export function installIpc() {
     const list = Array.isArray(items) ? items : (settings.value('data.bookmarks') ?? []);
     const markdown = formatBookmarksMarkdown(list);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-bookmarks-${Date.now()}.md`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-bookmarks-${Date.now()}.md`,
       filters: [{ name: 'Markdown Document', extensions: ['md'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -2468,7 +2468,7 @@ export function installIpc() {
 
   handle('bookmarks:importHtml', async () => {
     const result = await dialog.showOpenDialog(chromeWindow(), {
-      title: 'Hinterland',
+      title: 'Neocrom Horizon',
       properties: ['openFile'],
       filters: [{ name: 'Bookmarks (HTML, JSON)', extensions: ['html', 'htm', 'json'] }],
     });
@@ -2530,8 +2530,8 @@ export function installIpc() {
     const list = Array.isArray(items) ? items : (settings.value('data.bookmarks') ?? []);
     const json = JSON.stringify(list, null, 2);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-bookmarks-${Date.now()}.json`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-bookmarks-${Date.now()}.json`,
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -2542,7 +2542,7 @@ export function installIpc() {
 
   handle('bookmarks:importJson', async () => {
     const result = await dialog.showOpenDialog(chromeWindow(), {
-      title: 'Hinterland',
+      title: 'Neocrom Horizon',
       properties: ['openFile'],
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
@@ -2794,8 +2794,8 @@ export function installIpc() {
     const list = settings.value('data.readingList') || [];
     const json = JSON.stringify(list, null, 2);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-reading-list-${Date.now()}.json`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-reading-list-${Date.now()}.json`,
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -2817,7 +2817,7 @@ export function installIpc() {
     };
 
     const lines = [
-      '# Hinterland Reading List',
+      '# Neocrom Horizon Reading List',
       '',
       `Exported on ${dateStr}. Total articles: ${list.length} (${unread.length} unread, ${read.length} read).`,
       '',
@@ -2846,8 +2846,8 @@ export function installIpc() {
     const list = settings.value('data.readingList') || [];
     const md = formatReadingListMarkdown(list);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-reading-list-${Date.now()}.md`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-reading-list-${Date.now()}.md`,
       filters: [{ name: 'Markdown Document', extensions: ['md', 'markdown'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -3021,16 +3021,16 @@ export function installIpc() {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hinterland Reading List</title>
+<title>Neocrom Horizon Reading List</title>
 <style>
   :root {
-    --bg: #090b0e;
-    --surface: #101319;
-    --surfaceAlt: #151922;
-    --border: #22293a;
-    --text: #e6edf3;
-    --textDim: #8b949e;
-    --accent: #388bfd;
+    --bg: #090909;
+    --surface: #141414;
+    --surfaceAlt: #191919;
+    --border: #303030;
+    --text: #f8f8f8;
+    --textDim: #bdbdbd;
+    --accent: #f8f8f8;
     --success: #3fb950;
   }
   body {
@@ -3058,7 +3058,7 @@ export function installIpc() {
 </head>
 <body>
 <div class="container">
-  <h1>Hinterland Reading List</h1>
+  <h1>Neocrom Horizon Reading List</h1>
   <div class="summary">Exported on ${dateStr} • ${list.length} articles (${unread.length} unread, ${read.length} read)</div>
 
   <h2>Unread Articles (${unread.length})</h2>
@@ -3071,8 +3071,8 @@ ${renderItemsHtml(read)}
 </html>`;
 
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-reading-list-${Date.now()}.html`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-reading-list-${Date.now()}.html`,
       filters: [{ name: 'HTML Document', extensions: ['html', 'htm'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -3083,7 +3083,7 @@ ${renderItemsHtml(read)}
 
   handle('readingList:importJson', async () => {
     const result = await dialog.showOpenDialog(chromeWindow(), {
-      title: 'Hinterland',
+      title: 'Neocrom Horizon',
       properties: ['openFile'],
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
@@ -3093,7 +3093,7 @@ ${renderItemsHtml(read)}
       const imported = JSON.parse(raw);
       const list = Array.isArray(imported) ? imported : [imported];
       const valid = list
-        .filter((item) => item && typeof item.url === 'string' && (item.url.startsWith('http://') || item.url.startsWith('https://') || item.url.startsWith('hinterland://')))
+        .filter((item) => item && typeof item.url === 'string' && (item.url.startsWith('http://') || item.url.startsWith('https://') || item.url.startsWith('horizon://')))
         .map((item) => ({
           id: typeof item.id === 'string' && item.id ? item.id : `rl_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
           url: item.url,
@@ -3121,7 +3121,7 @@ ${renderItemsHtml(read)}
       surface.send('toast', { message: 'toast.readingListImported', kind: 'success' });
       return { ok: true, count: importedCount, list: existing };
     } catch (err) {
-      console.warn('[Hinterland] readingList import failed', err?.message);
+      console.warn('[Neocrom Horizon] readingList import failed', err?.message);
       return { ok: false, error: err?.message };
     }
   });
@@ -3182,7 +3182,7 @@ ${renderItemsHtml(read)}
     if (!note) return { ok: false };
     const safeTitle = (note.title || 'note').replace(/[\\/:*?"<>|]/g, '').trim().slice(0, 50) || 'note';
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
+      title: 'Neocrom Horizon',
       defaultPath: `${safeTitle}.md`,
       filters: [{ name: 'Markdown', extensions: ['md', 'txt'] }],
     });
@@ -3196,8 +3196,8 @@ ${renderItemsHtml(read)}
     const notes = settings.value('data.notes') || [];
     const json = JSON.stringify(notes, null, 2);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-notes-${Date.now()}.json`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-notes-${Date.now()}.json`,
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -3212,7 +3212,7 @@ ${renderItemsHtml(read)}
     const regular = notes.filter((n) => !n.pinned);
 
     const lines = [
-      '# Hinterland Quick Notes',
+      '# Neocrom Horizon Quick Notes',
       '',
       `Exported on ${dateStr}. Total notes: ${notes.length} (${pinned.length} pinned, ${regular.length} unpinned).`,
       '',
@@ -3254,8 +3254,8 @@ ${renderItemsHtml(read)}
     const notes = settings.value('data.notes') || [];
     const markdown = formatNotesMarkdown(notes);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-notes-${Date.now()}.md`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-notes-${Date.now()}.md`,
       filters: [{ name: 'Markdown Document', extensions: ['md', 'markdown', 'txt'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -3346,16 +3346,16 @@ ${renderItemsHtml(read)}
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hinterland Quick Notes</title>
+  <title>Neocrom Horizon Quick Notes</title>
   <style>
     :root {
-      --bg: #090b0e;
-      --surface: #101319;
-      --surfaceAlt: #151922;
-      --border: #22293a;
-      --text: #e6e9f2;
-      --textDim: #8b949e;
-      --accent: #388bfd;
+      --bg: #090909;
+      --surface: #141414;
+      --surfaceAlt: #191919;
+      --border: #303030;
+      --text: #f8f8f8;
+      --textDim: #bdbdbd;
+      --accent: #f8f8f8;
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -3471,7 +3471,7 @@ ${renderItemsHtml(read)}
 <body>
   <div class="wrapper">
     <header>
-      <h1>Hinterland Quick Notes</h1>
+      <h1>Neocrom Horizon Quick Notes</h1>
       <p class="meta-lead">Exported on ${dateStr} • ${notes.length} total note(s) (${pinned.length} pinned)</p>
     </header>
     <div class="toolbar">
@@ -3481,7 +3481,7 @@ ${renderItemsHtml(read)}
 ${renderNotesHtml(notes)}
     </div>
     <footer>
-      Generated by Hinterland Browser — A fast, secure, and freely customizable browser.
+      Generated by Neocrom Horizon Browser — A fast, secure, and freely customizable browser.
     </footer>
   </div>
   <script>
@@ -3499,8 +3499,8 @@ ${renderNotesHtml(notes)}
 </html>`;
 
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-notes-${Date.now()}.html`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-notes-${Date.now()}.html`,
       filters: [{ name: 'HTML Document', extensions: ['html', 'htm'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -3511,7 +3511,7 @@ ${renderNotesHtml(notes)}
 
   handle('notes:importAll', async () => {
     const result = await dialog.showOpenDialog(chromeWindow(), {
-      title: 'Hinterland',
+      title: 'Neocrom Horizon',
       properties: ['openFile'],
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
@@ -3550,20 +3550,20 @@ ${renderNotesHtml(notes)}
       surface.send('toast', { message: 'toast.notesImported', kind: 'success' });
       return { ok: true, count: importedCount, notes: existing };
     } catch (err) {
-      console.warn('[Hinterland] notes import failed', err?.message);
+      console.warn('[Neocrom Horizon] notes import failed', err?.message);
       return { ok: false, error: err?.message };
     }
   });
 
   handle('notes:createFromTab', (tabId) => {
     const tab = activeTab(tabId);
-    if (!tab || !tab.url || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) {
+    if (!tab || !tab.url || tab.url === 'about:blank' || tab.url.startsWith('horizon://')) {
       surface.send('toast', { message: 'toast.noTabsToBookmark', kind: 'warning' });
       return { ok: false, error: 'invalidTab' };
     }
     const tabTitle = (tab.title || tab.url).slice(0, 150);
     const dateStr = new Date().toISOString().split('T')[0];
-    const noteContent = `# [${tabTitle}](${tab.url})\n\n> Captured from Hinterland Browser on ${dateStr}\n\n- URL: ${tab.url}\n`;
+    const noteContent = `# [${tabTitle}](${tab.url})\n\n> Captured from Neocrom Horizon Browser on ${dateStr}\n\n- URL: ${tab.url}\n`;
     const fresh = {
       id: `n${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
       title: tabTitle,
@@ -3785,7 +3785,7 @@ ${renderNotesHtml(notes)}
     groups.push({
       id: groupId,
       name: String(stash.title || 'Tab Stash').slice(0, 40),
-      color: /^#[0-9a-f]{6}$/i.test(stash.color || '') ? stash.color : '#388bfd',
+      color: /^#[0-9a-f]{6}$/i.test(stash.color || '') ? stash.color : '#bdbdbd',
       collapsed: false,
     });
     persistGroups(groups);
@@ -3847,8 +3847,8 @@ ${renderNotesHtml(notes)}
     const exportData = stashId ? stashes.filter((s) => s.id === stashId) : stashes;
     const json = JSON.stringify(exportData, null, 2);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-stashes-${Date.now()}.json`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-stashes-${Date.now()}.json`,
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -3860,7 +3860,7 @@ ${renderNotesHtml(notes)}
   const formatStashesMarkdown = (exportData) => {
     const dateStr = new Date().toISOString().split('T')[0];
     const lines = [
-      '# Hinterland Tab Stashes',
+      '# Neocrom Horizon Tab Stashes',
       '',
       `Exported on ${dateStr}. Total stashes: ${exportData.length}.`,
       '',
@@ -3894,8 +3894,8 @@ ${renderNotesHtml(notes)}
     const exportData = stashId ? stashes.filter((s) => s.id === stashId) : stashes;
     const md = formatStashesMarkdown(exportData);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-stashes-${Date.now()}.md`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-stashes-${Date.now()}.md`,
       filters: [{ name: 'Markdown Document', extensions: ['md', 'markdown'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -4069,7 +4069,7 @@ ${renderNotesHtml(notes)}
 
   handle('stashes:addTab', (stashId, tabId = null) => {
     const tab = (tabId ? tabs.byId(tabId) : null) || tabs.active;
-    if (!tab || !tab.url || tab.url === NEW_TAB_URL || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) {
+    if (!tab || !tab.url || tab.url === NEW_TAB_URL || tab.url === 'about:blank' || tab.url.startsWith('horizon://')) {
       surface.send('toast', { message: 'toast.noTabsToStash', kind: 'warning' });
       return { ok: false, error: 'no_tabs' };
     }
@@ -4093,7 +4093,7 @@ ${renderNotesHtml(notes)}
 
   handle('stashes:importJson', async () => {
     const result = await dialog.showOpenDialog(chromeWindow(), {
-      title: 'Hinterland',
+      title: 'Neocrom Horizon',
       properties: ['openFile'],
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
@@ -4109,7 +4109,7 @@ ${renderNotesHtml(notes)}
           title: String(s.title || 'Imported Stash').slice(0, 200),
           createdAt: Number(s.createdAt) || Date.now(),
           tabs: s.tabs
-            .filter((t) => t && typeof t.url === 'string' && (t.url.startsWith('http://') || t.url.startsWith('https://') || t.url.startsWith('hinterland://')))
+            .filter((t) => t && typeof t.url === 'string' && (t.url.startsWith('http://') || t.url.startsWith('https://') || t.url.startsWith('horizon://')))
             .map((t) => ({ url: t.url, title: String(t.title || t.url).slice(0, 300), favicon: typeof t.favicon === 'string' ? t.favicon : '' })),
         }))
         .filter((s) => s.tabs.length > 0);
@@ -4129,7 +4129,7 @@ ${renderNotesHtml(notes)}
 
   handle('stashes:stashTab', async (tabId) => {
     const tab = tabs.byId(tabId) || tabs.active;
-    if (!tab || !tab.url || tab.url === NEW_TAB_URL || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) {
+    if (!tab || !tab.url || tab.url === NEW_TAB_URL || tab.url === 'about:blank' || tab.url.startsWith('horizon://')) {
       surface.send('toast', { message: 'toast.noTabsToStash', kind: 'warning' });
       return { ok: false, error: 'no_tabs' };
     }
@@ -4224,7 +4224,7 @@ handle('dialog:confirm', async ({ title, message, detail, confirmLabel, cancelLa
     buttons: [confirmLabel || 'OK', cancelLabel || 'Cancel'],
     defaultId: 1,
     cancelId: 1,
-    title: title || 'Hinterland',
+    title: title || 'Neocrom Horizon',
     message: message || '',
     detail: detail || '',
   });
@@ -4281,8 +4281,8 @@ handle('dialog:confirm', async ({ title, message, detail, confirmLabel, cancelLa
     if (!res.ok) return res;
     const json = JSON.stringify(res.data, null, 2);
     const result = await dialog.showSaveDialog(chromeWindow(), {
-      title: 'Hinterland',
-      defaultPath: `hinterland-passwords-${Date.now()}.json`,
+      title: 'Neocrom Horizon',
+      defaultPath: `horizon-passwords-${Date.now()}.json`,
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
@@ -4293,7 +4293,7 @@ handle('dialog:confirm', async ({ title, message, detail, confirmLabel, cancelLa
 
   handle('passwords:importVault', async () => {
     const result = await dialog.showOpenDialog(chromeWindow(), {
-      title: 'Hinterland',
+      title: 'Neocrom Horizon',
       properties: ['openFile'],
       filters: [{ name: 'JSON Document', extensions: ['json'] }],
     });
@@ -4436,7 +4436,7 @@ export function startupUrl() {
 }
 
 function inPageReaderScript(initialPrefs) {
-  const existing = document.getElementById('hinterland-reader-view');
+  const existing = document.getElementById('horizon-reader-view');
   if (existing) {
     existing.remove();
     document.documentElement.style.overflow = '';
@@ -4527,8 +4527,8 @@ function inPageReaderScript(initialPrefs) {
   const readMins = Math.max(1, Math.round(wordCount / 200));
 
   const overlay = document.createElement('div');
-  overlay.id = 'hinterland-reader-view';
-  overlay.setAttribute('data-hinterland-reader', 'true');
+  overlay.id = 'horizon-reader-view';
+  overlay.setAttribute('data-horizon-reader', 'true');
 
   const container = document.createElement('div');
   const bar = document.createElement('div');
@@ -4558,9 +4558,9 @@ function inPageReaderScript(initialPrefs) {
     if (divider) divider.style.background = t.border;
   }
 
-  // Save prefs to Hinterland
+  // Save prefs to Neocrom Horizon
   function notifyPrefs() {
-    console.log('__HINTERLAND_READER_ACTION__:' + JSON.stringify({ action: 'savePrefs', prefs }));
+    console.log('__HORIZON_READER_ACTION__:' + JSON.stringify({ action: 'savePrefs', prefs }));
   }
 
   // Extract clean Markdown
@@ -4696,7 +4696,7 @@ function inPageReaderScript(initialPrefs) {
   readListBtn.textContent = '🔖 Reading List';
   readListBtn.style.cssText = 'border:1px solid rgba(125,125,125,0.3);background:transparent;color:inherit;cursor:pointer;font-size:12px;padding:3px 10px;border-radius:6px;';
   readListBtn.onclick = () => {
-    console.log('__HINTERLAND_READER_ACTION__:' + JSON.stringify({
+    console.log('__HORIZON_READER_ACTION__:' + JSON.stringify({
       action: 'addToReadingList',
       url: location.href,
       title,
@@ -4734,10 +4734,10 @@ function inPageReaderScript(initialPrefs) {
     overlay.remove();
     document.documentElement.style.overflow = '';
     window.removeEventListener('keydown', keyHandler);
-    console.log('__HINTERLAND_READER_ACTION__:' + JSON.stringify({ action: 'exit' }));
+    console.log('__HORIZON_READER_ACTION__:' + JSON.stringify({ action: 'exit' }));
   };
   closeBtn.onclick = exit;
-  window.__hinterland_reader_exit = exit;
+  window.__horizon_reader_exit = exit;
 
   const keyHandler = (e) => {
     if (e.key === 'Escape') exit();

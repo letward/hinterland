@@ -12,8 +12,8 @@ function report() {
   if (!shell) return;
   const base = shell.offsetHeight;
   const extra = card ? card.offsetHeight : 0;
-  window.hinterland.layout.setChromeHeight(base);
-  window.hinterland.layout.setPopupBottom(extra ? base + extra : 0);
+  window.horizon.layout.setChromeHeight(base);
+  window.horizon.layout.setPopupBottom(extra ? base + extra : 0);
 }
 
 export function bindShell(node) {

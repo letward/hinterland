@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Hinterland Update Manifest",
+  "title": "Neocrom Horizon Update Manifest",
   "type": "object",
   "required": ["version", "platform", "architecture", "files", "signature", "trustAnchor"],
   "properties": {

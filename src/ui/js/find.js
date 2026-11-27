@@ -3,7 +3,7 @@ import { icon } from './icons.js';
 import { t } from './i18n.js';
 import { currentTab } from './state.js';
 
-const api = () => window.hinterland;
+const api = () => window.horizon;
 
 let bar = null;
 let input = null;

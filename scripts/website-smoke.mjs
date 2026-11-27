@@ -12,7 +12,7 @@ await check('homepage returns 200', async () => {
   const r = await fetch(BASE + '/');
   if (r.status !== 200) throw new Error('status ' + r.status);
   const html = await r.text();
-  if (!html.includes('Hinterland')) throw new Error('missing brand');
+  if (!html.includes('Neocrom Horizon')) throw new Error('missing brand');
   if (!html.includes('Download for Windows')) throw new Error('missing download CTA');
 });
 

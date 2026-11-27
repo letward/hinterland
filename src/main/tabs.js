@@ -191,7 +191,7 @@ export class TabManager extends EventEmitter {
     for (const tab of this.tabs) {
       if (tab.id === this.activeId) continue;
       if (tab.pinned || tab.audible || tab.privateMode || tab.sleeping) continue;
-      if (!tab.url || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) continue;
+      if (!tab.url || tab.url === 'about:blank' || tab.url.startsWith('horizon://')) continue;
       if (this.isDomainExempt(tab.url)) continue;
       const lastActive = tab.lastActiveAt || tab.createdAt;
       if (now - lastActive >= thresholdMs) {
@@ -282,7 +282,7 @@ export class TabManager extends EventEmitter {
     let count = 0;
     for (const tab of this.tabs) {
       if (tab.id === keep?.id || tab.pinned || tab.audible) continue;
-      if (!tab.url || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) continue;
+      if (!tab.url || tab.url === 'about:blank' || tab.url.startsWith('horizon://')) continue;
       if (this.isDomainExempt(tab.url)) continue;
       if (tab.sleep()) count++;
     }
@@ -415,7 +415,7 @@ export class TabManager extends EventEmitter {
     for (const tab of this.tabs) {
       if (tab.pinned) continue;
       const rawUrl = (tab.url || '').split('#')[0].replace(/\/+$/, '').toLowerCase();
-      if (!rawUrl || rawUrl === 'about:blank' || rawUrl === 'hinterland://newtab') continue;
+      if (!rawUrl || rawUrl === 'about:blank' || rawUrl === 'horizon://newtab') continue;
       if (seenUrls.has(rawUrl)) {
         toClose.push(tab.id);
       } else {
@@ -430,7 +430,7 @@ export class TabManager extends EventEmitter {
 
   normalizeHost(rawUrl) {
     try {
-      if (!rawUrl || rawUrl.startsWith('hinterland://') || rawUrl === 'about:blank') return '';
+      if (!rawUrl || rawUrl.startsWith('horizon://') || rawUrl === 'about:blank') return '';
       const parsed = new URL(rawUrl);
       if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '';
       return parsed.hostname.replace(/^www\./i, '').toLowerCase();
@@ -502,7 +502,7 @@ export class TabManager extends EventEmitter {
 
   pinnedUrls() {
     return this.tabs
-      .filter((tab) => tab.pinned && tab.url && !tab.url.startsWith('hinterland://') && tab.url !== 'about:blank')
+      .filter((tab) => tab.pinned && tab.url && !tab.url.startsWith('horizon://') && tab.url !== 'about:blank')
       .map((tab) => tab.url);
   }
 
@@ -530,7 +530,7 @@ export class TabManager extends EventEmitter {
     let count = 0;
     for (const tab of this.tabs) {
       if (tab.groupId !== groupId || tab.id === this.activeId || tab.pinned || tab.audible || tab.sleeping) continue;
-      if (!tab.url || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) continue;
+      if (!tab.url || tab.url === 'about:blank' || tab.url.startsWith('horizon://')) continue;
       if (this.isDomainExempt(tab.url)) continue;
       if (tab.sleep()) count += 1;
     }
@@ -606,7 +606,7 @@ export class TabManager extends EventEmitter {
     const unpinned = this.tabs.filter((t) => !t.pinned);
     const getDomain = (tab) => {
       try {
-        if (!tab.url || tab.url.startsWith('hinterland://') || tab.url === 'about:blank') {
+        if (!tab.url || tab.url.startsWith('horizon://') || tab.url === 'about:blank') {
           return tab.url || '';
         }
         return new URL(tab.url).hostname.replace(/^www\./i, '');
@@ -674,7 +674,7 @@ export class TabManager extends EventEmitter {
       writeFileSync(temporary, JSON.stringify(payload), 'utf8');
       renameSync(temporary, this.filePath);
     } catch (error) {
-      console.warn('[Hinterland] Session could not be saved.', error.message);
+      console.warn('[Neocrom Horizon] Session could not be saved.', error.message);
     }
   }
 

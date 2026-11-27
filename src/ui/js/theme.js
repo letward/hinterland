@@ -90,7 +90,7 @@ function relativeLuminance(color) {
 }
 
 export function accentPresets() {
-  return ['#bdbdbd', '#4f7cff', '#7a5cff', '#c04cff', '#ff4c8b', '#ff6b4a', '#ffb020', '#22c08a', '#12b8b0', '#5b8def'];
+  return ['#f8f8f8', '#bdbdbd', '#4f7cff', '#7a5cff', '#ff4c8b', '#ff6b4a', '#ffb020', '#22c08a', '#12b8b0', '#5b8def'];
 }
 
 export function watchSystemTheme(callback) {

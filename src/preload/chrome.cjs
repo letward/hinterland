@@ -416,4 +416,4 @@ const api = {
   },
 };
 
-contextBridge.exposeInMainWorld('hinterland', api);
+contextBridge.exposeInMainWorld('horizon', api);

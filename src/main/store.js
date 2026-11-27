@@ -7,14 +7,36 @@ import { surface } from './windows.js';
 
 export const OFFICIAL_THEMES = [
   {
+    id: 'neocrom',
+    name: 'Neocrom Horizon',
+    author: 'Neocrom',
+    source: 'official',
+    version: '1.4.0',
+    theme: 'dark',
+    accent: '#f8f8f8',
+    accentContrast: '#090909',
+    darkBackground: '#090909',
+    darkSurface: '#141414',
+    darkText: '#f8f8f8',
+    lightBackground: '#f4f4f4',
+    lightSurface: '#ffffff',
+    lightText: '#111111',
+    radius: 10,
+    density: 'cosy',
+    fontStack: 'system',
+    blur: 16,
+    tags: ['official', 'dark', 'monochrome', 'neocrom'],
+    description: 'Das offizielle Flaggschiff-Design von Neocrom Horizon. Tiefes Obsidian (#090909), klare Flächen (#141414) und präziser Monochrom-Kontrast.',
+  },
+  {
     id: 'midnight',
-    name: 'Hinterland Midnight',
-    author: 'Hinterland',
+    name: 'Neocrom Horizon Midnight',
+    author: 'Neocrom',
     source: 'official',
     version: '1.2.0',
     theme: 'dark',
-    accent: '#4f7cff',
-    accentContrast: '#ffffff',
+    accent: '#bdbdbd',
+    accentContrast: '#090909',
     darkBackground: '#12141a',
     darkSurface: '#1a1d26',
     darkText: '#e6e9f2',
@@ -25,57 +47,57 @@ export const OFFICIAL_THEMES = [
     density: 'cosy',
     fontStack: 'system',
     blur: 18,
-    tags: ['official', 'dark', 'balanced', 'blue'],
-    description: 'Das offizielle Flaggschiff-Design von Hinterland. Ausgewogene Kontraste, modernes Nachtblau und elegantes Fokus-Styling.',
+    tags: ['official', 'dark', 'balanced'],
+    description: 'Gedämpftes Nacht-Theme für Neocrom Horizon mit ausgewogenen Kontrasten und ruhiger Oberfläche.',
   },
   {
     id: 'purelight',
-    name: 'Hinterland Pure Light',
-    author: 'Hinterland',
+    name: 'Neocrom Horizon Daylight',
+    author: 'Neocrom',
     source: 'official',
     version: '1.1.0',
     theme: 'light',
-    accent: '#3366ff',
-    accentContrast: '#ffffff',
-    darkBackground: '#12141a',
-    darkSurface: '#1a1d26',
-    darkText: '#e6e9f2',
-    lightBackground: '#f5f7fb',
+    accent: '#242424',
+    accentContrast: '#f8f8f8',
+    darkBackground: '#090909',
+    darkSurface: '#141414',
+    darkText: '#f8f8f8',
+    lightBackground: '#f4f4f4',
     lightSurface: '#ffffff',
-    lightText: '#1a202c',
+    lightText: '#111111',
     radius: 10,
     density: 'cosy',
     fontStack: 'system',
     blur: 12,
-    tags: ['official', 'light', 'clean', 'bright'],
-    description: 'Helles, klares Studio-Design mit hoher Lesbarkeit und frischem königsblauem Akzent für lichtdurchflutete Umgebungen.',
+    tags: ['official', 'light', 'clean', 'monochrome'],
+    description: 'Helles, klares Studio-Design in Neocrom-Monochrom mit maximaler Lesbarkeit für helle Umgebungen.',
   },
   {
     id: 'oled',
-    name: 'Hinterland OLED Pitch',
-    author: 'Hinterland',
+    name: 'Neocrom Horizon OLED',
+    author: 'Neocrom',
     source: 'official',
     version: '1.0.4',
     theme: 'dark',
-    accent: '#00e5ff',
+    accent: '#f8f8f8',
     accentContrast: '#000000',
     darkBackground: '#000000',
-    darkSurface: '#0d0e12',
-    darkText: '#f0f4f8',
-    lightBackground: '#f0f0f0',
+    darkSurface: '#0d0d0d',
+    darkText: '#f8f8f8',
+    lightBackground: '#f4f4f4',
     lightSurface: '#ffffff',
     lightText: '#111111',
-    radius: 6,
+    radius: 7,
     density: 'compact',
     fontStack: 'mono',
     blur: 0,
     tags: ['official', 'dark', 'oled', 'battery-saver', 'high-contrast'],
-    description: 'Tiefstes Schwarz für OLED-Displays. Maximale Akkulaufzeit, messerscharfe Typografie und neon-cyan Akzentstreifen.',
+    description: 'Reines Schwarz für OLED-Displays. Maximale Akkulaufzeit, präzise Typografie und kompromissloser Kontrast.',
   },
   {
     id: 'nord',
-    name: 'Hinterland Nord Frost',
-    author: 'Hinterland',
+    name: 'Neocrom Horizon Nord Frost',
+    author: 'Neocrom',
     source: 'official',
     version: '1.0.2',
     theme: 'dark',
@@ -96,8 +118,8 @@ export const OFFICIAL_THEMES = [
   },
   {
     id: 'emerald',
-    name: 'Hinterland Emerald Forest',
-    author: 'Hinterland',
+    name: 'Neocrom Horizon Emerald',
+    author: 'Neocrom',
     source: 'official',
     version: '1.0.1',
     theme: 'dark',
@@ -118,16 +140,16 @@ export const OFFICIAL_THEMES = [
   },
   {
     id: 'sunset',
-    name: 'Hinterland Sunset Glow',
-    author: 'Hinterland',
+    name: 'Neocrom Horizon Ember',
+    author: 'Neocrom',
     source: 'official',
     version: '1.0.3',
     theme: 'dark',
     accent: '#ff6b4a',
     accentContrast: '#ffffff',
-    darkBackground: '#191424',
-    darkSurface: '#241b34',
-    darkText: '#f5eefc',
+    darkBackground: '#141118',
+    darkSurface: '#1e1924',
+    darkText: '#f8f4fc',
     lightBackground: '#fdf6f2',
     lightSurface: '#ffffff',
     lightText: '#291823',
@@ -135,8 +157,8 @@ export const OFFICIAL_THEMES = [
     density: 'roomy',
     fontStack: 'geometric',
     blur: 24,
-    tags: ['official', 'dark', 'warm', 'purple', 'orange'],
-    description: 'Warme Dämmerungsfarben mit Sonnenuntergangs-Orange auf sanftem Amethyst. Gemütlich und einladend.',
+    tags: ['official', 'dark', 'warm', 'orange'],
+    description: 'Warme Kontraste mit Ember-Orange auf tiefem Obsidian. Ruhig und ausgewogen.',
   },
 ];
 
@@ -321,9 +343,9 @@ export const COMMUNITY_THEMES = [
 
 export const OFFICIAL_EXTENSIONS = [
   {
-    id: 'hinterlandpass',
-    name: 'Hinterland Pass',
-    author: 'Hinterland Security Team',
+    id: 'horizonpass',
+    name: 'Horizon Pass',
+    author: 'Neocrom Security Team',
     source: 'official',
     version: '1.0.0',
     category: 'security',
@@ -338,9 +360,9 @@ export const OFFICIAL_EXTENSIONS = [
     ],
   },
   {
-    id: 'hinterlandfocus',
-    name: 'Hinterland Focus',
-    author: 'Hinterland Team',
+    id: 'horizonfocus',
+    name: 'Horizon Focus',
+    author: 'Neocrom Team',
     source: 'official',
     version: '1.0.0',
     category: 'productivity',
@@ -354,9 +376,9 @@ export const OFFICIAL_EXTENSIONS = [
     ],
   },
   {
-    id: 'hinterlandpanel',
-    name: 'Hinterland Panel',
-    author: 'Hinterland Team',
+    id: 'horizonpanel',
+    name: 'Horizon Panel',
+    author: 'Neocrom Team',
     source: 'official',
     version: '1.0.0',
     category: 'utilities',
@@ -370,9 +392,9 @@ export const OFFICIAL_EXTENSIONS = [
     ],
   },
   {
-    id: 'hinterlandshield',
-    name: 'Hinterland Shield',
-    author: 'Hinterland Security Team',
+    id: 'horizonshield',
+    name: 'Horizon Shield',
+    author: 'Neocrom Security Team',
     source: 'official',
     version: '1.1.0',
     category: 'security',
@@ -387,9 +409,9 @@ export const OFFICIAL_EXTENSIONS = [
     ],
   },
   {
-    id: 'hinterlandnotes',
-    name: 'Hinterland Notizen',
-    author: 'Hinterland Team',
+    id: 'horizonnotes',
+    name: 'Horizon Notes',
+    author: 'Neocrom Team',
     source: 'official',
     version: '1.0.0',
     category: 'productivity',
@@ -404,9 +426,9 @@ export const OFFICIAL_EXTENSIONS = [
     ],
   },
   {
-    id: 'hinterlandtranslate',
-    name: 'Hinterland Übersetzer',
-    author: 'Hinterland AI Team',
+    id: 'horizontranslate',
+    name: 'Horizon Translate',
+    author: 'Neocrom Team',
     source: 'official',
     version: '1.0.0',
     category: 'utilities',
@@ -424,7 +446,7 @@ export const OFFICIAL_EXTENSIONS = [
 export const COMMUNITY_EXTENSIONS = [
   {
     id: 'darkreader',
-    name: 'Dark Reader for Hinterland',
+    name: 'Dark Reader for Horizon',
     author: 'Alexander & Community',
     source: 'community',
     version: '2.4.0',
@@ -535,7 +557,7 @@ function buildExtensionFiles(id, config = {}) {
       return {
         'manifest.json': JSON.stringify({
           manifest_version: 3,
-          name: 'Dark Reader for Hinterland',
+          name: 'Dark Reader for Horizon',
           version: '2.4.0',
           description: 'Intelligent high contrast dark mode for any webpage with custom warmth and brightness.',
           permissions: ['activeTab', 'storage'],
@@ -550,7 +572,7 @@ function buildExtensionFiles(id, config = {}) {
           ],
         }, null, 2),
         'content.js': `(function() {
-  const STYLE_ID = 'hinterland-darkreader-style';
+  const STYLE_ID = 'horizon-darkreader-style';
   let existing = document.getElementById(STYLE_ID);
   if (!existing) {
     existing = document.createElement('style');
@@ -601,17 +623,17 @@ chrome.runtime?.onMessage?.addListener?.((msg, sender, sendResponse) => {
 <head>
   <meta charset="utf-8">
   <style>
-    body { font-family: system-ui, sans-serif; margin: 0; padding: 20px; width: 320px; background: #181920; color: #fff; text-align: center; }
-    h2 { margin: 0 0 12px; font-size: 1.1rem; color: #ff6b4a; }
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 20px; width: 320px; background: #090909; color: #f8f8f8; text-align: center; }
+    h2 { margin: 0 0 12px; font-size: 1rem; font-weight: 700; color: #f8f8f8; }
     .timer { font-size: 3rem; font-weight: 700; margin: 16px 0; font-variant-numeric: tabular-nums; }
-    .btn { background: #ff6b4a; color: #fff; border: 0; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; margin: 4px; }
-    .btn:hover { background: #ff856b; }
-    .btn-secondary { background: #2c2f3d; }
-    .badge { display: inline-block; padding: 4px 10px; background: #2c2f3d; border-radius: 20px; font-size: 0.8rem; }
+    .btn { background: #f8f8f8; color: #090909; border: 1px solid #f8f8f8; padding: 10px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; margin: 4px; }
+    .btn:hover { background: #dedede; }
+    .btn-secondary { background: #191919; color: #f8f8f8; border-color: #303030; }
+    .badge { display: inline-block; padding: 4px 10px; background: #141414; border: 1px solid #303030; color: #bdbdbd; border-radius: 999px; font-size: 0.8rem; }
   </style>
 </head>
 <body>
-  <h2>🍅 Pomodoro Focus</h2>
+  <h2>Pomodoro Focus</h2>
   <div class="badge" id="mode">Fokuszeit (${work}m)</div>
   <div class="timer" id="display">${String(work).padStart(2, '0')}:00</div>
   <div>
@@ -647,7 +669,7 @@ startBtn.addEventListener('click', () => {
         clearInterval(interval);
         active = false;
         startBtn.textContent = 'Start';
-        alert('🔔 Pomodoro-Fokuszeit beendet! Zeit für eine Pause.');
+        alert('Pomodoro-Fokuszeit beendet! Zeit für eine Pause.');
       }
     }, 1000);
   } else {
@@ -667,15 +689,15 @@ render();`,
       };
     }
 
-    case 'hinterlandshield': {
+    case 'horizonshield': {
       return {
         'manifest.json': JSON.stringify({
           manifest_version: 3,
-          name: 'Hinterland Shield',
+          name: 'Horizon Shield',
           version: '1.1.0',
           description: 'Advanced privacy defender: strips URL trackers, blocks canvas fingerprinting and prevents WebRTC leakage.',
           permissions: ['activeTab', 'storage'],
-          action: { default_title: 'Hinterland Shield' },
+          action: { default_title: 'Horizon Shield' },
           content_scripts: [
             {
               matches: ['http://*/*', 'https://*/*'],
@@ -722,16 +744,16 @@ render();`,
       };
     }
 
-    case 'hinterlandnotes': {
+    case 'horizonnotes': {
       return {
         'manifest.json': JSON.stringify({
           manifest_version: 3,
-          name: 'Hinterland Notizen',
+          name: 'Horizon Notes',
           version: '1.0.0',
           description: 'Floating rapid notes and scratchpad with autosave and markdown formatting.',
           permissions: ['activeTab', 'storage'],
           action: {
-            default_title: 'Notizen',
+            default_title: 'Notes',
             default_popup: 'popup.html',
           },
         }, null, 2),
@@ -740,25 +762,25 @@ render();`,
 <head>
   <meta charset="utf-8">
   <style>
-    body { font-family: system-ui, sans-serif; margin: 0; padding: 16px; width: 340px; background: #1a1d26; color: #e6e9f2; }
-    h3 { margin: 0 0 10px; font-size: 1rem; color: #4f7cff; display: flex; justify-content: space-between; align-items: center; }
-    textarea { width: 100%; box-sizing: border-box; height: 260px; background: #12141a; color: #fff; border: 1px solid #2a2e3d; border-radius: 8px; padding: 10px; font-family: inherit; font-size: 13px; resize: none; outline: none; }
-    textarea:focus { border-color: #4f7cff; }
-    .status { font-size: 11px; color: #8b93a8; margin-top: 8px; }
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 16px; width: 340px; background: #090909; color: #f8f8f8; }
+    h3 { margin: 0 0 10px; font-size: 0.96rem; font-weight: 700; color: #f8f8f8; display: flex; justify-content: space-between; align-items: center; }
+    textarea { width: 100%; box-sizing: border-box; height: 260px; background: #141414; color: #f8f8f8; border: 1px solid #303030; border-radius: 10px; padding: 10px; font-family: inherit; font-size: 13px; resize: none; outline: none; }
+    textarea:focus { border-color: #f8f8f8; }
+    .status { font-size: 11px; color: #bdbdbd; margin-top: 8px; }
   </style>
 </head>
 <body>
-  <h3>📝 Hinterland Notizen <span style="font-size: 11px; font-weight: normal; color: #22c08a;">● Gespeichert</span></h3>
-  <textarea id="noteArea" placeholder="Schreibe Notizen, Links oder Code hier..."></textarea>
-  <div class="status" id="charCount">0 Zeichen</div>
+  <h3>Horizon Notes <span style="font-size: 11px; font-weight: normal; color: #bdbdbd;">Saved</span></h3>
+  <textarea id="noteArea" placeholder="Write notes, links, or snippets..."></textarea>
+  <div class="status" id="charCount">0 characters</div>
   <script src="popup.js"></script>
 </body>
 </html>`,
         'popup.js': `const area = document.getElementById('noteArea');
 const counter = document.getElementById('charCount');
-const KEY = 'hinterland_user_notes';
-area.value = localStorage.getItem(KEY) || '';
-function updateCount() { counter.textContent = area.value.length + ' Zeichen'; }
+const KEY = 'horizon_user_notes';
+area.value = localStorage.getItem(KEY) || localStorage.getItem('hinterland_user_notes') || '';
+function updateCount() { counter.textContent = area.value.length + ' characters'; }
 updateCount();
 area.addEventListener('input', () => {
   localStorage.setItem(KEY, area.value);
@@ -768,16 +790,16 @@ area.addEventListener('input', () => {
       };
     }
 
-    case 'hinterlandtranslate': {
+    case 'horizontranslate': {
       const target = config.targetLanguage || 'de';
       return {
         'manifest.json': JSON.stringify({
           manifest_version: 3,
-          name: 'Hinterland Übersetzer',
+          name: 'Horizon Translate',
           version: '1.0.0',
           description: 'Instant inline translation tool for marked text selections with dictionary lookup.',
           permissions: ['activeTab', 'storage'],
-          action: { default_title: 'Übersetzen' },
+          action: { default_title: 'Translate' },
           content_scripts: [
             {
               matches: ['http://*/*', 'https://*/*'],
@@ -901,8 +923,8 @@ console.log('[TabSuspender] Active.');`,
     const text = '# ' + title + '\\n\\n' + (document.querySelector('article, main, body')?.innerText || '') + '\\n\\n*Quelle: ' + location.href + '*';
     navigator.clipboard?.writeText?.(text);
   }
-  window.addEventListener('hinterland:clip-markdown', clip);
-  window.addEventListener('hinterland:extension-action', (e) => {
+  window.addEventListener('horizon:clip-markdown', clip);
+  window.addEventListener('horizon:extension-action', (e) => {
     if (e.detail?.extensionId === 'markdownclipper') clip();
   });
 })();`,
@@ -915,29 +937,29 @@ console.log('[TabSuspender] Active.');`,
   }
 }
 
-/* ------------------------------------------------------------- Hinter Store Service */
+/* ------------------------------------------------------------- Horizon Store Service */
 
 
 export const WEEKLY_PICKS = [
   {
-    id: 'hinterlandpass',
+    id: 'horizonpass',
     type: 'extension',
     badge: { de: 'Tipp der Woche', en: 'Weekly Pick' },
-    title: 'Hinterland Pass',
+    title: 'Horizon Pass',
     whatIsIt: {
       de: 'Nativer, Ende-zu-Ende verschlüsselter Passwortmanager mit AES-256 GCM Vault, sicherem Formular-Autofill und Master-Passwort-Schutz.',
       en: 'Native, end-to-end encrypted password manager with AES-256 GCM vault, in-page credential autofill, and master password security.',
     },
     focusReason: {
-      de: 'Sichere Authentifizierung ohne Cloud-Zwang ist das Fundament digitaler Privatsphäre. Hinterland Pass verwahrt alle Anmeldedaten rein lokal und isoliert.',
-      en: 'Zero-knowledge credential security without external cloud dependence is fundamental to privacy. Hinterland Pass keeps your vault local and hardened.',
+      de: 'Sichere Authentifizierung ohne Cloud-Zwang ist das Fundament digitaler Privatsphäre. Horizon Pass verwahrt alle Anmeldedaten rein lokal und isoliert.',
+      en: 'Zero-knowledge credential security without external cloud dependence is fundamental to privacy. Horizon Pass keeps your vault local and hardened.',
     },
   },
   {
     id: 'darkreader',
     type: 'extension',
     badge: { de: 'Tipp der Woche', en: 'Weekly Pick' },
-    title: 'Dark Reader for Hinterland',
+    title: 'Dark Reader for Horizon',
     whatIsIt: {
       de: 'Intelligenter Dunkelmodus mit individueller Kontrast-, Helligkeits- und Sepia-Steuerung für jede beliebige Webseite im Netz.',
       en: 'Intelligent dark mode with custom contrast, brightness, and sepia warmth controls for every website on the web.',
@@ -948,31 +970,31 @@ export const WEEKLY_PICKS = [
     },
   },
   {
-    id: 'hinterlandshield',
+    id: 'horizonshield',
     type: 'extension',
     badge: { de: 'Tipp der Woche', en: 'Weekly Pick' },
-    title: 'Hinterland Shield',
+    title: 'Horizon Shield',
     whatIsIt: {
       de: 'Erweiterter Privatsphären-Schutzschirm: Filtert aggressive Tracker, entfernt URL-Tracking-Parameter (utm, fbclid) und blockiert WebRTC-IP-Leaks.',
       en: 'Advanced privacy protection shield: blocks intrusive trackers, strips tracking query parameters (utm, fbclid), and prevents WebRTC leaks.',
     },
     focusReason: {
-      de: 'Cross-Site-Tracking nimmt stetig zu. Hinterland Shield bereinigt Links noch vor dem Absenden und bewahrt deine digitale Privatsphäre ohne Geschwindigkeitsverlust.',
-      en: 'Cross-site trackers increasingly weaponize link URLs. Hinterland Shield sanitizes outbound links transparently without slowing down navigation.',
+      de: 'Cross-Site-Tracking nimmt stetig zu. Horizon Shield bereinigt Links noch vor dem Absenden und bewahrt deine digitale Privatsphäre ohne Geschwindigkeitsverlust.',
+      en: 'Cross-site trackers increasingly weaponize link URLs. Horizon Shield sanitizes outbound links transparently without slowing down navigation.',
     },
   },
   {
-    id: 'catppuccin-mocha',
+    id: 'neocrom',
     type: 'theme',
     badge: { de: 'Design der Woche', en: 'Theme Spotlight' },
-    title: 'Catppuccin Mocha',
+    title: 'Neocrom Horizon',
     whatIsIt: {
-      de: 'Weltweit beliebtes Community-Farbschema mit weichen Pastelltönen, samtigem Lavendel und sorgfältig abgestimmten Kontrastwerten.',
-      en: 'World-renowned community color palette featuring soothing pastels, warm lavender accents, and balanced readability.',
+      de: 'Das monokrome Flaggschiff-Design mit Obsidian-Hintergrund (#090909), klaren Flächen (#141414) und präzisen Kontrasten.',
+      en: 'The signature monochrome flagship design pairing obsidian surfaces (#090909), crisp razor borders, and focused high-contrast typography.',
     },
     focusReason: {
-      de: 'Vereint minimalistische Ästhetik mit optimaler Lesbarkeit für langes, ermüdungsfreies Arbeiten und Surfen am Bildschirm.',
-      en: 'Combines elegant aesthetics with optimal contrast for extended, distraction-free reading and desktop harmony.',
+      de: 'Entfernt jede visuelle Ablenkung aus dem Browser-Chrome und fügt sich nahtlos in das gesamte Neocrom-Ökosystem ein.',
+      en: 'Removes chrome noise with disciplined monochrome contrast, keeping the web content at center stage across Neocrom.',
     },
   },
   {
@@ -990,10 +1012,10 @@ export const WEEKLY_PICKS = [
     },
   },
   {
-    id: 'hinterlandfocus',
+    id: 'horizonfocus',
     type: 'extension',
     badge: { de: 'Tipp der Woche', en: 'Weekly Pick' },
-    title: 'Hinterland Focus',
+    title: 'Horizon Focus',
     whatIsIt: {
       de: 'Lesemodus für konzentriertes Arbeiten: Zentriert Textspalten, dämpft störende Seitenränder ab und sorgt für angenehme Zeilenbreiten.',
       en: 'Distraction-free reading environment: centers article columns, dims busy sidebars, and optimizes line widths.',
@@ -1019,7 +1041,7 @@ export const WEEKLY_PICKS = [
   },
 ];
 
-export class HinterStore {
+export class HorizonStore {
   constructor() {
     this.userDataExtensions = join(app.getPath('userData'), 'extensions');
   }
@@ -1030,7 +1052,7 @@ export class HinterStore {
         mkdirSync(this.userDataExtensions, { recursive: true });
       }
     } catch (e) {
-      console.warn('[HinterStore] Could not create extensions dir', e);
+      console.warn('[HorizonStore] Could not create extensions dir', e);
     }
   }
 
@@ -1044,7 +1066,7 @@ export class HinterStore {
     const installedExts = extensions.list();
     const installedExtIds = new Set(installedExts.map((e) => e.id));
     const liveExtIds = new Set(installedExts.filter((e) => e.enabled).map((e) => e.id));
-    const activeThemeId = settings.value('store.activeThemeId') || 'midnight';
+    const activeThemeId = settings.value('store.activeThemeId') || 'neocrom';
     const userCustomThemes = settings.value('store.installedThemes') || [];
     const extensionConfigs = settings.value('store.extensionConfigs') || {};
 
@@ -1100,7 +1122,7 @@ export class HinterStore {
     this.ensureDir();
     const all = [...OFFICIAL_EXTENSIONS, ...COMMUNITY_EXTENSIONS];
     const item = all.find((e) => e.id === id);
-    if (!item) throw new Error('Extension not found in Hinter Store: ' + id);
+    if (!item) throw new Error('Extension not found in Horizon Store: ' + id);
 
     // If it's a bundled extension, enable it directly
     if (item.bundled) {
@@ -1151,7 +1173,7 @@ export class HinterStore {
       try {
         rmSync(targetDir, { recursive: true, force: true });
       } catch (err) {
-        console.warn('[HinterStore] Could not delete extension directory:', err);
+        console.warn('[HorizonStore] Could not delete extension directory:', err);
       }
     }
     return { ok: true };
@@ -1173,7 +1195,7 @@ export class HinterStore {
   applyTheme(theme) {
     if (!theme || typeof theme !== 'object') throw new Error('Invalid theme definition');
 
-    // Merge settings directly into Hinterland appearance schema
+    // Merge settings directly into Neocrom Horizon appearance schema
     const patch = {};
     if (theme.theme) patch['appearance.theme'] = theme.theme;
     if (theme.accent) patch['appearance.accent'] = theme.accent;
@@ -1234,9 +1256,9 @@ export class HinterStore {
 
   async exportThemeFile(theme) {
     const result = await dialog.showSaveDialog(surface.window, {
-      title: 'Hinter Store: Design exportieren',
-      defaultPath: `${(theme.name || 'theme').toLowerCase().replace(/[^a-z0-9]+/g, '-')}.hintertheme.json`,
-      filters: [{ name: 'Hinterland Theme', extensions: ['json'] }],
+      title: 'Horizon Store: Design exportieren',
+      defaultPath: `${(theme.name || 'theme').toLowerCase().replace(/[^a-z0-9]+/g, '-')}.horizontheme.json`,
+      filters: [{ name: 'Neocrom Horizon Theme', extensions: ['json'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
     writeFileSync(result.filePath, JSON.stringify(theme, null, 2), 'utf8');
@@ -1245,8 +1267,8 @@ export class HinterStore {
 
   async importThemeFile() {
     const result = await dialog.showOpenDialog(surface.window, {
-      title: 'Hinter Store: Community-Design importieren',
-      filters: [{ name: 'Hinterland Theme (*.json)', extensions: ['json'] }],
+      title: 'Horizon Store: Community-Design importieren',
+      filters: [{ name: 'Neocrom Horizon Theme (*.json)', extensions: ['json'] }],
       properties: ['openFile'],
     });
     if (result.canceled || !result.filePaths?.length) return { ok: false };
@@ -1263,4 +1285,4 @@ export class HinterStore {
   }
 }
 
-export const hinterStore = new HinterStore();
+export const horizonStore = new HorizonStore();

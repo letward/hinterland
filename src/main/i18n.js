@@ -22,7 +22,7 @@ function loadLocale(code) {
     try {
       flat = flatten(JSON.parse(readFileSync(file, 'utf8')));
     } catch (error) {
-      console.warn(`[Hinterland] Locale ${code} could not be read.`, error.message);
+      console.warn(`[Neocrom Horizon] Locale ${code} could not be read.`, error.message);
     }
   }
   cache.set(code, flat);

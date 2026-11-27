@@ -67,7 +67,7 @@ export const SECTIONS = [
 ];
 
 const syncProviders = [
-  { value: 'hinterland', labelKey: 'settings.account.providerHinterland' },
+  { value: 'horizon', labelKey: 'settings.account.providerHorizon' },
   { value: 'supabase', labelKey: 'settings.account.providerSupabase' },
   { value: 'custom', labelKey: 'settings.account.providerCustom' },
 ];
@@ -120,7 +120,7 @@ export const SCHEMA = [
     labelKey: 'settings.general.homepage',
     descKey: 'settings.general.homepageDesc',
     section: 'general',
-    placeholder: 'hinterland://newtab',
+    placeholder: 'horizon://newtab',
   }),
   option('general.showHomeButton', 'bool', false, {
     labelKey: 'settings.general.showHomeButton',
@@ -370,7 +370,7 @@ export const SCHEMA = [
     labelKey: 'settings.newtab.background',
     descKey: 'settings.newtab.backgroundDesc',
     section: 'start',
-    placeholder: 'hinterland://assets/background.jpg',
+    placeholder: 'horizon://assets/background.jpg',
   }),
   option('start.backgroundOverlay', 'number', 0.25, {
     labelKey: 'settings.newtab.backgroundOverlay',
@@ -704,7 +704,7 @@ export const SCHEMA = [
   }),
 
   /* -------------------------------------------------------------- extensions */
-  option('extensions.enabled', 'multiselect', ['hinterlandfocus', 'hinterlandpanel', 'hinterlandpass'], {
+  option('extensions.enabled', 'multiselect', ['horizonfocus', 'horizonpanel', 'horizonpass'], {
     labelKey: 'settings.extensions.enabled',
     descKey: 'settings.extensions.enabledDesc',
     section: 'extensions',
@@ -827,7 +827,7 @@ export const SCHEMA = [
   }),
 
   /* ----------------------------------------------------------------- store */
-  option('store.activeThemeId', 'text', 'midnight', {
+  option('store.activeThemeId', 'text', 'neocrom', {
     labelKey: 'settings.store.activeTheme',
     descKey: 'settings.store.activeThemeDesc',
     section: 'appearance',
@@ -858,7 +858,7 @@ export const SCHEMA = [
     descKey: 'settings.account.autoSyncDesc',
     section: 'account',
   }),
-  option('account.provider', 'select', 'hinterland', {
+  option('account.provider', 'select', 'horizon', {
     labelKey: 'settings.account.provider',
     descKey: 'settings.account.providerDesc',
     section: 'account',

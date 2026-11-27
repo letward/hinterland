@@ -6,10 +6,18 @@ import { EventEmitter } from 'node:events';
 import { SCHEMA, buildDefaults } from './schema.js';
 
 const app = typeof electron === 'object' && electron !== null ? electron.app : null;
-const getUserDataPath = () => (typeof app?.getPath === 'function' ? app.getPath('userData') : join(tmpdir(), 'hinterland-data'));
+const getUserDataPath = () => (typeof app?.getPath === 'function' ? app.getPath('userData') : join(tmpdir(), 'neocrom-horizon-data'));
 
 const FILE_NAME = 'settings.json';
 const FORBIDDEN_KEYS = new Set(['__proto__', 'prototype', 'constructor']);
+const LEGACY_EXTENSION_MAP = {
+  hinterlandfocus: 'horizonfocus',
+  hinterlandpanel: 'horizonpanel',
+  hinterlandpass: 'horizonpass',
+  hinterlandshield: 'horizonshield',
+  hinterlandnotes: 'horizonnotes',
+  hinterlandtranslate: 'horizontranslate',
+};
 const previousPalette = {
   accent: '#4f7cff', accentContrast: '#ffffff',
   darkBackground: '#12141a', darkSurface: '#1a1d26', darkText: '#e6e9f2',
@@ -101,12 +109,27 @@ export class Settings extends EventEmitter {
       if (Object.entries(previousPalette).every(([key, color]) => parsed.appearance?.[key] === color)) {
         for (const key of Object.keys(previousPalette)) delete parsed.appearance[key];
       }
+      if (typeof parsed.general?.homepage === 'string' && parsed.general.homepage.startsWith('hinterland://')) {
+        parsed.general.homepage = `horizon://${parsed.general.homepage.slice('hinterland://'.length)}`;
+      }
+      if (parsed.account?.provider === 'hinterland') {
+        parsed.account.provider = 'horizon';
+      }
+      if (parsed.account?.serverUrl === 'https://hinterland-browser.vercel.app/api/sync') {
+        delete parsed.account.serverUrl;
+      }
+      if (Array.isArray(parsed.extensions?.enabled)) {
+        parsed.extensions.enabled = [...new Set(parsed.extensions.enabled.map((id) => LEGACY_EXTENSION_MAP[id] || id))];
+      }
+      if (parsed.store?.activeThemeId === 'midnight') {
+        parsed.store.activeThemeId = 'neocrom';
+      }
       for (const definition of this.schema) {
         const value = coerce(definition, deepGet(parsed, definition.key));
         if (value !== undefined) deepSet(this.data, definition.key, value);
       }
     } catch (error) {
-      console.warn('[Hinterland] Settings file could not be read, using defaults.', error.message);
+      console.warn('[Neocrom Horizon] Settings file could not be read, using defaults.', error.message);
     }
   }
 
@@ -121,7 +144,7 @@ export class Settings extends EventEmitter {
       writeFileSync(temporary, JSON.stringify(this.data, null, 2), 'utf8');
       renameSync(temporary, this.filePath);
     } catch (error) {
-      console.warn('[Hinterland] Settings could not be written.', error.message);
+      console.warn('[Neocrom Horizon] Settings could not be written.', error.message);
     }
   }
 
@@ -206,7 +229,7 @@ export class Settings extends EventEmitter {
   export() {
     return JSON.stringify(
       {
-        format: 'hinterland.settings',
+        format: 'neocrom-horizon.settings',
         version: 1,
         exportedAt: new Date().toISOString(),
         settings: this.all(),

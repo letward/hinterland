@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { stripTracking } from '../src/security.js';
 
-describe('Hinterland v1.16.0 Features', () => {
+describe('Neocrom Horizon v1.16.0 Features', () => {
   describe('stripTracking (Clean Link Stripping)', () => {
     it('strips common UTM tracking parameters', () => {
       const input = 'https://example.com/article?utm_source=twitter&utm_medium=social&utm_campaign=spring2026&id=42';
@@ -17,7 +17,7 @@ describe('Hinterland v1.16.0 Features', () => {
     });
 
     it('leaves clean URLs untouched', () => {
-      const input = 'https://github.com/letward/Hinterland?tab=readme-ov-file#installation';
+      const input = 'https://github.com/neocrom-team/neocrom-horizon?tab=readme-ov-file#installation';
       const clean = stripTracking(input);
       assert.equal(clean, input);
     });

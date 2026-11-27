@@ -1,5 +1,5 @@
 /**
- * @fileoverview Hinterland Extension SDK - Security, Sanitization & Safe Storage
+ * @fileoverview Neocrom Horizon Extension SDK - Security, Sanitization & Safe Storage
  * Protects user data from being exploited, leaked, or hijacked by untrusted input.
  */
 
@@ -307,17 +307,17 @@ class MemoryStorageBackend {
 }
 
 /**
- * Secure, namespaced, schema-validated storage wrapper for Hinterland extensions.
+ * Secure, namespaced, schema-validated storage wrapper for Neocrom Horizon extensions.
  */
 export class SecureStorage {
   /**
    * @param {object} [options]
-   * @param {string} [options.namespace='hinterland'] - Namespace prefix
+   * @param {string} [options.namespace='horizon'] - Namespace prefix
    * @param {string} [options.encryptionKey] - Secret passphrase for AES-GCM encrypted entries
    * @param {'local'|'session'|'memory'} [options.area='local'] - Storage area
    */
   constructor(options = {}) {
-    this.namespace = options.namespace || 'hinterland';
+    this.namespace = options.namespace || 'horizon';
     this.encryptionKey = options.encryptionKey || null;
     this.prefix = `_ht_${this.namespace}_`;
 

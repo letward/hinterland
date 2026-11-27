@@ -9,7 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
 const require = createRequire(import.meta.url);
 
-describe('Hinterland v1.23.0 Features & Polish', () => {
+describe('Neocrom Horizon v1.23.0 Features & Polish', () => {
   describe('Official User Guide Documentation', () => {
     const guidePath = join(ROOT, 'website', 'docs', 'user-guide.html');
 
@@ -35,7 +35,7 @@ describe('Hinterland v1.23.0 Features & Polish', () => {
     it('includes safety guidelines and responsible browsing notices', () => {
       const html = readFileSync(guidePath, 'utf8');
       assert.ok(html.includes('Safety rule:'), 'user guide must contain safety instructions');
-      assert.match(html, /<a[^>]+href="\.\.\/"[^>]*>[^<]*Neocrom Horizon/, 'user guide must link back to the download page');
+      assert.match(html, /<a[^>]+href="\.\.\/"[^>]*aria-label="Neocrom Horizon"/, 'user guide must link back to the download page');
     });
   });
 

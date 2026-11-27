@@ -1,6 +1,7 @@
-export const APP_NAME = 'Hinterland';
-export const APP_ID = 'app.hinterland.browser';
-export const SCHEME = 'hinterland';
+export const APP_NAME = 'Neocrom Horizon';
+export const APP_ID = 'pro.neocrom.horizon';
+export const SCHEME = 'horizon';
+export const LEGACY_SCHEME = 'hinterland';
 export const SCHEME_ORIGIN = `${SCHEME}://app`;
 export const SCHEME_VERSION = 1;
 export const NEW_TAB_URL = `${SCHEME}://newtab/`;
@@ -12,7 +13,7 @@ export const INTERNAL_HOSTS = new Set(['newtab', 'history', 'bookmarks', 'extens
 export const INTERNAL_PAGES = new Set(['newtab', 'history', 'bookmarks', 'extensions', 'settings', 'store', 'passwords', 'account', 'sync']);
 
 export const PARTITION = '';
-export const PRIVATE_PARTITION = 'hinterland:private';
+export const PRIVATE_PARTITION = 'horizon:private';
 
 export const VIEW_ROLE = { CHROME: 'chrome', CONTENT: 'content' };
 

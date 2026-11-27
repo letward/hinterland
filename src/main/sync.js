@@ -1,5 +1,5 @@
 /**
- * @fileoverview Hinterland Account & Cloud Sync Engine
+ * @fileoverview Neocrom Horizon Account & Cloud Sync Engine
  * Synchronizes bookmarks and browser settings across devices using free serverless tools:
  * - Supabase (PostgreSQL + GoTrue Auth & PostgREST / User Metadata)
  * - Vercel Serverless Sync API (ephemeral/KV proxy & sync coordinator)
@@ -344,7 +344,7 @@ export class SyncService extends EventEmitter {
       e2eeActive: Boolean(this.syncPassphrase),
       lastSyncTime: settings.value('account.lastSyncTime') || this.lastSyncedAt || null,
       lastSyncedAt: settings.value('account.lastSyncTime') || this.lastSyncedAt || null,
-      provider: settings.value('account.provider') || 'hinterland',
+      provider: settings.value('account.provider') || 'horizon',
       autoSync: settings.value('account.autoSync') ?? true,
       status: this.isLoggedIn() ? 'synced' : this.status,
     };
@@ -353,7 +353,7 @@ export class SyncService extends EventEmitter {
   pairDevice(codeOrOpts) {
     if (typeof codeOrOpts === 'object' && codeOrOpts?.code) {
       const code = String(codeOrOpts.code).trim().toUpperCase();
-      if (!/^HL-[A-Z0-9]{4,8}$/i.test(code) && !/^HL-[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(code)) {
+      if (!/^(NH|HL)-[A-Z0-9]{4,8}$/i.test(code) && !/^(NH|HL)-[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(code)) {
         return { ok: false, error: 'invalidCode' };
       }
       const known = settings.value('account.knownDevices') || [];
@@ -362,7 +362,7 @@ export class SyncService extends EventEmitter {
         name: codeOrOpts.name || 'Paired Device',
         platform: 'unknown',
         os: 'unknown',
-        browserVersion: '1.29.0',
+        browserVersion: '1.47.0',
         lastActive: new Date().toISOString(),
         pairedCode: code,
         current: false,
@@ -373,7 +373,7 @@ export class SyncService extends EventEmitter {
       return { ok: true, device: newDevice };
     }
 
-    const code = 'HL-' + crypto.randomBytes(3).toString('hex').toUpperCase();
+    const code = 'NH-' + crypto.randomBytes(3).toString('hex').toUpperCase();
     const token = this.getSession()?.token || '';
     return {
       ok: true,
@@ -415,7 +415,7 @@ export class SyncService extends EventEmitter {
 
   getStatus() {
     const session = this.getSession();
-    const provider = settings.value('account.provider') || 'hinterland';
+    const provider = settings.value('account.provider') || 'horizon';
     const supabaseUrl = settings.value('account.supabaseUrl') || '';
     const supabaseKey = settings.value('account.supabaseAnonKey') || '';
 
@@ -475,7 +475,7 @@ export class SyncService extends EventEmitter {
     if (password.length < 6) throw new Error('passwordTooShort');
 
     const cleanEmail = String(email).trim().toLowerCase();
-    const activeProvider = provider || settings.value('account.provider') || 'hinterland';
+    const activeProvider = provider || settings.value('account.provider') || 'horizon';
 
     if (supabaseUrl) settings.set('account.supabaseUrl', supabaseUrl);
     if (supabaseAnonKey) settings.set('account.supabaseAnonKey', supabaseAnonKey);
@@ -486,7 +486,7 @@ export class SyncService extends EventEmitter {
     if (activeProvider === 'supabase') {
       session = await this._supabaseSignUp(cleanEmail, password);
     } else {
-      session = await this._hinterlandSignUp(cleanEmail, password);
+      session = await this._horizonSignUp(cleanEmail, password);
     }
 
     settings.set('account.session', session);
@@ -508,7 +508,7 @@ export class SyncService extends EventEmitter {
     if (!email || !password) throw new Error('emailAndPasswordRequired');
 
     const cleanEmail = String(email).trim().toLowerCase();
-    const activeProvider = provider || settings.value('account.provider') || 'hinterland';
+    const activeProvider = provider || settings.value('account.provider') || 'horizon';
 
     if (supabaseUrl) settings.set('account.supabaseUrl', supabaseUrl);
     if (supabaseAnonKey) settings.set('account.supabaseAnonKey', supabaseAnonKey);
@@ -519,7 +519,7 @@ export class SyncService extends EventEmitter {
     if (activeProvider === 'supabase') {
       session = await this._supabaseSignIn(cleanEmail, password);
     } else {
-      session = await this._hinterlandSignIn(cleanEmail, password);
+      session = await this._horizonSignIn(cleanEmail, password);
     }
 
     settings.set('account.session', session);
@@ -597,7 +597,7 @@ export class SyncService extends EventEmitter {
           direction,
         });
       } else {
-        cloudData = await this._hinterlandSync(session, {
+        cloudData = await this._horizonSync(session, {
           bookmarks: localBookmarks,
           history: localHistory,
           readingList: localReadingList,
@@ -752,7 +752,7 @@ export class SyncService extends EventEmitter {
 
     if (userRes.ok) {
       const userData = await userRes.json();
-      const rawSync = userData.user_metadata?.hinterland_sync;
+      const rawSync = userData.user_metadata?.horizon_sync || userData.user_metadata?.hinterland_sync;
       if (rawSync) {
         remoteData = rawSync.encrypted && this.syncPassphrase
           ? decryptSyncPayload(rawSync, this.syncPassphrase)
@@ -789,7 +789,7 @@ export class SyncService extends EventEmitter {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        data: { hinterland_sync: toSave },
+        data: { horizon_sync: toSave },
       }),
     });
 
@@ -803,9 +803,9 @@ export class SyncService extends EventEmitter {
     };
   }
 
-  /* --------------------------------------------------- Hinterland Serverless */
+  /* --------------------------------------------------- Horizon Serverless */
 
-  async _hinterlandSignUp(email, password) {
+  async _horizonSignUp(email, password) {
     const endpoint = settings.value('account.serverUrl') || DEFAULT_SERVER_URL;
     const res = await this.fetch(endpoint, {
       method: 'POST',
@@ -817,13 +817,13 @@ export class SyncService extends EventEmitter {
     if (!res.ok || !data.ok) throw new Error(data.error || 'signUpFailed');
 
     return {
-      provider: 'hinterland',
+      provider: 'horizon',
       token: data.token,
       user: data.user,
     };
   }
 
-  async _hinterlandSignIn(email, password) {
+  async _horizonSignIn(email, password) {
     const endpoint = settings.value('account.serverUrl') || DEFAULT_SERVER_URL;
     const res = await this.fetch(endpoint, {
       method: 'POST',
@@ -835,13 +835,13 @@ export class SyncService extends EventEmitter {
     if (!res.ok || !data.ok) throw new Error(data.error || 'invalidCredentials');
 
     return {
-      provider: 'hinterland',
+      provider: 'horizon',
       token: data.token,
       user: data.user,
     };
   }
 
-  async _hinterlandSync(session, { bookmarks, history: localHistory = [], readingList: localReadingList = [], notes: localNotes = [], settings: currentSettings }) {
+  async _horizonSync(session, { bookmarks, history: localHistory = [], readingList: localReadingList = [], notes: localNotes = [], settings: currentSettings }) {
     const endpoint = settings.value('account.serverUrl') || DEFAULT_SERVER_URL;
 
     let payloadData = {

@@ -1,5 +1,5 @@
 /**
- * TypeScript definitions for @hinterland/extension-sdk
+ * TypeScript definitions for @neocrom/horizon-sdk
  */
 
 export interface ManifestAction {
@@ -130,8 +130,8 @@ export declare class ContentHelper {
 
 /* ------------------------------------------------------------------- UI */
 
-export declare const HINTERLAND_CSS_VARS: string;
-export declare function injectHinterlandTheme(doc?: Document): void;
+export declare const HORIZON_CSS_VARS: string;
+export declare function injectHorizonTheme(doc?: Document): void;
 
 export declare class Store<T extends object = Record<string, any>> {
   constructor(initialState?: T);
@@ -182,7 +182,7 @@ export interface ExtensionConfig {
   messaging?: MessageBusOptions;
 }
 
-export declare class HinterlandExtension {
+export declare class HorizonExtension {
   readonly id: string;
   readonly storage: SecureStorage;
   readonly messaging: MessageBus;
@@ -199,4 +199,4 @@ export declare class HinterlandExtension {
   ): this;
 }
 
-export declare function createExtension(config?: ExtensionConfig): HinterlandExtension;
+export declare function createExtension(config?: ExtensionConfig): HorizonExtension;

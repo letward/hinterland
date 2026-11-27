@@ -4,7 +4,7 @@ import { t } from './i18n.js';
 import { openPopup, closePopup, isOpen } from './popup.js';
 import { toast } from './toast.js';
 
-const api = () => window.hinterland;
+const api = () => window.horizon;
 
 let currentId = null;
 
@@ -101,7 +101,7 @@ function extensionPopupContent(card, info) {
     type: 'button',
     onclick: () => {
       closePopup();
-      window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'extensions' } }));
+      window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'extensions' } }));
     },
   }, [el('span', { html: icon('settings') }), ` ${t('extensions.manage')}`]);
 
@@ -114,7 +114,7 @@ function extensionPopupContent(card, info) {
   return card;
 }
 
-window.addEventListener('hinterland:extension-action', (event) => {
+window.addEventListener('horizon:extension-action', (event) => {
   const id = event.detail?.extensionId;
   if (!id) return;
   openExtensionPopup(id);

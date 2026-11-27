@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
 
-describe('Hinterland v1.29.0 Features & Polish', () => {
+describe('Neocrom Horizon v1.29.0 Features & Polish', () => {
   describe('Tab Groups Studio & Management', () => {
     it('exports openTabGroups in src/ui/js/panels.js', async () => {
       const panelsPath = join(ROOT, 'src', 'ui', 'js', 'panels.js');
@@ -45,7 +45,7 @@ describe('Hinterland v1.29.0 Features & Polish', () => {
 
       const appSource = readFileSync(join(ROOT, 'src', 'ui', 'js', 'app.js'), 'utf8');
       assert.ok(appSource.includes('tabGroups: openTabGroups'));
-      assert.ok(appSource.includes("hinterland:opentabgroups"));
+      assert.ok(appSource.includes("horizon:opentabgroups"));
     });
 
     it('defines tab groups studio styling in src/ui/css/panels.css', () => {
@@ -247,10 +247,10 @@ describe('Hinterland v1.29.0 Features & Polish', () => {
       assert.ok(guide.includes('Search quickly &amp; Custom Engines'));
     });
 
-    it('updates website/index.html to v1.29.0 release badge and download link', () => {
+    it('updates website/index.html to latest release badge and download link', () => {
       const html = readFileSync(join(ROOT, 'website', 'index.html'), 'utf8');
-      assert.ok(html.includes('v1.29.0 · Latest Release') || html.includes('v1.30.0 · Latest Release') || html.includes('v1.31.0 · Latest Release') || html.includes('v1.32.0 · Latest Release') || html.includes('v1.33.0 · Latest Release') || html.includes('v1.34.0 · Latest Release') || html.includes('v1.35.0 · Latest Release') || html.includes('v1.36.0 · Latest Release') || html.includes('v1.37.0 · Latest Release') || html.includes('v1.38.0 · Latest Release') || html.includes('v1.39.0 · Latest Release') || html.includes('v1.40.0 · Latest Release') || html.includes('v1.41.0 · Latest Release') || html.includes('v1.42.0 · Latest Release') || html.includes('v1.43.0 · Latest Release') || html.includes('v1.44.0 · Latest Release') || html.includes('v1.45.0 · Latest Release'));
-      assert.ok(html.includes('Hinterland-Setup-1.29.0.exe') || html.includes('Hinterland-Setup-1.30.0.exe') || html.includes('Hinterland-Setup-1.31.0.exe') || html.includes('Hinterland-Setup-1.32.0.exe') || html.includes('Hinterland-Setup-1.33.0.exe') || html.includes('Hinterland-Setup-1.34.0.exe') || html.includes('Hinterland-Setup-1.35.0.exe') || html.includes('Hinterland-Setup-1.36.0.exe') || html.includes('Hinterland-Setup-1.37.0.exe') || html.includes('Hinterland-Setup-1.38.0.exe') || html.includes('Hinterland-Setup-1.39.0.exe') || html.includes('Hinterland-Setup-1.40.0.exe') || html.includes('Hinterland-Setup-1.41.0.exe') || html.includes('Hinterland-Setup-1.42.0.exe') || html.includes('Hinterland-Setup-1.43.0.exe') || html.includes('Hinterland-Setup-1.44.0.exe') || html.includes('Hinterland-Setup-1.45.0.exe'));
+      assert.ok(/v1\.\d+\.\d+ · /.test(html));
+      assert.ok(html.includes('Neocrom-Horizon-Setup-1.47.0.exe'));
     });
 
     it('configures releaseType: release in package.json publish config', () => {

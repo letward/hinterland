@@ -1,4 +1,4 @@
-# Threat Model — Hinterland Browser & Release-Infrastruktur
+# Threat Model — Neocrom Horizon Browser & Release-Infrastruktur
 
 ## 1. Assets zum Schutz
 

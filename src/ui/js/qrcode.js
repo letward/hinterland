@@ -4,7 +4,7 @@ import { t } from './i18n.js';
 import { toast } from './toast.js';
 import { openModal } from './modal.js';
 
-const api = () => window.hinterland;
+const api = () => window.horizon;
 
 /* ------------------------------------------------------------- QR Matrix Engine */
 
@@ -392,7 +392,7 @@ function evaluatePenalty(matrix) {
 }
 
 export function generateQrMatrix(text) {
-  const target = String(text || '').trim() || 'https://hinterland.de';
+  const target = String(text || '').trim() || 'https://neocrom.pro';
   const { version, interleaved, size } = encodeData(target);
   const { matrix, reserved } = createMatrix(size);
   placeData(matrix, reserved, interleaved);
@@ -465,7 +465,7 @@ export function drawQrToCanvas(canvas, text, { size = 220, margin = 4, darkColor
 /* ------------------------------------------------------------- QR Modal Dialog */
 
 export function openQrCode(url, title = '') {
-  const targetUrl = url || 'https://hinterland.de';
+  const targetUrl = url || 'https://neocrom.pro';
   openModal({
     title: t('qr.title'),
     iconName: 'qr',
@@ -497,7 +497,7 @@ export function openQrCode(url, title = '') {
             spellcheck: 'false',
           });
           urlInput.addEventListener('input', () => {
-            const val = urlInput.value.trim() || 'https://hinterland.de';
+            const val = urlInput.value.trim() || 'https://neocrom.pro';
             drawQrToCanvas(canvas, val);
           });
           inputRow.append(urlInput);

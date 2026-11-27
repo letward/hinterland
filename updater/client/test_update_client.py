@@ -23,7 +23,7 @@ def make_manifest(version="2.0.0", expires=None, min_version=None, prevent_downg
         "releaseDate": now.isoformat(),
         "files": [
             {
-                "url": "https://github.com/letward/Hinterland/releases/download/v2.0.0/Hinterland-Setup-2.0.0.exe",
+                "url": "https://github.com/neocrom-team/neocrom-horizon/releases/download/v2.0.0/Neocrom-Horizon-Setup-2.0.0.exe",
                 "sha512": "0" * 128,
                 "size": 1000000,
             }

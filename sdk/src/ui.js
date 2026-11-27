@@ -1,39 +1,41 @@
 /**
- * @fileoverview Hinterland Extension SDK - UI Kit & Design Tokens
- * Provides lightweight, accessible UI components and design tokens matching Hinterland's sleek aesthetic.
+ * @fileoverview Neocrom Horizon Extension SDK - UI Kit & Design Tokens
+ * Provides lightweight, accessible UI components and design tokens matching Neocrom Horizon's monochrome aesthetic.
  */
 
 import { safeHtml } from './security.js';
 
-export const HINTERLAND_CSS_VARS = `
+export const HORIZON_CSS_VARS = `
 :root {
-  --ht-bg: #111317;
-  --ht-surface: #181b22;
-  --ht-surface-hover: #222631;
-  --ht-border: #2d3340;
-  --ht-text: #e6edf3;
-  --ht-text-dim: #8b949e;
-  --ht-accent: #388bfd;
-  --ht-accent-hover: #58a6ff;
+  --ht-bg: #090909;
+  --ht-surface: #141414;
+  --ht-surface-hover: #222222;
+  --ht-border: #303030;
+  --ht-text: #f8f8f8;
+  --ht-text-dim: #bdbdbd;
+  --ht-accent: #f8f8f8;
+  --ht-on-accent: #090909;
+  --ht-accent-hover: #dedede;
   --ht-danger: #f85149;
-  --ht-success: #3fb950;
+  --ht-success: #2ea043;
   --ht-warning: #d29922;
-  --ht-radius: 8px;
-  --ht-radius-sm: 4px;
-  --ht-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --ht-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --ht-radius: 10px;
+  --ht-radius-sm: 7px;
+  --ht-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --ht-font-mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    --ht-bg: #f6f8fa;
+    --ht-bg: #f4f4f4;
     --ht-surface: #ffffff;
-    --ht-surface-hover: #f3f4f6;
-    --ht-border: #d0d7de;
-    --ht-text: #1f2328;
-    --ht-text-dim: #656d76;
-    --ht-accent: #0969da;
-    --ht-accent-hover: #218bff;
+    --ht-surface-hover: #e7e7e7;
+    --ht-border: #d0d0d0;
+    --ht-text: #111111;
+    --ht-text-dim: #535353;
+    --ht-accent: #242424;
+    --ht-on-accent: #f8f8f8;
+    --ht-accent-hover: #434343;
     --ht-danger: #cf222e;
     --ht-success: #1a7f37;
     --ht-warning: #9a6700;
@@ -57,15 +59,15 @@ body {
 `;
 
 /**
- * Injects Hinterland design system tokens into the current document.
+ * Injects Neocrom Horizon design system tokens into the current document.
  *
  * @param {Document} [doc=document] - Target document
  */
-export function injectHinterlandTheme(doc = document) {
+export function injectHorizonTheme(doc = document) {
   if (!doc) return;
   const style = doc.createElement('style');
-  style.setAttribute('data-hinterland-theme', 'true');
-  style.textContent = HINTERLAND_CSS_VARS;
+  style.setAttribute('data-horizon-theme', 'true');
+  style.textContent = HORIZON_CSS_VARS;
   doc.head.prepend(style);
 }
 
@@ -128,7 +130,7 @@ export function createStore(initialState = {}) {
  */
 export class UIHelper {
   /**
-   * Creates an accessible button matching Hinterland styles.
+   * Creates an accessible button matching Neocrom Horizon styles.
    *
    * @param {object} options
    * @param {string} options.label - Button text
@@ -152,7 +154,7 @@ export class UIHelper {
       cursor: pointer;
       transition: background 0.15s ease, border-color 0.15s ease;
       background: ${variant === 'primary' ? 'var(--ht-accent)' : variant === 'danger' ? 'var(--ht-danger)' : 'var(--ht-surface)'};
-      color: ${variant === 'primary' || variant === 'danger' ? '#ffffff' : 'var(--ht-text)'};
+      color: ${variant === 'primary' ? 'var(--ht-on-accent)' : variant === 'danger' ? '#ffffff' : 'var(--ht-text)'};
     `;
 
     if (onClick) btn.addEventListener('click', onClick);

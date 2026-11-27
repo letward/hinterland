@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   btnClose.addEventListener('click', () => {
-    if (window.hinterlandExtension?.closePopup) {
-      window.hinterlandExtension.closePopup();
+    if (window.horizonExtension?.closePopup) {
+      window.horizonExtension.closePopup();
     } else {
       window.close();
     }

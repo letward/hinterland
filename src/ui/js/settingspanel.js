@@ -6,7 +6,7 @@ import { accentPresets } from './theme.js';
 import { openModal, closeModal } from './modal.js';
 import { toast } from './toast.js';
 
-const api = () => window.hinterland;
+const api = () => window.horizon;
 
 let schema = null;
 let sections = [];
@@ -380,7 +380,7 @@ function buildControl(definition) {
   if (definition.key === 'extensions.enabled') {
     return el('button', { class: 'button', type: 'button', onclick: () => {
       closeModal();
-      window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'extensions' } }));
+      window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'extensions' } }));
     } }, [t('extensions.manage')]);
   }
   const factory = CONTROLS[definition.type];
@@ -439,7 +439,7 @@ function sectionFooter(definition) {
     wrapper.append(
       el('button', { class: 'button primary', type: 'button', onclick: () => {
         closeModal();
-        window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'sitePermissions' } }));
+        window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'sitePermissions' } }));
       } }, [t('settings.privacy.managePermissions')]),
     );
   }
@@ -447,18 +447,18 @@ function sectionFooter(definition) {
     wrapper.append(
       el('button', { class: 'button primary', type: 'button', onclick: () => {
         closeModal();
-        window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'passwords' } }));
+        window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'passwords' } }));
       } }, [t('menu.passwords')]),
       el('button', { class: 'button', type: 'button', onclick: exportSettings }, [t('action.export')]),
       el('button', { class: 'button', type: 'button', onclick: importSettings }, [t('action.import')]),
-      el('button', { class: 'button', type: 'button', onclick: () => window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'about' } })) }, [t('action.about')]),
+      el('button', { class: 'button', type: 'button', onclick: () => window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'about' } })) }, [t('action.about')]),
     );
   }
   if (definition.id === 'account') {
     wrapper.append(
       el('button', { class: 'button primary', type: 'button', onclick: () => {
         closeModal();
-        window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'account' } }));
+        window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'account' } }));
       } }, [t('account.openPanel')]),
       el('button', { class: 'button', type: 'button', onclick: async () => {
         const res = await api().account.syncNow();
@@ -471,7 +471,7 @@ function sectionFooter(definition) {
     wrapper.append(
       el('button', { class: 'button primary', type: 'button', onclick: () => {
         closeModal();
-        window.dispatchEvent(new CustomEvent('hinterland:openstore', { detail: { tab: 'themes' } }));
+        window.dispatchEvent(new CustomEvent('horizon:openstore', { detail: { tab: 'themes' } }));
       } }, [t('menu.store')]),
     );
   }
@@ -479,11 +479,11 @@ function sectionFooter(definition) {
     wrapper.append(
       el('button', { class: 'button primary', type: 'button', onclick: () => {
         closeModal();
-        window.dispatchEvent(new CustomEvent('hinterland:openstore', { detail: { tab: 'extensions' } }));
+        window.dispatchEvent(new CustomEvent('horizon:openstore', { detail: { tab: 'extensions' } }));
       } }, [t('menu.store')]),
       el('button', { class: 'button', type: 'button', onclick: () => {
         closeModal();
-        window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'extensions' } }));
+        window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'extensions' } }));
       } }, [t('extensions.manage')]),
     );
   }
@@ -492,7 +492,7 @@ function sectionFooter(definition) {
 
 async function exportSettings() {
   const content = await api().settings.export();
-  const result = await api().settings.saveFile('hinterland.settings.json', content);
+  const result = await api().settings.saveFile('horizon.settings.json', content);
   if (result?.ok) toast(t('exported', { path: result.path }), 'success');
 }
 

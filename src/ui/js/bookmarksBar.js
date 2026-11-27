@@ -6,7 +6,7 @@ import { openPopup, closePopup, row, separator, section } from './popup.js';
 import { activeTab } from './tabs.js';
 import { toast } from './toast.js';
 
-const api = () => window.hinterland;
+const api = () => window.horizon;
 
 let barNode = null;
 
@@ -149,7 +149,7 @@ function openBarContextMenu(x, y) {
           title: t('menu.addBookmark'),
           onSelect: () => {
             closePopup();
-            window.dispatchEvent(new CustomEvent('hinterland:bookmark'));
+            window.dispatchEvent(new CustomEvent('horizon:bookmark'));
           },
         }),
         row({
@@ -157,7 +157,7 @@ function openBarContextMenu(x, y) {
           title: t('menu.bookmarks'),
           onSelect: () => {
             closePopup();
-            window.dispatchEvent(new CustomEvent('hinterland:openpanel', { detail: { panel: 'bookmarks' } }));
+            window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'bookmarks' } }));
           },
         }),
         row({

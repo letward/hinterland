@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
 
-describe('Hinterland v1.24.0 Features & Polish', () => {
+describe('Neocrom Horizon v1.24.0 Features & Polish', () => {
   describe('Preload Bridge API Completeness (chrome.cjs)', () => {
     const chromeCjsPath = join(ROOT, 'src', 'preload', 'chrome.cjs');
 
@@ -44,7 +44,7 @@ describe('Hinterland v1.24.0 Features & Polish', () => {
     function sanitizeImportedReadingItems(rawList) {
       const list = Array.isArray(rawList) ? rawList : [rawList];
       return list
-        .filter((item) => item && typeof item.url === 'string' && (item.url.startsWith('http://') || item.url.startsWith('https://') || item.url.startsWith('hinterland://')))
+        .filter((item) => item && typeof item.url === 'string' && (item.url.startsWith('http://') || item.url.startsWith('https://') || item.url.startsWith('horizon://')))
         .map((item) => ({
           id: typeof item.id === 'string' && item.id ? item.id : 'generated_id',
           url: item.url,
@@ -60,12 +60,12 @@ describe('Hinterland v1.24.0 Features & Polish', () => {
         { url: 'https://example.com/article', title: 'Article 1' },
         { url: 'javascript:alert(1)', title: 'Malicious' },
         { url: 'file:///etc/passwd', title: 'File' },
-        { url: 'hinterland://newtab/', title: 'Internal' },
+        { url: 'horizon://newtab/', title: 'Internal' },
       ];
       const valid = sanitizeImportedReadingItems(input);
       assert.equal(valid.length, 2);
       assert.equal(valid[0].url, 'https://example.com/article');
-      assert.equal(valid[1].url, 'hinterland://newtab/');
+      assert.equal(valid[1].url, 'horizon://newtab/');
     });
 
     it('deduplicates imported reading items against existing entries', () => {
@@ -122,7 +122,7 @@ describe('Hinterland v1.24.0 Features & Polish', () => {
     it('formats web clipping note with proper Markdown anchor and metadata', () => {
       const tab = { title: 'MDN Web Docs', url: 'https://developer.mozilla.org/' };
       const dateStr = new Date().toISOString().split('T')[0];
-      const noteContent = `# [${tab.title}](${tab.url})\n\n> Captured from Hinterland Browser on ${dateStr}\n\n- URL: ${tab.url}\n`;
+      const noteContent = `# [${tab.title}](${tab.url})\n\n> Captured from Neocrom Horizon on ${dateStr}\n\n- URL: ${tab.url}\n`;
       assert.ok(noteContent.includes('# [MDN Web Docs](https://developer.mozilla.org/)'));
       assert.ok(noteContent.includes(dateStr));
     });

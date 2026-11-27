@@ -32,7 +32,7 @@ function webPreferences(privateMode) {
     backgroundThrottling: true,
     v8CacheOptions: 'code',
     zoomFactor: steps === 0 ? 1 : Math.pow(1.1, steps),
-    additionalArguments: [`--hinterland=1`, `--hinterland-view=${VIEW_ROLE.CONTENT}`],
+    additionalArguments: [`--horizon=1`, `--horizon-view=${VIEW_ROLE.CONTENT}`],
   };
 }
 
@@ -139,12 +139,12 @@ export class Tab {
 
     contents.on('console-message', (_event, level, message) => {
       const text = typeof _event === 'object' && _event?.message ? _event.message : (typeof message === 'string' ? message : '');
-      if (text && text.startsWith('__HINTERLAND_READER_ACTION__:')) {
+      if (text && text.startsWith('__HORIZON_READER_ACTION__:')) {
         try {
-          const payload = JSON.parse(text.slice('__HINTERLAND_READER_ACTION__:'.length));
+          const payload = JSON.parse(text.slice('__HORIZON_READER_ACTION__:'.length));
           this.events.emit('readerAction', payload);
         } catch (e) {
-          console.warn('[Hinterland] Error parsing reader action:', e);
+          console.warn('[Neocrom Horizon] Error parsing reader action:', e);
         }
       }
     });
@@ -245,7 +245,7 @@ export class Tab {
   }
 
   sleep() {
-    if (this.sleeping || this.url === 'about:blank' || this.url.startsWith('hinterland://')) return false;
+    if (this.sleeping || this.url === 'about:blank' || this.url.startsWith('horizon://')) return false;
     this.sleeping = true;
     this.sleepingUrl = this.url;
     this.sleepingTitle = this.title;
@@ -272,7 +272,7 @@ export class Tab {
     this.url = value;
     this.readerActive = false;
     return this.contents.loadURL(value).catch((error) => {
-      console.warn('[Hinterland] Page could not be opened.', value, error?.message ?? error);
+      console.warn('[Neocrom Horizon] Page could not be opened.', value, error?.message ?? error);
       return null;
     });
   }

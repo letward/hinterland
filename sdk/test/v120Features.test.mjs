@@ -28,7 +28,7 @@ function mockRes() {
   return res;
 }
 
-describe('Hinterland v1.20.0 Features & Serverless APIs', () => {
+describe('Neocrom Horizon v1.20.0 Features & Serverless APIs', () => {
   describe('Account API (website/api/account.js)', () => {
     it('handles OPTIONS pre-flight with CORS headers', async () => {
       const req = { method: 'OPTIONS', headers: {} };

@@ -64,7 +64,7 @@ export function openModal({ title, iconName = 'shield', nav = [], activeId, onCl
   body.append(content);
   surface.append(bar, body);
   if (!modal.open) modal.showModal();
-  window.hinterland.layout.setFullscreen(true);
+  window.horizon.layout.setFullscreen(true);
   if (nav.length) {
     const target = (activeId && nav.find((item) => item.id === activeId)) || nav[0];
     activateItem(target, sidebar, nav);
@@ -74,7 +74,7 @@ export function openModal({ title, iconName = 'shield', nav = [], activeId, onCl
 export function closeModal() {
   nodes();
   if (!modal) return;
-  window.hinterland.layout.setFullscreen(false);
+  window.horizon.layout.setFullscreen(false);
   if (modal.open) modal.close();
   if (surface) clear(surface);
   onCloseHandler?.();

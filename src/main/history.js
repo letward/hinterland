@@ -3,8 +3,10 @@ import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import electron from 'electron';
 
+import { SCHEME } from './constants.js';
+
 const app = typeof electron === 'object' && electron !== null ? electron.app : null;
-const getUserDataPath = () => (typeof app?.getPath === 'function' ? app.getPath('userData') : join(tmpdir(), 'hinterland-data'));
+const getUserDataPath = () => (typeof app?.getPath === 'function' ? app.getPath('userData') : join(tmpdir(), 'neocrom-horizon-data'));
 
 const FILE_NAME = 'history.json';
 const LIMIT = 5000;
@@ -28,7 +30,7 @@ export class HistoryStore {
 
   record(url, title) {
     if (typeof url !== 'string' || url.length < 4) return;
-    if (url.startsWith('about:') || url.startsWith('hinterland://')) return;
+    if (url.startsWith('about:') || url.startsWith(`${SCHEME}://`)) return;
     const now = Date.now();
     const existing = this.entries.find((entry) => entry.url === url);
     const visits = existing ? (Number(existing.visits) || 0) + 1 : 1;
@@ -76,7 +78,7 @@ export class HistoryStore {
     for (const item of list) {
       if (!item || typeof item.url !== 'string') continue;
       const url = item.url.trim();
-      if (url.length < 4 || url.startsWith('about:') || !(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('hinterland://'))) {
+      if (url.length < 4 || url.startsWith('about:') || !(url.startsWith('http://') || url.startsWith('https://') || url.startsWith(`${SCHEME}://`))) {
         continue;
       }
       const title = String(item.title || url).slice(0, 300);
@@ -201,7 +203,7 @@ export class HistoryStore {
       writeFileSync(temporary, JSON.stringify(this.entries), 'utf8');
       renameSync(temporary, this.filePath);
     } catch (error) {
-      console.warn('[Hinterland] History could not be written.', error.message);
+      console.warn('[Neocrom Horizon] History could not be written.', error.message);
     }
   }
 }

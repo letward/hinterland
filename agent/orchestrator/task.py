@@ -1,4 +1,4 @@
-"""Hinterland Agent-Orchestrator — Aufgaben-Modell.
+"""Neocrom Horizon Agent-Orchestrator — Aufgaben-Modell.
 
 Ein Task ist die zentrale Arbeitseinheit. Er trägt seinen eigenen Zustand,
 Risikoklasse, zulässige Werkzeuge, Berechtigungen, Zeitlimits und eine

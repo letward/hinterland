@@ -1,11 +1,11 @@
 :root {
-  --ht-bg: #111317;
-  --ht-surface: #181b22;
-  --ht-border: #2d3340;
-  --ht-text: #e6edf3;
-  --ht-text-dim: #8b949e;
-  --ht-accent: #388bfd;
-  --ht-radius: 8px;
+  --ht-bg: #090909;
+  --ht-surface: #141414;
+  --ht-border: #303030;
+  --ht-text: #f8f8f8;
+  --ht-text-dim: #bdbdbd;
+  --ht-accent: #f8f8f8;
+  --ht-radius: 10px;
 }
 
 body {

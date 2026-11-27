@@ -1,4 +1,4 @@
-"""Hinterland Agent-Orchestrator — Initialisierung."""
+"""Neocrom Horizon Agent-Orchestrator — Initialisierung."""
 
 from .states import TaskState, is_valid_transition, terminal_states
 from .task import Task, RiskLevel, AuditEntry

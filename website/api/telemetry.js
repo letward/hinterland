@@ -1,6 +1,6 @@
 /**
  * @fileoverview Telemetry API - Vercel Serverless
- * Opt-in, anonymized UX events used to optimize future Hinterland updates.
+ * Opt-in, anonymized UX events used to optimize future Neocrom Horizon updates.
  * No PII is ever stored or transmitted: emails, IPs, URLs, and user content are
  * stripped before the event is accepted.
  *

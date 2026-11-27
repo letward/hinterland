@@ -1,6 +1,6 @@
 /**
- * @fileoverview Hinterland Extension SDK - Manifest Builder & Security Validator
- * Enforces Manifest V3 compliance and security policies for Hinterland extensions.
+ * @fileoverview Neocrom Horizon Extension SDK - Manifest Builder & Security Validator
+ * Enforces Manifest V3 compliance and security policies for Neocrom Horizon extensions.
  */
 
 export const PERMISSION_LEVELS = {
@@ -38,7 +38,7 @@ export const PERMISSION_LEVELS = {
 const DEFAULT_CSP = "script-src 'self'; object-src 'none'; base-uri 'none';";
 
 /**
- * Validates a Hinterland extension manifest against security rules and MV3 specs.
+ * Validates a Neocrom Horizon extension manifest against security rules and MV3 specs.
  *
  * @param {object} manifest - The manifest object to validate
  * @param {object} [options] - Validation options
@@ -55,7 +55,7 @@ export function validateManifest(manifest, options = {}) {
 
   // 1. Manifest version
   if (manifest.manifest_version !== 3) {
-    errors.push(`Invalid manifest_version: ${manifest.manifest_version}. Hinterland requires Manifest V3 (manifest_version: 3).`);
+    errors.push(`Invalid manifest_version: ${manifest.manifest_version}. Neocrom Horizon requires Manifest V3 (manifest_version: 3).`);
   }
 
   // 2. Name & Version
@@ -83,7 +83,7 @@ export function validateManifest(manifest, options = {}) {
       continue;
     }
     if (forbiddenSet.has(perm)) {
-      errors.push(`Security violation: Forbidden permission "${perm}". Hinterland prohibits this permission to protect user system and browser integrity.`);
+      errors.push(`Security violation: Forbidden permission "${perm}". Neocrom Horizon prohibits this permission to protect user system and browser integrity.`);
     } else if (sensitiveSet.has(perm)) {
       warnings.push(`Sensitive permission "${perm}" requested. Ensure least privilege and clear user consent.`);
     } else if (!safeSet.has(perm) && !perm.includes('://')) {
@@ -155,7 +155,7 @@ export function validateManifest(manifest, options = {}) {
     const csp = manifest.content_security_policy.extension_pages || manifest.content_security_policy;
     if (typeof csp === 'string') {
       if (csp.includes("'unsafe-eval'")) {
-        errors.push("Security violation: CSP contains 'unsafe-eval', which is strictly forbidden in Hinterland extensions.");
+        errors.push("Security violation: CSP contains 'unsafe-eval', which is strictly forbidden in Neocrom Horizon extensions.");
       }
       if (/http:\/\/[^l]/i.test(csp)) {
         errors.push('Security violation: CSP contains unencrypted HTTP source. All remote connections must use HTTPS.');
@@ -168,7 +168,7 @@ export function validateManifest(manifest, options = {}) {
 }
 
 /**
- * Defines and builds a strictly validated Hinterland extension manifest.
+ * Defines and builds a strictly validated Neocrom Horizon extension manifest.
  *
  * @param {object} config - Manifest definition
  * @returns {object} The compliant, validated manifest
@@ -189,7 +189,7 @@ export function defineManifest(config) {
 
   const result = validateManifest(manifest);
   if (!result.valid) {
-    throw new Error(`[Hinterland Extension SDK] Invalid manifest:\n - ${result.errors.join('\n - ')}`);
+    throw new Error(`[Neocrom Horizon SDK] Invalid manifest:\n - ${result.errors.join('\n - ')}`);
   }
 
   return manifest;

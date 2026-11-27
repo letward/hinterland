@@ -1,0 +1,40 @@
+html[data-horizon-focus="true"] body {
+  font-size: 17px !important;
+  line-height: 1.75 !important;
+  letter-spacing: 0.003em !important;
+}
+
+html[data-horizon-focus="true"] p,
+html[data-horizon-focus="true"] li,
+html[data-horizon-focus="true"] article,
+html[data-horizon-focus="true"] blockquote {
+  max-width: 42em;
+}
+
+html[data-horizon-focus="true"] img,
+html[data-horizon-focus="true"] video,
+html[data-horizon-focus="true"] iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+html[data-horizon-focus="true"] nav,
+html[data-horizon-focus="true"] aside,
+html[data-horizon-focus="true"] [role="navigation"],
+html[data-horizon-focus="true"] [role="banner"],
+html[data-horizon-focus="true"] [role="complementary"] {
+  opacity: 0.45;
+  transition: opacity 160ms ease;
+}
+
+html[data-horizon-focus="true"] nav:hover,
+html[data-horizon-focus="true"] aside:hover,
+html[data-horizon-focus="true"] [role="navigation"]:hover,
+html[data-horizon-focus="true"] [role="banner"]:hover,
+html[data-horizon-focus="true"] [role="complementary"]:hover {
+  opacity: 1;
+}
+
+html[data-horizon-focus="true"] * {
+  animation-play-state: paused !important;
+}

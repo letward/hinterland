@@ -2,10 +2,10 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { generateQrMatrix, generateQrSvg } from '../../src/ui/js/qrcode.js';
 
-describe('Hinterland v1.15.0 Features', () => {
+describe('Neocrom Horizon v1.15.0 Features', () => {
   describe('QR Code Generator Engine', () => {
     test('generates valid QR matrix with correct finder patterns', () => {
-      const url = 'https://github.com/letward/Hinterland';
+      const url = 'https://github.com/neocrom-team/neocrom-horizon';
       const result = generateQrMatrix(url);
 
       assert.ok(result);
@@ -39,7 +39,7 @@ describe('Hinterland v1.15.0 Features', () => {
     });
 
     test('generates valid SVG output with scalable attributes', () => {
-      const svg = generateQrSvg('https://hinterland.de', { size: 240, margin: 4 });
+      const svg = generateQrSvg('https://neocrom.pro', { size: 240, margin: 4 });
       assert.ok(svg.startsWith('<svg'));
       assert.ok(svg.endsWith('</svg>'));
       assert.ok(svg.includes('viewBox="0 0 240 240"'));
@@ -51,7 +51,7 @@ describe('Hinterland v1.15.0 Features', () => {
 
     test('scales version dynamically according to content length', () => {
       const shortUrl = 'https://a.co';
-      const mediumUrl = 'https://github.com/letward/Hinterland/releases/tag/v1.15.0';
+      const mediumUrl = 'https://github.com/neocrom-team/neocrom-horizon/releases/tag/v1.15.0';
       const longUrl = 'https://docs.example.com/api/v2/articles/view?id=12345&source=browser_bookmark&token=abcde12345&redirect=true&theme=sepia&mode=article_reader_mode';
 
       const resShort = generateQrMatrix(shortUrl);
@@ -74,7 +74,7 @@ describe('Hinterland v1.15.0 Features', () => {
       const updated = tabs.map((tab) => {
         if (tab.id === activeId) return tab;
         if (tab.pinned || tab.audible || tab.privateMode || tab.sleeping) return tab;
-        if (!tab.url || tab.url === 'about:blank' || tab.url.startsWith('hinterland://')) return tab;
+        if (!tab.url || tab.url === 'about:blank' || tab.url.startsWith('horizon://')) return tab;
         const lastActive = tab.lastActiveAt || tab.createdAt;
         if (now - lastActive >= thresholdMs) {
           slept++;
@@ -109,7 +109,7 @@ describe('Hinterland v1.15.0 Features', () => {
         { id: 't_pinned', url: 'https://site2.com', pinned: true, lastActiveAt: oldTime },
         { id: 't_audible', url: 'https://music.youtube.com', audible: true, lastActiveAt: oldTime },
         { id: 't_private', url: 'https://bank.com', privateMode: true, lastActiveAt: oldTime },
-        { id: 't_internal', url: 'hinterland://store/', lastActiveAt: oldTime },
+        { id: 't_internal', url: 'horizon://store/', lastActiveAt: oldTime },
         { id: 't_regular', url: 'https://wikipedia.org', lastActiveAt: oldTime },
       ];
 

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <title>Neocrom Horizon</title>
+  <defs>
+    <radialGradient id="glow" cx="76%" cy="50%" r="48%">
+      <stop offset="0%" stop-color="#222222"/>
+      <stop offset="100%" stop-color="#090909" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="fade" cx="50%" cy="50%" r="58%">
+      <stop offset="0%" stop-color="#090909" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#090909" stop-opacity="0.96"/>
+    </radialGradient>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#222222" stroke-width="1"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#090909"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.52"/>
+  <rect width="1200" height="630" fill="url(#fade)"/>
+  <g transform="translate(888 315)" fill="none">
+    <circle r="192" stroke="#262626" stroke-width="1"/>
+    <circle r="171" stroke="#2f2f2f" stroke-width="1" stroke-dasharray="4 6"/>
+    <circle r="142" stroke="#303030" stroke-width="1"/>
+    <circle r="106" stroke="#292929" stroke-width="1"/>
+    <circle cx="-136" cy="-104" r="3" fill="#bdbdbd"/>
+    <circle cx="152" cy="84" r="2.5" fill="#f8f8f8"/>
+    <circle cx="106" cy="-136" r="2" fill="#969696"/>
+    <g transform="translate(-76 -76) scale(2.375)">
+      <path d="M30.2 5.8Q32 4 33.8 5.8L58.2 30.2Q60 32 58.2 33.8L33.8 58.2Q32 60 30.2 58.2L5.8 33.8Q4 32 5.8 30.2Z" fill="#111111" stroke="#bdbdbd" stroke-width="2.1"/>
+      <path d="M17 36h30M23 33a9 9 0 0 1 18 0M32 19v2" fill="none" stroke="#f8f8f8" stroke-width="2.3" stroke-linecap="round"/>
+    </g>
+  </g>
+  <g transform="translate(96 248)">
+    <text x="0" y="-26" fill="#969696" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="14" font-weight="600" letter-spacing="3.5">NEOCROM BROWSER</text>
+    <text x="0" y="34" fill="#f8f8f8" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="60" font-weight="700" letter-spacing="-2">Neocrom <tspan fill="#bdbdbd" font-weight="500">Horizon</tspan></text>
+    <text x="0" y="84" fill="#bdbdbd" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="23" font-weight="400">Fast, private, seamlessly integrated with Neocrom.</text>
+    <rect x="0" y="114" width="236" height="36" rx="18" fill="#141414" stroke="#303030" stroke-width="1"/>
+    <text x="20" y="137" fill="#f8f8f8" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="14" font-weight="600">neocrom-horizon.vercel.app</text>
+  </g>
+</svg>

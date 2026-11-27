@@ -1,4 +1,4 @@
-"""Hinterland Updater-Verifikation — Offline-Verifikation von Manifesten und Pakaten.
+"""Neocrom Horizon Updater-Verifikation — Offline-Verifikation von Manifesten und Pakaten.
 
 Verwenden zur Prüfung vor der Installation, ohne Netzwerkzugriff.
 """

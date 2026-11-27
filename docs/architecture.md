@@ -1,8 +1,8 @@
-# Architektur — Hinterland Browser & Release-Infrastruktur
+# Architektur — Neocrom Horizon Browser & Release-Infrastruktur
 
 ## 1. Überblick
 
-Hinterland ist ein auf Electron basierender Browser (Chromium-Integration über Electron, nicht über direktes Chromium-C++-Monorepo). Die Release-Infrastruktur läuft über GitHub Actions auf GitHub-hosted Runnern (`ubuntu-latest` für Prüfungen, `windows-latest` für den Windows-NSIS-Build via electron-builder). Es gibt keine dauerhaften Cloud-Server; Jobs sind ereignisgesteuert.
+Neocrom Horizon ist ein auf Electron basierender Browser (Chromium-Integration über Electron, nicht über direktes Chromium-C++-Monorepo). Die Release-Infrastruktur läuft über GitHub Actions auf GitHub-hosted Runnern (`ubuntu-latest` für Prüfungen, `windows-latest` für den Windows-NSIS-Build via electron-builder). Es gibt keine dauerhaften Cloud-Server; Jobs sind ereignisgesteuert.
 
 ## 2. Komponenten
 

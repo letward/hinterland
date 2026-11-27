@@ -1,4 +1,4 @@
-"""Hinterland Agent-Orchestrator — Berechtigungs- und Policy-Prüfungen.
+"""Neocrom Horizon Agent-Orchestrator — Berechtigungs- und Policy-Prüfungen.
 
 Zentrale Stelle für alle Entscheidungen, was ein Agent tun darf. Agents
 dürfen diese Regeln nicht selbst ändern.

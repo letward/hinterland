@@ -21,5 +21,5 @@ assignees: ''
 ## Umgebung
 
 - OS:
-- Hinterland-Version:
+- Neocrom-Horizon-Version:
 - Node (falls relevant):

@@ -4,9 +4,9 @@ import { get } from './store.js';
 import { t } from './i18n.js';
 import { openPopup, closePopup, section } from './popup.js';
 
-const GROUP_COLORS = ['#4f7cff', '#22c55e', '#f59e0b', '#ef4444', '#a855f7', '#06b6d4', '#ec4899', '#64748b'];
+const GROUP_COLORS = ['#bdbdbd', '#22c55e', '#f59e0b', '#ef4444', '#a855f7', '#06b6d4', '#ec4899', '#64748b'];
 
-const api = () => window.hinterland;
+const api = () => window.horizon;
 
 let container = null;
 let state = { tabs: [], activeId: null, groups: [] };
@@ -257,7 +257,7 @@ function buildTab(tab) {
 
   node.addEventListener('contextmenu', (event) => {
     event.preventDefault();
-    window.dispatchEvent(new CustomEvent('hinterland:tabmenu', { detail: { tab, x: event.clientX, y: event.clientY } }));
+    window.dispatchEvent(new CustomEvent('horizon:tabmenu', { detail: { tab, x: event.clientX, y: event.clientY } }));
   });
 
   node.addEventListener('dragstart', (event) => {

@@ -20,11 +20,11 @@ describe('Messaging System', () => {
     // Mock chrome environment
     globalThis.chrome = {
       runtime: {
-        id: 'hinterland_trusted_ext_id',
+        id: 'horizon_trusted_ext_id',
       },
     };
 
-    const validSender = { id: 'hinterland_trusted_ext_id' };
+    const validSender = { id: 'horizon_trusted_ext_id' };
     const forgedSender = { id: 'malicious_impersonator' };
 
     assert.equal(validateOrigin(validSender), true);

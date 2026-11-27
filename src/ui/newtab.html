@@ -4,7 +4,7 @@
     <meta charset="utf8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Neocrom Horizon</title>
-    <link rel="icon" href="hinterland://assets/icon.png" />
+    <link rel="icon" href="horizon://assets/icon.png" />
     <link rel="stylesheet" href="css/tokens.css" />
     <link rel="stylesheet" href="css/newtab.css" />
   </head>
@@ -17,21 +17,27 @@
         <p class="welcomeSubtitle" id="welcomeSubtitle"></p>
         <div class="welcomePillars">
           <div class="welcomePillar">
-            <span class="pillarIcon">🛡️</span>
+            <span class="pillarIcon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </span>
             <div>
               <strong id="pillarPrivacyTitle"></strong>
               <span id="pillarPrivacyDesc"></span>
             </div>
           </div>
           <div class="welcomePillar">
-            <span class="pillarIcon">⚡</span>
+            <span class="pillarIcon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </span>
             <div>
               <strong id="pillarSpeedTitle"></strong>
               <span id="pillarSpeedDesc"></span>
             </div>
           </div>
           <div class="welcomePillar">
-            <span class="pillarIcon">🎨</span>
+            <span class="pillarIcon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg>
+            </span>
             <div>
               <strong id="pillarCustomTitle"></strong>
               <span id="pillarCustomDesc"></span>
@@ -47,7 +53,7 @@
 
       <section class="hero">
         <div class="heroCopy">
-          <h1 class="heroTitle"><img class="heroLogo" id="heroLogo" src="hinterland://assets/horizon-wordmark-dark.svg" alt="Neocrom Horizon" width="437" height="64" /></h1>
+          <h1 class="heroTitle"><img class="heroLogo" id="heroLogo" src="horizon://assets/horizon-wordmark-dark.svg" alt="Neocrom Horizon" width="437" height="64" /></h1>
           <div class="greeting" id="greeting"></div>
           <div class="clock" id="clock" hidden></div>
           <form class="searchBox" id="searchBox">
@@ -65,7 +71,7 @@
         </div>
         <div class="horizonArt" aria-hidden="true">
           <span></span>
-          <img id="horizonMark" src="hinterland://assets/horizon-mark-dark.svg" alt="" width="64" height="64" />
+          <img id="horizonMark" src="horizon://assets/horizon-mark-dark.svg" alt="" width="64" height="64" />
         </div>
       </section>
 

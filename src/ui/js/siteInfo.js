@@ -6,7 +6,7 @@ import { currentTab } from './state.js';
 import { toast } from './toast.js';
 import { openCookieInspector } from './panels.js';
 
-const api = () => window.hinterland;
+const api = () => window.horizon;
 
 export function openSiteInfo() {
   if (isOpen('siteinfo')) {
@@ -22,7 +22,7 @@ export function openSiteInfo() {
     render: (card) => {
       card.classList.add('siteInfoCard');
       const url = tab.url;
-      const isInternal = url.startsWith('hinterland://');
+      const isInternal = url.startsWith('horizon://');
       const isSecure = url.startsWith('https://');
       const host = isInternal ? 'Neocrom Horizon' : (hostOf(url) || url);
 
@@ -201,7 +201,7 @@ export function openSiteInfo() {
               type: 'button',
               onclick: () => {
                 closePopup();
-                window.dispatchEvent(new CustomEvent('hinterland:opensettings', { detail: { section: 'privacy' } }));
+                window.dispatchEvent(new CustomEvent('horizon:opensettings', { detail: { section: 'privacy' } }));
               },
             }, [el('span', { html: icon('gear') }), ` ${t('siteInfo.privacySettings')}`]),
           ]),

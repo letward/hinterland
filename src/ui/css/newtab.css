@@ -107,10 +107,10 @@ body.start {
   font-weight: 500;
   color: var(--textDim);
   letter-spacing: 0.02em;
-  animation: hlFadeIn 280ms var(--easeOut);
+  animation: nhFadeIn 280ms var(--easeOut);
 }
 
-@keyframes hlFadeIn {
+@keyframes nhFadeIn {
   from {
     opacity: 0;
     transform: translate3d(0, 4px, 0);
@@ -409,7 +409,7 @@ html[data-theme="light"] .ecosystemIcon img { filter: invert(1); }
   background: rgb(0 0 0 / 55%);
   backdrop-filter: blur(8px);
   z-index: 10;
-  animation: hlFadeIn 180ms var(--easeOut);
+  animation: nhFadeIn 180ms var(--easeOut);
 }
 
 .editSheet[hidden] {
@@ -425,10 +425,10 @@ html[data-theme="light"] .ecosystemIcon img { filter: invert(1); }
   background: var(--surface);
   border: 1px solid var(--borderSoft);
   box-shadow: var(--shadow);
-  animation: hlCardScale 200ms var(--easeOut);
+  animation: nhCardScale 200ms var(--easeOut);
 }
 
-@keyframes hlCardScale {
+@keyframes nhCardScale {
   from {
     opacity: 0;
     transform: scale(0.96) translate3d(0, 8px, 0);

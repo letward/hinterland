@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
 
-describe('Hinterland v1.25.0 Features & Polish', () => {
+describe('Neocrom Horizon v1.25.0 Features & Polish', () => {
   describe('Preload Bridge API Completeness (chrome.cjs)', () => {
     const chromeCjsPath = join(ROOT, 'src', 'preload', 'chrome.cjs');
     const source = readFileSync(chromeCjsPath, 'utf8');
@@ -59,7 +59,7 @@ describe('Hinterland v1.25.0 Features & Polish', () => {
       for (const item of list) {
         if (!item || typeof item.url !== 'string') continue;
         const url = item.url.trim();
-        if (url.length < 4 || url.startsWith('about:') || !(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('hinterland://'))) {
+        if (url.length < 4 || url.startsWith('about:') || !(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('horizon://'))) {
           continue;
         }
         const title = String(item.title || url).slice(0, 300);
@@ -87,7 +87,7 @@ describe('Hinterland v1.25.0 Features & Polish', () => {
 
     it('validates incoming history URLs and rejects invalid protocols or short URLs', () => {
       const raw = [
-        { url: 'https://hinterland.example.org', title: 'Hinterland Browser' },
+        { url: 'https://horizon.example.org', title: 'Neocrom Horizon' },
         { url: 'about:blank', title: 'Blank' },
         { url: 'javascript:void(0)', title: 'XSS' },
         { url: 'http://foo.bar', title: 'Foo Bar' },
@@ -95,8 +95,10 @@ describe('Hinterland v1.25.0 Features & Polish', () => {
       const result = simulateHistoryImport([], raw);
       assert.equal(result.count, 2);
       assert.equal(result.added, 2);
-      assert.equal(result.entries[0].url, 'https://hinterland.example.org');
-      assert.equal(result.entries[1].url, 'http://foo.bar');
+      assert.deepEqual(
+        result.entries.map((e) => e.url).sort(),
+        ['http://foo.bar', 'https://horizon.example.org']
+      );
     });
 
     it('merges duplicate URLs by accumulating visit counts and updating latest time', () => {

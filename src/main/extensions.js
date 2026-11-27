@@ -181,7 +181,7 @@ export class ExtensionManager {
       writeFileSync(temporary, JSON.stringify([...this.installed.values()], null, 2), 'utf8');
       renameSync(temporary, this.filePath);
     } catch (error) {
-      console.warn('[Hinterland] Extension registry could not be written.', error.message);
+      console.warn('[Neocrom Horizon] Extension registry could not be written.', error.message);
     }
   }
 
@@ -276,7 +276,7 @@ export class ExtensionManager {
         this.errors.delete(entry.id);
       } catch (error) {
         this.errors.set(entry.id, error?.message ?? 'loadFailed');
-        console.warn('[Hinterland] Extension could not be loaded.', entry.id, error?.message ?? error);
+        console.warn('[Neocrom Horizon] Extension could not be loaded.', entry.id, error?.message ?? error);
       }
     }
 
@@ -432,8 +432,8 @@ export class ExtensionManager {
         await tab.contents.executeJavaScript(`
           (function() {
             const detail = { extensionId: ${JSON.stringify(id)} };
-            window.dispatchEvent(new CustomEvent('hinterland:extension-action', { detail }));
-            window.dispatchEvent(new CustomEvent('hinterland:clip-markdown', { detail }));
+            window.dispatchEvent(new CustomEvent('horizon:extension-action', { detail }));
+            window.dispatchEvent(new CustomEvent('horizon:clip-markdown', { detail }));
           })();
         `);
         return true;

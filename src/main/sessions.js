@@ -30,7 +30,7 @@ function userAgentFor(ses) {
   const custom = settings.value('network.userAgent');
   if (custom && custom.trim()) return custom.trim();
   const version = app.getVersion();
-  return `Mozilla/5.0 (${process.platform === 'win32' ? 'Windows NT 10.0; Win64; x64' : 'X11; Linux x86_64'}) AppleWebKit/537.36 (KHTML, like Gecko) Hinterland/${version} Safari/537.36`;
+  return `Mozilla/5.0 (${process.platform === 'win32' ? 'Windows NT 10.0; Win64; x64' : 'X11; Linux x86_64'}) AppleWebKit/537.36 (KHTML, like Gecko) NeocromHorizon/${version} Safari/537.36`;
 }
 
 export function applySettings() {
@@ -43,7 +43,7 @@ export function applySettings() {
       else if (proxyMode === 'manual') ses.setProxy({ mode: 'fixed_servers', proxyRules: settings.value('network.proxyRules') });
       else ses.setProxy({ mode: 'system' });
     } catch (error) {
-      console.warn('[Hinterland] Proxy settings could not be applied.', error.message);
+      console.warn('[Neocrom Horizon] Proxy settings could not be applied.', error.message);
     }
 
     ses.setUserAgent(userAgentFor(ses));

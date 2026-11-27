@@ -4,7 +4,7 @@
  */
 
 (function init() {
-  const BADGE_HOST_ID = 'hinterland-smart-reader-host';
+  const BADGE_HOST_ID = 'horizon-smart-reader-host';
 
   function calculateReadingStats() {
     const candidate = document.querySelector('article, main, [role="main"], .post-content, body');
@@ -38,14 +38,14 @@
       align-items: center;
       gap: 8px;
       padding: 8px 14px;
-      background: #181b22;
-      color: #e6edf3;
-      border: 1px solid #2d3340;
-      border-radius: 20px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #141414;
+      color: #f8f8f8;
+      border: 1px solid #303030;
+      border-radius: 999px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-size: 12px;
       font-weight: 500;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
       cursor: pointer;
       user-select: none;
       transition: transform 0.2s ease, opacity 0.2s ease;
@@ -56,7 +56,7 @@
     svg.setAttribute('height', '14');
     svg.setAttribute('viewBox', '0 0 24 24');
     svg.setAttribute('fill', 'none');
-    svg.setAttribute('stroke', '#388bfd');
+    svg.setAttribute('stroke', '#f8f8f8');
     svg.setAttribute('stroke-width', '2');
     svg.setAttribute('stroke-linecap', 'round');
     svg.setAttribute('stroke-linejoin', 'round');

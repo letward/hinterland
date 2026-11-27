@@ -1,572 +1,415 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Horizon Sync · Neocrom</title>
-  <meta name="description" content="Sign in to Horizon to sync browser data and manage Horizon Store submissions." />
+  <title>Horizon Sync — Neocrom Horizon</title>
+  <meta name="description" content="Manage your Neocrom Horizon Cloud Sync account, 2FA, encryption, and devices." />
+  <meta name="theme-color" content="#090909" />
   <link rel="icon" href="assets/horizon-favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
   <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="site.css" />
   <style>
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
-    body {
-      background: var(--bg); color: var(--text);
-      font-family: var(--font); font-size: 15px; line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
+    .auth-shell {
+      max-width: 540px;
+      margin: 40px auto 0;
     }
-    a { color: inherit; text-decoration: none; }
-    .nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 16px; padding: 14px 28px;
-      background: color-mix(in srgb, var(--bg) 72%, transparent);
-      backdrop-filter: blur(var(--blur));
-      border-bottom: 1px solid transparent;
+    .dash-shell {
+      max-width: 820px;
+      margin: 36px auto 0;
+      display: grid;
+      gap: 18px;
     }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px; letter-spacing: -0.2px; }
-    .brand img { width: auto; height: 29px; }
-    .nav-links { display: flex; align-items: center; gap: 6px; list-style: none; margin: 0; padding: 0; }
-    .nav-links a { padding: 8px 14px; border-radius: var(--radiusSmall); color: var(--textDim); font-size: 14px; font-weight: 500; }
-    .nav-links a:hover { color: var(--text); background: var(--surfaceAlt); }
-    .nav-links a.active { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
-    .nav-actions { display: flex; align-items: center; gap: 10px; }
-    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: var(--radiusLarge);
-      font-weight: 600; font-size: 14px; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
-    .btn:hover { background: var(--surfaceHover); border-color: var(--borderSoft); }
-    .btn.primary { background: var(--accent); color: var(--onAccent); border-color: var(--accent); }
-    .btn.ghost { background: transparent; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .card { background: var(--surface); border: 1px solid var(--borderSoft); border-radius: var(--radiusLarge); padding: 26px; margin: 0 auto 24px; max-width: 420px; }
-    .card h2 { margin: 0 0 16px; font-size: 20px; font-weight: 700; }
-    .card p { margin: 0 0 16px; color: var(--textDim); font-size: 14px; }
-    label { display: block; font-size: 13px; font-weight: 600; color: var(--textDim); margin-bottom: 6px; }
-    input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radiusSmall);
-      background: var(--surfaceAlt); color: var(--text); font: inherit; margin-bottom: 14px; }
-    input:focus { outline: 2px solid var(--accent); border-color: transparent; }
-    .row { display: grid; gap: 14px; }
-    .status { font-size: 13px; color: var(--textDim); margin: 6px 0; padding: 10px 12px; border-radius: var(--radiusSmall);
-      background: var(--surfaceAlt); border: 1px solid var(--borderSoft); }
-    .status.ok { color: #7dd3a8; border-color: color-mix(in srgb, #7dd3a8 30%, transparent); background: color-mix(in srgb, #7dd3a8 10%, transparent); }
-    .status.err { color: #ff8a8a; border-color: color-mix(in srgb, #ff8a8a 30%, transparent); background: color-mix(in srgb, #ff8a8a 10%, transparent); }
-    .section { max-width: 700px; margin: 0 auto; padding: 96px 20px 40px; }
-    .section-head { text-align: center; margin-bottom: 32px; }
-    .section-head h1 { margin: 0 0 8px; font-size: 32px; font-weight: 700; letter-spacing: -0.5px; }
-    .toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--borderSoft); }
-    .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--border); border-radius: 24px; transition: .2s; }
-    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: var(--text); border-radius: 50%; transition: .2s; }
-    input:checked + .slider { background: var(--accent); }
-    input:checked + .slider:before { transform: translateX(20px); }
-    footer.site-foot { padding: 48px 24px 32px; border-top: 1px solid var(--borderSoft); text-align: center; color: var(--textDim); font-size: 13px; }
-    .hidden { display: none !important; }
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .step { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-size: 14px; color: var(--textDim); }
-    .step.done { color: #7dd3a8; }
-    .step .dot { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
-    .step.done .dot { background: #7dd3a8; border-color: #7dd3a8; color: #000; }
-    .codes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
-    .codes input { width: 100%; max-width: 40px; text-align: center; font-size: 18px; font-weight: 700; margin-bottom: 0; }
-    .small { font-size: 12px; color: var(--textDim); }
-    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--borderSoft); font-size: 12px; background: var(--surfaceAlt); }
-    @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } .nav-links { display: none; } .codes { grid-template-columns: repeat(4, 40px); } }
-    @media (max-width: 480px) {
-      .nav { padding-inline: 16px; }
-      .brand img { height: 22px; }
-      .nav-actions .ghost { display: none; }
+    .tab-bar {
+      display: flex;
+      gap: 6px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: var(--radiusPill);
+      background: var(--bg);
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 8px 14px;
+      border: 0;
+      border-radius: var(--radiusPill);
+      background: transparent;
+      color: var(--textDim);
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+    .tab-btn.is-active {
+      background: var(--accent);
+      color: var(--onAccent);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: var(--radiusPill);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--textDim);
+      background: var(--bg);
+    }
+    .badge.ok { color: var(--success); border-color: var(--success); }
+    .badge.warn { color: var(--warning); border-color: var(--warning); }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--borderSoft);
+      gap: 12px;
+      font-size: 14px;
+    }
+    .info-row:last-child { border-bottom: 0; }
+    .info-label { color: var(--textDim); }
+    .code-box {
+      font-family: var(--fontMono);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      font-size: 13px;
+      word-break: break-all;
+      margin: 10px 0;
+      color: var(--text);
     }
   </style>
 </head>
 <body>
-
-  <nav class="nav">
-    <a class="brand" href="/"><img src="assets/horizon-wordmark-dark.svg" alt="Neocrom Horizon" width="437" height="64" /></a>
-    <ul class="nav-links">
-      <li><a href="/">Download</a></li>
-      <li><a href="/#features">Features</a></li>
-      <li><a href="/account.html" class="active">Horizon Sync</a></li>
-    </ul>
-    <div class="nav-actions">
-      <a class="btn ghost" href="https://github.com/neocrom-team/neocrom-horizon" target="_blank" rel="noopener">GitHub</a>
-      <button class="btn primary" id="btnSyncStatus" disabled title="Not signed in">Sync: off</button>
+  <header class="masthead">
+    <div class="nav-wrap">
+      <a class="brand" href="./" aria-label="Neocrom Horizon">
+        <img class="wordmark-dark" src="assets/horizon-wordmark-dark.svg" alt="Neocrom Horizon" height="28" />
+        <img class="wordmark-light" src="assets/horizon-wordmark-light.svg" alt="Neocrom Horizon" height="28" />
+      </a>
+      <nav class="nav-pill" aria-label="Primary navigation">
+        <a href="./">Overview</a>
+        <a href="./#features">Features</a>
+        <a href="./#ecosystem">Ecosystem</a>
+        <a href="docs/user-guide.html">User Guide</a>
+        <a href="account.html" aria-current="page">Horizon Sync</a>
+      </nav>
+      <div class="header-actions">
+        <button type="button" class="icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+          <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+        <a class="button small" href="./#download">Download</a>
+      </div>
     </div>
-  </nav>
+  </header>
 
-  <div class="section">
-    <div class="section-head">
-      <h1>Account</h1>
-      <p>Sign in to sync bookmarks and settings across devices and upload extensions &amp; designs to the Horizon Store.</p>
-    </div>
+  <main class="wrap">
+    <section id="authSection" class="auth-shell">
+      <div class="card">
+        <span class="pill" style="margin-bottom: 14px;"><span class="pill-dot"></span> Horizon Sync</span>
+        <h1 style="margin: 0 0 8px; font-size: 1.9rem; letter-spacing: -0.03em;">Horizon Cloud Account</h1>
+        <p style="margin: 0 0 20px;">Zero-knowledge encrypted sync for bookmarks, reading list, quick notes, and Neocrom Horizon preferences.</p>
 
-    <!-- Sign in / sign up -->
-    <div id="authPanel" class="card">
-      <div id="authMsg" class="status hidden"></div>
+        <div class="tab-bar">
+          <button type="button" class="tab-btn is-active" id="tabLoginBtn">Sign In</button>
+          <button type="button" class="tab-btn" id="tabRegBtn">Create Account</button>
+        </div>
 
-      <!-- Sign in -->
-      <div id="signinPanel">
-        <h2>Sign in</h2>
-        <label>Email</label>
-        <input type="email" id="siEmail" placeholder="you@example.com" />
-        <label>Password</label>
-        <input type="password" id="siPassword" placeholder="••••••••" />
-        <button class="btn primary" id="btnSignIn">Sign in</button>
-        <p style="font-size:12px;color:var(--textDim);">New here? <a href="#" id="showSignup" style="color:var(--accent);cursor:pointer;">Create an account</a></p>
-
-        <!-- TOTP challenge (shown when 2FA is required) -->
-        <div id="totpChallenge" class="hidden" style="margin-top:16px;">
-          <label>Two-factor code (authenticator app)</label>
-          <div class="grid2">
-            <input type="text" id="totpCode" maxlength="6" placeholder="000000" inputmode="numeric" />
-            <input type="hidden" id="totpPendingEmail" />
+        <form id="loginForm">
+          <div class="field">
+            <label for="loginIdent">Email</label>
+            <input class="input" id="loginIdent" type="email" required placeholder="you@example.com" autocomplete="email" />
           </div>
-          <button class="btn" id="btnVerifyTotp" style="margin-top:8px;">Verify code</button>
-          <p class="small">Lost your device? Use one of your recovery codes.</p>
-        </div>
-      </div>
-
-      <!-- Sign up -->
-      <div id="signupPanel" class="hidden">
-        <h2>Create account</h2>
-        <label>Email</label>
-        <input type="email" id="suEmail" placeholder="you@example.com" />
-        <label>Password (8+ chars)</label>
-        <input type="password" id="suPassword" placeholder="••••••••" />
-        <label>Phone number (optional, +49123...)</label>
-        <input type="tel" id="suPhone" placeholder="+49 123 456789" />
-        <label>Sync passphrase (optional, zero-knowledge encryption)</label>
-        <input type="password" id="suPassphrase" placeholder="Leave empty to sync unencrypted" />
-        <button class="btn primary" id="btnSignUp">Create account</button>
-        <p style="font-size:12px;color:var(--textDim);">Already have an account? <a href="#" id="showSignin" style="color:var(--accent);cursor:pointer;">Sign in</a></p>
-      </div>
-
-      <!-- Email verification (shown after fallback-mode signup) -->
-      <div id="verifyPanel" class="hidden">
-        <h2>Verify email</h2>
-        <p class="small">A 6-digit code was shown to you. Enter it below.</p>
-        <div class="codes" id="verifyCodes"></div>
-        <input type="hidden" id="verifyEmail" />
-        <button class="btn primary" id="btnVerifyEmail">Verify email</button>
-        <p class="small" id="verifyResend" style="margin-top:10px;">Didn't get a code? <a href="#" style="color:var(--accent);cursor:pointer;">Request again</a></p>
-      </div>
-    </div>
-
-    <!-- Profile / sync / 2FA -->
-    <div id="profilePanel" class="hidden card">
-      <div class="row">
-        <div style="min-width:0;">
-          <h2>Profile</h2>
-          <p id="profileEmail"></p>
-          <span id="profileBadge" class="badge" style="margin-left:8px;"></span>
-          <label>Display name</label>
-          <input type="text" id="profileDisplayName" placeholder="Your name" />
-          <button class="btn primary" id="btnSaveProfile">Save</button>
-          <p id="profileMsg" class="status hidden"></p>
-        </div>
-        <div>
-          <h2>Cloud sync</h2>
-          <div class="toggle">
-            <span>Auto-sync bookmarks &amp; settings</span>
-            <label class="switch"><input type="checkbox" id="syncAuto" /><span class="slider"></span></label>
+          <div class="field">
+            <label for="loginPass">Password</label>
+            <input class="input" id="loginPass" type="password" required minlength="6" placeholder="••••••••" autocomplete="current-password" />
           </div>
-          <p id="syncLast" style="font-size:12px;color:var(--textDim);">Last sync: never</p>
-          <button class="btn" id="btnSyncNow" style="margin-top:8px;">Sync now</button>
-          <div id="syncMsg" class="status hidden"></div>
-          <p class="small" style="margin-top:10px;">Sync is end-to-end encrypted when you set a passphrase.</p>
+          <div class="field" id="totpGroup" hidden>
+            <label for="loginTotp">2FA Code (Authenticator App)</label>
+            <input class="input" id="loginTotp" type="text" maxlength="6" placeholder="6-digit code" inputmode="numeric" />
+          </div>
+          <button type="submit" class="button primary" id="loginBtn" style="width: 100%;">Sign In</button>
+          <div id="loginMsg" class="msg" role="status"></div>
+        </form>
+
+        <form id="regForm" hidden>
+          <div class="field">
+            <label for="regEmail">Email address</label>
+            <input class="input" id="regEmail" type="email" required placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <div class="field">
+            <label for="regPass">Password</label>
+            <input class="input" id="regPass" type="password" required minlength="8" placeholder="At least 8 characters" autocomplete="new-password" />
+          </div>
+          <button type="submit" class="button primary" id="regBtn" style="width: 100%;">Create Horizon Account</button>
+          <div id="regMsg" class="msg" role="status"></div>
+        </form>
+      </div>
+    </section>
+
+    <section id="dashSection" class="dash-shell" hidden>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+          <div>
+            <span class="pill" style="margin-bottom: 8px;"><span class="pill-dot"></span> Active Session</span>
+            <h1 id="dashEmail" style="margin:0;font-size:1.5rem;">—</h1>
+          </div>
+          <button type="button" class="button small" id="logoutBtn">Sign Out</button>
+        </div>
+        <div style="margin-top:16px;">
+          <div class="info-row">
+            <span class="info-label">Provider</span>
+            <span id="dashProvider" class="badge">horizon</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Email verification</span>
+            <span id="dashEmailStatus" class="badge warn">Pending</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Two-Factor Authentication (TOTP)</span>
+            <span id="dashTotpStatus" class="badge">Disabled</span>
+          </div>
         </div>
       </div>
 
-      <!-- Verification status -->
-      <div class="toggle" style="margin-top:18px;">
-        <span id="verifyStatusLabel">Verifying identity…</span>
-        <span id="verifyStatusBadge" class="badge">pending</span>
-      </div>
-      <div id="verifyActions" style="margin-top:10px;">
-        <button class="btn ghost" id="btnVerifyEmailBtn" style="margin-right:8px;">Verify email</button>
-        <button class="btn ghost" id="btnVerifyPhoneBtn">Verify phone</button>
-      </div>
-      <div id="phoneInput" class="hidden" style="margin-top:10px;">
-        <label>Phone number</label>
-        <input type="tel" id="suPhone2" placeholder="+49 123 456789" />
-        <div class="codes" id="phoneCodes"></div>
-        <input type="hidden" id="phoneVerifyCode" />
-        <button class="btn" id="btnVerifyPhoneCode" style="margin-top:8px;">Verify phone</button>
-      </div>
+      <div class="grid-2">
+        <article class="card">
+          <h3>Two-Factor Authentication (2FA)</h3>
+          <p style="margin-bottom:14px;">Protect your account and synced workspace with an authenticator app.</p>
+          <button type="button" class="button" id="setupTotpBtn">Setup 2FA</button>
+          <div id="totpSetupBox" hidden>
+            <div class="code-box" id="totpSecretCode"></div>
+            <form id="verifyTotpForm" style="display:flex;gap:8px;margin-top:10px;">
+              <input class="input" id="totpVerifyInput" type="text" maxlength="6" placeholder="123456" inputmode="numeric" />
+              <button type="submit" class="button primary">Verify</button>
+            </form>
+          </div>
+          <div id="totpMsg" class="msg" role="status"></div>
+        </article>
 
-      <!-- 2FA -->
-      <div class="toggle" style="margin-top:18px;">
-        <span>Two-factor authentication (authenticator app)</span>
-        <span id="totpStatusBadge" class="badge">disabled</span>
+        <article class="card">
+          <h3>Cloud Sync Check</h3>
+          <p style="margin-bottom:14px;">Inspect live status of your Horizon Sync endpoint (`/api/sync`).</p>
+          <button type="button" class="button" id="checkSyncBtn">Check Sync Status</button>
+          <div id="syncMsg" class="msg" role="status"></div>
+        </article>
       </div>
-      <div id="totpPanel" class="hidden">
-        <p class="small">Scan the QR code with Google Authenticator, Authy, or similar. Save your recovery codes — they let you regain access if you lose your device.</p>
-        <div id="totpQr" style="margin:12px 0;"></div>
-        <label>Secret (enter manually if you can't scan)</label>
-        <input type="text" id="totpSecret" readonly style="background:var(--surfaceAlt);" />
-        <div class="codes" id="totpVerifyCodes"></div>
-        <button class="btn primary" id="btnEnableTotp" style="margin-top:10px;">Enable 2FA</button>
-        <p id="totpMsg" class="status hidden"></p>
-      </div>
-      <div id="totpRecovery" class="hidden" style="margin-top:14px;">
-        <h3 style="font-size:14px;margin:0 0 8px;">Recovery codes</h3>
-        <div class="codes" id="recoveryCodes"></div>
-        <p class="small">Download or print these. Each code works once.</p>
-      </div>
+    </section>
+  </main>
 
-      <!-- Telemetry -->
-      <div class="toggle" style="margin-top:18px;">
-        <span>Share anonymous telemetry to improve future updates</span>
-        <label class="switch"><input type="checkbox" id="telemetryOptIn" /><span class="slider"></span></label>
+  <footer class="site-footer">
+    <div class="footer-wrap">
+      <a class="brand" href="./" aria-label="Neocrom Horizon">
+        <img class="wordmark-dark" src="assets/horizon-wordmark-dark.svg" alt="Neocrom Horizon" height="24" />
+        <img class="wordmark-light" src="assets/horizon-wordmark-light.svg" alt="Neocrom Horizon" height="24" />
+      </a>
+      <div class="footer-links">
+        <a href="./">Overview</a>
+        <a href="docs/user-guide.html">User Guide</a>
+        <a href="https://neocrom.pro" target="_blank" rel="noopener">Neocrom</a>
+        <a href="https://github.com/neocrom-team/neocrom-horizon" target="_blank" rel="noopener">GitHub</a>
       </div>
-      <p id="telemetryNote" style="font-size:12px;color:var(--textDim);margin-top:6px;"></p>
-
-      <!-- Download entitlement -->
-      <div class="toggle" style="margin-top:18px;">
-        <span>Horizon Store downloads</span>
-        <span id="downloadEntitlement" class="badge">—</span>
-      </div>
-      <p class="small" style="margin-top:6px;">Downloads require a verified email. Limit: 50 per account.</p>
-
-      <button class="btn ghost" id="btnLogout" style="margin-top:18px;color:var(--textDim);">Sign out</button>
     </div>
-  </div>
-
-  <footer class="site-foot">
-    Neocrom Horizon &middot; MIT License &middot;
-    <a href="/" style="color:var(--accent);">Download</a> &middot;
-    <a href="https://github.com/neocrom-team/neocrom-horizon" target="_blank" rel="noopener">Source</a>
   </footer>
 
   <script>
-    const API_SYNC = '/api/sync';
-    const API_ACCOUNT = '/api/account';
-    const API_TELEMETRY = '/api/telemetry';
-    const $ = (id) => document.getElementById(id);
-
-    const authPanel = $('authPanel');
-    const profilePanel = $('profilePanel');
-    const btnSyncStatus = $('btnSyncStatus');
-
-    function setToken(token, user) {
-      localStorage.setItem('hl_token', token || '');
-      localStorage.setItem('hl_user', JSON.stringify(user || {}));
-    }
-    function getToken() { return localStorage.getItem('hl_token') || null; }
-    function getUser() { try { return JSON.parse(localStorage.getItem('hl_user') || '{}'); } catch { return {}; } }
-
-    function show(msgEl, text, kind) {
-      msgEl.textContent = text;
-      msgEl.className = 'status ' + (kind === 'err' ? 'err' : 'ok');
-      msgEl.classList.remove('hidden');
-    }
-    function hide(msgEl) { msgEl.classList.add('hidden'); }
-
-    async function api(path, { method = 'GET', body, token } = {}) {
-      const headers = { 'Content-Type': 'application/json' };
-      if (token) headers.Authorization = 'Bearer ' + token;
-      const res = await fetch(path, { method, headers, body: body ? JSON.stringify(body) : undefined });
-      let data;
-      try { data = await res.json(); } catch { data = {}; }
-      if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
-      return data;
-    }
-
-    /* ---------- verification code inputs (6 boxes) ---------- */
-    function makeCodeInputs(containerId, onComplete) {
-      const container = $(containerId);
-      container.innerHTML = '';
-      const inputs = [];
-      for (let i = 0; i < 6; i++) {
-        const inp = document.createElement('input');
-        inp.type = 'text'; inp.maxLength = 1; inp.inputMode = 'numeric';
-        inp.className = 'code-input';
-        inputs.push(inp);
-        container.appendChild(inp);
-      }
-      inputs.forEach((inp, i) => {
-        inp.addEventListener('input', (e) => {
-          const v = e.target.value.replace(/\D/g, '');
-          e.target.value = v;
-          if (v && i < 5) inputs[i + 1].focus();
-        });
-        inp.addEventListener('keydown', (e) => {
-          if (e.key === 'Backspace' && !inp.value && i > 0) inputs[i - 1].focus();
-        });
-        inp.addEventListener('keyup', () => {
-          if (inputs.every(x => x.value)) onComplete(inputs.map(x => x.value).join(''));
-        });
+    (function () {
+      const root = document.documentElement;
+      const savedTheme = localStorage.getItem('nh-theme') || localStorage.getItem('hl-theme') || 'dark';
+      root.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
+      document.getElementById('themeToggle').addEventListener('click', () => {
+        const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        localStorage.setItem('nh-theme', next);
       });
-      return inputs;
-    }
 
-    /* ---------- auth flow ---------- */
-    async function loadProfile() {
-      const token = getToken();
-      if (!token) return;
-      try {
-        const data = await api(API_ACCOUNT + '/me', { token });
-        const u = data.user || {};
-        $('profileEmail').textContent = u.email || 'User';
-        $('profileDisplayName').value = u.displayName || '';
-        const badge = $('profileBadge');
-        badge.textContent = u.provider + (u.emailVerified ? ' · verified' : '');
-        badge.style.borderColor = u.emailVerified ? '#7dd3a8' : 'var(--borderSoft)';
-        authPanel.classList.add('hidden');
-        profilePanel.classList.remove('hidden');
-        btnSyncStatus.textContent = 'Sync: on';
-        btnSyncStatus.disabled = false;
-        $('syncLast').textContent = 'Signed in as ' + (u.email || 'user');
+      const authSection = document.getElementById('authSection');
+      const dashSection = document.getElementById('dashSection');
+      const loginForm = document.getElementById('loginForm');
+      const regForm = document.getElementById('regForm');
+      const tabLoginBtn = document.getElementById('tabLoginBtn');
+      const tabRegBtn = document.getElementById('tabRegBtn');
 
-        // Verification status
-        $('verifyStatusLabel').textContent = 'Identity verification';
-        $('verifyStatusBadge').textContent = (u.emailVerified ? 'email ✓' : 'email pending') + (u.phoneVerified ? ' · phone ✓' : '');
-        $('verifyStatusBadge').style.borderColor = (u.emailVerified && u.phoneVerified) ? '#7dd3a8' : 'var(--borderSoft)';
+      tabLoginBtn.addEventListener('click', () => {
+        tabLoginBtn.classList.add('is-active');
+        tabRegBtn.classList.remove('is-active');
+        loginForm.hidden = false;
+        regForm.hidden = true;
+      });
+      tabRegBtn.addEventListener('click', () => {
+        tabRegBtn.classList.add('is-active');
+        tabLoginBtn.classList.remove('is-active');
+        loginForm.hidden = true;
+        regForm.hidden = false;
+      });
 
-        // TOTP status
-        $('totpStatusBadge').textContent = u.totpEnabled ? 'enabled' : 'disabled';
-        $('totpStatusBadge').style.borderColor = u.totpEnabled ? '#7dd3a8' : 'var(--borderSoft)';
-        $('totpPanel').classList.toggle('hidden', u.totpEnabled);
-        $('totpRecovery').classList.add('hidden');
-
-        // Download entitlement
-        try {
-          const ent = await api(API_ACCOUNT + '/download/entitlement', { token });
-          $('downloadEntitlement').textContent = ent.verified ? (ent.remaining + ' / ' + ent.limit) : 'unverified';
-          $('downloadEntitlement').style.borderColor = ent.verified ? '#7dd3a8' : 'var(--borderSoft)';
-        } catch {}
-      } catch (e) {
-        setToken(null, null);
-        location.reload();
+      function getToken() {
+        return localStorage.getItem('nh_token') || localStorage.getItem('hl_token') || '';
       }
-    }
 
-    async function handleSignIn(e) {
-      e.preventDefault();
-      const msg = $('authMsg'); hide(msg);
-      try {
-        const data = await api(API_ACCOUNT + '/login', {
-          method: 'POST',
-          body: {
-            email: $('siEmail').value,
-            password: $('siPassword').value,
-          },
-        });
-        if (data.requiresTotp) {
-          // Ask for 2FA code
-          $('totpPendingEmail').value = data.email;
-          $('signinPanel').classList.add('hidden');
-          $('totpChallenge').classList.remove('hidden');
+      function renderProfile(user) {
+        if (!user) {
+          authSection.hidden = false;
+          dashSection.hidden = true;
           return;
         }
-        setToken(data.token, data.user);
-        await loadProfile();
-      } catch (err) { show(msg, err.message, 'err'); }
-    }
-
-    $('btnVerifyTotp').addEventListener('click', async () => {
-      const msg = $('authMsg'); hide(msg);
-      const code = $('totpCode').value;
-      if (!/^\d{6}$/.test(code)) { show(msg, 'Enter a 6-digit code.', 'err'); return; }
-      try {
-        const data = await api(API_ACCOUNT + '/login', {
-          method: 'POST',
-          body: { email: $('totpPendingEmail').value, password: '', totp: code },
-        });
-        // password is empty here; server validates TOTP against pending. Re-send with stored password? 
-        // Simpler: server already verified TOTP in login flow. We issue a fresh login with password from storage.
-        // For UX simplicity, re-attempt login with the password the user entered earlier (not stored client-side).
-        show(msg, 'Code verified. Please sign in again with your password.', 'ok');
-        $('totpChallenge').classList.add('hidden');
-        $('signinPanel').classList.remove('hidden');
-      } catch (err) { show(msg, err.message, 'err'); }
-    });
-
-    async function handleSignUp(e) {
-      e.preventDefault();
-      const msg = $('authMsg'); hide(msg);
-      const pw = $('suPassword').value;
-      if (pw.length < 8) { show(msg, 'Password must be at least 8 characters.', 'err'); return; }
-      try {
-        const data = await api(API_ACCOUNT + '/register', {
-          method: 'POST',
-          body: {
-            email: $('suEmail').value,
-            password: pw,
-            phone: $('suPhone').value || undefined,
-          },
-        });
-        if (data.verificationCode) {
-          // Fallback mode: show the code (dev/preview). Production sends via email/SMS.
-          $('verifyEmail').value = $('suEmail').value;
-          const inputs = makeCodeInputs('verifyCodes', (code) => {
-            api(API_ACCOUNT + '/verify', { method: 'POST', body: { code, purpose: 'email', email: $('suEmail').value } })
-              .then(() => { show(msg, 'Email verified.', 'ok'); $('signupPanel').classList.add('hidden'); $('verifyPanel').classList.add('hidden'); $('signinPanel').classList.remove('hidden'); })
-              .catch(err => show(msg, err.message, 'err'));
-          });
-          inputs[0].focus();
-          $('signupPanel').classList.add('hidden');
-          $('verifyPanel').classList.remove('hidden');
-          show(msg, 'Account created. A verification code was generated (shown in dev/preview mode).', 'ok');
-        } else {
-          setToken(data.token, data.user);
-          await loadProfile();
-        }
-      } catch (err) { show(msg, err.message, 'err'); }
-    }
-
-    async function handleSaveProfile(e) {
-      e.preventDefault();
-      const msg = $('profileMsg'); hide(msg);
-      try {
-        const data = await api(API_ACCOUNT + '/me', {
-          method: 'PUT', token: getToken(),
-          body: { displayName: $('profileDisplayName').value },
-        });
-        show($('profileMsg'), 'Profile saved.', 'ok');
-        localStorage.setItem('hl_user', JSON.stringify(data.user || {}));
-      } catch (err) { show(msg, err.message, 'err'); }
-    }
-
-    async function handleSyncNow(e) {
-      e.preventDefault();
-      const msg = $('syncMsg'); hide(msg);
-      const token = getToken();
-      try {
-        const pulled = await api(API_SYNC, { method: 'POST', token, body: { action: 'pull', token } });
-        await api(API_SYNC, { method: 'POST', token, body: { action: 'sync', token, data: { bookmarks: [], settings: {}, updatedAt: new Date().toISOString() } } });
-        const again = await api(API_SYNC, { method: 'POST', token, body: { action: 'pull', token } });
-        $('syncLast').textContent = 'Last synced: ' + (again.syncedAt || new Date().toISOString());
-        show(msg, 'Sync complete.', 'ok');
-      } catch (err) { show(msg, err.message, 'err'); }
-    }
-
-    function handleLogout() {
-      setToken(null, null);
-      location.reload();
-    }
-
-    /* ---------- TOTP enable ---------- */
-    $('btnEnableTotp').addEventListener('click', async () => {
-      const msg = $('totpMsg'); hide(msg);
-      const token = getToken();
-      try {
-        const data = await api(API_ACCOUNT + '/totp/setup', { token });
-        $('totpSecret').value = data.secret;
-        // Render QR as a data URL via a small SVG? Simpler: show otpauth URI as text + image via chart.googleapis (no). We show the URI.
-        $('totpQr').innerHTML = '<div class="small" style="word-break:break-all;margin-top:6px;">' + data.uri + '</div>';
-        $('totpPanel').classList.remove('hidden');
-        // recovery codes
-        const recContainer = $('recoveryCodes');
-        recContainer.innerHTML = data.recoveryCodes.map(c => '<span class="badge" style="margin:2px;">' + c + '</span>').join('');
-        $('totpRecovery').classList.remove('hidden');
-
-        const totpInputs = makeCodeInputs('totpVerifyCodes', (code) => {
-          api(API_ACCOUNT + '/totp/verify', { method: 'POST', token, body: { token: code } })
-            .then(() => { show(msg, '2FA enabled. Keep your recovery codes safe.', 'ok'); $('btnEnableTotp').disabled = true; loadProfile(); })
-            .catch(err => show(msg, err.message, 'err'));
-        });
-        totpInputs[0].focus();
-      } catch (err) { show(msg, err.message, 'err'); }
-    });
-
-    /* ---------- Email / phone verify (profile) ---------- */
-    $('btnVerifyEmailBtn').addEventListener('click', async () => {
-      const msg = $('authMsg'); hide(msg);
-      const token = getToken();
-      // In fallback mode, resend/show code is not possible without re-registering. Inform user.
-      show(msg, 'Email verification is handled at sign-up in this preview.', 'ok');
-    });
-    $('btnVerifyPhoneBtn').addEventListener('click', async () => {
-      $('phoneInput').classList.toggle('hidden');
-    });
-    makeCodeInputs('phoneCodes', (code) => {
-      $('phoneVerifyCode').value = code;
-    });
-    $('btnVerifyPhoneCode').addEventListener('click', async () => {
-      const msg = $('authMsg'); hide(msg);
-      const token = getToken();
-      try {
-        await api(API_ACCOUNT + '/verify', {
-          method: 'POST', token,
-          body: { code: $('phoneVerifyCode').value, purpose: 'phone', phone: $('suPhone2').value },
-        });
-        show(msg, 'Phone verified.', 'ok');
-        loadProfile();
-      } catch (err) { show(msg, err.message, 'err'); }
-    });
-
-    /* ---------- Telemetry ---------- */
-    const telemetryOptIn = $('telemetryOptIn');
-    const telemetryNote = $('telemetryNote');
-    telemetryOptIn.addEventListener('change', async () => {
-      const on = telemetryOptIn.checked;
-      telemetryNote.textContent = on ? 'Telemetry enabled (anonymous, opt-in).' : 'Telemetry disabled.';
-      try {
-        await api(API_TELEMETRY, {
-          method: 'POST',
-          body: { optIn: on, sessionId: 'web-' + Date.now(), appVersion: '1.26.0', events: [{ name: 'page_view', props: { section: 'account' }, ts: Date.now() }] },
-        });
-      } catch { /* non-fatal */ }
-    });
-
-    /* ---------- Wiring ---------- */
-    $('btnSignIn').addEventListener('click', handleSignIn);
-    $('btnSignUp').addEventListener('click', handleSignUp);
-    $('btnSaveProfile').addEventListener('click', handleSaveProfile);
-    $('btnSyncNow').addEventListener('click', handleSyncNow);
-    $('btnLogout').addEventListener('click', handleLogout);
-    $('showSignup').addEventListener('click', (e) => { e.preventDefault(); $('siEmail').closest('.row').style.display='none'; $('signupPanel').classList.remove('hidden'); });
-    $('showSignin').addEventListener('click', (e) => { e.preventDefault(); $('signupPanel').classList.add('hidden'); $('siEmail').closest('.row').style.display='block'; });
-    $('btnVerifyEmail').addEventListener('click', async (e) => {
-      e.preventDefault();
-      const msg = $('authMsg'); hide(msg);
-      const inputs = $('verifyCodes').querySelectorAll('input');
-      const code = Array.from(inputs).map(i => i.value).join('').trim();
-      const email = $('verifyEmail').value || $('suEmail').value;
-      if (code.length < 6) { show(msg, 'Please enter the 6-digit verification code.', 'err'); return; }
-      try {
-        await api(API_ACCOUNT + '/verify', {
-          method: 'POST',
-          body: { code, purpose: 'email', email },
-        });
-        show(msg, 'Email verified. You can now sign in.', 'ok');
-        $('signupPanel').classList.add('hidden');
-        $('verifyPanel').classList.add('hidden');
-        $('signinPanel').classList.remove('hidden');
-      } catch (err) {
-        show(msg, err.message, 'err');
+        authSection.hidden = true;
+        dashSection.hidden = false;
+        document.getElementById('dashEmail').textContent = user.email || '—';
+        document.getElementById('dashProvider').textContent = user.provider || 'horizon';
+        const em = document.getElementById('dashEmailStatus');
+        em.textContent = user.emailVerified ? 'Verified' : 'Pending';
+        em.className = 'badge ' + (user.emailVerified ? 'ok' : 'warn');
+        const totp = document.getElementById('dashTotpStatus');
+        totp.textContent = user.totpEnabled ? 'Enabled' : 'Disabled';
+        totp.className = 'badge ' + (user.totpEnabled ? 'ok' : '');
       }
-    });
-    const resendLink = $('verifyResend')?.querySelector('a');
-    if (resendLink) {
-      resendLink.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const msg = $('authMsg'); hide(msg);
-        const email = $('verifyEmail').value || $('suEmail').value;
+
+      async function loadMe() {
+        const token = getToken();
+        if (!token) return renderProfile(null);
         try {
-          const res = await api(API_ACCOUNT + '/register', {
-            method: 'POST',
-            body: { email, password: $('suPassword').value || 'placeholderPass1!' },
-          });
-          if (res.verificationCode) {
-            show(msg, 'New code generated: ' + res.verificationCode, 'ok');
+          const r = await fetch('/api/account/me', { headers: { Authorization: 'Bearer ' + token } });
+          const data = await r.json();
+          if (r.ok && data.ok) {
+            renderProfile(data.user);
           } else {
-            show(msg, 'Verification code resent.', 'ok');
+            renderProfile(null);
           }
         } catch {
-          show(msg, 'A verification code was resent.', 'ok');
+          renderProfile(null);
+        }
+      }
+
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('loginMsg');
+        msg.className = 'msg';
+        msg.textContent = 'Signing in...';
+        try {
+          const r = await fetch('/api/account/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: document.getElementById('loginIdent').value,
+              password: document.getElementById('loginPass').value,
+              totp: document.getElementById('loginTotp').value || undefined,
+            }),
+          });
+          const data = await r.json();
+          if (data.requiresTotp) {
+            document.getElementById('totpGroup').hidden = false;
+            msg.textContent = 'Please enter your 2FA code.';
+            return;
+          }
+          if (!r.ok || !data.ok) {
+            msg.className = 'msg err';
+            msg.textContent = data.error || 'Sign in failed.';
+            return;
+          }
+          localStorage.setItem('nh_token', data.token);
+          localStorage.setItem('nh_user', JSON.stringify(data.user));
+          renderProfile(data.user);
+        } catch {
+          msg.className = 'msg err';
+          msg.textContent = 'Network error.';
         }
       });
-    }
 
-    /* ---------- Init ---------- */
-    (async () => {
-      const token = getToken();
-      if (token) await loadProfile();
-      try {
-        const prov = await api(API_ACCOUNT + '/providers');
-        btnSyncStatus.title = prov.sync.server + ' · supabase: ' + prov.sync.supabaseConfigured;
-      } catch {}
+      regForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('regMsg');
+        msg.className = 'msg';
+        msg.textContent = 'Creating account...';
+        try {
+          const r = await fetch('/api/account/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: document.getElementById('regEmail').value,
+              password: document.getElementById('regPass').value,
+            }),
+          });
+          const data = await r.json();
+          if (!r.ok || !data.ok) {
+            msg.className = 'msg err';
+            msg.textContent = data.error || 'Registration failed.';
+            return;
+          }
+          localStorage.setItem('nh_token', data.token);
+          localStorage.setItem('nh_user', JSON.stringify(data.user));
+          renderProfile(data.user);
+        } catch {
+          msg.className = 'msg err';
+          msg.textContent = 'Network error.';
+        }
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', async () => {
+        const token = getToken();
+        if (token) {
+          await fetch('/api/account/logout', { method: 'POST', headers: { Authorization: 'Bearer ' + token } }).catch(() => {});
+        }
+        localStorage.removeItem('nh_token');
+        localStorage.removeItem('hl_token');
+        localStorage.removeItem('nh_user');
+        localStorage.removeItem('hl_user');
+        renderProfile(null);
+      });
+
+      document.getElementById('setupTotpBtn').addEventListener('click', async () => {
+        const msg = document.getElementById('totpMsg');
+        const r = await fetch('/api/account/totp/setup', {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + getToken() },
+        });
+        const data = await r.json();
+        if (r.ok && data.ok) {
+          document.getElementById('totpSecretCode').textContent = `Secret: ${data.secret}`;
+          document.getElementById('totpSetupBox').hidden = false;
+        } else {
+          msg.className = 'msg err';
+          msg.textContent = data.error || 'Could not initialize 2FA.';
+        }
+      });
+
+      document.getElementById('verifyTotpForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('totpMsg');
+        const r = await fetch('/api/account/totp/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+          body: JSON.stringify({ token: document.getElementById('totpVerifyInput').value }),
+        });
+        const data = await r.json();
+        if (r.ok && data.ok) {
+          msg.className = 'msg ok';
+          msg.textContent = '2FA enabled successfully.';
+          document.getElementById('totpSetupBox').hidden = true;
+          loadMe();
+        } else {
+          msg.className = 'msg err';
+          msg.textContent = data.error || 'Invalid code.';
+        }
+      });
+
+      document.getElementById('checkSyncBtn').addEventListener('click', async () => {
+        const msg = document.getElementById('syncMsg');
+        const r = await fetch('/api/sync');
+        const data = await r.json();
+        if (r.ok && data.ok) {
+          msg.className = 'msg ok';
+          msg.textContent = `Online · ${data.service} v${data.version} (${data.provider})`;
+        } else {
+          msg.className = 'msg err';
+          msg.textContent = 'Sync service unreachable.';
+        }
+      });
+
+      loadMe();
     })();
   </script>
   <script defer data-domain="hinterland-browser.vercel.app" src="https://va.vercel.app/script.js"></script>

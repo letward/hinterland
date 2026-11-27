@@ -203,7 +203,7 @@ export function showWebContextMenu(tab, params) {
         const rawTitle = (tab.title || 'page').replace(/[\\/:*?"<>|]/g, '').trim().slice(0, 60) || 'page';
         const defaultPath = join(downloadDirectory(), `${rawTitle}.pdf`);
         const result = await dialog.showSaveDialog(surface.window ?? undefined, {
-          title: 'Hinterland',
+          title: 'Neocrom Horizon',
           defaultPath,
           filters: [{ name: 'PDF', extensions: ['pdf'] }],
         });
@@ -213,7 +213,7 @@ export function showWebContextMenu(tab, params) {
           await writeFile(result.filePath, data);
           surface.send('toast', { message: 'toast.pdfSaved', kind: 'success' });
         } catch (error) {
-          console.warn('[Hinterland] PDF generation failed:', error?.message ?? error);
+          console.warn('[Neocrom Horizon] PDF generation failed:', error?.message ?? error);
           surface.send('toast', { message: 'toast.pdfFailed', kind: 'error' });
         }
       },
@@ -267,7 +267,7 @@ export function showWebContextMenu(tab, params) {
           const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
           const defaultPath = join(downloadDirectory(), `${rawTitle}_${timestamp}.png`);
           const result = await dialog.showSaveDialog(surface.window ?? undefined, {
-            title: 'Hinterland',
+            title: 'Neocrom Horizon',
             defaultPath,
             filters: [{ name: 'PNG Image', extensions: ['png'] }],
           });

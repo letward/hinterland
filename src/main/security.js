@@ -1,6 +1,6 @@
 import electron from 'electron';
 const shell = typeof electron === 'object' && electron !== null ? electron.shell : null;
-import { NAVIGABLE_SCHEMES, NEVER_UPGRADE } from './constants.js';
+import { NAVIGABLE_SCHEMES, NEVER_UPGRADE, SCHEME } from './constants.js';
 import { settings } from './settings.js';
 
 const GENERIC_TRACKERS = [
@@ -201,7 +201,7 @@ export function installPermissionPolicy(sessionObject, hooks) {
   });
 
   sessionObject.setPermissionCheckHandler((contents, permission, requestingOrigin) => {
-    if (requestingOrigin?.startsWith('hinterland://')) return true;
+    if (requestingOrigin?.startsWith(`${SCHEME}://`)) return true;
     const choice = decisionFor(permission, requestingOrigin);
     if (choice === 'ask') return false;
     return choice === 'allow';
