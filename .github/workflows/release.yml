@@ -126,8 +126,8 @@ jobs:
         with:
           name: ocrom-horizon-${{ needs.idempotency-check.outputs.tag }}
           path: |
-            dist/Neocrom-Horizon-Setup-${{ needs.idempotency-check.outputs.tag }}.exe
-            dist/Neocrom-Horizon-Setup-${{ needs.idempotency-check.outputs.tag }}.exe.blockmap
+            dist/Neocrom-Horizon-Setup-*.exe
+            dist/Neocrom-Horizon-Setup-*.exe.blockmap
             dist/latest.yml
           if-no-files-found: error
           retention-days: 7
