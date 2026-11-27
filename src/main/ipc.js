@@ -1,7 +1,7 @@
 import { ipcMain, dialog, shell, app, clipboard, BrowserWindow, nativeImage } from 'electron';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { NEW_TAB_URL, DEFAULT_SHORTCUTS } from './constants.js';
+import { NEW_TAB_URL, DEFAULT_SHORTCUTS, SCHEME_ORIGIN } from './constants.js';
 import { settings } from './settings.js';
 import { exportSchema } from './schema.js';
 import { translations, availableLanguages, resolveLanguage, translate } from './i18n.js';
@@ -27,8 +27,13 @@ const registered = new Set();
 function handle(channel, handler) {
   if (registered.has(channel)) return;
   registered.add(channel);
-  ipcMain.handle(channel, async (_event, ...args) => {
+  const chromeOnly = channel.startsWith('account:') || channel.startsWith('store:');
+  ipcMain.handle(channel, async (event, ...args) => {
     try {
+      if (chromeOnly && (event.sender !== surface.chromeView?.webContents
+        || event.senderFrame !== event.sender.mainFrame || event.senderFrame?.url !== SCHEME_ORIGIN + '/')) {
+        return { ok: false, error: 'This action requires the Horizon browser controls.' };
+      }
       return await handler(...args);
     } catch (error) {
       console.warn(`[Neocrom Horizon] ${channel} failed.`, error?.message ?? error);
@@ -1786,6 +1791,9 @@ export function installIpc() {
 
   /* ------------------------------------------------------------- horizon store */
   handle('store:catalog', () => horizonStore.catalog());
+  handle('store:neocromCatalog', () => syncService.neocromStore());
+  handle('store:publishTheme', (theme) => syncService.neocromStore('theme', theme));
+  handle('store:publishExtension', (extension) => syncService.neocromStore('extension', extension));
   handle('store:installExtension', ({ id, config } = {}) => horizonStore.installExtension(id, config));
   handle('store:uninstallExtension', (id) => horizonStore.uninstallExtension(id));
   handle('store:saveExtensionConfig', ({ id, config } = {}) => horizonStore.saveExtensionConfig(id, config));
@@ -4328,8 +4336,11 @@ handle('dialog:confirm', async ({ title, message, detail, confirmLabel, cancelLa
 
   /* ------------------------------------------------------------- account & sync */
   handle('account:getStatus', () => {
-    return syncService.getStatus();
+    return syncService.refreshNeocromStatus();
   });
+  handle('account:beginNeocromConnection', () => syncService.beginNeocromConnection());
+  handle('account:completeNeocromConnection', () => syncService.completeNeocromConnection());
+  handle('account:openNeocromId', () => shell.openExternal('https://neocrom.pro/id'));
 
   handle('account:signUp', async (opts) => {
     try {

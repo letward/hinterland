@@ -9,44 +9,16 @@ import { horizonExtensions } from './ecosystem.js';
 
 const api = () => window.horizon;
 
-const STORE_SERVER_URL = 'https://hinterland-browser.vercel.app/api/store';
-
-/* --------------------------------------------------- server upload helpers */
-function getSessionToken() {
-  const session = get('account.session');
-  return session?.token || null;
-}
-
 function isLoggedIn() {
-  return Boolean(getSessionToken());
+  return get('account.session')?.provider === 'neocrom';
 }
 
 async function uploadTheme(theme) {
-  const token = getSessionToken();
-  if (!token) return { ok: false, error: 'notLoggedIn' };
-  const res = await fetch(STORE_SERVER_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token,
-    },
-    body: JSON.stringify({ kind: 'theme', ...theme }),
-  });
-  return await res.json();
+  return api().store.publishTheme(theme);
 }
 
-async function uploadExtension(ext) {
-  const token = getSessionToken();
-  if (!token) return { ok: false, error: 'notLoggedIn' };
-  const res = await fetch(STORE_SERVER_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token,
-    },
-    body: JSON.stringify({ kind: 'extension', ...ext }),
-  });
-  return await res.json();
+async function uploadExtension(extension) {
+  return api().store.publishExtension(extension);
 }
 
 function loginRequiredBanner() {
@@ -210,12 +182,9 @@ export function renderHorizonStore(initialTab = 'all') {
     }
     // Load server community content
     try {
-      const res = await fetch(STORE_SERVER_URL, { cache: 'no-store' });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.themes) serverCommunity.themes = data.themes;
-        if (data.extensions) serverCommunity.extensions = data.extensions;
-      }
+      const data = await api().store.neocromCatalog();
+      if (data.themes) serverCommunity.themes = data.themes;
+      if (data.extensions) serverCommunity.extensions = data.extensions;
     } catch (e) {
       console.warn('[HorizonStore] Could not load server community catalog', e);
     }
@@ -698,7 +667,10 @@ export function renderHorizonStore(initialTab = 'all') {
 
     const actions = el('div', { class: 'cardActions' });
 
-    if (!isInstalled) {
+    if (ext.download && /^\/api\/horizon\/extensions\/[a-f0-9]{32}\.zip$/.test(ext.download)) {
+      actions.append(el('button', { class: 'btnPrimary', type: 'button', text: t('store.communityDownload'),
+        onclick: () => api().tabs.create({ url: 'https://neocrom.pro' + ext.download }) }));
+    } else if (!isInstalled) {
       actions.append(
         el('button', {
           class: 'btnPrimary',
@@ -1315,12 +1287,9 @@ function renderStudio(catalogData, onRefresh) {
 
   // Extension Upload Section (login-gated)
   if (isLoggedIn()) {
-    const extIdInput = el('input', { class: 'formInput', type: 'text', placeholder: 'z. B. ad-blocker-pro' });
     const extNameInput = el('input', { class: 'formInput', type: 'text', placeholder: 'z. B. Ad Blocker Pro' });
     const extVerInput = el('input', { class: 'formInput', type: 'text', value: '1.0.0', placeholder: '1.0.0' });
-    const currentUser = (typeof localStorage !== 'undefined' && (localStorage.getItem('horizon_sync_user') || localStorage.getItem('hinterland_sync_user'))) || '';
-    const extAuthorInput = el('input', { class: 'formInput', type: 'text', value: currentUser, placeholder: t('store.extensionAuthor') });
-    const extDescInput = el('textarea', { class: 'formInput', rows: 3, placeholder: t('store.extensionDesc') });
+    const extDescInput = el('textarea', { class: 'formInput', rows: 3, maxlength: 132, placeholder: t('store.extensionDesc') });
     const extCatSelect = el('select', { class: 'storeSelect' }, [
       el('option', { value: 'utilities', text: 'Dienstprogramme' }),
       el('option', { value: 'productivity', text: 'Produktivität' }),
@@ -1364,27 +1333,21 @@ function renderStudio(catalogData, onRefresh) {
     const extCodeInput = el('textarea', {
       class: 'formInput',
       rows: 4,
+      maxlength: 5000,
       style: { fontFamily: 'Consolas, monospace', fontSize: '0.85rem' },
-      placeholder: '// content-script.js oder Hintergrund-Code\nconsole.log("Erweiterung gestartet");',
+      placeholder: 'background.js',
     });
 
     const uploadBtn = el('button', {
       class: 'button primary',
       type: 'button',
       onclick: async () => {
-        const id = extIdInput.value.trim().toLowerCase();
         const name = extNameInput.value.trim();
         const version = extVerInput.value.trim() || '1.0.0';
-        const author = extAuthorInput.value.trim() || 'Community Developer';
         const description = extDescInput.value.trim();
         const category = extCatSelect.value;
         const code = extCodeInput.value.trim();
 
-        if (!id || !/^[a-z0-9_-]+$/.test(id)) {
-          toast('Ungültige ID. Bitte nur Kleinbuchstaben, Zahlen, Bindestriche oder Unterstriche verwenden.', 'error');
-          extIdInput.focus();
-          return;
-        }
         if (name.length < 3) {
           toast('Name muss mindestens 3 Zeichen lang sein.', 'error');
           extNameInput.focus();
@@ -1395,14 +1358,17 @@ function renderStudio(catalogData, onRefresh) {
           extDescInput.focus();
           return;
         }
+        if (!code) {
+          toast(t('store.extensionCodeRequired'), 'error');
+          extCodeInput.focus();
+          return;
+        }
 
         uploadBtn.disabled = true;
         try {
           const res = await uploadExtension({
-            id,
             name,
             version,
-            author,
             description,
             category,
             permissions: Array.from(selectedPermissions),
@@ -1410,8 +1376,7 @@ function renderStudio(catalogData, onRefresh) {
             icon: 'puzzle',
           });
           if (res?.ok) {
-            toast(t('store.extensionUploaded'), 'success');
-            extIdInput.value = '';
+            toast(t('store.extensionSubmitted'), 'success');
             extNameInput.value = '';
             extDescInput.value = '';
             extCodeInput.value = '';
@@ -1441,20 +1406,12 @@ function renderStudio(catalogData, onRefresh) {
       ]),
       el('p', { class: 'optionHint', text: t('store.uploadExtensionDesc') }),
       el('div', { class: 'formField' }, [
-        el('label', { class: 'formLabel', text: t('store.extensionId') }),
-        extIdInput,
-      ]),
-      el('div', { class: 'formField' }, [
         el('label', { class: 'formLabel', text: t('store.extensionName') }),
         extNameInput,
       ]),
       el('div', { class: 'formField' }, [
         el('label', { class: 'formLabel', text: t('store.extensionVersion') }),
         extVerInput,
-      ]),
-      el('div', { class: 'formField' }, [
-        el('label', { class: 'formLabel', text: t('store.extensionAuthor') }),
-        extAuthorInput,
       ]),
       el('div', { class: 'formField' }, [
         el('label', { class: 'formLabel', text: t('store.extensionDesc') }),
@@ -1469,7 +1426,7 @@ function renderStudio(catalogData, onRefresh) {
         permChips,
       ]),
       el('div', { class: 'formField' }, [
-        el('label', { class: 'formLabel', text: 'Quellcode / Content Script (optional)' }),
+        el('label', { class: 'formLabel', text: 'background.js' }),
         extCodeInput,
       ]),
       el('div', { class: 'actionRow' }, [

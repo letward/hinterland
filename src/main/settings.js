@@ -115,7 +115,7 @@ export class Settings extends EventEmitter {
       if (parsed.account?.provider === 'hinterland') {
         parsed.account.provider = 'horizon';
       }
-      if (parsed.account?.serverUrl === 'https://hinterland-browser.vercel.app/api/sync') {
+      if (/^https:\/\/hinterland-browser\.vercel\.app\/api\/sync\/?$/.test(parsed.account?.serverUrl)) {
         delete parsed.account.serverUrl;
       }
       if (Array.isArray(parsed.extensions?.enabled)) {

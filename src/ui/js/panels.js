@@ -4441,12 +4441,12 @@ function accountStatusPage() {
 
 function renderAccountConnected(container, status, refresh) {
   const user = status.user || {};
-  const email = user.email || 'user';
-  const displayName = get('account.displayName', '') || user.displayName || email.split('@')[0];
+  const email = user.email || user.handle || 'user';
+  const displayName = status.provider === 'neocrom' ? user.displayName || email : get('account.displayName', '') || user.displayName || email.split('@')[0];
   const initial = (displayName || email)[0].toUpperCase();
   const currentAvatar = get('account.avatar', 'logo');
 
-  const providerLabel = status.provider === 'supabase'
+  const providerLabel = status.provider === 'neocrom' ? 'Neocrom ID' : status.provider === 'supabase'
     ? t('account.providerSupabase')
     : t('account.providerHorizon');
 
@@ -4626,10 +4626,45 @@ function renderAccountConnected(container, status, refresh) {
     downloadBtn,
   ]);
 
-  container.append(profileCard, avatarSection, nameRow, statsGrid, syncBox, actions);
+  container.append(profileCard, avatarSection, status.provider === 'neocrom'
+    ? el('button', { class: 'button small', type: 'button', text: t('account.neocromManage'),
+      onclick: () => api().tabs.create({ url: 'https://neocrom.pro/#account' }) }) : nameRow, statsGrid, syncBox,
+    status.provider === 'neocrom' ? neocromEncryptionForm(refresh) : null, actions);
+}
+
+function neocromEncryptionForm(refresh) {
+  const phrase = el('input', { class: 'textInput', type: 'password', required: true, minlength: 12, maxlength: 256,
+    autocomplete: 'off', 'aria-label': t('account.syncPassphrase') });
+  const result = el('p', { class: 'optionHint', role: 'status', text: t('account.neocromPassphraseHelp') });
+  const save = el('button', { class: 'button', type: 'submit', text: t('account.neocromSavePassphrase') });
+  const form = el('form', { class: 'passwordsForm' }, [result, phrase, save]);
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    save.disabled = true;
+    try {
+      const config = await api().account.updateConfig({ syncPassphrase: phrase.value });
+      if (config.ok === false) throw new Error(config.error);
+      const synced = await api().account.syncNow();
+      if (!synced.ok) {
+        result.textContent = t('account.neocromSyncError');
+        return;
+      }
+      await refresh();
+    } catch {
+      result.textContent = t('account.neocromSyncError');
+    } finally {
+      phrase.value = '';
+      save.disabled = false;
+    }
+  });
+  return form;
 }
 
 function renderAccountAuth(container, status, refresh) {
+  if (status.provider !== 'supabase' && status.provider !== 'custom') {
+    renderNeocromConnection(container, refresh);
+    return;
+  }
   let isSignUp = false;
 
   const hero = el('div', { class: 'accountHero' }, [
@@ -4723,6 +4758,49 @@ function renderAccountAuth(container, status, refresh) {
   });
 
   container.append(hero, modeSwitch, form);
+}
+
+function renderNeocromConnection(container, refresh) {
+  const status = el('div', { class: 'pageDesc', role: 'status' });
+  const start = el('button', { class: 'button primary', type: 'button', text: t('account.neocromConnect') });
+  start.addEventListener('click', async () => {
+    start.disabled = true;
+    try {
+      const connection = await api().account.beginNeocromConnection();
+      if (connection.error) throw new Error(connection.error);
+      const { userCode, expiresIn, interval } = connection;
+      status.replaceChildren(
+        el('p', { text: t('account.neocromCode') }),
+        el('strong', { text: userCode }),
+        el('button', { class: 'button', type: 'button', text: t('account.neocromOpen'),
+          onclick: () => api().account.openNeocromId() }),
+      );
+      await api().account.openNeocromId();
+      const deadline = Date.now() + expiresIn * 1000;
+      while (container.isConnected && Date.now() < deadline) {
+        await new Promise(resolve => setTimeout(resolve, interval * 1000));
+        if (!container.isConnected) return;
+        const result = await api().account.completeNeocromConnection();
+        if (result.error) throw new Error(result.error);
+        if (result.ok) {
+          toast(t('toast.signedIn'), 'success');
+          await refresh();
+          return;
+        }
+        if (result.expired) break;
+      }
+      status.textContent = t('account.neocromExpired');
+    } catch (error) {
+      status.textContent = error.message;
+    } finally {
+      start.disabled = false;
+    }
+  });
+  container.append(el('div', { class: 'accountHero' }, [
+    el('h2', { text: 'Neocrom ID' }),
+    el('p', { class: 'pageDesc', text: t('account.neocromDescription') }),
+    start, status,
+  ]));
 }
 
 function accountSyncSettingsPage() {

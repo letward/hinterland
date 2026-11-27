@@ -24,6 +24,12 @@
 
 ## Quick Start (5 Minutes)
 
+### Connect a developer tool to Neocrom ID
+
+Use `@neocrom/horizon-sdk/neocrom-id` from a Node.js developer tool. Call `createNeocromIdClient().connect()`, display the returned `userCode`, and direct the developer to `verificationUrl` to approve the connection with their existing Neocrom account. Call `poll(deviceCode)` no more often than the returned `interval` in seconds until the connection succeeds or `expiresIn` elapses.
+
+The resulting token authorizes `profile(token)` and `pulseProject(token)`. The Pulse response contains the account's project ID and ingest endpoint when configured. The Pulse dashboard issues the separate ingest key for a game. Keep the developer token in the tool's secure storage and call `disconnect(token)` to revoke it. Extensions and shipped game builds should not receive this token.
+
 ### 1. Scaffold a New Extension
 
 ```bash

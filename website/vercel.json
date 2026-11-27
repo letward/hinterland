@@ -3,6 +3,7 @@
   "trailingSlash": false,
   "redirects": [
     { "source": "/", "destination": "https://neocrom.pro/horizon", "permanent": false },
+    { "source": "/account", "destination": "https://neocrom.pro/#account", "permanent": false },
     { "source": "/docs/user-guide", "destination": "https://neocrom.pro/horizon/guide", "permanent": false }
   ],
   "headers": [

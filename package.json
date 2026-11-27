@@ -1,7 +1,7 @@
 {
   "name": "neocrom-horizon",
   "productName": "Neocrom Horizon",
-  "version": "1.47.1",
+  "version": "1.48.0",
   "description": "Neocrom Horizon — a fast, private, customisable Chromium browser built for the Neocrom ecosystem.",
   "main": "src/main/main.js",
   "type": "module",

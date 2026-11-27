@@ -1,0 +1,11 @@
+{
+  "redirects": [
+    { "source": "/", "destination": "https://neocrom.pro/horizon", "permanent": false },
+    { "source": "/index", "destination": "https://neocrom.pro/horizon", "permanent": false },
+    { "source": "/index.html", "destination": "https://neocrom.pro/horizon", "permanent": false },
+    { "source": "/account", "destination": "https://neocrom.pro/#account", "permanent": false },
+    { "source": "/account.html", "destination": "https://neocrom.pro/#account", "permanent": false },
+    { "source": "/docs/user-guide", "destination": "https://neocrom.pro/horizon/guide", "permanent": false },
+    { "source": "/docs/user-guide.html", "destination": "https://neocrom.pro/horizon/guide", "permanent": false }
+  ]
+}

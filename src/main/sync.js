@@ -1,18 +1,17 @@
 /**
  * @fileoverview Neocrom Horizon Account & Cloud Sync Engine
- * Synchronizes bookmarks and browser settings across devices using free serverless tools:
- * - Supabase (PostgreSQL + GoTrue Auth & PostgREST / User Metadata)
- * - Vercel Serverless Sync API (ephemeral/KV proxy & sync coordinator)
- * Features zero-knowledge client-side End-to-End Encryption (AES-256-GCM + PBKDF2),
- * intelligent conflict resolution, automatic change detection, and background sync.
+ * Synchronizes selected browser data with Neocrom ID using encrypted snapshots.
+ * Explicitly configured personal sync providers are supported for existing profiles.
  */
 
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
+import electron from 'electron';
 import { settings } from './settings.js';
 import { history } from './history.js';
+import { neocromOrigin, neocromRequest } from '../../sdk/src/neocrom-id.js';
 
-export const DEFAULT_SERVER_URL = 'https://hinterland-browser.vercel.app/api/sync';
+export const DEFAULT_SERVER_URL = neocromOrigin + '/api/horizon/sync';
 
 export const SYNCABLE_SETTINGS = [
   'general.language',
@@ -341,7 +340,7 @@ export class SyncService extends EventEmitter {
       settingsCount: Object.keys(syncable).length,
       syncableSettingsCount: Object.keys(syncable).length,
       deviceCount: known.length + 1,
-      e2eeActive: Boolean(this.syncPassphrase),
+      e2eeActive: this.getStatus().hasPassphrase,
       lastSyncTime: settings.value('account.lastSyncTime') || this.lastSyncedAt || null,
       lastSyncedAt: settings.value('account.lastSyncTime') || this.lastSyncedAt || null,
       provider: settings.value('account.provider') || 'horizon',
@@ -362,7 +361,7 @@ export class SyncService extends EventEmitter {
         name: codeOrOpts.name || 'Paired Device',
         platform: 'unknown',
         os: 'unknown',
-        browserVersion: '1.47.1',
+        browserVersion: '1.48.0',
         lastActive: new Date().toISOString(),
         pairedCode: code,
         current: false,
@@ -405,7 +404,15 @@ export class SyncService extends EventEmitter {
   }
 
   getSession() {
-    return settings.value('account.session') || null;
+    const session = settings.value('account.session');
+    if (session?.provider !== 'neocrom') {
+      return session?.provider === 'supabase' || settings.value('account.serverUrl') ? session || null : null;
+    }
+    try {
+      return { ...session, token: electron.safeStorage.decryptString(Buffer.from(session.protectedToken, 'base64')) };
+    } catch {
+      return null;
+    }
   }
 
   isLoggedIn() {
@@ -415,13 +422,13 @@ export class SyncService extends EventEmitter {
 
   getStatus() {
     const session = this.getSession();
-    const provider = settings.value('account.provider') || 'horizon';
+    const provider = session?.provider || settings.value('account.provider') || 'horizon';
     const supabaseUrl = settings.value('account.supabaseUrl') || '';
     const supabaseKey = settings.value('account.supabaseAnonKey') || '';
 
     return {
       isLoggedIn: this.isLoggedIn(),
-      user: session?.user ? { email: session.user.email, id: session.user.id } : null,
+      user: session?.user ? { email: session.user.email, id: session.user.id, handle: session.user.handle, displayName: session.user.name } : null,
       provider,
       serverUrl: settings.value('account.serverUrl') || DEFAULT_SERVER_URL,
       supabaseUrl,
@@ -435,8 +442,25 @@ export class SyncService extends EventEmitter {
       lastSyncedAt: settings.value('account.lastSyncTime') || this.lastSyncedAt || null,
       status: this.status,
       error: this.lastError,
-      hasPassphrase: Boolean(this.syncPassphrase),
+      hasPassphrase: Boolean(session?.provider === 'neocrom' ? this.neocromPassphrase(session) : this.syncPassphrase),
     };
+  }
+
+  async refreshNeocromStatus() {
+    const session = this.getSession();
+    if (session?.provider !== 'neocrom') return this.getStatus();
+    try {
+      const profile = await neocromRequest('/api/neocrom-id/profile', { token: session.token, fetch: this.fetch });
+      if (this.getSession()?.token === session.token && (profile.name !== session.user.name || profile.handle !== session.user.handle)) {
+        settings.set('account.session', { ...settings.value('account.session'), user: profile });
+      }
+    } catch (error) {
+      if (error.status === 401 && this.getSession()?.token === session.token) {
+        settings.set('account.session', null);
+        this.syncPassphrase = null;
+      }
+    }
+    return this.getStatus();
   }
 
   broadcastStatus() {
@@ -445,6 +469,12 @@ export class SyncService extends EventEmitter {
   }
 
   setSyncPassphrase(passphrase) {
+    const stored = settings.value('account.session');
+    if (stored?.provider === 'neocrom') {
+      if (passphrase && String(passphrase).length < 12) throw new Error('syncPassphraseRequired');
+      settings.set('account.session', { ...stored, protectedPassphrase: passphrase
+        ? electron.safeStorage.encryptString(String(passphrase)).toString('base64') : null });
+    }
     this.syncPassphrase = passphrase ? String(passphrase) : null;
     this.broadcastStatus();
   }
@@ -462,13 +492,79 @@ export class SyncService extends EventEmitter {
     if (patch.syncReadingList !== undefined) settings.set('account.syncReadingList', Boolean(patch.syncReadingList));
     if (patch.syncNotes !== undefined) settings.set('account.syncNotes', Boolean(patch.syncNotes));
     if (patch.syncSettings !== undefined) settings.set('account.syncSettings', Boolean(patch.syncSettings));
-    if (patch.syncPassphrase !== undefined) this.setSyncPassphrase(patch.syncPassphrase);
+    if (patch.syncPassphrase !== undefined) {
+      const session = this.getSession();
+      if (session?.provider === 'neocrom' && patch.syncPassphrase) {
+        if (typeof patch.syncPassphrase !== 'string' || patch.syncPassphrase.length < 12 || patch.syncPassphrase.length > 256) {
+          throw new Error('syncPassphraseRequired');
+        }
+        const { snapshot } = await neocromRequest('/api/horizon/sync', { token: session.token, fetch: this.fetch });
+        if (snapshot) decryptSyncPayload(snapshot, patch.syncPassphrase);
+        if (this.getSession()?.token !== session.token) throw new Error('notLoggedIn');
+      }
+      this.setSyncPassphrase(patch.syncPassphrase);
+    }
 
     this.broadcastStatus();
     return this.getStatus();
   }
 
+  neocromPassphrase(session) {
+    if (!session?.protectedPassphrase) return null;
+    try {
+      return electron.safeStorage.decryptString(Buffer.from(session.protectedPassphrase, 'base64'));
+    } catch { return null; }
+  }
+
   /* ------------------------------------------------------------- Auth flows */
+
+  async beginNeocromConnection() {
+    if (!electron.safeStorage?.isEncryptionAvailable() || electron.safeStorage.getSelectedStorageBackend?.() === 'basic_text') {
+      throw new Error('Secure credential storage is unavailable.');
+    }
+    const { deviceCode, userCode, expiresIn, interval } = await neocromRequest('/api/neocrom-id/device', {
+      method: 'POST', body: { client: 'horizon' }, fetch: this.fetch,
+    });
+    this.neocromConnection = deviceCode;
+    return { userCode, expiresIn, interval, verificationUrl: neocromOrigin + '/id' };
+  }
+
+  async completeNeocromConnection() {
+    const deviceCode = this.neocromConnection;
+    if (!deviceCode) return { expired: true };
+    let result;
+    try {
+      result = await neocromRequest('/api/neocrom-id/token', { method: 'POST', body: { deviceCode }, fetch: this.fetch });
+    } catch (error) {
+      if (error.status === 410) return { expired: true };
+      if (error.status === 429) return { pending: true };
+      throw error;
+    }
+    if (deviceCode !== this.neocromConnection) return { expired: true };
+    if (result.pending) return result;
+    const protectedToken = electron.safeStorage.encryptString(result.accessToken).toString('base64');
+    const previous = this.getSession();
+    if (previous?.provider === 'neocrom') await this.disconnectNeocrom(previous.token);
+    this.neocromConnection = null;
+    this.syncPassphrase = null;
+    settings.set('account.session', { provider: 'neocrom', protectedToken, user: result.profile });
+    this.status = 'idle';
+    this.lastError = null;
+    this.broadcastStatus();
+    return { ok: true };
+  }
+
+  disconnectNeocrom(token) {
+    return neocromRequest('/api/neocrom-id/session', { method: 'DELETE', token, fetch: this.fetch }).catch(() => null);
+  }
+
+  async neocromStore(kind, item) {
+    const path = '/api/horizon/store';
+    if (!kind) return neocromRequest(path, { fetch: this.fetch });
+    const session = this.getSession();
+    if (session?.provider !== 'neocrom') return { ok: false, error: 'notLoggedIn' };
+    return neocromRequest(path, { method: 'POST', token: session.token, body: { ...item, kind }, fetch: this.fetch });
+  }
 
   async signUp({ email, password, provider, supabaseUrl, supabaseAnonKey, syncPassphrase }) {
     if (!email || !password) throw new Error('emailAndPasswordRequired');
@@ -539,6 +635,8 @@ export class SyncService extends EventEmitter {
 
   async signOut() {
     const session = this.getSession();
+    if (session?.provider === 'neocrom') await this.disconnectNeocrom(session.token);
+    this.neocromConnection = null;
     if (session?.provider === 'supabase' && session?.token) {
       try {
         const url = (settings.value('account.supabaseUrl') || '').replace(/\/$/, '');
@@ -587,7 +685,18 @@ export class SyncService extends EventEmitter {
       const localSettings = syncSettingsEnabled ? extractSyncableSettings(settings.all()) : {};
 
       let cloudData = null;
-      if (session.provider === 'supabase') {
+      if (session.provider === 'neocrom') {
+        const flags = {
+          bookmarks: syncBookmarksEnabled, history: syncHistoryEnabled, readingList: syncReadingListEnabled,
+          notes: syncNotesEnabled, settings: syncSettingsEnabled,
+        };
+        delete localSettings['data.readingList'];
+        delete localSettings['data.notes'];
+        cloudData = await this.neocromSync(session, {
+          bookmarks: localBookmarks, history: localHistory, readingList: localReadingList, notes: localNotes, settings: localSettings,
+        }, flags, direction);
+        if (this.getSession()?.token !== session.token) return { ok: false, error: 'notLoggedIn' };
+      } else if (session.provider === 'supabase') {
         cloudData = await this._supabaseSync(session, {
           bookmarks: localBookmarks,
           history: localHistory,
@@ -637,6 +746,12 @@ export class SyncService extends EventEmitter {
 
       if (syncSettingsEnabled && cloudData?.settings && typeof cloudData.settings === 'object') {
         const patch = mergeSettings(localSettings, cloudData.settings);
+        if (session.provider === 'neocrom') {
+          delete patch['data.readingList'];
+          delete patch['data.notes'];
+          const baseline = Object.fromEntries(Object.entries(patch).map(([key, value]) => [key, settingFingerprint(value)]));
+          settings.set('account.session', { ...settings.value('account.session'), settingBaseline: baseline }, { silent: true });
+        }
         settings.merge(patch, { silent: true });
       }
 
@@ -806,7 +921,8 @@ export class SyncService extends EventEmitter {
   /* --------------------------------------------------- Horizon Serverless */
 
   async _horizonSignUp(email, password) {
-    const endpoint = settings.value('account.serverUrl') || DEFAULT_SERVER_URL;
+    const endpoint = settings.value('account.serverUrl');
+    if (!endpoint) throw new Error('neocromIdRequired');
     const res = await this.fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -824,7 +940,8 @@ export class SyncService extends EventEmitter {
   }
 
   async _horizonSignIn(email, password) {
-    const endpoint = settings.value('account.serverUrl') || DEFAULT_SERVER_URL;
+    const endpoint = settings.value('account.serverUrl');
+    if (!endpoint) throw new Error('neocromIdRequired');
     const res = await this.fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -842,7 +959,8 @@ export class SyncService extends EventEmitter {
   }
 
   async _horizonSync(session, { bookmarks, history: localHistory = [], readingList: localReadingList = [], notes: localNotes = [], settings: currentSettings }) {
-    const endpoint = settings.value('account.serverUrl') || DEFAULT_SERVER_URL;
+    const endpoint = settings.value('account.serverUrl');
+    if (!endpoint) throw new Error('neocromIdRequired');
 
     let payloadData = {
       bookmarks,
@@ -880,6 +998,39 @@ export class SyncService extends EventEmitter {
 
     return returnedData;
   }
+
+  async neocromSync(session, local, flags, direction) {
+    const passphrase = this.neocromPassphrase(session);
+    if (!passphrase || passphrase.length < 12) throw new Error('syncPassphraseRequired');
+    const path = '/api/horizon/sync';
+    const options = { token: session.token, fetch: this.fetch };
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const { revision, snapshot } = await neocromRequest(path, options);
+      const remote = snapshot ? decryptSyncPayload(snapshot, passphrase) : {};
+      if (direction === 'pull') return remote;
+      const merged = { ...remote };
+      const mergers = { bookmarks: mergeBookmarks, history: mergeHistory, readingList: mergeReadingList, notes: mergeNotes,
+        settings: (current, prior) => {
+          const next = { ...current, ...mergeSettings(current, prior) };
+          for (const [key, value] of Object.entries(current)) {
+            const baseline = session.settingBaseline?.[key];
+            if (baseline && settingFingerprint(value) !== baseline) next[key] = value;
+          }
+          return next;
+        } };
+      for (const [field, merge] of Object.entries(mergers)) {
+        if (flags[field]) merged[field] = merge(local[field], remote[field]);
+      }
+      try {
+        await neocromRequest(path, { ...options, method: 'PUT', body: { revision, snapshot: encryptSyncPayload(merged, passphrase) } });
+        return merged;
+      } catch (error) {
+        if (error.status !== 409 || attempt === 2) throw error;
+      }
+    }
+  }
 }
+
+const settingFingerprint = value => crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
 
 export const syncService = new SyncService();

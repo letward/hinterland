@@ -213,6 +213,9 @@ const api = {
 
   store: {
     catalog: () => ipcRenderer.invoke('store:catalog'),
+    neocromCatalog: () => ipcRenderer.invoke('store:neocromCatalog'),
+    publishTheme: (theme) => ipcRenderer.invoke('store:publishTheme', theme),
+    publishExtension: (extension) => ipcRenderer.invoke('store:publishExtension', extension),
     installExtension: (id, config) => ipcRenderer.invoke('store:installExtension', { id, config }),
     uninstallExtension: (id) => ipcRenderer.invoke('store:uninstallExtension', id),
     saveConfig: (id, config) => ipcRenderer.invoke('store:saveExtensionConfig', { id, config }),
@@ -404,6 +407,9 @@ const api = {
 
   account: {
     getStatus: () => ipcRenderer.invoke('account:getStatus'),
+    beginNeocromConnection: () => ipcRenderer.invoke('account:beginNeocromConnection'),
+    completeNeocromConnection: () => ipcRenderer.invoke('account:completeNeocromConnection'),
+    openNeocromId: () => ipcRenderer.invoke('account:openNeocromId'),
     signUp: (opts) => ipcRenderer.invoke('account:signUp', opts),
     signIn: (opts) => ipcRenderer.invoke('account:signIn', opts),
     signOut: () => ipcRenderer.invoke('account:signOut'),

@@ -35,6 +35,6 @@
     <text x="0" y="34" fill="#f8f8f8" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="60" font-weight="700" letter-spacing="-2">Neocrom <tspan fill="#bdbdbd" font-weight="500">Horizon</tspan></text>
     <text x="0" y="84" fill="#bdbdbd" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="23" font-weight="400">Fast, private, seamlessly integrated with Neocrom.</text>
     <rect x="0" y="114" width="236" height="36" rx="18" fill="#141414" stroke="#303030" stroke-width="1"/>
-    <text x="20" y="137" fill="#f8f8f8" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="14" font-weight="600">neocrom-horizon.vercel.app</text>
+    <text x="20" y="137" fill="#f8f8f8" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="14" font-weight="600">neocrom.pro/horizon</text>
   </g>
 </svg>

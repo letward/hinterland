@@ -1,6 +1,6 @@
 {
   "name": "@neocrom/horizon-sdk",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Official SDK for creating secure, modern extensions for the Neocrom Horizon browser.",
   "type": "module",
   "main": "./src/index.js",
@@ -16,7 +16,11 @@
     "./messaging": "./src/messaging.js",
     "./content": "./src/content.js",
     "./ui": "./src/ui.js",
-    "./extension": "./src/extension.js"
+    "./extension": "./src/extension.js",
+    "./neocrom-id": {
+      "types": "./types/neocrom-id.d.ts",
+      "default": "./src/neocrom-id.js"
+    }
   },
   "engines": {
     "node": ">=20"
