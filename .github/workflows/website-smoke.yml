@@ -9,7 +9,7 @@ on:
 
 jobs:
   smoke:
-    name: Website & API smoke tests
+    name: Legacy Horizon API smoke tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

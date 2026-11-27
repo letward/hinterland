@@ -1,6 +1,6 @@
 import { el, clear } from '../js/util.js';
 import { icon } from '../js/icons.js';
-import { ecosystem } from './ecosystem.js';
+import { ecosystem, horizonGuide } from './ecosystem.js';
 
 const page = window.horizonPage;
 
@@ -316,7 +316,7 @@ function paintWelcomeCard() {
   document.getElementById('welcomeClose').onclick = dismiss;
   document.getElementById('welcomeDismiss').onclick = dismiss;
   document.getElementById('welcomeOpenGuide').onclick = () => {
-    page?.open?.('https://github.com/neocrom-team/neocrom-horizon/blob/main/website/docs/user-guide.html');
+    page?.open?.(horizonGuide);
   };
   document.getElementById('welcomeSetDefault').onclick = async () => {
     await page?.app?.setDefaultBrowser?.();

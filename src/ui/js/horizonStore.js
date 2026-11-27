@@ -5,6 +5,7 @@ import { toast } from './toast.js';
 import { openModal, closeModal } from './modal.js';
 import { applyTheme } from './theme.js';
 import { get } from './store.js';
+import { horizonExtensions } from './ecosystem.js';
 
 const api = () => window.horizon;
 
@@ -90,6 +91,8 @@ export function renderHorizonStore(initialTab = 'all') {
       t('store.title'),
     ]),
     el('p', { class: 'storeHeroDesc', text: t('store.subtitle') }),
+    el('button', { class: 'button', type: 'button', onclick: () => api().tabs.create({ url: horizonExtensions }) },
+      ['neocrom.pro']),
   ]);
 
   // Tab Navigation

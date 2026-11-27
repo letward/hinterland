@@ -5,6 +5,7 @@ import { get, settings as store } from './store.js';
 import { accentPresets } from './theme.js';
 import { openModal, closeModal } from './modal.js';
 import { toast } from './toast.js';
+import { horizonGuide } from './ecosystem.js';
 
 const api = () => window.horizon;
 
@@ -431,7 +432,7 @@ function sectionFooter(definition) {
       } }, [t('settings.general.setDefaultBrowser')]),
       el('button', { class: 'button', type: 'button', onclick: () => {
         closeModal();
-        api().tabs.create({ url: 'https://github.com/neocrom-team/neocrom-horizon/blob/main/website/docs/user-guide.html' });
+        api().tabs.create({ url: horizonGuide });
       } }, [t('menu.userGuide')]),
     );
   }

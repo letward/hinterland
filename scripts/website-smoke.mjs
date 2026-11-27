@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Smoke tests for the Vercel website + feedback API.
+// Smoke tests for the legacy Horizon feedback API.
 const BASE = process.env.SITE_URL || 'https://hinterland-browser.vercel.app';
 let failed = 0;
 
@@ -7,19 +7,6 @@ async function check(name, fn) {
   try { await fn(); console.log('PASS:', name); }
   catch (e) { failed++; console.error('FAIL:', name, '-', e.message); }
 }
-
-await check('homepage returns 200', async () => {
-  const r = await fetch(BASE + '/');
-  if (r.status !== 200) throw new Error('status ' + r.status);
-  const html = await r.text();
-  if (!html.includes('Neocrom Horizon')) throw new Error('missing brand');
-  if (!html.includes('Download for Windows')) throw new Error('missing download CTA');
-});
-
-await check('tokens.css returns 200', async () => {
-  const r = await fetch(BASE + '/tokens.css');
-  if (r.status !== 200) throw new Error('status ' + r.status);
-});
 
 await check('feedback API rejects GET', async () => {
   const r = await fetch(BASE + '/api/feedback', { method: 'GET' });

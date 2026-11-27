@@ -4,6 +4,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import { horizonGuide } from '../../src/ui/js/ecosystem.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
@@ -71,13 +72,14 @@ describe('Neocrom Horizon v1.23.0 Features & Polish', () => {
     it('includes user guide launcher in main menu definition', () => {
       const menuSource = readFileSync(join(ROOT, 'src', 'ui', 'js', 'menu.js'), 'utf8');
       assert.ok(menuSource.includes("t('menu.userGuide')"), 'menu.js must reference menu.userGuide');
-      assert.ok(menuSource.includes('user-guide.html'), 'menu.js must link to user-guide.html');
+      assert.match(menuSource, /tabs\.create\(\{ url: horizonGuide \}\)/);
+      assert.equal(horizonGuide, 'https://neocrom.pro/horizon/guide');
     });
 
     it('includes user guide button in about page definition', () => {
       const panelsSource = readFileSync(join(ROOT, 'src', 'ui', 'js', 'panels.js'), 'utf8');
       assert.ok(panelsSource.includes("t('about.userGuide')"), 'panels.js must reference about.userGuide');
-      assert.ok(panelsSource.includes('user-guide.html'), 'panels.js must link to user-guide.html');
+      assert.match(panelsSource, /tabs\.create\(\{ url: horizonGuide \}\)/);
     });
   });
 

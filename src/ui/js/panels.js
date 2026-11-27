@@ -6,6 +6,7 @@ import { toast } from './toast.js';
 import { get } from './store.js';
 import { currentTab } from './state.js';
 import { renderHorizonStore } from './horizonStore.js';
+import { horizonGuide, horizonWebsite } from './ecosystem.js';
 
 const api = () => window.horizon;
 
@@ -1369,8 +1370,8 @@ function aboutPage() {
       const card = el('div', { class: 'card' });
       const actions = el('div', { class: 'actionRow', style: { marginTop: '22px' } }, [
         el('button', { class: 'button primary', type: 'button', onclick: () => api().app.copyDiagnostics() }, [el('span', { html: icon('copy') }), ` ${t('about.copyDiagnostics')}`]),
-        el('button', { class: 'button', type: 'button', onclick: () => api().tabs.create({ url: 'https://hinterland-browser.vercel.app' }) }, [t('about.website')]),
-        el('button', { class: 'button', type: 'button', onclick: () => api().tabs.create({ url: 'https://hinterland-browser.vercel.app/docs/user-guide.html' }) }, [t('about.userGuide')]),
+        el('button', { class: 'button', type: 'button', onclick: () => api().tabs.create({ url: horizonWebsite }) }, [t('about.website')]),
+        el('button', { class: 'button', type: 'button', onclick: () => api().tabs.create({ url: horizonGuide }) }, [t('about.userGuide')]),
         el('button', { class: 'button', type: 'button', onclick: () => api().app.openFolder('userData') }, [t('about.openFolder')]),
         el('button', { class: 'button', type: 'button', onclick: () => api().app.openFolder('downloads') }, [t('about.openDownloads')]),
       ]);

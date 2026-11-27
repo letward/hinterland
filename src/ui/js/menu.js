@@ -6,7 +6,7 @@ import { currentTab, currentSettings } from './state.js';
 import { allTabs } from './tabs.js';
 import { toast } from './toast.js';
 import { openQrCode, openTabGroups } from './panels.js';
-import { ecosystem } from './ecosystem.js';
+import { ecosystem, horizonGuide } from './ecosystem.js';
 
 const api = () => window.horizon;
 
@@ -306,7 +306,7 @@ export function openMainMenu() {
         row({
           iconName: 'reader',
           title: t('menu.userGuide'),
-          onSelect: () => api().tabs.create({ url: 'https://hinterland-browser.vercel.app/docs/user-guide.html' }),
+          onSelect: () => api().tabs.create({ url: horizonGuide }),
         }),
         row({
           iconName: 'info',

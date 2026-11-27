@@ -5,7 +5,9 @@ Ein schneller, sicherer und frei anpassbarer Browser (Electron/Chromium).
 [![Release](https://img.shields.io/github/v/release/neocrom-team/neocrom-horizon)](https://github.com/neocrom-team/neocrom-horizon/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**Download:** https://hinterland-browser.vercel.app/
+**Website and download:** [neocrom.pro/horizon](https://neocrom.pro/horizon)
+
+[User guide](https://neocrom.pro/horizon/guide) · [Extensions and SDK](https://neocrom.pro/horizon/extensions)
 
 ## Features
 
