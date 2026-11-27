@@ -1,39 +1,34 @@
-# Sicherheitsrichtlinie für Releases (Neocrom Horizon)
+# Richtlinie für Ocrom-Horizon-Releases
 
-## 1. Veröffentlichung nur nach bestandenen Gates
+## 1. Voraussetzungen für ein Release
 
-Ein Release darf nur veröffentlicht werden, wenn alle folgenden Bedingungen erfüllt sind:
+Ein Release kann veröffentlicht werden, wenn:
 
-1. Der zugehörige Pull Request wurde durch mindestens einen Maintainer geprüft und genehmigt.
-2. Alle Pflicht-CI-Prüfungen sind bestanden (Formatierung, Statik-Analyse, CodeQL, Unit-Tests).
-3. Der Build wurde auf einem vertrauenswürdigen Runner durchgeführt (GitHub-hosted `windows-latest` oder ein explizit zugelassener selbst gehosteter Runner).
-4. Artefakte, Prüfsummen und Build-Attestierungen wurden erzeugt und verifiziert.
-5. Die Veröffentlichung wurde durch ein vertrauenswürdiges Ereignis ausgelöst (Tag-Push `v*` durch einen Maintainer oder manueller Workflow-Dispatch mit Maintainer-Berechtigung).
+1. Der Code in `main` gemergt wurde. Ein Merge durch einen Maintainer ist die Freigabe; ein separates Review ist empfohlen, aber für ein Release nicht zwingend.
+2. Die erforderlichen CI-Prüfungen für den gemergten Stand erfolgreich sind (`PR Checks`, CodeQL und Tests).
+3. Der Windows-Build auf einem GitHub-hosted `windows-latest`-Runner oder einem zugelassenen Runner erfolgreich abgeschlossen wurde.
+4. Der Installer und das Update-Manifest `latest.yml` vorhanden sind. Die SHA-512-Prüfsumme im Manifest muss dem Installer entsprechen.
+5. Der Tag zur Version in `package.json` passt und dafür noch kein Release existiert.
 
-Eine Veröffentlichung darf niemals allein deshalb erfolgen, weil ein Agent behauptet, dass seine Änderung korrekt ist.
+Build-Attestierungen und zusätzliche Prüfsummen sind erwünscht, aber für den Release nicht verpflichtend.
 
-## 2. Idempotenz und Doppel-Releases
+## 2. Release-Auslösung
 
-- Ein Release mit derselben Versionsnummer darf nicht zweimal veröffentlicht werden.
-- Vor der Veröffentlichung wird geprüft, ob ein GitHub-Release mit demselben Tag bereits existiert. Falls ja, wird der Vorgang abgebrochen.
-- Build-Artefakte erhalten eindeutige Namen (`${productName}-Setup-${version}.${ext}`), um Verwechslungen auszuschließen.
+- Maintainer können einen Release durch Push eines Versions-Tags (`v*`) oder durch den vorhandenen manuellen Release-Workflow auslösen.
+- Ein Agent darf den vorhandenen Release-Workflow auslösen, wenn ein Maintainer dies in der aktuellen Unterhaltung ausdrücklich für die konkrete Version beauftragt hat.
+- Diese Beauftragung ersetzt keine fehlgeschlagenen CI-Prüfungen und erlaubt weder einen abweichenden Tag noch Änderungen an Branch-Schutz oder Workflow-Berechtigungen.
+- Releases sind idempotent: Existiert die Version bereits, wird kein zweites Release angelegt.
 
-## 3. Signierte Update-Metadaten
+## 3. Update-Vertrauen und Prüfsummen
 
-- Das Update-Manifest (`latest.yml` bzw. Nachfolgeformat) muss kryptografisch signiert sein (Ed25519).
-- Der öffentliche Vertrauensanker liegt außerhalb des Manifests und wird beim Client unabhängig geprüft.
-- Private Signaturschlüssel werden niemals im Quellcode, in Agent-Umgebungen oder in allgemeinen Repository-Secrets gespeichert. Sie werden nur im Signing-Schritt des Release-Workflows verwendet.
+- `electron-updater` prüft die SHA-512-Prüfsumme des Installers gegen `latest.yml`.
+- Eine kryptografische Signatur für `latest.yml` ist derzeit empfohlen, aber keine Voraussetzung für ein Release. Bis sie implementiert ist, beruht das Vertrauen in Manifest und Download auf HTTPS sowie dem offiziellen GitHub-Release des Projekts.
+- Maintainer sollen den fehlenden Signaturschutz berücksichtigen, wenn sie einen Release freigeben. Der öffentliche Trust-Anchor muss vor einer späteren Signatur-Implementierung unabhängig im Client verankert werden.
+- Private Signaturschlüssel dürfen nicht in den Quellcode oder allgemeine Repository-Secrets aufgenommen werden.
 
-## 4. Branch Protection
+## 4. Branches und Änderungen an der Release-Konfiguration
 
-- `main` und alle `release/*`-Branches sind geschützt.
-- Pushes direkt auf diese Branches sind verboten; Änderungen laufen über Pull Requests.
-- Erforderliche Statusprüfungen: `PR Checks`, `CodeQL`.
-- Mindestens ein Review durch einen Maintainer vor dem Merge.
-
-## 5. Was Agents nicht dürfen
-
-- Agents dürfen keine Sicherheitsregeln, erforderlichen Statuschecks, Berechtigungsgrenzen oder Release-Gates verändern.
-- Agents dürfen keine Releases veröffentlichen.
-- Agents dürfen keine Pull Requests auf geschützten Branches direkt mergen.
-- Agents erhalten keine langlebigen Zugangsdaten und keine Rechte auf privilegierte Runner.
+- Änderungen an `main` laufen über Pull Requests; die erforderlichen Statusprüfungen bleiben aktiv.
+- Änderungen an dieser Richtlinie oder am Release-Workflow laufen ebenfalls über Pull Requests.
+- Agents dürfen die Richtlinie auf ausdrücklichen Auftrag eines Maintainers vorschlagen. Sie dürfen keine Branch-Schutzregeln, Statusprüfungen, Berechtigungsgrenzen oder GitHub-Einstellungen umgehen.
+- Agents dürfen keine Pull Requests direkt auf geschützte Branches mergen und erhalten keine langlebigen Zugangsdaten oder Rechte auf privilegierte Runner.
