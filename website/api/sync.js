@@ -194,7 +194,7 @@ module.exports = async function handler(req, res) {
     return json(res, 200, {
       ok: true,
       service: 'horizon-sync',
-      version: '1.48.1',
+      version: '1.49.0',
       provider: HAS_SUPABASE ? 'supabase-proxy' : 'serverless',
       time: new Date().toISOString(),
     });

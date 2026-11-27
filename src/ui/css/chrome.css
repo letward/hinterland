@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Neocrom Horizon browser shell
+   Ocrom browser shell
    ========================================================================== */
 
 /* ------------------------------------------------------------------- shell */
@@ -10,7 +10,7 @@
   flex-direction: column;
   width: 100%;
   overflow: hidden;
-  background: var(--bg);
+  background: linear-gradient(115deg, color-mix(in srgb, var(--bg) 90%, var(--accent)), var(--bg) 58%);
   border-bottom: 1px solid var(--borderSoft);
   contain: layout style;
 }
@@ -761,9 +761,9 @@ html[data-closeButton="always"] .tabClose {
   transition: background var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut), box-shadow var(--anim) var(--easeOut);
 }
 
-.ecosystemButton { border-radius: var(--radiusSmall); }
+.ecosystemButton { border-radius: var(--radiusSmall); background: var(--accentSubtle); }
 .ecosystemButton img { width: 23px; height: 23px; flex: none; }
-html[data-theme="light"] :is(.ecosystemButton img, .ecosystemMenuMark) { filter: invert(1); }
+html[data-theme="light"] .ecosystemMenuMark { filter: invert(1); }
 
 .omni:hover {
   border-color: color-mix(in srgb, var(--accent) 50%, var(--border));

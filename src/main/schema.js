@@ -140,42 +140,42 @@ export const SCHEMA = [
     section: 'appearance',
     options: themes,
   }),
-  option('appearance.accent', 'color', '#bdbdbd', {
+  option('appearance.accent', 'color', '#ffd5b0', {
     labelKey: 'settings.appearance.accent',
     descKey: 'settings.appearance.accentDesc',
     section: 'appearance',
   }),
-  option('appearance.accentContrast', 'color', '#ffffff', {
+  option('appearance.accentContrast', 'color', '#17131f', {
     labelKey: 'settings.appearance.accentContrast',
     descKey: 'settings.appearance.accentContrastDesc',
     section: 'appearance',
   }),
-  option('appearance.darkBackground', 'color', '#090909', {
+  option('appearance.darkBackground', 'color', '#17131f', {
     labelKey: 'settings.appearance.darkBackground',
     descKey: 'settings.appearance.darkBackgroundDesc',
     section: 'appearance',
   }),
-  option('appearance.darkSurface', 'color', '#141414', {
+  option('appearance.darkSurface', 'color', '#211a2c', {
     labelKey: 'settings.appearance.darkSurface',
     descKey: 'settings.appearance.darkSurfaceDesc',
     section: 'appearance',
   }),
-  option('appearance.darkText', 'color', '#f8f8f8', {
+  option('appearance.darkText', 'color', '#fff1e8', {
     labelKey: 'settings.appearance.darkText',
     descKey: 'settings.appearance.darkTextDesc',
     section: 'appearance',
   }),
-  option('appearance.lightBackground', 'color', '#f4f4f4', {
+  option('appearance.lightBackground', 'color', '#f8f2ed', {
     labelKey: 'settings.appearance.lightBackground',
     descKey: 'settings.appearance.lightBackgroundDesc',
     section: 'appearance',
   }),
-  option('appearance.lightSurface', 'color', '#ffffff', {
+  option('appearance.lightSurface', 'color', '#fffaf6', {
     labelKey: 'settings.appearance.lightSurface',
     descKey: 'settings.appearance.lightSurfaceDesc',
     section: 'appearance',
   }),
-  option('appearance.lightText', 'color', '#111111', {
+  option('appearance.lightText', 'color', '#2b2035', {
     labelKey: 'settings.appearance.lightText',
     descKey: 'settings.appearance.lightTextDesc',
     section: 'appearance',

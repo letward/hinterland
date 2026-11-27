@@ -171,6 +171,6 @@ export async function copyToClipboard(text, autoClearSeconds = 0) {
       }, autoClearSeconds * 1000);
     }
   } catch (e) {
-    console.warn('[Neocrom Horizon] Clipboard write failed:', e);
+    console.warn('[Ocrom] Clipboard write failed:', e);
   }
 }

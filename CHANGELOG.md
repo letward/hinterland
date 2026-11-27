@@ -1,8 +1,22 @@
 # Changelog
 
-All notable changes to Neocrom Horizon are documented here.
+All notable changes to Ocrom Horizon are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+
+### Added
+- Connect Ocrom ID in a dedicated account window. The approval code is prefilled and the sign-in session carries over to the regular browser tabs.
+- Show optional marketplace recommendations on the start page, with direct access to the account's privacy settings.
+
+### Changed
+- Update the Ocrom Horizon identity across the start page, browser controls, store, icon and guidance in light and dark mode.
+- Let SDK tools open the prefilled Ocrom ID verification link when the server provides one.
+
+### Fixed
+- Verify that Windows has assigned both HTTP and HTTPS before showing a successful default-browser confirmation.
+- Refresh the start-page theme when appearance settings change.
 
 ## [1.48.1] - 2026-11-27
 

@@ -2402,6 +2402,20 @@
   transform: scale(1.15);
 }
 
+.ocromConnectionCode {
+  display: inline-block;
+  width: max-content;
+  margin: 0 12px 10px 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radiusSmall);
+  background: var(--surfaceAlt);
+  color: var(--text);
+  font: 600 1.06rem var(--fontMono);
+  letter-spacing: .14em;
+  user-select: all;
+}
+
 
 
 

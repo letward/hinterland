@@ -1,4 +1,5 @@
 import { get, settings } from './store.js';
+import { applySurfaceColors } from './appearance.js';
 
 const FONT_STACKS = {
   system: 'system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
@@ -28,23 +29,17 @@ export function applyTheme() {
   const theme = resolvedTheme();
   root.dataset.theme = theme;
 
-  const prefix = theme === 'light' ? 'light' : 'dark';
-  const background = safeColor(get(`appearance.${prefix}Background`), theme === 'light' ? '#f4f4f4' : '#090909');
-  const surface = safeColor(get(`appearance.${prefix}Surface`), theme === 'light' ? '#ffffff' : '#141414');
-  const text = safeColor(get(`appearance.${prefix}Text`), theme === 'light' ? '#111111' : '#f8f8f8');
-  const accent = safeColor(get('appearance.accent'), '#bdbdbd');
-  const onAccent = safeColor(get('appearance.accentContrast'), '#ffffff');
+  const accent = safeColor(get('appearance.accent'), '#ffd5b0');
+  const onAccent = safeColor(get('appearance.accentContrast'), '#17131f');
 
-  if (accent === '#bdbdbd' && onAccent === '#ffffff') {
+  if (accent === '#ffd5b0' && onAccent === '#17131f') {
     root.style.removeProperty('--accent');
     root.style.removeProperty('--onAccent');
   } else {
     setVar('--accent', accent);
     setVar('--onAccent', relativeLuminance(accent) > 0.55 ? '#111318' : onAccent);
   }
-  setVar('--bg', background);
-  setVar('--surface', surface);
-  setVar('--text', text);
+  applySurfaceColors(root, theme, get);
 
   const radius = Math.max(0, Math.min(24, Number(get('appearance.radius', 10))));
   setVar('--radius', `${radius}px`);
@@ -73,7 +68,7 @@ export function applyTheme() {
 
   document.body.style.background = 'transparent';
   const current = settings();
-  if (current) document.title = 'Neocrom Horizon';
+  if (current) document.title = 'Ocrom Horizon';
 }
 
 function relativeLuminance(color) {

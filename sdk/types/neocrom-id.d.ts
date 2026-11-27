@@ -7,6 +7,7 @@ export interface NeocromConnection {
   deviceCode: string;
   userCode: string;
   verificationUrl: string;
+  verificationUrlComplete?: string;
   expiresIn: number;
   interval: number;
 }

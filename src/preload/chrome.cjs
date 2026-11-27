@@ -21,6 +21,7 @@ const EVENTS = [
   'update:downloaded',
   'passwords:promptSave',
   'account:status',
+  'account:openPanel',
 ];
 
 function listen(channel, handler) {
@@ -409,7 +410,7 @@ const api = {
     getStatus: () => ipcRenderer.invoke('account:getStatus'),
     beginNeocromConnection: () => ipcRenderer.invoke('account:beginNeocromConnection'),
     completeNeocromConnection: () => ipcRenderer.invoke('account:completeNeocromConnection'),
-    openNeocromId: () => ipcRenderer.invoke('account:openNeocromId'),
+    openNeocromId: code => ipcRenderer.invoke('account:openNeocromId', code),
     signUp: (opts) => ipcRenderer.invoke('account:signUp', opts),
     signIn: (opts) => ipcRenderer.invoke('account:signIn', opts),
     signOut: () => ipcRenderer.invoke('account:signOut'),

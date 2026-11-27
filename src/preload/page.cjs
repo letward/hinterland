@@ -8,11 +8,22 @@ const internal = String(location.protocol) === 'horizon:';
  */
 if (internal) {
   contextBridge.exposeInMainWorld('horizonPage', {
-    name: 'Neocrom Horizon',
+    name: 'Ocrom Horizon',
     page: location.hostname,
+    ...(location.hostname === 'newtab' ? { ocrom: {
+      experience: () => ipcRenderer.invoke('page:ocromExperience'),
+      recommendationOpened: id => ipcRenderer.invoke('page:ocromRecommendationOpened', id),
+      openAccount: () => ipcRenderer.invoke('page:ocromAccount'),
+      onAccountChanged(callback) {
+        ipcRenderer.on('page:ocromAccountChanged', () => callback());
+      },
+    } } : {}),
     settings: {
       get: () => ipcRenderer.invoke('page:settings'),
       set: (patch) => ipcRenderer.invoke('page:settings', patch),
+      onAppearanceChanged(callback) {
+        if (location.hostname === 'newtab') ipcRenderer.on('page:appearanceChanged', () => callback());
+      },
     },
     search: {
       engines: () => ipcRenderer.invoke('search:engines'),

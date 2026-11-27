@@ -1,7 +1,7 @@
 import { app, dialog } from 'electron';
 import updater from 'electron-updater';
 const { autoUpdater } = updater;
-import { NEW_TAB_URL } from './constants.js';
+import { APP_NAME, NEW_TAB_URL } from './constants.js';
 import { settings } from './settings.js';
 import { history } from './history.js';
 import { tabs } from './tabs.js';
@@ -104,18 +104,35 @@ async function start() {
 }
 
 function wireSettings() {
-  syncService.on('status', (payload) => surface.send('account:status', payload));
+  function sendToStartPages(event, includePrivate) {
+    for (const tab of tabs.list) {
+      const page = tab.contents;
+      if ((includePrivate || !tab.privateMode) && page && !page.isDestroyed() && page.getURL() === NEW_TAB_URL) {
+        page.send(event);
+      }
+    }
+  }
+
+  let ocromAccount;
+  syncService.on('status', (payload) => {
+    surface.send('account:status', payload);
+    const handle = payload.provider === 'neocrom' && payload.isLoggedIn ? payload.user?.handle : null;
+    if (ocromAccount === handle) return;
+    ocromAccount = handle;
+    sendToStartPages('page:ocromAccountChanged', false);
+  });
   syncService.on('toast', (data) => surface.send('toast', data));
   syncService.on('bookmarksUpdated', () => surface.send('settings:changed', { key: 'data.bookmarks', values: settings.all() }));
   settings.on('change', ({ key }) => {
     surface.send('settings:changed', { key, values: settings.all() });
+    if (key === '*' || key.startsWith('appearance.')) sendToStartPages('page:appearanceChanged', true);
     applyContentSettings(tabs.list);
     if (key === 'general.language') {
       const code = resolveLanguage(settings.value('general.language'));
       dialog
         .showMessageBox(surface.window ?? undefined, {
           type: 'info',
-          title: app.getName(),
+          title: APP_NAME,
           message: translate(code, 'language.changedTitle'),
           detail: translate(code, 'language.changedBody'),
           buttons: [translate(code, 'action.ok')],
@@ -196,7 +213,7 @@ function setupAutoUpdater() {
       dialog
         .showMessageBox(surface.window ?? undefined, {
           type: 'question',
-          title: app.getName(),
+          title: APP_NAME,
           message: `Version ${info.version} has been downloaded.`,
           detail: 'Restart now to install the update, or it will be installed when you close Neocrom Horizon.',
           buttons: ['Restart now', 'Later'],

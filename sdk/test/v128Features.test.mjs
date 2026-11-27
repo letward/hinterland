@@ -13,12 +13,12 @@ describe('Neocrom Horizon v1.28.0 Features & Polish', () => {
     const tokensUi = readFileSync(join(ROOT, 'src', 'ui', 'css', 'tokens.css'), 'utf8');
     const tokensWeb = readFileSync(join(ROOT, 'website', 'tokens.css'), 'utf8');
 
-    it('uses the same Neocrom palette and radii in the app and on the website', () => {
+    it('uses the same Ocrom palette and radii in the app and on the website', () => {
       for (const tokens of [tokensDesign, tokensUi, tokensWeb]) {
         assert.ok(tokens.includes('--radius: 10px'));
         assert.ok(tokens.includes('--radiusSmall: 7px'));
-        assert.ok(tokens.includes('--bg: #090909'));
-        assert.ok(tokens.includes('--accent: #f8f8f8'));
+        assert.ok(tokens.includes('--bg: #17131f'));
+        assert.ok(tokens.includes('--accent: #ffd5b0'));
       }
     });
 
@@ -32,7 +32,7 @@ describe('Neocrom Horizon v1.28.0 Features & Polish', () => {
 
     it('uses shared radii in the new tab search box and ecosystem cards', () => {
       const newtabCss = readFileSync(join(ROOT, 'src', 'ui', 'css', 'newtab.css'), 'utf8');
-      assert.ok(newtabCss.includes('.heroLogo {'));
+      assert.ok(newtabCss.includes('.heroTitle {'));
       assert.match(newtabCss, /\.searchBox \{[^}]+border-radius: var\(--radius\)/);
       assert.match(newtabCss, /\.ecosystemTile \{[^}]+border-radius: var\(--radiusLarge\)/);
       assert.ok(newtabCss.includes('.link {'));

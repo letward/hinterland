@@ -8,30 +8,30 @@ import { surface } from './windows.js';
 export const OFFICIAL_THEMES = [
   {
     id: 'neocrom',
-    name: 'Neocrom Horizon',
-    author: 'Neocrom',
+    name: 'Ocrom Horizon',
+    author: 'Ocrom',
     source: 'official',
     version: '1.4.0',
     theme: 'dark',
-    accent: '#f8f8f8',
-    accentContrast: '#090909',
-    darkBackground: '#090909',
-    darkSurface: '#141414',
-    darkText: '#f8f8f8',
-    lightBackground: '#f4f4f4',
-    lightSurface: '#ffffff',
-    lightText: '#111111',
+    accent: '#ffd5b0',
+    accentContrast: '#17131f',
+    darkBackground: '#17131f',
+    darkSurface: '#211a2c',
+    darkText: '#fff1e8',
+    lightBackground: '#f8f2ed',
+    lightSurface: '#fffaf6',
+    lightText: '#2b2035',
     radius: 10,
     density: 'cosy',
     fontStack: 'system',
     blur: 16,
-    tags: ['official', 'dark', 'monochrome', 'neocrom'],
-    description: 'Das offizielle Flaggschiff-Design von Neocrom Horizon. Tiefes Obsidian (#090909), klare Flächen (#141414) und präziser Monochrom-Kontrast.',
+    tags: ['official', 'dark', 'ocrom', 'neocrom'],
+    description: 'Das Ocrom-Horizon-Design mit warmem Licht auf violetten Flächen.',
   },
   {
     id: 'midnight',
-    name: 'Neocrom Horizon Midnight',
-    author: 'Neocrom',
+    name: 'Ocrom Horizon Midnight',
+    author: 'Ocrom',
     source: 'official',
     version: '1.2.0',
     theme: 'dark',
@@ -48,12 +48,12 @@ export const OFFICIAL_THEMES = [
     fontStack: 'system',
     blur: 18,
     tags: ['official', 'dark', 'balanced'],
-    description: 'Gedämpftes Nacht-Theme für Neocrom Horizon mit ausgewogenen Kontrasten und ruhiger Oberfläche.',
+    description: 'Gedämpftes Nacht-Theme für Ocrom Horizon mit ausgewogenen Kontrasten und ruhiger Oberfläche.',
   },
   {
     id: 'purelight',
-    name: 'Neocrom Horizon Daylight',
-    author: 'Neocrom',
+    name: 'Ocrom Horizon Daylight',
+    author: 'Ocrom',
     source: 'official',
     version: '1.1.0',
     theme: 'light',
@@ -74,8 +74,8 @@ export const OFFICIAL_THEMES = [
   },
   {
     id: 'oled',
-    name: 'Neocrom Horizon OLED',
-    author: 'Neocrom',
+    name: 'Ocrom Horizon OLED',
+    author: 'Ocrom',
     source: 'official',
     version: '1.0.4',
     theme: 'dark',
@@ -96,8 +96,8 @@ export const OFFICIAL_THEMES = [
   },
   {
     id: 'nord',
-    name: 'Neocrom Horizon Nord Frost',
-    author: 'Neocrom',
+    name: 'Ocrom Horizon Nord Frost',
+    author: 'Ocrom',
     source: 'official',
     version: '1.0.2',
     theme: 'dark',
@@ -118,8 +118,8 @@ export const OFFICIAL_THEMES = [
   },
   {
     id: 'emerald',
-    name: 'Neocrom Horizon Emerald',
-    author: 'Neocrom',
+    name: 'Ocrom Horizon Emerald',
+    author: 'Ocrom',
     source: 'official',
     version: '1.0.1',
     theme: 'dark',
@@ -140,8 +140,8 @@ export const OFFICIAL_THEMES = [
   },
   {
     id: 'sunset',
-    name: 'Neocrom Horizon Ember',
-    author: 'Neocrom',
+    name: 'Ocrom Horizon Ember',
+    author: 'Ocrom',
     source: 'official',
     version: '1.0.3',
     theme: 'dark',
@@ -987,14 +987,14 @@ export const WEEKLY_PICKS = [
     id: 'neocrom',
     type: 'theme',
     badge: { de: 'Design der Woche', en: 'Theme Spotlight' },
-    title: 'Neocrom Horizon',
+    title: 'Ocrom Horizon',
     whatIsIt: {
-      de: 'Das monokrome Flaggschiff-Design mit Obsidian-Hintergrund (#090909), klaren Flächen (#141414) und präzisen Kontrasten.',
-      en: 'The signature monochrome flagship design pairing obsidian surfaces (#090909), crisp razor borders, and focused high-contrast typography.',
+      de: 'Warme Akzente, dunkle violette Flächen und ruhige Kontraste.',
+      en: 'Warm accents, dark violet surfaces and quiet contrast.',
     },
     focusReason: {
-      de: 'Entfernt jede visuelle Ablenkung aus dem Browser-Chrome und fügt sich nahtlos in das gesamte Neocrom-Ökosystem ein.',
-      en: 'Removes chrome noise with disciplined monochrome contrast, keeping the web content at center stage across Neocrom.',
+      de: 'Hält Webseiten im Mittelpunkt und verbindet die Startseite mit den Browserleisten.',
+      en: 'Keeps web content at center stage and ties the start page to the browser controls.',
     },
   },
   {
@@ -1195,7 +1195,7 @@ export class HorizonStore {
   applyTheme(theme) {
     if (!theme || typeof theme !== 'object') throw new Error('Invalid theme definition');
 
-    // Merge settings directly into Neocrom Horizon appearance schema
+    // Merge settings directly into Ocrom Horizon appearance schema
     const patch = {};
     if (theme.theme) patch['appearance.theme'] = theme.theme;
     if (theme.accent) patch['appearance.accent'] = theme.accent;
@@ -1258,7 +1258,7 @@ export class HorizonStore {
     const result = await dialog.showSaveDialog(surface.window, {
       title: 'Horizon Store: Design exportieren',
       defaultPath: `${(theme.name || 'theme').toLowerCase().replace(/[^a-z0-9]+/g, '-')}.horizontheme.json`,
-      filters: [{ name: 'Neocrom Horizon Theme', extensions: ['json'] }],
+      filters: [{ name: 'Ocrom Horizon Theme', extensions: ['json'] }],
     });
     if (result.canceled || !result.filePath) return { ok: false };
     writeFileSync(result.filePath, JSON.stringify(theme, null, 2), 'utf8');
@@ -1268,7 +1268,7 @@ export class HorizonStore {
   async importThemeFile() {
     const result = await dialog.showOpenDialog(surface.window, {
       title: 'Horizon Store: Community-Design importieren',
-      filters: [{ name: 'Neocrom Horizon Theme (*.json)', extensions: ['json'] }],
+      filters: [{ name: 'Ocrom Horizon Theme (*.json)', extensions: ['json'] }],
       properties: ['openFile'],
     });
     if (result.canceled || !result.filePaths?.length) return { ok: false };
