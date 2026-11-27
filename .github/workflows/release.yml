@@ -7,97 +7,150 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag to release (e.g. v1.2.0)'
+        description: 'Tag to release (e.g. v1.49.0)'
         required: true
         type: string
 
 permissions:
-  contents: write
-  id-token: write   # für OIDC / Attestations (falls später genutzt)
+  contents: read
 
 jobs:
   idempotency-check:
-    name: Check for duplicate release
+    name: Validate release tag
     runs-on: ubuntu-latest
     outputs:
-      skip: ${{ steps.check.outputs.skip }}
+      tag: ${{ steps.validate.outputs.tag }}
+      skip: ${{ steps.validate.outputs.skip }}
     steps:
-      - name: Determine tag
-        id: tag
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
-          else
-            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-          fi
+      - name: Checkout main and tags
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Check if release already exists
-        id: check
+      - name: Validate tag, merged commit, and duplicate release
+        id: validate
         env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: |
-          TAG="${{ steps.tag.outputs.tag }}"
-          if gh release view "$TAG" --json tagName --jq '.tagName' 2>/dev/null | grep -q "^$TAG$"; then
-            echo "Release $TAG existiert bereits. Veröffentlichung abgebrochen (Idempotenz)." >> $GITHUB_STEP_SUMMARY
-            echo "skip=true" >> $GITHUB_OUTPUT
+          set -euo pipefail
+          TAG="$RELEASE_TAG"
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Expected a semantic version tag such as v1.49.0." >&2
+            exit 1
+          fi
+
+          git fetch --no-tags origin "refs/tags/$TAG:refs/tags/$TAG"
+          git merge-base --is-ancestor "$TAG" origin/main || {
+            echo "The release tag must point to a commit already merged into main." >&2
+            exit 1
+          }
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          if gh release view "$TAG" --json tagName --jq '.tagName' 2>/dev/null | grep -Fxq "$TAG"; then
+            echo "Release $TAG already exists; skipping without changes." >> "$GITHUB_STEP_SUMMARY"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
           else
-            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
   build-windows:
-    name: Build Windows Installer
+    name: Build and verify Windows installer
     needs: idempotency-check
     if: needs.idempotency-check.outputs.skip == 'false'
     runs-on: windows-latest
     permissions:
-      contents: write
+      contents: read
     steps:
-      - name: Checkout
+      - name: Checkout tagged source
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.idempotency-check.outputs.tag }}
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 26.12.1
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run static checks
-        run: npm run check
-
-      - name: Build Windows Installer
+      - name: Check source and tag versions
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ needs.idempotency-check.outputs.tag }}
+        shell: pwsh
         run: |
-          npx electron-builder --win nsis --publish always
+          $ErrorActionPreference = 'Stop'
+          $package = Get-Content package.json -Raw | ConvertFrom-Json
+          if ("v$($package.version)" -ne $env:RELEASE_TAG) {
+            throw "Tag $env:RELEASE_TAG does not match package.json version $($package.version)."
+          }
+          npm run check
+          if ($LASTEXITCODE -ne 0) { throw 'The required checks failed.' }
 
-      - name: Verify artefacts exist
-        run: |
-          Get-ChildItem dist/*.exe, dist/*.blockmap, dist/latest.yml
+      - name: Build installer without publishing
+        run: npx electron-builder --win nsis --publish never
 
-      - name: Publish GitHub Release
+      - name: Verify installer and update manifest
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ needs.idempotency-check.outputs.tag }}
+        shell: pwsh
         run: |
-          $TAG = "${{ github.ref_name }}"
-          if (-not $TAG -or $TAG -notlike "v*") {
-            $TAG = "${{ github.event.inputs.tag }}"
+          $ErrorActionPreference = 'Stop'
+          $version = $env:RELEASE_TAG.Substring(1)
+          $installerPath = "dist/Neocrom-Horizon-Setup-$version.exe"
+          $manifestPath = 'dist/latest.yml'
+          $blockmapPath = "dist/Neocrom-Horizon-Setup-$version.exe.blockmap"
+          foreach ($path in @($installerPath, $manifestPath, $blockmapPath)) {
+            if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing release artifact: $path" }
           }
-          if (-not $TAG) {
-            $TAG = ($env:GITHUB_REF -replace '^refs/tags/', '')
-          }
-          Write-Host "Ensuring release is published for tag: $TAG"
-          gh release edit "$TAG" --draft=false
 
-      - name: Upload build artefacts
+          $manifest = Get-Content $manifestPath -Raw
+          if ($manifest -notmatch "(?m)^version:\s*$([regex]::Escape($version))\s*$") {
+            throw "The latest.yml version does not match $env:RELEASE_TAG."
+          }
+          $installerHash = (Get-FileHash -LiteralPath $installerPath -Algorithm SHA512).Hash
+          $installerSha512 = [Convert]::ToBase64String([Convert]::FromHexString($installerHash))
+          $manifestHashes = [regex]::Matches($manifest, '(?m)^\s*sha512:\s*(\S+)\s*$') | ForEach-Object { $_.Groups[1].Value }
+          if ($installerSha512 -notin $manifestHashes) {
+            throw 'The SHA-512 in latest.yml does not match the installer.'
+          }
+
+      - name: Upload verified release artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: neocrom-horizon-windows-${{ github.run_id }}
+          name: ocrom-horizon-${{ needs.idempotency-check.outputs.tag }}
           path: |
-            dist/*.exe
-            dist/*.blockmap
+            dist/Neocrom-Horizon-Setup-${{ needs.idempotency-check.outputs.tag }}.exe
+            dist/Neocrom-Horizon-Setup-${{ needs.idempotency-check.outputs.tag }}.exe.blockmap
             dist/latest.yml
+          if-no-files-found: error
           retention-days: 7
+
+  publish:
+    name: Publish verified release
+    needs: [idempotency-check, build-windows]
+    if: needs.idempotency-check.outputs.skip == 'false'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download verified artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ocrom-horizon-${{ needs.idempotency-check.outputs.tag }}
+          path: dist
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ needs.idempotency-check.outputs.tag }}
+        run: |
+          set -euo pipefail
+          gh release create "$RELEASE_TAG" dist/Neocrom-Horizon-Setup-*.exe dist/Neocrom-Horizon-Setup-*.exe.blockmap dist/latest.yml --verify-tag --title "Ocrom Horizon $RELEASE_TAG" --generate-notes
