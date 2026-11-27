@@ -315,6 +315,8 @@ function wireEvents() {
   listen('account:status', (payload) => {
     syncAccountButton(payload);
   });
+  listen('account:openPanel', () =>
+    window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'account' } })));
 
   listen('download:new', onDownloadNew);
   listen('download:progress', onDownloadProgress);

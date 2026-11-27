@@ -1,9 +1,16 @@
 {
   "app": {
-    "name": "Neocrom Horizon"
+    "name": "Ocrom Horizon"
   },
   "ecosystem": {
-    "title": "Neocrom",
+    "shortcuts": "Ocrom-Dienste",
+    "accountHint": "Verbinde dein Konto für Bibliothek, Community und deine Geräte.",
+    "recommendationHint": "Vorschläge aus dem Marktplatz für dieses Konto.",
+    "accountTitle": "Ocrom ID",
+    "connect": "Mit Ocrom ID verbinden",
+    "recommendations": "Dein Ocrom",
+    "privacy": "Datenschutzeinstellungen",
+    "title": "Ocrom",
     "marketplace": "Marketplace",
     "marketplaceDescription": "Apps und Spiele entdecken",
     "community": "Community",
@@ -28,7 +35,7 @@
     "dismiss": "Ausblenden",
     "export": "Einstellungen exportieren",
     "import": "Einstellungen importieren",
-    "about": "Über Neocrom Horizon",
+    "about": "Über Ocrom Horizon",
     "resetSection": "Diesen Bereich zurücksetzen",
     "stop": "Anhalten",
     "reloadPage": "Neu laden",
@@ -42,7 +49,7 @@
   },
   "language": {
     "changedTitle": "Sprache geändert",
-    "changedBody": "Für die neue Sprache muss Neocrom Horizon neu gestartet werden."
+    "changedBody": "Für die neue Sprache muss Ocrom Horizon neu gestartet werden."
   },
   "omni": {
     "placeholder": "Suchen oder Adresse eingeben",
@@ -67,10 +74,10 @@
     "history": "Verlauf",
     "bookmarks": "Lesezeichen",
     "extensions": "Erweiterungen",
-    "store": "Horizon Store",
+    "store": "Ocrom Store",
     "storeDesc": "Designs, Erweiterungen & Studio",
-    "openStore": "Horizon Store öffnen",
-    "account": "Neocrom Horizon Konto & Synchronisierung",
+    "openStore": "Ocrom Store öffnen",
+    "account": "Ocrom ID",
     "downloads": "Downloads",
     "shortcuts": "Tastenkürzel",
     "settings": "Einstellungen",
@@ -205,7 +212,7 @@
     "muteAll": "Alle Tabs stummschalten",
     "unmuteAll": "Stummschaltung aller Tabs aufheben",
     "openReadingList": "Leseliste öffnen",
-    "openStore": "Horizon Store öffnen",
+    "openStore": "Ocrom Store öffnen",
     "browseThemes": "Store: Designs durchsuchen",
     "browseExtensions": "Store: Erweiterungen durchsuchen",
     "themeCreator": "Store: Theme Studio öffnen",
@@ -490,7 +497,7 @@
       "tabStash": "Tab-Stash öffnen",
       "togglePiP": "Bild-in-Bild umschalten",
       "mediaControls": "Mediensteuerung",
-      "account": "Neocrom Horizon Konto & Synchronisierung"
+      "account": "Ocrom ID"
     }
   },
   "extensions": {
@@ -520,7 +527,7 @@
     "hint": "Ein Erweiterungsordner benötigt eine manifest.json. Es werden ausschließlich entpackte Ordner unterstützt, und alles läuft unter einer strengen Regel."
   },
   "about": {
-    "title": "Über Neocrom Horizon",
+    "title": "Über Ocrom Horizon",
     "tagline": "Ein schneller, sicherer und frei anpassbarer Browser.",
     "version": "Version",
     "language": "Sprache",
@@ -619,7 +626,7 @@
     "notesExportedAll": "Alle Notizen erfolgreich exportiert",
     "notesImported": "Notizen erfolgreich importiert",
     "noteCreatedFromTab": "Notiz aus aktivem Tab erstellt",
-    "defaultBrowserSet": "Neocrom Horizon als Standardbrowser registriert",
+    "defaultBrowserSet": "Ocrom als Standardbrowser registriert",
     "allPermissionsReset": "Alle Website-Berechtigungen wurden zurückgesetzt",
     "originPermissionsCleared": "Berechtigungen für Website widerrufen",
     "shieldExceptionRemoved": "Shield-Schutz für Website wieder aktiviert",
@@ -799,18 +806,19 @@
     "noFailedDownloadsToRetry": "Keine fehlgeschlagenen HTTP/HTTPS-Downloads zum Wiederholen vorhanden"
   },
   "welcome": {
-    "title": "Willkommen bei Neocrom Horizon",
+    "title": "Willkommen bei Ocrom Horizon",
     "subtitle": "Dein schneller, privater und frei anpassbarer Browser ist startklar.",
     "featPrivacyTitle": "Privatsphäre standardmäßig",
     "featPrivacyDesc": "Tracker-Blocker & HTTPS-First sind sofort standardmäßig aktiv.",
     "featSpeedTitle": "Schnell & fokussiert",
     "featSpeedDesc": "Ablenkungsfreier Lesemodus, Tab-Stashes und integrierter Notizen-Tresor.",
     "featCustomTitle": "Dein Browser, deine Regeln",
-    "featCustomDesc": "Eigene Tastenkürzel, Horizon Store Themes und volle Kontrolle über dein Surfen.",
+    "featCustomDesc": "Eigene Tastenkürzel, Ocrom Store Themes und volle Kontrolle über dein Surfen.",
     "btnDefault": "Als Standardbrowser festlegen",
     "btnGuide": "Benutzerhandbuch",
     "btnDismiss": "Loslegen",
-    "isDefault": "Als Standard festgelegt"
+    "isDefault": "Als Standard festgelegt",
+    "confirmDefault": "In den Systemeinstellungen bestätigen"
   },
   "greeting": {
     "morning": "Guten Morgen",
@@ -1020,7 +1028,7 @@
       "showBookmarksBar": "Lesezeichenleiste anzeigen",
       "showBookmarksBarDesc": "Zeigt eine Schnellzugriffsleiste mit deinen Lesezeichen unter der Adressleiste an.",
       "setDefaultBrowser": "Als Standardbrowser festlegen",
-      "setDefaultBrowserDesc": "Neocrom Horizon als Standard-App zum Öffnen von Weblinks verwenden."
+      "setDefaultBrowserDesc": "Ocrom als Standard-App zum Öffnen von Weblinks verwenden."
     },
     "search": {
       "engines": "Suchmaschinen",
@@ -1233,9 +1241,9 @@
     },
     "store": {
       "activeTheme": "Aktives Design",
-      "activeThemeDesc": "Das aktuell auf allen Neocrom Horizon-Oberflächen aktive Design.",
+      "activeThemeDesc": "Das aktuell auf allen Ocrom-Oberflächen aktive Design.",
       "installedThemes": "Installierte Designs",
-      "installedThemesDesc": "In Neocrom Horizon gespeicherte Community- und eigene Theme-Presets.",
+      "installedThemesDesc": "In Ocrom gespeicherte Community- und eigene Theme-Presets.",
       "themeItem": "Theme-Voreinstellung",
       "extensionConfigs": "Erweiterungs-Konfigurationen",
       "extensionConfigsDesc": "Gespeicherte Einstellungen und Werte für installierte Erweiterungen.",
@@ -1312,8 +1320,8 @@
     "connectionSecureDesc": "Informationen, die Sie mit dieser Website teilen (z. B. Passwörter oder Zahlungsdaten), werden verschlüsselt übertragen.",
     "connectionInsecure": "Verbindung ist nicht sicher",
     "connectionInsecureDesc": "Die Verbindung zu dieser Website ist nicht verschlüsselt. Vertrauliche Daten könnten von Dritten eingesehen werden.",
-    "internalPage": "Interne Neocrom Horizon-Seite",
-    "internalPageDesc": "Dies ist eine integrierte und geschützte interne Seite von Neocrom Horizon.",
+    "internalPage": "Interne Ocrom-Seite",
+    "internalPageDesc": "Dies ist eine integrierte und geschützte interne Seite von Ocrom.",
     "protectionsHeader": "Aktive Schutzmechanismen",
     "shieldTracking": "Tracker- & Werbeblocker",
     "shieldHttps": "HTTPS-Verbindungsschutz",
@@ -1329,7 +1337,7 @@
     "permDefault": "Standard",
     "permAllow": "Zulassen",
     "permBlock": "Blockieren",
-    "shieldTitle": "Neocrom Horizon Schutzschild",
+    "shieldTitle": "Ocrom Schutzschild",
     "shieldEnabled": "Schutz aktiv",
     "shieldDisabled": "Schutz pausiert",
     "trackersBlocked": "{count} Tracker auf dieser Website blockiert",
@@ -1356,12 +1364,12 @@
   },
   "sitePermissions": {
     "title": "Website-Berechtigungen & Shields",
-    "description": "Verwalten Sie Website-Berechtigungen, Hardwarezugriffe und Ausnahmen des Neocrom Horizon-Shields.",
+    "description": "Verwalten Sie Website-Berechtigungen, Hardwarezugriffe und Ausnahmen des Ocrom-Shields.",
     "tabPermissions": "Berechtigungen",
     "tabShields": "Shield-Ausnahmen",
     "searchPlaceholder": "Domain oder Origin durchsuchen...",
     "noPermissions": "Keine benutzerdefinierten Berechtigungen konfiguriert. Standard-Sicherheitsrichtlinien gelten.",
-    "noShields": "Alle Websites werden derzeit durch Neocrom Horizon Shield geschützt.",
+    "noShields": "Alle Websites werden derzeit durch Ocrom Shield geschützt.",
     "resetAllPerms": "Alle Berechtigungen zurücksetzen",
     "resetAllShields": "Alle Ausnahmen zurücksetzen",
     "revokeOrigin": "Widerrufen",
@@ -1411,7 +1419,7 @@
     "wakeAll": "Schlafende Tabs aufwecken",
     "copyReport": "Bericht kopieren",
     "empty": "Keine passenden Prozesse gefunden.",
-    "processBrowser": "Neocrom Horizon Browser",
+    "processBrowser": "Ocrom Browser",
     "processGPU": "GPU-Prozess",
     "processTab": "Tab",
     "processUtility": "Dienstprozess",
@@ -1430,8 +1438,8 @@
     "sortByName": "Name"
   },
   "store": {
-    "title": "Horizon Store",
-    "subtitle": "Offizielle Erweiterungen, Community-Designs, individuelle Stile und Add-ons für Neocrom Horizon.",
+    "title": "Ocrom Store",
+    "subtitle": "Offizielle Erweiterungen, Community-Designs, individuelle Stile und Add-ons für Ocrom.",
     "weeklyPickBadge": "Fokus der Woche",
     "whatIsIt": "Was es ist",
     "whyInFocus": "Wieso im Fokus",
@@ -1479,7 +1487,7 @@
     "saveConfig": "Einstellungen speichern",
     "configSaved": "Einstellungen für {name} gespeichert",
     "creatorTitle": "Theme Studio & Gestalter",
-    "creatorDesc": "Erstelle dein eigenes Neocrom Horizon-Design, passe Farben, Rundungen und Typografie an und exportiere oder teile es.",
+    "creatorDesc": "Erstelle dein eigenes Ocrom-Design, passe Farben, Rundungen und Typografie an und exportiere oder teile es.",
     "designName": "Name des Designs",
     "authorName": "Name des Erstellers",
     "description": "Beschreibung",
@@ -1487,7 +1495,7 @@
     "importTheme": "Community-Design importieren",
     "importSuccess": "Community-Design erfolgreich importiert und aktiviert",
     "uploadExtension": "Erweiterung hochladen",
-    "uploadExtensionDesc": "Lade deine eigene Erweiterung in den Community Horizon Store hoch. Ein Konto ist erforderlich.",
+    "uploadExtensionDesc": "Lade deine eigene Erweiterung in den Community Ocrom Store hoch. Ein Konto ist erforderlich.",
     "extensionId": "Erweiterungs-ID",
     "extensionName": "Name",
     "extensionAuthor": "Autor",
@@ -1497,12 +1505,12 @@
     "extensionIcon": "Symbol",
     "extensionVersion": "Version",
     "publishToStore": "Im Store veröffentlichen",
-    "extensionUploaded": "Erweiterung an den Horizon Store veröffentlicht!",
+    "extensionUploaded": "Erweiterung an den Ocrom Store veröffentlicht!",
     "communityDownload": "ZIP herunterladen",
     "extensionCodeRequired": "Füge vor dem Einreichen den Quellcode für background.js hinzu.",
     "extensionSubmitted": "Erweiterung zur Prüfung eingereicht.",
     "loginRequired": "Konto erforderlich",
-    "loginRequiredDesc": "Melde dich an, um Designs zu veröffentlichen und Erweiterungen in den Horizon Store hochzuladen.",
+    "loginRequiredDesc": "Melde dich an, um Designs zu veröffentlichen und Erweiterungen in den Ocrom Store hochzuladen.",
     "signInOrRegister": "Jetzt registrieren"
   },
   "clearData": {
@@ -1577,8 +1585,8 @@
     "readingTime": "~{minutes} Min. Lesezeit",
     "countBadge": "{count} Notizen",
     "importInvalid": "Keine gültigen Notizen in der Datei gefunden.",
-    "welcomeTitle": "Willkommen bei Neocrom Horizon Notizen",
-    "welcomeContent": "# Willkommen bei Neocrom Horizon Notizen\n\nEin schneller, ablenkungsfreier Notizzettel direkt in Ihrem Browser.\n\n### Funktionen:\n- **Markdown-Formatierung**: Unterstützt Überschriften, **fett**, *kursiv*, `Code` und Checklisten.\n- **1-Klick Web-Clipping**: Nutzen Sie die Schaltfläche 'Tab-Link einfügen', um Links aktiver Tabs einzufügen.\n- **Checklisten**:\n  - [x] Erste Notiz ansehen\n  - [ ] Nächstes Projekt recherchieren\n- **Export**: Exportieren Sie jede Notiz als `.md` für Obsidian, Notion oder GitHub."
+    "welcomeTitle": "Willkommen bei Ocrom Notizen",
+    "welcomeContent": "# Willkommen bei Ocrom Notizen\n\nEin schneller, ablenkungsfreier Notizzettel direkt in Ihrem Browser.\n\n### Funktionen:\n- **Markdown-Formatierung**: Unterstützt Überschriften, **fett**, *kursiv*, `Code` und Checklisten.\n- **1-Klick Web-Clipping**: Nutzen Sie die Schaltfläche 'Tab-Link einfügen', um Links aktiver Tabs einzufügen.\n- **Checklisten**:\n  - [x] Erste Notiz ansehen\n  - [ ] Nächstes Projekt recherchieren\n- **Export**: Exportieren Sie jede Notiz als `.md` für Obsidian, Notion oder GitHub."
   },
   "stash": {
     "title": "Tab-Stash & Arbeitsbereiche",
@@ -1712,12 +1720,14 @@
     "tabStatus": "Konto & Status",
     "tabSettings": "Synchronisierungs-Einstellungen",
     "tabProviders": "Cloud-Anbieter",
-    "heroTitle": "Horizon Cloud-Konto",
-    "neocromConnect": "Mit Neocrom ID verbinden",
-    "neocromDescription": "Verwende dein Neocrom-Konto für Horizon Sync und den Horizon Store.",
-    "neocromCode": "Gib diesen Code auf ocrom.net ein, um Horizon zu verbinden.",
-    "neocromOpen": "ocrom.net öffnen",
-    "neocromManage": "Neocrom ID verwalten",
+    "heroTitle": "Ocrom ID",
+    "neocromConnect": "Mit Ocrom ID verbinden",
+    "neocromDescription": "Melde dich im Browser mit deiner Ocrom ID an. Dasselbe Konto verbindet Bibliothek, Community, Pulse und verschlüsselte Synchronisierung.",
+    "neocromCode": "Öffne Ocrom ID und bestätige die Verbindung für dieses Gerät.",
+    "neocromOpen": "Ocrom ID öffnen",
+    "neocromCodeReady": "Prüfe im Ocrom-ID-Fenster das angezeigte Konto und bestätige die Verbindung.",
+    "neocromOpenError": "Das Ocrom-ID-Fenster konnte nicht geöffnet werden. Versuche es erneut.",
+    "neocromManage": "Ocrom ID verwalten",
     "neocromExpired": "Die Anfrage ist abgelaufen. Starte eine neue Verbindung.",
     "neocromPassphraseHelp": "Aktiviere die verschlüsselte Synchronisierung mit einer Passphrase aus mindestens zwölf Zeichen. Verwende auf deinen anderen Geräten dieselbe Passphrase.",
     "neocromSavePassphrase": "Passphrase speichern und synchronisieren",
@@ -1761,7 +1771,7 @@
     "supabaseAnonKey": "Öffentlicher Supabase Anon-Schlüssel",
     "supabaseAnonKeyDesc": "Der öffentliche Anon-API-Schlüssel deines Supabase-Projekts",
     "saveProviderSettings": "Anbieter-Einstellungen speichern",
-    "providerInfo": "Verbinde Neocrom Horizon mit kostenlosen Cloud-Diensten wie Supabase oder Vercel Serverless ohne Wartungsaufwand.",
+    "providerInfo": "Verbinde Ocrom mit kostenlosen Cloud-Diensten wie Supabase oder Vercel Serverless ohne Wartungsaufwand.",
     "bookmarksSynced": "Lesezeichen",
     "historySynced": "Suchverlauf",
     "readingListSynced": "Leseliste",
@@ -1769,7 +1779,7 @@
     "settingsSynced": "Browsereinstellungen & Designs",
     "openPanel": "Konto-Bereich öffnen",
     "tabDevices": "Verbundene Geräte",
-    "devicesDesc": "Verwalte alle mit diesem Neocrom Horizon-Konto synchronisierten Geräte.",
+    "devicesDesc": "Verwalte alle mit diesem Ocrom-Konto synchronisierten Geräte.",
     "thisDevice": "Dieses Gerät",
     "pairNewDevice": "Neues Gerät verbinden",
     "pairCode": "Kopplungscode",
@@ -1780,7 +1790,7 @@
     "displayName": "Anzeigename",
     "saveProfile": "Profil speichern",
     "notLoggedIn": "Nicht angemeldet",
-    "accountTooltip": "Neocrom Horizon Konto & Synchronisierung",
+    "accountTooltip": "Ocrom ID",
     "activeDevice": "Aktiv",
     "lastActive": "Zuletzt aktiv",
     "copyCode": "Code kopieren",

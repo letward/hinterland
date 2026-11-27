@@ -1425,7 +1425,7 @@ export function openCommandPalette() {
         try {
           item?.run?.();
         } catch (error) {
-          console.warn('[Neocrom Horizon] Command failed.', error);
+          console.warn('[Ocrom] Command failed.', error);
         }
       };
 

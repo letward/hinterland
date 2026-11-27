@@ -1,12 +1,14 @@
 import { el, clear } from '../js/util.js';
 import { icon } from '../js/icons.js';
 import { ecosystem, horizonGuide } from './ecosystem.js';
+import { applySurfaceColors } from './appearance.js';
 
 const page = window.horizonPage;
 
 const settings = {};
 let strings = {};
 let engine = null;
+let experienceRequest = 0;
 
 function t(key, values) {
   let text = strings[key];
@@ -52,25 +54,21 @@ async function saveSettings() {
 function applyTheme() {
   const selected = value('appearance.theme', 'system');
   const dark = selected === 'system' ? window.matchMedia('(prefers-color-scheme: dark)').matches : selected === 'dark';
-  const prefix = dark ? 'dark' : 'light';
-  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  const theme = dark ? 'dark' : 'light';
+  document.documentElement.dataset.theme = theme;
   document.documentElement.dataset.animations = value('appearance.animations', true) ? 'on' : 'off';
-  document.getElementById('heroLogo').src = `horizon://assets/horizon-wordmark-${prefix}.svg`;
-  document.getElementById('horizonMark').src = `horizon://assets/horizon-mark-${prefix}.svg`;
 
   const root = document.documentElement.style;
-  const accent = value('appearance.accent', '#bdbdbd');
-  const onAccent = value('appearance.accentContrast', '#ffffff');
-  if (accent === '#bdbdbd' && onAccent === '#ffffff') {
+  const accent = value('appearance.accent', '#ffd5b0');
+  const onAccent = value('appearance.accentContrast', '#17131f');
+  if (accent === '#ffd5b0' && onAccent === '#17131f') {
     root.removeProperty('--accent');
     root.removeProperty('--onAccent');
   } else {
     root.setProperty('--accent', accent);
     root.setProperty('--onAccent', onAccent);
   }
-  root.setProperty('--bg', value(`appearance.${prefix}Background`, dark ? '#090909' : '#f4f4f4'));
-  root.setProperty('--surface', value(`appearance.${prefix}Surface`, dark ? '#141414' : '#ffffff'));
-  root.setProperty('--text', value(`appearance.${prefix}Text`, dark ? '#f8f8f8' : '#111111'));
+  applySurfaceColors(document.documentElement, theme, value);
   root.setProperty('--radius', `${Number(value('appearance.radius', 10))}px`);
   root.setProperty('--fontSize', `${Number(value('appearance.fontSize', 14))}px`);
   root.setProperty('--blur', `${Number(value('appearance.blur', 18))}px`);
@@ -183,7 +181,7 @@ function paintLinks() {
 }
 
 function paintEcosystem() {
-  document.getElementById('ecosystemTitle').textContent = t('ecosystem.title');
+  document.getElementById('ecosystemTitle').textContent = t('ecosystem.shortcuts');
   const host = document.getElementById('ecosystemLinks');
   for (const { id, url, icon: glyph } of ecosystem) {
     const name = el('strong', { text: t(`ecosystem.${id}`) });
@@ -197,6 +195,38 @@ function paintEcosystem() {
       el('span', { class: 'ecosystemArrow', html: icon('forward'), 'aria-hidden': 'true' }),
     ]));
   }
+}
+
+async function paintOcromExperience(accountChanged = false) {
+  const request = ++experienceRequest;
+  const section = document.getElementById('ocromExperience');
+  const host = document.getElementById('ocromExperienceLinks');
+  if (accountChanged) {
+    section.hidden = true;
+    clear(host);
+  }
+  const experience = await page.ocrom.experience().catch(() => null);
+  if (!experience || request !== experienceRequest) return;
+  clear(host);
+  const { connected, items } = experience;
+  document.getElementById('ocromExperienceTitle').textContent = t(connected ? 'ecosystem.recommendations' : 'ecosystem.accountTitle');
+  if (!connected) {
+    section.dataset.connected = 'false';
+    document.getElementById('ocromExperienceHint').textContent = t('ecosystem.accountHint');
+    host.append(el('button', { class: 'button', type: 'button', text: t('ecosystem.connect'),
+      onclick: () => page.ocrom.openAccount() }));
+  } else {
+    section.dataset.connected = 'true';
+    document.getElementById('ocromExperienceHint').textContent = items.length ? t('ecosystem.recommendationHint') : '';
+    for (const { id, title } of items) {
+      if (!Number.isSafeInteger(id) || id < 1 || typeof title !== 'string') continue;
+      host.append(el('a', { class: 'ecosystemTile', href: `https://ocrom.net/#listing/${id}`,
+        onclick: () => page.ocrom.recommendationOpened(id) }, el('span', { class: 'ecosystemLabel', text: title })));
+    }
+    host.append(el('a', { class: 'ecosystemTile', href: 'https://ocrom.net/#privacy' },
+      el('span', { class: 'ecosystemLabel', text: t('ecosystem.privacy') })));
+  }
+  section.hidden = false;
 }
 
 function paintFoot() {
@@ -309,6 +339,9 @@ function paintWelcomeCard() {
 
   const dismiss = async () => {
     card.hidden = true;
+    const focusTarget = document.getElementById('searchBox').hidden
+      ? document.querySelector('#ecosystemLinks a') : document.getElementById('searchInput');
+    focusTarget?.focus({ preventScroll: true });
     settings['general.hasRunBefore'] = true;
     await page?.settings?.set?.({ 'general.hasRunBefore': true });
   };
@@ -319,9 +352,11 @@ function paintWelcomeCard() {
     page?.open?.(horizonGuide);
   };
   document.getElementById('welcomeSetDefault').onclick = async () => {
-    await page?.app?.setDefaultBrowser?.();
-    document.getElementById('welcomeSetDefault').textContent = '✓ ' + t('welcome.isDefault');
-    document.getElementById('welcomeSetDefault').disabled = true;
+    const button = document.getElementById('welcomeSetDefault');
+    button.disabled = true;
+    const isDefault = await page?.app?.setDefaultBrowser?.();
+    button.textContent = t(isDefault ? 'welcome.isDefault' : 'welcome.confirmDefault');
+    button.disabled = Boolean(isDefault);
   };
 }
 
@@ -332,6 +367,10 @@ async function boot() {
   engine = engines[0] ?? null;
 
   applyTheme();
+  page?.settings?.onAppearanceChanged?.(async () => {
+    await loadSettings();
+    applyTheme();
+  });
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
   paintBackdrop();
   paintWelcomeCard();
@@ -341,6 +380,11 @@ async function boot() {
   paintLinks();
   paintEcosystem();
   paintFoot();
+  if (page?.ocrom) {
+    page.ocrom.onAccountChanged(() => void paintOcromExperience(true));
+    window.addEventListener('focus', () => void paintOcromExperience());
+    void paintOcromExperience();
+  }
 }
 
 boot();

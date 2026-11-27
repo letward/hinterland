@@ -1,4 +1,4 @@
-export const APP_NAME = 'Neocrom Horizon';
+export const APP_NAME = 'Ocrom Horizon';
 export const APP_ID = 'pro.neocrom.horizon';
 export const SCHEME = 'horizon';
 export const LEGACY_SCHEME = 'hinterland';

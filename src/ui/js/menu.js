@@ -32,6 +32,16 @@ export function openEcosystem() {
           },
         }));
       }
+      if (!privateMode) {
+        card.append(separator(), row({
+          iconName: 'user',
+          title: t('ecosystem.accountTitle'),
+          onSelect: () => {
+            closePopup();
+            window.dispatchEvent(new CustomEvent('horizon:openpanel', { detail: { panel: 'account' } }));
+          },
+        }));
+      }
     },
   });
   trigger.setAttribute('aria-expanded', String(Boolean(menu)));

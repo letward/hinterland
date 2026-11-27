@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Neocrom Horizon</title>
+    <title>Ocrom Horizon</title>
     <link rel="icon" href="horizon://assets/icon.png" />
     <link rel="stylesheet" href="css/tokens.css" />
     <link rel="stylesheet" href="css/newtab.css" />
@@ -11,6 +11,44 @@
   <body class="start">
     <div class="backdrop" id="backdrop"></div>
     <main class="stage" id="stage">
+      <section class="hero">
+        <div class="heroCopy">
+          <h1 class="heroTitle">Ocrom <span class="heroProduct">Horizon</span></h1>
+          <div class="greeting" id="greeting"></div>
+          <div class="clock" id="clock" hidden></div>
+          <form class="searchBox" id="searchBox">
+          <span class="searchIcon" id="searchIcon"></span>
+          <input
+            class="searchInput"
+            id="searchInput"
+            type="text"
+            spellcheck="false"
+            autocomplete="off"
+            placeholder=""
+          />
+          <button class="searchGo" id="searchGo" type="submit"></button>
+          </form>
+        </div>
+        <div class="horizonArt" aria-hidden="true">
+          <span></span>
+          <img src="horizon://assets/ocrom-browser-mark.svg" alt="" width="64" height="64" />
+        </div>
+      </section>
+
+      <section class="ecosystem" aria-labelledby="ecosystemTitle">
+        <h2 id="ecosystemTitle"></h2>
+        <div class="ecosystemGrid" id="ecosystemLinks"></div>
+      </section>
+      <section class="ecosystem" id="ocromExperience" aria-labelledby="ocromExperienceTitle" hidden>
+        <div class="experienceHeader">
+          <img src="horizon://assets/ocrom-browser-mark.svg" alt="" width="34" height="34" />
+          <div>
+            <h2 id="ocromExperienceTitle"></h2>
+            <p class="experienceHint" id="ocromExperienceHint"></p>
+          </div>
+        </div>
+        <div class="ecosystemGrid" id="ocromExperienceLinks"></div>
+      </section>
       <section class="welcomeCard" id="welcomeCard" hidden>
         <button class="welcomeClose" id="welcomeClose" type="button" aria-label="Close">&times;</button>
         <h2 class="welcomeTitle" id="welcomeTitle"></h2>
@@ -51,34 +89,6 @@
         </div>
       </section>
 
-      <section class="hero">
-        <div class="heroCopy">
-          <h1 class="heroTitle"><img class="heroLogo" id="heroLogo" src="horizon://assets/horizon-wordmark-dark.svg" alt="Neocrom Horizon" width="437" height="64" /></h1>
-          <div class="greeting" id="greeting"></div>
-          <div class="clock" id="clock" hidden></div>
-          <form class="searchBox" id="searchBox">
-          <span class="searchIcon" id="searchIcon"></span>
-          <input
-            class="searchInput"
-            id="searchInput"
-            type="text"
-            spellcheck="false"
-            autocomplete="off"
-            placeholder=""
-          />
-          <button class="searchGo" id="searchGo" type="submit"></button>
-          </form>
-        </div>
-        <div class="horizonArt" aria-hidden="true">
-          <span></span>
-          <img id="horizonMark" src="horizon://assets/horizon-mark-dark.svg" alt="" width="64" height="64" />
-        </div>
-      </section>
-
-      <section class="ecosystem" aria-labelledby="ecosystemTitle">
-        <h2 id="ecosystemTitle"></h2>
-        <div class="ecosystemGrid" id="ecosystemLinks"></div>
-      </section>
       <section class="links" id="links" hidden></section>
 
       <footer class="foot" id="foot"></footer>

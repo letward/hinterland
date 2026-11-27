@@ -23,6 +23,11 @@ const previousPalette = {
   darkBackground: '#12141a', darkSurface: '#1a1d26', darkText: '#e6e9f2',
   lightBackground: '#f2f3f7', lightSurface: '#ffffff', lightText: '#161923',
 };
+const monochromePalette = {
+  accent: '#bdbdbd', accentContrast: '#ffffff',
+  darkBackground: '#090909', darkSurface: '#141414', darkText: '#f8f8f8',
+  lightBackground: '#f4f4f4', lightSurface: '#ffffff', lightText: '#111111',
+};
 
 function deepGet(object, path) {
   if (!object || typeof path !== 'string') return undefined;
@@ -106,8 +111,11 @@ export class Settings extends EventEmitter {
       if (parsed && typeof parsed === 'object' && deepGet(parsed, 'general.hasRunBefore') === undefined) {
         deepSet(parsed, 'general.hasRunBefore', true);
       }
-      if (Object.entries(previousPalette).every(([key, color]) => parsed.appearance?.[key] === color)) {
-        for (const key of Object.keys(previousPalette)) delete parsed.appearance[key];
+      for (const palette of [previousPalette, monochromePalette]) {
+        if (Object.entries(palette).every(([key, color]) => parsed.appearance?.[key] === color)) {
+          for (const key of Object.keys(palette)) delete parsed.appearance[key];
+          break;
+        }
       }
       if (typeof parsed.general?.homepage === 'string' && parsed.general.homepage.startsWith('hinterland://')) {
         parsed.general.homepage = `horizon://${parsed.general.homepage.slice('hinterland://'.length)}`;

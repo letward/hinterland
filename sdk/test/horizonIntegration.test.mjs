@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { neocromRequest } from '../src/neocrom-id.js';
 import { Settings } from '../../src/main/settings.js';
+import { SyncService } from '../../src/main/sync.js';
 import { ecosystem } from '../../src/ui/js/ecosystem.js';
 
 test('the Horizon theme adopts the old default palette while preserving custom themes', async () => {
@@ -20,8 +21,8 @@ test('the Horizon theme adopts the old default palette while preserving custom t
     await writeFile(file, JSON.stringify({ appearance, general: { language: 'de' } }));
     const settings = new Settings(file);
     settings.load();
-    assert.equal(settings.value('appearance.darkBackground'), '#090909');
-    assert.equal(settings.value('appearance.accent'), '#bdbdbd');
+    assert.equal(settings.value('appearance.darkBackground'), '#17131f');
+    assert.equal(settings.value('appearance.accent'), '#ffd5b0');
     assert.equal(settings.value('appearance.radius'), 18);
     assert.equal(settings.value('general.language'), 'de');
     assert.equal(settings.value('general.hasRunBefore'), true);
@@ -62,6 +63,31 @@ test('Ocrom ID sends bearer-authenticated requests directly to the new domain', 
     },
   });
   assert.deepEqual(profile, { handle: 'demo' });
+});
+
+test('the Horizon start page respects independent product data choices', async () => {
+  const reports = [];
+  const items = [{ id: 42, title: 'Sample game', category: 'game' }];
+  const consent = { analytics: false, personalization: false };
+  const service = new SyncService(async (url, options) => {
+    assert.equal(options.headers.Authorization, 'Bearer native-test-token');
+    if (url === 'https://ocrom.net/api/horizon/experience') return Response.json({ settings: consent, items });
+    assert.equal(url, 'https://ocrom.net/api/horizon/telemetry');
+    reports.push(JSON.parse(options.body));
+    return Response.json({ ok: true });
+  });
+  service.getSession = () => null;
+  assert.deepEqual(await service.ocromExperience('start_page'), { connected: false, items: [] });
+  service.getSession = () => ({ provider: 'neocrom', token: 'native-test-token' });
+  assert.deepEqual(await service.ocromExperience('start_page'), { connected: true, items: [] });
+  assert.deepEqual(reports, []);
+  consent.personalization = true;
+  assert.deepEqual(await service.ocromExperience('start_page'), { connected: true, items });
+  await service.ocromExperience('recommendation_open', 42);
+  await service.ocromExperience('recommendation_open', 43);
+  consent.analytics = true;
+  await service.ocromExperience('extension_store_open');
+  assert.deepEqual(reports, [{ event: 'recommendation_open', category: 'game' }, { event: 'extension_store_open' }]);
 });
 
 test('legacy Hinterland settings migrate cleanly into Neocrom Horizon defaults', async () => {

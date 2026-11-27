@@ -2,7 +2,7 @@
   "name": "neocrom-horizon",
   "productName": "Neocrom Horizon",
   "version": "1.48.1",
-  "description": "Neocrom Horizon — a fast, private, customisable Chromium browser built for the Neocrom ecosystem.",
+  "description": "Ocrom Horizon — a private, customizable browser connected to Ocrom ID.",
   "main": "src/main/main.js",
   "type": "module",
   "author": "Neocrom",
@@ -43,7 +43,7 @@
     ],
     "protocols": [
       {
-        "name": "Neocrom Horizon Web URL",
+        "name": "Ocrom Horizon Web URL",
         "schemes": [
           "http",
           "https",
@@ -73,6 +73,7 @@
     },
     "nsis": {
       "oneClick": true,
+      "shortcutName": "Ocrom Horizon",
       "perMachine": false,
       "allowElevation": false,
       "allowToChangeInstallationDirectory": false,

@@ -103,7 +103,7 @@ function extensionsPage() {
           class: 'button primary',
           type: 'button',
           onclick: () => openStore('extensions'),
-        }, [el('span', { html: icon('store') }), ' Horizon Store']),
+        }, [el('span', { html: icon('store') }), ' Ocrom Store']),
         el('button', {
           class: 'button',
           type: 'button',
@@ -4446,13 +4446,13 @@ function renderAccountConnected(container, status, refresh) {
   const initial = (displayName || email)[0].toUpperCase();
   const currentAvatar = get('account.avatar', 'logo');
 
-  const providerLabel = status.provider === 'neocrom' ? 'Neocrom ID' : status.provider === 'supabase'
+  const providerLabel = status.provider === 'neocrom' ? 'Ocrom ID' : status.provider === 'supabase'
     ? t('account.providerSupabase')
     : t('account.providerHorizon');
 
   let avatarElement;
   if (currentAvatar === 'logo') {
-    avatarElement = el('img', { class: 'accountAvatarLogo', src: 'horizon://assets/icon.png', alt: 'Neocrom Horizon' });
+    avatarElement = el('img', { class: 'accountAvatarLogo', src: 'horizon://assets/icon.png', alt: 'Ocrom' });
   } else if (currentAvatar === 'initials') {
     avatarElement = el('div', { class: 'accountAvatar', text: initial });
   } else {
@@ -4628,7 +4628,7 @@ function renderAccountConnected(container, status, refresh) {
 
   container.append(profileCard, avatarSection, status.provider === 'neocrom'
     ? el('button', { class: 'button small', type: 'button', text: t('account.neocromManage'),
-      onclick: () => api().tabs.create({ url: 'https://ocrom.net/#account' }) }) : nameRow, statsGrid, syncBox,
+      onclick: () => api().account.openNeocromId() }) : nameRow, statsGrid, syncBox,
     status.provider === 'neocrom' ? neocromEncryptionForm(refresh) : null, actions);
 }
 
@@ -4769,13 +4769,17 @@ function renderNeocromConnection(container, refresh) {
       const connection = await api().account.beginNeocromConnection();
       if (connection.error) throw new Error(connection.error);
       const { userCode, expiresIn, interval } = connection;
-      status.replaceChildren(
-        el('p', { text: t('account.neocromCode') }),
-        el('strong', { text: userCode }),
-        el('button', { class: 'button', type: 'button', text: t('account.neocromOpen'),
-          onclick: () => api().account.openNeocromId() }),
-      );
-      await api().account.openNeocromId();
+      const feedback = el('p', { class: 'optionHint', role: 'status' });
+      const open = el('button', { class: 'button', type: 'button', text: t('account.neocromOpen'),
+        onclick: async () => {
+          open.disabled = true;
+          try {
+            const result = await api().account.openNeocromId(userCode);
+            feedback.textContent = t(result?.ok ? 'account.neocromCodeReady' : 'account.neocromOpenError');
+          } finally { open.disabled = false; }
+        } });
+      status.replaceChildren(el('p', { text: t('account.neocromCode') }),
+        el('strong', { class: 'ocromConnectionCode', text: userCode }), open, feedback);
       const deadline = Date.now() + expiresIn * 1000;
       while (container.isConnected && Date.now() < deadline) {
         await new Promise(resolve => setTimeout(resolve, interval * 1000));
@@ -4797,7 +4801,7 @@ function renderNeocromConnection(container, refresh) {
     }
   });
   container.append(el('div', { class: 'accountHero' }, [
-    el('h2', { text: 'Neocrom ID' }),
+    el('h2', { text: 'Ocrom ID' }),
     el('p', { class: 'pageDesc', text: t('account.neocromDescription') }),
     start, status,
   ]));

@@ -1,12 +1,13 @@
 import { ipcMain, dialog, shell, app, clipboard, BrowserWindow, nativeImage } from 'electron';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { NEW_TAB_URL, DEFAULT_SHORTCUTS, SCHEME_ORIGIN } from './constants.js';
+import { APP_NAME, NEW_TAB_URL, DEFAULT_SHORTCUTS, SCHEME_ORIGIN } from './constants.js';
 import { settings } from './settings.js';
 import { exportSchema } from './schema.js';
 import { translations, availableLanguages, resolveLanguage, translate } from './i18n.js';
 import { passwords } from './passwords.js';
 import { syncService } from './sync.js';
+import { closeOcromApproval, openOcromAccount } from './account-window.js';
 import { normalizeDomain } from '../extensions/horizonPass/crypto.js';
 import { tabs } from './tabs.js';
 import { surface } from './windows.js';
@@ -28,12 +29,15 @@ function handle(channel, handler) {
   if (registered.has(channel)) return;
   registered.add(channel);
   const chromeOnly = channel.startsWith('account:') || channel.startsWith('store:');
+  const newtabOnly = channel.startsWith('page:ocrom');
   ipcMain.handle(channel, async (event, ...args) => {
     try {
       if (chromeOnly && (event.sender !== surface.chromeView?.webContents
         || event.senderFrame !== event.sender.mainFrame || event.senderFrame?.url !== SCHEME_ORIGIN + '/')) {
         return { ok: false, error: 'This action requires the Horizon browser controls.' };
       }
+      if (newtabOnly && (event.senderFrame !== event.sender.mainFrame || event.senderFrame?.url !== NEW_TAB_URL
+        || !tabs.list.some(tab => tab.contents === event.sender && !tab.privateMode))) return null;
       return await handler(...args);
     } catch (error) {
       console.warn(`[Neocrom Horizon] ${channel} failed.`, error?.message ?? error);
@@ -55,7 +59,7 @@ function language() {
 export function installIpc() {
   /* ------------------------------------------------------------ bootstrap */
   handle('app:bootstrap', () => ({
-    app: { name: app.getName(), version: app.getVersion(), platform: process.platform, locale: language() },
+    app: { name: APP_NAME, version: app.getVersion(), platform: process.platform, locale: language() },
     languages: availableLanguages(),
     strings: translations(language()),
     settings: settings.all(),
@@ -68,7 +72,7 @@ export function installIpc() {
   }));
 
   handle('app:info', () => ({
-    name: app.getName(),
+    name: APP_NAME,
     version: app.getVersion(),
     platform: process.platform,
     arch: process.arch,
@@ -281,22 +285,21 @@ export function installIpc() {
 
   handle('app:isDefaultBrowser', () => {
     try {
-      return app.isDefaultProtocolClient('http');
+      return app.isDefaultProtocolClient('http') && app.isDefaultProtocolClient('https');
     } catch {
       return false;
     }
   });
 
-  handle('app:setDefaultBrowser', () => {
+  handle('app:setDefaultBrowser', async () => {
     try {
-      const okHttp = app.setAsDefaultProtocolClient('http');
-      const okHttps = app.setAsDefaultProtocolClient('https');
-      const okHorizon = app.setAsDefaultProtocolClient('horizon');
-      try {
-        shell.openExternal('ms-settings:defaultapps');
-      } catch {}
-      surface.send('toast', { message: 'toast.defaultBrowserSet', kind: 'success' });
-      return Boolean(okHttp || okHttps || okHorizon);
+      app.setAsDefaultProtocolClient('http');
+      app.setAsDefaultProtocolClient('https');
+      app.setAsDefaultProtocolClient('horizon');
+      const isDefault = app.isDefaultProtocolClient('http') && app.isDefaultProtocolClient('https');
+      if (isDefault) surface.send('toast', { message: 'toast.defaultBrowserSet', kind: 'success' });
+      else if (process.platform === 'win32') await shell.openExternal('ms-settings:defaultapps');
+      return isDefault;
     } catch {
       return false;
     }
@@ -1791,7 +1794,10 @@ export function installIpc() {
 
   /* ------------------------------------------------------------- horizon store */
   handle('store:catalog', () => horizonStore.catalog());
-  handle('store:neocromCatalog', () => syncService.neocromStore());
+  handle('store:neocromCatalog', () => {
+    if (tabs.active && !tabs.active.privateMode) void syncService.ocromExperience('extension_store_open');
+    return syncService.neocromStore();
+  });
   handle('store:publishTheme', (theme) => syncService.neocromStore('theme', theme));
   handle('store:publishExtension', (extension) => syncService.neocromStore('extension', extension));
   handle('store:installExtension', ({ id, config } = {}) => horizonStore.installExtension(id, config));
@@ -4226,6 +4232,12 @@ handle('permission:resolve', (requestId, answer) => {
     };
   });
 
+  handle('page:ocromExperience', () => syncService.ocromExperience('start_page'));
+  handle('page:ocromRecommendationOpened', id => {
+    if (Number.isSafeInteger(id) && id > 0) void syncService.ocromExperience('recommendation_open', id);
+  });
+  handle('page:ocromAccount', () => surface.send('account:openPanel'));
+
 handle('dialog:confirm', async ({ title, message, detail, confirmLabel, cancelLabel }) => {
   const result = await dialog.showMessageBox(chromeWindow(), {
     type: 'question',
@@ -4339,8 +4351,12 @@ handle('dialog:confirm', async ({ title, message, detail, confirmLabel, cancelLa
     return syncService.refreshNeocromStatus();
   });
   handle('account:beginNeocromConnection', () => syncService.beginNeocromConnection());
-  handle('account:completeNeocromConnection', () => syncService.completeNeocromConnection());
-  handle('account:openNeocromId', () => shell.openExternal('https://ocrom.net/id'));
+  handle('account:completeNeocromConnection', async () => {
+    const result = await syncService.completeNeocromConnection();
+    if (result.ok) closeOcromApproval();
+    return result;
+  });
+  handle('account:openNeocromId', code => openOcromAccount(chromeWindow(), code));
 
   handle('account:signUp', async (opts) => {
     try {

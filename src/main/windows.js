@@ -1,6 +1,6 @@
 import { BrowserWindow, WebContentsView, screen } from 'electron';
 import { app } from 'electron';
-import { SCHEME, NEW_TAB_URL } from './constants.js';
+import { APP_NAME, SCHEME, NEW_TAB_URL } from './constants.js';
 import { CHROME_PRELOAD, appIconPath } from './resources.js';
 import { settings } from './settings.js';
 import { tabs } from './tabs.js';
@@ -56,7 +56,7 @@ export class BrowserSurface {
       show: false,
       frame: false,
       backgroundColor: '#00000000',
-      title: 'Neocrom Horizon',
+      title: APP_NAME,
       icon: appIconPath() || undefined,
       autoHideMenuBar: true,
       webPreferences: {

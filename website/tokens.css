@@ -1,35 +1,38 @@
 /* ==========================================================================
-   Neocrom Horizon design tokens
+   Ocrom design tokens
    ========================================================================== */
 
 :root {
   color-scheme: dark;
 
   /* Brand and accent */
-  --accent: #f8f8f8;
-  --accentHover: #dedede;
-  --accentActive: #bdbdbd;
-  --accentSubtle: rgb(248 248 248 / 10%);
-  --accentGlow: rgb(248 248 248 / 16%);
-  --onAccent: #090909;
+  --accent: #ffd5b0;
+  --accentHover: #ffe2c8;
+  --accentActive: #cebfda;
+  --artGlow: rgb(186 114 185 / 32%);
+  --artLine: rgb(246 178 214 / 21%);
+  --artStar: #ffd0b0;
+  --accentSubtle: rgb(255 213 176 / 10%);
+  --accentGlow: rgb(255 213 176 / 16%);
+  --onAccent: #17131f;
 
   /* Dark surfaces */
-  --bg: #090909;
-  --surface: #141414;
-  --surfaceAlt: #191919;
-  --surfaceHover: #222222;
-  --surfaceActive: #292929;
-  --surfaceGlass: rgb(20 20 20 / 94%);
+  --bg: #17131f;
+  --surface: #211a2c;
+  --surfaceAlt: #282034;
+  --surfaceHover: #30243e;
+  --surfaceActive: #3a2e46;
+  --surfaceGlass: rgb(33 26 44 / 94%);
 
   /* Typography Colors — High-Legibility Pure Contrast */
-  --text: #f8f8f8;
-  --textDim: #bdbdbd;
-  --textMuted: #969696;
-  --textInverse: #090909;
+  --text: #fff1e8;
+  --textDim: #cebfda;
+  --textMuted: #ab9bb9;
+  --textInverse: #17131f;
 
   /* Borders & Dividers — Crisp Structural Razor Edges */
-  --border: #303030;
-  --borderSoft: #242424;
+  --border: #453852;
+  --borderSoft: #2e2539;
   --borderHighlight: rgba(255, 255, 255, 0.08);
 
   /* Semantic Colors */
@@ -75,31 +78,34 @@
 
 html[data-theme="light"] {
   color-scheme: light;
-  --bg: #f4f4f4;
-  --surface: #ffffff;
-  --surfaceAlt: #eeeeee;
-  --surfaceHover: #e7e7e7;
-  --surfaceActive: #dcdcdc;
+  --bg: #f8f2ed;
+  --surface: #fffaf6;
+  --surfaceAlt: #f3e8e4;
+  --surfaceHover: #eee0e3;
+  --surfaceActive: #e7d5dc;
   --surfaceGlass: rgb(255 255 255 / 94%);
 
-  --text: #111111;
-  --textDim: #535353;
-  --textMuted: #656565;
-  --textInverse: #f4f4f4;
+  --text: #2b2035;
+  --textDim: #65556d;
+  --textMuted: #75617a;
+  --textInverse: #f8f2ed;
 
-  --border: #d0d0d0;
-  --borderSoft: #e1e1e1;
+  --border: #d8c6d2;
+  --borderSoft: #ebdce3;
   --borderHighlight: rgba(0, 0, 0, 0.05);
 
-  --accent: #242424;
-  --accentHover: #434343;
-  --accentActive: #151515;
-  --accentSubtle: rgb(18 18 18 / 9%);
-  --accentGlow: rgb(18 18 18 / 15%);
+  --accent: #633977;
+  --accentHover: #784990;
+  --accentActive: #4d2a61;
+  --artGlow: rgb(201 134 162 / 29%);
+  --artLine: rgb(116 63 140 / 23%);
+  --artStar: #9c607c;
+  --accentSubtle: rgb(99 57 119 / 9%);
+  --accentGlow: rgb(99 57 119 / 15%);
 
   --shadow: 0 20px 64px rgb(0 0 0 / 12%);
   --shadowSmall: 0 4px 16px rgb(0 0 0 / 8%);
-  --onAccent: #f8f8f8;
+  --onAccent: #fffaf6;
 }
 
 html[data-animations="off"] {

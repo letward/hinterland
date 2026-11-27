@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Neocrom Horizon new tab
+   Ocrom new tab
    ========================================================================== */
 
 html,
@@ -33,10 +33,10 @@ body.start {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(18px, 4vh, 34px);
+  gap: clamp(18px, 3.3vh, 30px);
   height: 100%;
   overflow: auto;
-  padding: clamp(20px, 6vh, 64px) clamp(14px, 4vw, 52px) 22px;
+  padding: clamp(18px, 4.5vh, 52px) clamp(14px, 4vw, 52px) 22px;
 }
 
 [hidden] { display: none !important; }
@@ -52,55 +52,73 @@ body.start {
   gap: clamp(12px, 3vw, 38px);
   width: min(100%, 1120px);
   flex: none;
-  padding: clamp(24px, 5vw, 66px);
+  padding: clamp(24px, 4vw, 50px) clamp(24px, 5vw, 66px);
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: calc(var(--radius) + 14px);
-  background: radial-gradient(ellipse at 81% 50%, var(--surfaceHover), transparent 66%), var(--surface);
+  background:
+    radial-gradient(ellipse at 84% 36%, var(--artGlow), transparent 57%),
+    linear-gradient(136deg, color-mix(in srgb, var(--surface) 86%, var(--accent)), var(--surface) 55%);
   box-shadow: var(--shadow);
 }
 
 .heroCopy { min-width: 0; }
-.heroTitle { margin: 0 0 8px; }
-.heroLogo {
+.heroTitle {
+  margin: 0 0 12px;
+  font-size: clamp(3rem, 6.8vw, 6.65rem);
+  font-weight: 630;
+  line-height: .96;
+  letter-spacing: -.085em;
+  color: var(--text);
+}
+.heroProduct {
   display: block;
-  width: min(100%, 415px);
-  height: auto;
-  -webkit-user-drag: none;
+  padding-top: .24em;
+  font-size: .37em;
+  font-weight: 565;
+  letter-spacing: .065em;
+  color: var(--accent);
 }
 
 .horizonArt {
   position: relative;
   display: grid;
   place-items: center;
-  width: min(100%, 310px);
+  width: min(100%, 275px);
   aspect-ratio: 1;
   margin-inline: auto;
   isolation: isolate;
   background:
-    radial-gradient(circle at 18% 37%, var(--textDim) 1px, transparent 2px),
-    radial-gradient(circle at 80% 23%, var(--text) 1px, transparent 2px),
-    radial-gradient(circle at 77% 78%, var(--textDim) 1px, transparent 2px),
-    radial-gradient(circle, color-mix(in srgb, var(--text) 16%, transparent), transparent 55%);
+    radial-gradient(circle at 17% 37%, var(--artStar) 1px, transparent 2px),
+    radial-gradient(circle at 79% 23%, var(--artStar) 2px, transparent 3px),
+    radial-gradient(circle at 78% 78%, var(--artStar) 1px, transparent 2px),
+    repeating-radial-gradient(circle, transparent 0 19px, var(--artLine) 20px 21px, transparent 22px 27px);
+  mask-image: radial-gradient(circle, black 53%, transparent 74%);
 }
 .horizonArt::before, .horizonArt::after {
   content: "";
   position: absolute;
-  border: 1px solid color-mix(in srgb, var(--text) 22%, transparent);
+  border: 1px solid var(--artLine);
   border-radius: 50%;
   inset: 14%;
 }
-.horizonArt::after { inset: 5%; border-style: dashed; opacity: .75; }
+.horizonArt::after { inset: 8%; transform: rotate(-24deg) scaleY(.5); border-color: var(--artStar); opacity: .58; }
 .horizonArt span {
   position: absolute;
   width: 60%;
   aspect-ratio: 1;
-  border: 1px solid var(--border);
-  border-radius: 12%;
-  rotate: 45deg;
-  background: linear-gradient(135deg, var(--borderHighlight), transparent);
+  border: 1px solid var(--artLine);
+  border-radius: 30%;
+  rotate: 28deg;
+  background: linear-gradient(135deg, var(--artGlow), transparent);
 }
-.horizonArt img { width: 45%; height: auto; position: relative; z-index: 1; }
+.horizonArt img {
+  width: 40%;
+  height: auto;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 14px 34px var(--artGlow));
+}
 
 .greeting {
   font-size: 1.05em;
@@ -251,7 +269,22 @@ body.start {
   text-decoration: none;
   transition: background var(--anim) var(--easeOut), border-color var(--anim) var(--easeOut);
 }
-.ecosystemTile:hover { background: var(--surfaceHover); border-color: var(--textMuted); }
+.ecosystemTile:hover { background: var(--surfaceHover); border-color: color-mix(in srgb, var(--accent) 46%, var(--border)); }
+.ecosystemTile:focus-visible, .stage button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+#ocromExperience {
+  display: grid;
+  gap: 12px;
+  padding: clamp(13px, 2.3vw, 20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLarge);
+  background: color-mix(in srgb, var(--surface) 94%, var(--accent));
+}
+.experienceHeader { display: flex; align-items: center; gap: 12px; }
+.experienceHeader h2 { margin: 0; }
+.experienceHint { margin: 3px 0 0; color: var(--textDim); line-height: 1.5; }
+.experienceHint:empty { display: none; }
+#ocromExperience[data-connected="false"] .ecosystemGrid { display: flex; }
+#ocromExperience[data-connected="false"] { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
 .ecosystemIcon {
   display: grid;
   place-items: center;
@@ -559,7 +592,7 @@ html[data-theme="light"] .ecosystemIcon img { filter: invert(1); }
   position: relative;
   width: 100%;
   flex: none;
-  max-width: 620px;
+  max-width: 1120px;
   padding: 24px 28px;
   background: color-mix(in srgb, var(--surface) 92%, transparent);
   border: 1px solid var(--borderSoft);
@@ -610,9 +643,11 @@ html[data-theme="light"] .ecosystemIcon img { filter: invert(1); }
 }
 @media (max-width: 540px) {
   .hero { grid-template-columns: minmax(0, 1fr); padding: 20px; }
+  .heroTitle { font-size: clamp(2.3rem, 10.7vw, 4.4rem); }
   .horizonArt { display: none; }
   .ecosystemTile { padding: 9px; gap: 7px; }
   .ecosystemArrow { display: none; }
+  #ocromExperience[data-connected="false"] { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 390px) {
   .ecosystemGrid { grid-template-columns: minmax(0, 1fr); }
@@ -629,9 +664,9 @@ html[data-theme="light"] .ecosystemIcon img { filter: invert(1); }
 }
 
 .welcomePillars {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(185px, 100%), 1fr));
+  gap: 14px;
   margin: 4px 0;
 }
 

@@ -558,6 +558,25 @@ export class SyncService extends EventEmitter {
     return neocromRequest('/api/neocrom-id/session', { method: 'DELETE', token, fetch: this.fetch }).catch(() => null);
   }
 
+  async ocromExperience(event, listingId) {
+    const session = this.getSession();
+    if (session?.provider !== 'neocrom' || !session.token) return { connected: false, items: [] };
+    const options = { token: session.token, fetch: this.fetch };
+    try {
+      const { settings: consent, items } = await neocromRequest('/api/horizon/experience', options);
+      if (session.token !== this.getSession()?.token) return { connected: false, items: [] };
+      const category = event === 'recommendation_open' ? items.find(item => item.id === listingId)?.category : undefined;
+      if (event === 'recommendation_open' ? category && consent.personalization : consent.analytics) {
+        void neocromRequest('/api/horizon/telemetry', {
+          ...options, method: 'POST', body: { event, ...(category ? { category } : {}) },
+        }).catch(() => {});
+      }
+      return { connected: true, items: consent.personalization ? items : [] };
+    } catch (error) {
+      return { connected: error.status !== 401, items: [] };
+    }
+  }
+
   async neocromStore(kind, item) {
     const path = '/api/horizon/store';
     if (!kind) return neocromRequest(path, { fetch: this.fetch });
