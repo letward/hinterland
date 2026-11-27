@@ -362,7 +362,7 @@ export class SyncService extends EventEmitter {
         name: codeOrOpts.name || 'Paired Device',
         platform: 'unknown',
         os: 'unknown',
-        browserVersion: '1.47.0',
+        browserVersion: '1.47.1',
         lastActive: new Date().toISOString(),
         pairedCode: code,
         current: false,
