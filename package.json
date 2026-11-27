@@ -1,7 +1,7 @@
 {
   "name": "neocrom-horizon",
   "productName": "Neocrom Horizon",
-  "version": "1.48.1",
+  "version": "1.49.0",
   "description": "Ocrom Horizon — a private, customizable browser connected to Ocrom ID.",
   "main": "src/main/main.js",
   "type": "module",

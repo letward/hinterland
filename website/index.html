@@ -399,14 +399,14 @@
       const dlBtn = document.getElementById('dlBtn');
       const versionTag = document.getElementById('versionTag');
 
-      fetch(`https://raw.githubusercontent.com/${REPO}/main/package.json`)
+      fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
         .then((r) => (r.ok ? r.json() : null))
-        .then((pkg) => {
-          if (!pkg?.version) return;
-          const v = pkg.version;
-          const tag = `v${v}`;
-          const url = `https://github.com/${REPO}/releases/download/${tag}/Neocrom-Horizon-Setup-${v}.exe`;
-          dlBtn.href = url;
+        .then((release) => {
+          const tag = release?.tag_name;
+          if (typeof tag !== 'string' || !/^v\d+\.\d+\.\d+$/.test(tag)) return;
+          const filename = `Neocrom-Horizon-Setup-${tag.slice(1)}.exe`;
+          if (!release.assets?.some((asset) => asset.name === filename && asset.state === 'uploaded')) return;
+          dlBtn.href = `https://github.com/${REPO}/releases/download/${tag}/${filename}`;
           versionTag.textContent = `${tag} · Windows 10/11 (x64)`;
         })
         .catch(() => {});
