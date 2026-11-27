@@ -9,7 +9,7 @@ on:
 
 jobs:
   smoke:
-    name: Legacy Horizon API smoke tests
+    name: Neocrom website smoke tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,6 +21,4 @@ jobs:
           node-version: 20
 
       - name: Run website smoke tests
-        env:
-          SITE_URL: https://hinterland-browser.vercel.app
         run: node scripts/website-smoke.mjs
