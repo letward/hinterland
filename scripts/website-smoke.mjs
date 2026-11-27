@@ -7,11 +7,12 @@ async function check(name, fn) {
   catch (e) { failed++; console.error('FAIL:', name, '-', e.message); }
 }
 
-for (const [path, view] of [['/horizon', 'horizon'], ['/horizon/store', 'horizon/store'], ['/id', 'neocrom-id']]) {
+for (const [path, view] of [['/horizon', 'listing/ocrom-horizon'], ['/horizon/store', 'horizon/store'], ['/id', 'ocrom-id']]) {
   await check(path, async () => {
     const response = await fetch(base + path, { redirect: 'manual' });
-    if (response.status !== 302 || response.headers.get('location') !== '/#' + view) {
-      throw new Error('Unexpected response ' + response.status);
+    const location = response.headers.get('location');
+    if (response.status !== 302 || location !== '/#' + view) {
+      throw new Error(`Expected redirect to /#${view}, got ${response.status} ${location ?? ''}`);
     }
   });
 }
@@ -22,7 +23,7 @@ await check('Horizon Store lists community content', async () => {
   if (!response.ok || !Array.isArray(data.themes) || !Array.isArray(data.extensions)) throw new Error('Store unavailable');
 });
 
-await check('Horizon Sync requires a Neocrom ID device', async () => {
+await check('Horizon Sync requires an Ocrom ID device', async () => {
   const response = await fetch(base + '/api/horizon/sync');
   if (response.status !== 401) throw new Error('Unexpected response ' + response.status);
 });
