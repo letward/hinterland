@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const base = process.env.SITE_URL || 'https://neocrom.pro';
+const base = process.env.SITE_URL || 'https://ocrom.net';
 let failed = 0;
 
 async function check(name, fn) {

@@ -1,4 +1,4 @@
-export const neocromOrigin = 'https://neocrom.pro';
+export const neocromOrigin = 'https://ocrom.net';
 
 export async function neocromRequest(path, { method = 'GET', body, token, fetch: request = globalThis.fetch } = {}) {
   const response = await request(neocromOrigin + path, {
@@ -10,7 +10,7 @@ export async function neocromRequest(path, { method = 'GET', body, token, fetch:
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   const result = await response.json();
-  if (!response.ok) throw Object.assign(new Error(result.error || 'Neocrom ID is unavailable.'), { status: response.status });
+  if (!response.ok) throw Object.assign(new Error(result.error || 'Ocrom ID is unavailable.'), { status: response.status });
   return result;
 }
 

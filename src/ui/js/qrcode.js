@@ -392,7 +392,7 @@ function evaluatePenalty(matrix) {
 }
 
 export function generateQrMatrix(text) {
-  const target = String(text || '').trim() || 'https://neocrom.pro';
+  const target = String(text || '').trim() || 'https://ocrom.net';
   const { version, interleaved, size } = encodeData(target);
   const { matrix, reserved } = createMatrix(size);
   placeData(matrix, reserved, interleaved);
@@ -465,7 +465,7 @@ export function drawQrToCanvas(canvas, text, { size = 220, margin = 4, darkColor
 /* ------------------------------------------------------------- QR Modal Dialog */
 
 export function openQrCode(url, title = '') {
-  const targetUrl = url || 'https://neocrom.pro';
+  const targetUrl = url || 'https://ocrom.net';
   openModal({
     title: t('qr.title'),
     iconName: 'qr',
@@ -497,7 +497,7 @@ export function openQrCode(url, title = '') {
             spellcheck: 'false',
           });
           urlInput.addEventListener('input', () => {
-            const val = urlInput.value.trim() || 'https://neocrom.pro';
+            const val = urlInput.value.trim() || 'https://ocrom.net';
             drawQrToCanvas(canvas, val);
           });
           inputRow.append(urlInput);

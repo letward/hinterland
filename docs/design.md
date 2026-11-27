@@ -27,7 +27,7 @@ Alle Werte sind in `design/tokens.css` definiert und werden von `src/ui/css/toke
 - Light: `html[data-theme="light"]`
 - Animationen aus: `html[data-animations="off"]`
 
-Beim Aktualisieren übernimmt ein Profil mit den bisherigen Standardfarben die Neocrom-Palette. Individuelle Farben und andere Einstellungen bleiben erhalten. Der Browser öffnet Marketplace, Community, Bibliothek und Pulse auf `neocrom.pro`. Die Horizon-Synchronisierung hat ihren eigenen Zugang.
+Beim Aktualisieren übernimmt ein Profil mit den bisherigen Standardfarben die Neocrom-Palette. Individuelle Farben und andere Einstellungen bleiben erhalten. Der Browser öffnet Marketplace, Community, Bibliothek und Pulse auf `ocrom.net`. Die Horizon-Synchronisierung hat ihren eigenen Zugang.
 
 ## Komponenten
 

@@ -64,7 +64,7 @@ export function renderHorizonStore(initialTab = 'all') {
     ]),
     el('p', { class: 'storeHeroDesc', text: t('store.subtitle') }),
     el('button', { class: 'button', type: 'button', onclick: () => api().tabs.create({ url: horizonExtensions }) },
-      ['neocrom.pro']),
+      ['ocrom.net']),
   ]);
 
   // Tab Navigation
@@ -669,7 +669,7 @@ export function renderHorizonStore(initialTab = 'all') {
 
     if (ext.download && /^\/api\/horizon\/extensions\/[a-f0-9]{32}\.zip$/.test(ext.download)) {
       actions.append(el('button', { class: 'btnPrimary', type: 'button', text: t('store.communityDownload'),
-        onclick: () => api().tabs.create({ url: 'https://neocrom.pro' + ext.download }) }));
+        onclick: () => api().tabs.create({ url: 'https://ocrom.net' + ext.download }) }));
     } else if (!isInstalled) {
       actions.append(
         el('button', {

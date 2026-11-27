@@ -4628,7 +4628,7 @@ function renderAccountConnected(container, status, refresh) {
 
   container.append(profileCard, avatarSection, status.provider === 'neocrom'
     ? el('button', { class: 'button small', type: 'button', text: t('account.neocromManage'),
-      onclick: () => api().tabs.create({ url: 'https://neocrom.pro/#account' }) }) : nameRow, statsGrid, syncBox,
+      onclick: () => api().tabs.create({ url: 'https://ocrom.net/#account' }) }) : nameRow, statsGrid, syncBox,
     status.provider === 'neocrom' ? neocromEncryptionForm(refresh) : null, actions);
 }
 

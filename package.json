@@ -1,7 +1,7 @@
 {
   "name": "neocrom-horizon",
   "productName": "Neocrom Horizon",
-  "version": "1.48.0",
+  "version": "1.48.1",
   "description": "Neocrom Horizon — a fast, private, customisable Chromium browser built for the Neocrom ecosystem.",
   "main": "src/main/main.js",
   "type": "module",
@@ -34,8 +34,8 @@
     "artifactName": "Neocrom-Horizon-Setup-${version}.${ext}",
     "publish": {
       "provider": "github",
-      "owner": "neocrom-team",
-      "repo": "neocrom-horizon",
+      "owner": "ocrom-team",
+      "repo": "ocrom-horizon",
       "releaseType": "release"
     },
     "asarUnpack": [

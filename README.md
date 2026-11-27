@@ -2,12 +2,12 @@
 
 Ein schneller, sicherer und frei anpassbarer Browser (Electron/Chromium).
 
-[![Release](https://img.shields.io/github/v/release/neocrom-team/neocrom-horizon)](https://github.com/neocrom-team/neocrom-horizon/releases)
+[![Release](https://img.shields.io/github/v/release/ocrom-team/ocrom-horizon)](https://github.com/ocrom-team/ocrom-horizon/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**Website and download:** [neocrom.pro/horizon](https://neocrom.pro/horizon)
+**Website and download:** [ocrom.net/horizon](https://ocrom.net/horizon)
 
-[User guide](https://neocrom.pro/horizon/guide) · [Extensions and SDK](https://neocrom.pro/horizon/extensions)
+[User guide](https://ocrom.net/horizon/guide) · [Extensions and SDK](https://ocrom.net/horizon/extensions)
 
 ## Features
 

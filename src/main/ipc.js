@@ -4340,7 +4340,7 @@ handle('dialog:confirm', async ({ title, message, detail, confirmLabel, cancelLa
   });
   handle('account:beginNeocromConnection', () => syncService.beginNeocromConnection());
   handle('account:completeNeocromConnection', () => syncService.completeNeocromConnection());
-  handle('account:openNeocromId', () => shell.openExternal('https://neocrom.pro/id'));
+  handle('account:openNeocromId', () => shell.openExternal('https://ocrom.net/id'));
 
   handle('account:signUp', async (opts) => {
     try {

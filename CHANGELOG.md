@@ -4,6 +4,12 @@ All notable changes to Neocrom Horizon are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.48.1] - 2026-11-27
+
+### Changed
+- Use ocrom.net for Ocrom ID, encrypted sync, Horizon Store and marketplace links.
+- Fetch Windows updates from the current Ocrom Horizon GitHub repository.
+
 ## [1.48.0] - 2026-11-27
 
 ### Added

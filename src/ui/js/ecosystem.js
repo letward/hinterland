@@ -1,4 +1,4 @@
-const origin = 'https://neocrom.pro/';
+const origin = 'https://ocrom.net/';
 
 export const horizonWebsite = origin + 'horizon';
 export const horizonGuide = horizonWebsite + '/guide';

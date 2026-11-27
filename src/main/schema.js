@@ -892,7 +892,7 @@ export const SCHEMA = [
   option('account.serverUrl', 'text', '', {
     labelKey: 'settings.account.serverUrl',
     descKey: 'settings.account.serverUrlDesc',
-    placeholder: 'https://neocrom.pro/api/horizon/sync',
+    placeholder: 'https://ocrom.net/api/horizon/sync',
     section: 'account',
   }),
   option('account.supabaseUrl', 'text', '', {

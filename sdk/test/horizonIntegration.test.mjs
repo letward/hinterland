@@ -3,6 +3,7 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
+import { neocromRequest } from '../src/neocrom-id.js';
 import { Settings } from '../../src/main/settings.js';
 import { ecosystem } from '../../src/ui/js/ecosystem.js';
 
@@ -38,8 +39,8 @@ test('the Horizon theme adopts the old default palette while preserving custom t
 
 test('the ecosystem opens the official Neocrom routes with localized labels', async () => {
   assert.deepEqual(ecosystem.map(item => item.url), [
-    'https://neocrom.pro/#store', 'https://neocrom.pro/#community',
-    'https://neocrom.pro/#library', 'https://neocrom.pro/#pulse',
+    'https://ocrom.net/#store', 'https://ocrom.net/#community',
+    'https://ocrom.net/#library', 'https://ocrom.net/#pulse',
   ]);
   for (const language of ['de', 'en']) {
     const { ecosystem: labels } = JSON.parse(await readFile(new URL(`../../src/ui/locales/${language}.json`, import.meta.url), 'utf8'));
@@ -48,6 +49,19 @@ test('the ecosystem opens the official Neocrom routes with localized labels', as
       assert.ok(labels[id + 'Description']);
     }
   }
+});
+
+test('Ocrom ID sends bearer-authenticated requests directly to the new domain', async () => {
+  const profile = await neocromRequest('/api/neocrom-id/profile', {
+    token: 'test-token',
+    fetch: async (url, options) => {
+      assert.equal(url, 'https://ocrom.net/api/neocrom-id/profile');
+      assert.equal(options.headers.Authorization, 'Bearer test-token');
+      assert.equal(options.redirect, 'error');
+      return Response.json({ handle: 'demo' });
+    },
+  });
+  assert.deepEqual(profile, { handle: 'demo' });
 });
 
 test('legacy Hinterland settings migrate cleanly into Neocrom Horizon defaults', async () => {

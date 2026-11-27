@@ -73,7 +73,7 @@ describe('Neocrom Horizon v1.23.0 Features & Polish', () => {
       const menuSource = readFileSync(join(ROOT, 'src', 'ui', 'js', 'menu.js'), 'utf8');
       assert.ok(menuSource.includes("t('menu.userGuide')"), 'menu.js must reference menu.userGuide');
       assert.match(menuSource, /tabs\.create\(\{ url: horizonGuide \}\)/);
-      assert.equal(horizonGuide, 'https://neocrom.pro/horizon/guide');
+      assert.equal(horizonGuide, 'https://ocrom.net/horizon/guide');
     });
 
     it('includes user guide button in about page definition', () => {
